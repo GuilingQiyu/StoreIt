@@ -1,0 +1,35 @@
+server:
+  port: 59898
+  servlet:
+    session:
+      timeout: 30d
+  ssl:
+  # openssl pkcs12 -export -in /home/ubuntu/http/cert.pem -inkey /home/ubuntu/http/key.pem -out /home/ubuntu/http/keystore.p12 -name spring -passout pass:changeit
+    enabled: true
+    key-store: ./keystore.p12
+    key-store-password: changeit
+    key-store-type: PKCS12
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  config:
+    import: optional:file:./config/admin.yml
+  datasource:
+    url: jdbc:sqlite:./data/storeit.db
+    driver-class-name: org.sqlite.JDBC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  storage-root: storage
+  ssl-enabled: false
+  session:
+    max-age-days: 30
+    cookie-name: STOREIT_SESSION
+
+logging:
+  level:
+    root: info

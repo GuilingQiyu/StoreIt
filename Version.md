@@ -1,5 +1,25 @@
 # 储之文件服务器 (StoreIt) - 版本日志
 
+## 1.1.1 (2025-10-17)
+
+### 变更摘要
+- 项目重构为 Spring Boot 3（JDK 21）+ SQLite 架构
+- 引入基于会话的登录认证，替代旧版 Flask + IP 白名单
+- 新增分享直链功能（限时/限次）
+- 增加基础安全响应头，完善路径安全检查
+- 使用 Flyway 管理数据库初始化与迁移
+- 支持通过外部 `config/admin.yml` 提供默认管理员凭据（已在 `.gitignore` 忽略）
+
+### 默认配置
+- 端口：59898
+- 数据库：`./data/storeit.db`
+- 存储目录：`./storage/`
+- 默认管理员：`admin / authorized_users`
+
+### 兼容性与迁移
+- 不再使用 `config.json` 与 `ip_whitelist.json`；改为 `application.yml` + 数据库
+- HTTPS 配置采用 Spring Boot 标准 `server.ssl.*` 方案，可使用 PKCS12 keystore
+
 ## 0.1.0-demo (2025-05-28)
 
 ### 功能概述
