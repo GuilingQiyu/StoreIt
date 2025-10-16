@@ -10,7 +10,7 @@ server:
       timeout: 30d
   ssl:
     # Enable HTTPS. If true, configure keystore below
-    enabled: true
+    enabled: false
     # Path to PKCS12 keystore file (relative to working dir)
     key-store: ./keystore.p12
     # Keystore password
