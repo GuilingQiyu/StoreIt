@@ -1,6 +1,8 @@
 # External sensitive configs
 config/admin.yml
-config/*.yml
+config/application.yml
+# keep example files tracked
+!config/*.example
 # Python
 __pycache__/
 *.py[cod]

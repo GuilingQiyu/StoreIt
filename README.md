@@ -24,7 +24,12 @@
 - 构建：`mvn -DskipTests package`
 - 运行：`java -jar target/storeit-1.1.1.jar`
 
-可选：在 `src/main/resources/application.yml` 调整配置。
+可选：在 `src/main/resources/application.yml` 调整配置；或通过外部文件覆盖（适用于发布 JAR 部署）：
+
+1) 复制示例到本地配置目录：
+	- `cp config/application.yml.example config/application.yml`
+	- `cp config/admin.yml.example config/admin.yml`
+2) 按需修改 `config/*.yml`，然后运行 jar。应用会自动读取 `./config/application.yml` 与 `./config/admin.yml`。
 
 ### 外部管理员凭据（推荐）
 本项目通过 Spring Boot `spring.config.import` 支持从外部文件加载管理员用户名/密码，避免在仓库中存放明文：
@@ -39,7 +44,15 @@ app:
 		password: your_secret_here
 ```
 
-`application.yml` 已配置 `spring.config.import=optional:file:./config/admin.yml`。本仓库的 `.gitignore` 已忽略 `config/` 下的 yml 文件，便于安全地本地覆盖。
+`application.yml` 已配置：
+```
+spring:
+	config:
+		import:
+			- optional:file:./config/application.yml
+			- optional:file:./config/admin.yml
+```
+仓库的 `.gitignore` 已忽略实际的 `config/*.yml`（保留 `*.example`），适合直接携带 release JAR 进行外部配置。
 
 ### 路由与 API 说明
 - 页面：

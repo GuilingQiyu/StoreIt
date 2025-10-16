@@ -15,7 +15,9 @@ server:
 
 spring:
   config:
-    import: optional:file:./config/admin.yml
+    import:
+      - optional:file:./config/application.yml
+      - optional:file:./config/admin.yml
   datasource:
     url: jdbc:sqlite:./data/storeit.db
     driver-class-name: org.sqlite.JDBC
