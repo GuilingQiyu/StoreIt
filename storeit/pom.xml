@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.glqyu</groupId>
 	<artifactId>storeit</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<name>storeit</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -32,6 +32,12 @@
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>

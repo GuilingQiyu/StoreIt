@@ -1,6 +1,5 @@
 package com.glqyu.storeit.web;
 
-import com.glqyu.storeit.config.AppProperties;
 import com.glqyu.storeit.dto.ApiResponse;
 import com.glqyu.storeit.dto.LoginRequest;
 import com.glqyu.storeit.model.User;
@@ -9,10 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,8 +17,7 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class AuthController {
     private final AuthService authService;
-    private final AppProperties props;
-    public AuthController(AuthService authService, AppProperties props) { this.authService = authService; this.props = props; }
+    public AuthController(AuthService authService) { this.authService = authService; }
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Map<String, Object>>> login(@Valid @ModelAttribute LoginRequest req, HttpServletResponse response) {
@@ -42,6 +38,7 @@ public class AuthController {
     @GetMapping("/user/status")
     public Map<String, Object> userStatus(HttpServletRequest request) {
         Optional<String> u = authService.getUsernameFromRequest(request);
-        return Map.of("logged_in", u.isPresent(), "username", u.orElse(null));
+        // Map.of 不允许 null，避免 NPE
+        return Map.of("logged_in", u.isPresent(), "username", u.orElse(""));
     }
 }

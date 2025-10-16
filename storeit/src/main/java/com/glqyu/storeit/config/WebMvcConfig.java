@@ -2,6 +2,7 @@ package com.glqyu.storeit.config;
 
 import com.glqyu.storeit.web.AuthInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -12,12 +13,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public WebMvcConfig(AuthInterceptor authInterceptor) { this.authInterceptor = authInterceptor; }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(@NonNull InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor).addPathPatterns("/**");
     }
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // default static handler already works; keep placeholder for future external storage mapping
+    public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
+        // expose /static/** so HTML can reference /static/css/* etc.
+        registry
+                .addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
     }
 }

@@ -35,14 +35,21 @@ public class StoreitApplication {
 			@Override
 			public void run(ApplicationArguments args) throws Exception {
 				// ensure default admin exists
-				userMapper.findByUsername(props.getDefaultAdmin().getUsername()).orElseGet(() -> {
+				User existing = userMapper.findByUsername(props.getDefaultAdmin().getUsername()).orElse(null);
+				if (existing == null) {
 					User u = new User();
 					u.setUsername(props.getDefaultAdmin().getUsername());
 					u.setPasswordHash(BCrypt.hashpw(props.getDefaultAdmin().getPassword(), BCrypt.gensalt()));
 					u.setCreatedAt(Instant.now().getEpochSecond());
 					userMapper.insert(u);
-					return u;
-				});
+				} else {
+					// if config password has changed, update hash to keep in sync
+					String cfgPass = props.getDefaultAdmin().getPassword();
+					if (!BCrypt.checkpw(cfgPass, existing.getPasswordHash())) {
+						existing.setPasswordHash(BCrypt.hashpw(cfgPass, BCrypt.gensalt()));
+						userMapper.updatePassword(existing);
+					}
+				}
 				// cleanup expired sessions
 				sessionMapper.deleteExpired(Instant.now().getEpochSecond());
 			}
