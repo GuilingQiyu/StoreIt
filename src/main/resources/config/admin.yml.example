@@ -1,0 +1,7 @@
+# External admin credentials for StoreIt (copy generated to ./config/admin.yml)
+app:
+  default-admin:
+    # Default admin username
+    username: admin
+    # Default admin password (will be hashed on startup)
+    password: authorized_users

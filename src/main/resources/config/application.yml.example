@@ -1,0 +1,44 @@
+# External application overrides for StoreIt (copy generated to ./config/application.yml)
+# You can override any Spring Boot or `app.*` property here when running the jar.
+
+server:
+  # HTTP(S) port
+  port: 59898
+  servlet:
+    session:
+      # Spring session timeout (ISO-8601 duration)
+      timeout: 30d
+  ssl:
+    # Enable HTTPS. If true, configure keystore below
+    enabled: true
+    # Path to PKCS12 keystore file (relative to working dir)
+    key-store: ./keystore.p12
+    # Keystore password
+    key-store-password: changeit
+    # Usually PKCS12 for generated keystores
+    key-store-type: PKCS12
+
+spring:
+  datasource:
+    # SQLite DB file location
+    url: jdbc:sqlite:./data/storeit.db
+    driver-class-name: org.sqlite.JDBC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  # Root folder for files served by the app
+  storage-root: storage
+  # Whether to treat app as SSL-enabled (used for cookie secure, etc.)
+  ssl-enabled: false
+  session:
+    # Session max age (days) used for cookie expiry
+    max-age-days: 30
+    # Cookie name for session id
+    cookie-name: STOREIT_SESSION
+
+logging:
+  level:
+    # Log level (info/debug/warn/error)
+    root: info
