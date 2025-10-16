@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>储之 - 文件服务器</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/favicon.ico">
+    <script defer src="/static/js/script.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('toList');
+        if (btn) btn.addEventListener('click', () => window.location.href = '/list');
+      });
+    </script>
+    <style>body{justify-content:center}</style>
+  </head>
+  <body>
+    <div class="floating-bg"></div>
+    <div class="container">
+      <h1>储之</h1>
+      <p>欢迎访问储之文件服务器</p>
+      <div class="status"><div class="status-dot"></div><span>服务器运行中</span></div>
+      <div id="userStatus"></div>
+      <div>
+        <a href="#" class="btn" id="refreshBtn">刷新</a>
+        <a href="/login" class="btn">登录</a>
+        <a href="#" id="toList" class="btn">文件列表</a>
+      </div>
+      <footer>
+        <p>© 2025 归灵祈昱 - 基于 Spring Boot 构建的文件服务器</p>
+      </footer>
+    </div>
+  </body>
+  </html>
