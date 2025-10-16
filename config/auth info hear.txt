@@ -1,0 +1,6 @@
+#example:
+#admin.yml:
+app:
+  default-admin:
+    username: admin
+    password: passwd
