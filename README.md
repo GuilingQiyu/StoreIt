@@ -1,6 +1,6 @@
 # StoreIt | 储之 — 文件服务应用 (v1.1.1)
 
-中文 | English: [README-EN.md](./README-EN.md)
+中文 | [English](./README-EN.md)
 
 一个基于 Spring Boot 3（JDK 21）、SQLite 的轻量级文件存储与分享服务。支持登录会话、文件浏览/上传/下载、分享直链、基础安全头、可选 HTTPS，以及通过外部配置文件管理默认管理员账号。
 
