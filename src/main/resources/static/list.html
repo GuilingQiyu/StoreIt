@@ -5,18 +5,146 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>文件列表 - 储之</title>
   <link rel="stylesheet" href="/static/css/style.css">
-  <!-- Grid.js for table rendering -->
-  <link href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
-  <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script defer src="/static/js/script.js"></script>
 </head>
 <body>
 <div class="floating-bg"></div>
-<div class="container">
-  <h1>文件列表</h1>
-  <div id="userStatus"></div>
-  <div id="fileList"></div>
-  <p><a href="/" class="btn">返回首页</a></p>
+
+<div class="app-layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>储之 StoreIt</h2>
+        </div>
+        
+        <div class="sidebar-user" id="sidebarUser">
+            <!-- User info will be loaded here -->
+        </div>
+
+        <div class="sidebar-menu">
+            <div class="menu-item active" onclick="loadFileList('')">
+                <i class="fas fa-hdd"></i> 我的文件
+            </div>
+            <!-- Placeholder for future features -->
+            <div class="menu-item" onclick="alert('功能开发中')">
+                <i class="fas fa-clock"></i> 最近访问
+            </div>
+            <div class="menu-item" onclick="alert('功能开发中')">
+                <i class="fas fa-star"></i> 收藏夹
+            </div>
+        </div>
+
+        <div class="sidebar-details" id="sidebarDetails">
+            <div class="empty-details">
+                <i class="fas fa-mouse-pointer"></i>
+                <p>选择文件查看详情</p>
+            </div>
+            <div class="file-details-content" style="display:none;">
+                <div class="detail-icon" id="detailIcon"></div>
+                <h3 id="detailName">Filename</h3>
+                <div class="detail-info">
+                    <p><strong>类型:</strong> <span id="detailType">-</span></p>
+                    <p><strong>大小:</strong> <span id="detailSize">-</span></p>
+                    <p><strong>修改时间:</strong> <span id="detailModified">-</span></p>
+                </div>
+                <div class="detail-actions">
+                    <button class="btn small" id="btnDownload">下载</button>
+                    <button class="btn small" id="btnShare">分享</button>
+                    <button class="btn small" id="btnRename">重命名</button>
+                    <button class="btn small delete-btn" id="btnDelete">删除</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-storage">
+            <div class="storage-label">
+                <span>存储空间</span>
+                <span id="storageText">Loading...</span>
+            </div>
+            <div class="storage-bar">
+                <div class="storage-fill" id="storageFill" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header-row">
+            <h1>文件列表</h1>
+            <!-- User status moved to sidebar, maybe keep a simple logout or profile here for mobile? -->
+            <div class="mobile-menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+        
+        <div id="breadcrumb" class="breadcrumb"></div>
+        
+        <div id="file-grid-view" class="file-grid-view"></div>
+        
+        <div id="empty-state" style="display:none; text-align:center; margin-top:50px; color:#666;">
+            <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 10px;"></i>
+            <p>暂无文件</p>
+        </div>
+    </div>
+</div>
+
+<!-- Context Menu -->
+<div id="context-menu" class="context-menu">
+    <div class="menu-item" data-action="download"><i class="fas fa-download"></i> 下载</div>
+    <div class="menu-item" data-action="share"><i class="fas fa-share-alt"></i> 创建分享链接</div>
+    <div class="menu-item" data-action="details"><i class="fas fa-info-circle"></i> 详细信息</div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" data-action="rename"><i class="fas fa-edit"></i> 重命名</div>
+    <!-- <div class="menu-item" data-action="copy"><i class="fas fa-copy"></i> 复制</div> -->
+    <!-- <div class="menu-item" data-action="move"><i class="fas fa-arrows-alt"></i> 移动</div> -->
+    <div class="menu-divider"></div>
+    <div class="menu-item delete" data-action="delete"><i class="fas fa-trash-alt"></i> 删除</div>
+</div>
+
+<!-- FAB -->
+<div class="fab-container">
+    <div class="fab-menu">
+        <button class="fab-item" onclick="triggerUpload('file')" title="上传文件">
+            <i class="fas fa-file-upload"></i>
+            <span class="fab-label">上传文件</span>
+        </button>
+        <button class="fab-item" onclick="triggerUpload('folder')" title="上传目录">
+            <i class="fas fa-folder-plus"></i>
+            <span class="fab-label">上传目录</span>
+        </button>
+        <button class="fab-item" onclick="createNewFolderUI()" title="新建文件夹">
+            <i class="fas fa-folder"></i>
+            <span class="fab-label">新建文件夹</span>
+        </button>
+    </div>
+    <button class="fab-main" id="fabMain">
+        <i class="fas fa-plus"></i>
+    </button>
+</div>
+
+<!-- Hidden Inputs -->
+<input type="file" id="fileInput" multiple style="display:none">
+<input type="file" id="folderInput" webkitdirectory multiple style="display:none">
+
+<!-- Upload Queue Panel -->
+<div id="upload-queue-panel" class="upload-queue-panel collapsed">
+    <div class="queue-header" onclick="toggleQueuePanel()">
+        <span><i class="fas fa-cloud-upload-alt"></i> 上传队列</span>
+        <div class="queue-controls">
+            <span id="queue-summary"></span>
+            <i class="fas fa-chevron-up toggle-icon"></i>
+            <i class="fas fa-times close-icon" onclick="clearCompletedUploads(event)"></i>
+        </div>
+    </div>
+    <div class="queue-list" id="queue-list">
+        <!-- Queue Items -->
+        <div class="queue-empty-state">
+            <i class="fas fa-box-open"></i>
+            <p>没有上传任务</p>
+        </div>
+    </div>
 </div>
 
 <!-- Share Modal -->

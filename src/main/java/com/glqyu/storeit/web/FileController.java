@@ -127,6 +127,17 @@ public class FileController {
         }
     }
 
+    @GetMapping("/api/storage/usage")
+    public ResponseEntity<?> getStorageUsage(HttpServletRequest request) {
+        try {
+            User user = getCurrentUser(request);
+            Map<String, Long> usage = fileService.getStorageUsage(user);
+            return ResponseEntity.ok(usage);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @GetMapping("/d/{token}")
     public ResponseEntity<?> downloadByToken(@PathVariable String token) {
         Optional<FileShare> s = shareService.validateToken(token);

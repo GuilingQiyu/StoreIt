@@ -265,4 +265,17 @@ public class FileService {
         
         metaMapper.insert(m);
     }
+
+    public java.util.Map<String, Long> getStorageUsage(User user) {
+        Path root = getUserRoot(user);
+        File file = root.toFile();
+        // Ensure root exists
+        if (!file.exists()) file.mkdirs();
+        
+        long total = file.getTotalSpace();
+        long free = file.getUsableSpace();
+        long used = total - free;
+        
+        return java.util.Map.of("total", total, "free", free, "used", used);
+    }
 }
