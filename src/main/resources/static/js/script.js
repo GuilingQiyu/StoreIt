@@ -46,29 +46,36 @@ function loadFileList(path=''){
     });
 
     const headerHtml = `<h2>当前路径: ${currentPath || '/'} </h2>` +
-      (currentPath? `<p><a href="#" class="btn" id="backBtn">返回上级目录</a></p>`: '');
+      `<div class="toolbar">` +
+      (currentPath? `<button class="btn" id="backBtn">返回上级目录</button> `: '') +
+      `<button class="btn" onclick="createNewFolder('${currentPath}')">新建文件夹</button>` +
+      `</div>`;
+      
     container.innerHTML = headerHtml + '<div id="grid"></div>' +
-      `<div class="upload-section"><h3>上传文件</h3><form id="uploadForm" enctype="multipart/form-data"><input type="hidden" name="directory" value="${currentPath}"><input type="file" name="file" required><button type="submit" class="btn">上传</button></form><div id="uploadStatus"></div></div>`;
+      `<div class="upload-section"><h3>上传文件</h3><form id="uploadForm" enctype="multipart/form-data"><input type="hidden" name="directory" value="${currentPath}"><input type="file" name="file" required><button type="submit" class="btn">上传</button></form><div id="progressContainer" style="display:none; margin-top:10px;"><div id="progressBar" style="width:0%; height:20px; background-color:#4CAF50; text-align:center; color:white;">0%</div></div><div id="uploadStatus"></div></div>`;
 
     if(currentPath){
       const parent=currentPath.split('/').slice(0,-1).join('/');
       const back=document.getElementById('backBtn'); if(back){ back.onclick=(e)=>{ e.preventDefault(); loadFileList(parent); } }
     }
 
-    // Build table via Grid.js if available, else simple fallback
     const gridEl=document.getElementById('grid');
     if(window.gridjs){
       const gridData = items.map(row=>[
         row.icon,
         row.isDirectory
           ? gridjs.h('a', { href:'#', onclick:(e)=>{ e.preventDefault(); loadFileList(row.path); } }, row.name)
-          : gridjs.h('a', { href:`/storage/${row.path}`, target:'_blank' }, row.name),
+          : gridjs.h('a', { href:'#', onclick:(e)=>{ e.preventDefault(); previewFile(row.path, row.name); } }, row.name),
         row.sizeText,
         row.modifiedText,
-        row.isDirectory ? '' : gridjs.h('div', { className:'share-form' }, gridjs.h('button', { className:'btn small share-btn', 'data-path': row.path }, '生成分享'))
+        gridjs.h('div', { className:'action-buttons' }, [
+            gridjs.h('button', { className:'btn small share-btn', 'data-path': row.path }, '分享'),
+            gridjs.h('button', { className:'btn small rename-btn', onclick:()=>renameFile(row.path, row.name) }, '重命名'),
+            gridjs.h('button', { className:'btn small delete-btn', onclick:()=>deleteFile(row.path) }, '删除')
+        ])
       ]);
       const grid = new gridjs.Grid({
-        columns: ['','名称','大小','修改时间','操作'],
+        columns: ['','名称','大小','修改时间', { name: '操作', width: '250px' }],
         data: gridData,
         sort: true,
         pagination: { enabled: true, limit: 20 },
@@ -76,111 +83,144 @@ function loadFileList(path=''){
       });
       grid.render(gridEl);
     } else {
-      // Fallback simple list
-      gridEl.innerHTML = items.map(row=>`<div class="file-item ${row.isDirectory?'directory':'file'}">
-        <div class="file-icon">${row.icon}</div>
-        ${row.isDirectory? `<a href="#" onclick="loadFileList('${row.path}');return false;">${row.name}</a>` : `<a href="/storage/${row.path}" target="_blank">${row.name}</a>`}
-        <div class="file-size">${row.sizeText}</div>
-        <div class="file-date">${row.modifiedText}</div>
-        <div class="share-form">${row.isDirectory?'':`<button class="btn small share-btn" data-path="${row.path}">生成分享</button>`}</div>
-      </div>`).join('');
+       gridEl.innerHTML = "GridJS not loaded";
     }
 
     setupUploadForm();
   }).catch(err=>{ container.innerHTML=`<p class="error">加载失败: ${err.message}</p>`; });
 }
 
-// 使用事件委托处理分享按钮，兼容 Grid.js 的重渲染
-function bindGlobalDelegates(){
-  if(window._storeitDelegatesBound) return; window._storeitDelegatesBound = true;
-  document.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.share-btn');
-    if(btn){
-      e.preventDefault();
-      const path = btn.getAttribute('data-path');
-      openShareModal(path);
+function createNewFolder(currentPath) {
+    const name = prompt("请输入文件夹名称:");
+    if (name) {
+        const path = currentPath ? currentPath + "/" + name : name;
+        fetch('/api/folder/create', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({path: path})
+        }).then(r=>r.json()).then(d=>{
+            if(d.success) loadFileList(currentPath);
+            else alert("创建失败: " + d.error);
+        });
     }
-  });
 }
 
-function openShareModal(path) {
-    const modal = document.getElementById('shareModal');
-    const nameSpan = document.getElementById('modalFileName');
-    const pathInput = document.getElementById('modalFilePath');
-    const resultDiv = document.getElementById('shareResult');
-    
-    if(!modal || !nameSpan || !pathInput) return;
-    
-    nameSpan.textContent = path.split('/').pop();
-    pathInput.value = path;
-    resultDiv.innerHTML = '';
-    modal.style.display = "block";
+function deleteFile(path) {
+    if(confirm("确定要删除吗?")) {
+        fetch('/api/file/delete', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({path: path})
+        }).then(r=>r.json()).then(d=>{
+            if(d.success) {
+                const currentPath = path.includes('/') ? path.substring(0, path.lastIndexOf('/')) : '';
+                loadFileList(currentPath);
+            } else alert("删除失败: " + d.error);
+        });
+    }
 }
 
-function setupShareModal() {
-    const modal = document.getElementById('shareModal');
-    if(!modal) return;
+function renameFile(path, oldName) {
+    const newName = prompt("请输入新名称:", oldName);
+    if (newName && newName !== oldName) {
+        fetch('/api/file/rename', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({path: path, newName: newName})
+        }).then(r=>r.json()).then(d=>{
+            if(d.success) {
+                const currentPath = path.includes('/') ? path.substring(0, path.lastIndexOf('/')) : '';
+                loadFileList(currentPath);
+            } else alert("重命名失败: " + d.error);
+        });
+    }
+}
+
+function previewFile(path, name) {
+    const ext = name.split('.').pop().toLowerCase();
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    const videoExts = ['mp4', 'webm', 'ogg'];
     
-    const closeBtn = modal.querySelector('.close');
-    const expireSelect = document.getElementById('expireSelect');
-    const customExpire = document.getElementById('customExpire');
-    const createBtn = document.getElementById('createShareBtn');
+    if (imageExts.includes(ext)) {
+        openPreviewModal(`<img src="/storage/${path}" style="max-width:100%; max-height:80vh;">`, name);
+    } else if (videoExts.includes(ext)) {
+        openPreviewModal(`<video controls style="max-width:100%; max-height:80vh;"><source src="/storage/${path}" type="video/${ext}">您的浏览器不支持视频播放。</video>`, name);
+    } else {
+        window.open(`/storage/${path}`, '_blank');
+    }
+}
+
+function openPreviewModal(content, title) {
+    let modal = document.getElementById('previewModal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'previewModal';
+        modal.className = 'modal';
+        modal.innerHTML = `<div class="modal-content" style="width:80%; max-width:1000px; text-align:center;">
+            <span class="close" onclick="document.getElementById('previewModal').style.display='none'">&times;</span>
+            <h2 id="previewTitle"></h2>
+            <div id="previewContent"></div>
+        </div>`;
+        document.body.appendChild(modal);
+    }
+    document.getElementById('previewTitle').textContent = title;
+    document.getElementById('previewContent').innerHTML = content;
+    modal.style.display = 'block';
     
-    if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
     window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
-    
-    if(expireSelect) {
-        expireSelect.onchange = () => {
-            if(expireSelect.value === 'custom') {
-                customExpire.style.display = 'block';
-            } else {
-                customExpire.style.display = 'none';
-            }
-        };
-    }
-    
-    if(createBtn) {
-        createBtn.onclick = async () => {
-            const path = document.getElementById('modalFilePath').value;
-            let expireHours = expireSelect.value;
-            if(expireHours === 'custom') {
-                expireHours = customExpire.value;
-                if(!expireHours || expireHours <= 0) {
-                    alert('请输入有效的小时数');
-                    return;
-                }
-            }
-            
-            const body = { 
-                filePath: path, 
-                expireHours: parseInt(expireHours), 
-                maxDownloads: null 
-            };
-            
-            const resultDiv = document.getElementById('shareResult');
-            resultDiv.innerHTML = '生成中...';
-            
-            try {
-                const res = await fetch('/api/share', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify(body)
-                });
-                const data = await res.json();
-                
-                if(res.ok && data.success) {
-                    const url = location.origin + data.data.url;
-                    resultDiv.innerHTML = `<p class="success">分享链接已生成:</p><input type="text" value="${url}" style="width:100%;padding:5px;" readonly onclick="this.select()"\>`;
-                } else {
-                    resultDiv.innerHTML = `<p class="error">生成失败: ${data.message || '未知错误'}</p>`;
-                }
-            } catch(err) {
-                resultDiv.innerHTML = `<p class="error">请求失败: ${err.message}</p>`;
-            }
-        };
-    }
 }
 
-function setupUploadForm(){ const form=document.getElementById('uploadForm'); if(!form) return; form.addEventListener('submit',e=>{ e.preventDefault(); const fd=new FormData(form); const st=document.getElementById('uploadStatus'); st.innerHTML='上传中...'; fetch('/api/upload',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{ if(d.error){ st.innerHTML=`<p class="error">上传失败: ${d.error}</p>`; } else { st.innerHTML=`<p class="success">文件 ${d.file.name} 上传成功!</p>`; loadFileList(fd.get('directory')); } }).catch(err=>{ st.innerHTML=`<p class="error">上传错误: ${err.message}</p>`; }); }); }
+function setupUploadForm(){ 
+    const form=document.getElementById('uploadForm'); 
+    if(!form) return; 
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+    
+    newForm.addEventListener('submit',e=>{ 
+        e.preventDefault(); 
+        const fd=new FormData(newForm); 
+        const st=document.getElementById('uploadStatus'); 
+        const progContainer = document.getElementById('progressContainer');
+        const progBar = document.getElementById('progressBar');
+        
+        st.innerHTML='上传中...'; 
+        progContainer.style.display = 'block';
+        progBar.style.width = '0%';
+        progBar.textContent = '0%';
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', '/api/upload', true);
+        
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                const percentComplete = (e.loaded / e.total) * 100;
+                progBar.style.width = percentComplete + '%';
+                progBar.textContent = Math.round(percentComplete) + '%';
+            }
+        };
+        
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const d = JSON.parse(xhr.responseText);
+                if(d.error){ 
+                    st.innerHTML=`<p class="error">上传失败: ${d.error}</p>`; 
+                } else { 
+                    st.innerHTML=`<p class="success">文件 ${d.file.name} 上传成功!</p>`; 
+                    loadFileList(fd.get('directory')); 
+                }
+            } else {
+                st.innerHTML=`<p class="error">上传错误: ${xhr.statusText}</p>`;
+            }
+            progContainer.style.display = 'none';
+        };
+        
+        xhr.onerror = function() {
+            st.innerHTML=`<p class="error">网络错误</p>`;
+            progContainer.style.display = 'none';
+        };
+        
+        xhr.send(fd);
+    }); 
+}
 
 document.addEventListener('DOMContentLoaded', function(){ initFloatingBackground(); setupLoginForm(); setupRefreshButton(); loadUserStatus(); bindGlobalDelegates(); setupShareModal(); if(document.getElementById('fileList')){ loadFileList(); } });

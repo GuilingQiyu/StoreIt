@@ -85,3 +85,32 @@ footer { margin-top: 1rem; font-size: .9rem; color: var(--secondary-color); }
 .form-group { margin-bottom: 15px; text-align: left; }
 .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
 .form-group select, .form-group input { width: 100%; padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
+
+/* Toolbar */
+.toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+
+/* Action buttons in grid */
+.action-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
+.action-buttons .btn.small { margin: 0; padding: 4px 8px; font-size: 0.8rem; }
+.delete-btn { background: linear-gradient(135deg, #d9534f, #c9302c); }
+.rename-btn { background: linear-gradient(135deg, #f0ad4e, #ec971f); }
+
+/* Progress Bar */
+#progressContainer { width: 100%; background-color: #ddd; border-radius: 10px; overflow: hidden; }
+#progressBar { height: 20px; background-color: var(--success-color); text-align: center; line-height: 20px; color: white; width: 0%; transition: width 0.3s; }
+
+/* Mobile Layout */
+@media (max-width: 768px) {
+    .container { width: 95%; padding: 1rem; }
+    h1 { font-size: 1.8rem; }
+    
+    .gridjs-wrapper { overflow-x: auto; }
+    
+    .action-buttons { flex-direction: row; justify-content: space-around; }
+    .action-buttons .btn.small { flex: 1; margin: 2px; }
+    
+    .toolbar { flex-direction: column; }
+    .toolbar .btn { width: 100%; margin: 5px 0; }
+    
+    .modal-content { margin: 20% auto; width: 95%; }
+}

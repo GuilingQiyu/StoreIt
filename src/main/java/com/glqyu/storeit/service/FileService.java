@@ -1,16 +1,5 @@
 package com.glqyu.storeit.service;
 
-import com.glqyu.storeit.config.AppProperties;
-import com.glqyu.storeit.dto.FileListResponse;
-import com.glqyu.storeit.mapper.FileMetadataMapper;
-import com.glqyu.storeit.model.FileMetadata;
-import com.glqyu.storeit.model.User;
-import org.apache.commons.io.FilenameUtils;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,6 +10,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.glqyu.storeit.config.AppProperties;
+import com.glqyu.storeit.dto.FileListResponse;
+import com.glqyu.storeit.mapper.FileMetadataMapper;
+import com.glqyu.storeit.model.FileMetadata;
+import com.glqyu.storeit.model.User;
 
 @Service
 public class FileService {
@@ -184,5 +185,84 @@ public class FileService {
         } else {
             metaMapper.insert(m);
         }
+    }
+
+    public void delete(User user, String path) throws IOException {
+        if (!isSafePath(user, path)) throw new IOException("unsafe path");
+        Path base = getUserRoot(user);
+        Path target = base.resolve(path).normalize();
+        
+        if (!Files.exists(target)) throw new IOException("not found");
+        
+        if (Files.isDirectory(target)) {
+            try (java.util.stream.Stream<Path> walk = Files.walk(target)) {
+                walk.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+            }
+            metaMapper.deleteByPath(user.getId(), path);
+            metaMapper.deleteByPathPattern(user.getId(), path + "/%");
+        } else {
+            Files.delete(target);
+            metaMapper.deleteByPath(user.getId(), path);
+        }
+    }
+
+    public void rename(User user, String path, String newName) throws IOException {
+        if (!isSafePath(user, path)) throw new IOException("unsafe path");
+        if (newName.contains("/") || newName.contains("\\")) throw new IOException("invalid name");
+        
+        Path base = getUserRoot(user);
+        Path source = base.resolve(path).normalize();
+        if (!Files.exists(source)) throw new IOException("not found");
+        
+        Path dest = source.getParent().resolve(newName);
+        if (Files.exists(dest)) throw new IOException("target exists");
+        
+        Files.move(source, dest);
+        
+        String parent = path.contains("/") ? path.substring(0, path.lastIndexOf('/')) : "";
+        String newPath = (parent.isEmpty()) ? newName : parent + "/" + newName;
+
+        if (Files.isDirectory(dest)) {
+             metaMapper.renameFolderChildren(user.getId(), path, newPath, path + "/%");
+             FileMetadata m = metaMapper.findByUserIdAndPath(user.getId(), path).orElse(null);
+             if (m != null) {
+                 m.setName(newName);
+                 m.setPath(newPath);
+                 metaMapper.updatePathInfo(m);
+             }
+        } else {
+             FileMetadata m = metaMapper.findByUserIdAndPath(user.getId(), path).orElse(null);
+             if (m != null) {
+                 m.setName(newName);
+                 m.setPath(newPath);
+                 metaMapper.updatePathInfo(m);
+             }
+        }
+    }
+    
+    public void createFolder(User user, String path) throws IOException {
+        if (!isSafePath(user, path)) throw new IOException("unsafe path");
+        Path base = getUserRoot(user);
+        Path target = base.resolve(path).normalize();
+        if (Files.exists(target)) throw new IOException("exists");
+        Files.createDirectories(target);
+        
+        FileMetadata m = new FileMetadata();
+        m.setUserId(user.getId());
+        m.setPath(path);
+        m.setName(FilenameUtils.getName(path));
+        m.setDirectory(true);
+        m.setSize(0);
+        m.setLastModified(System.currentTimeMillis() / 1000);
+        
+        String parent = "";
+        if (path.contains("/")) {
+            parent = path.substring(0, path.lastIndexOf('/'));
+        }
+        m.setParentPath(parent);
+        
+        metaMapper.insert(m);
     }
 }

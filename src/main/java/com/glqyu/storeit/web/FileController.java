@@ -1,25 +1,31 @@
 package com.glqyu.storeit.web;
 
-import com.glqyu.storeit.dto.ApiResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.glqyu.storeit.dto.FileListResponse;
 import com.glqyu.storeit.model.FileShare;
 import com.glqyu.storeit.model.User;
 import com.glqyu.storeit.service.AuthService;
 import com.glqyu.storeit.service.FileService;
 import com.glqyu.storeit.service.ShareService;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class FileController {
@@ -81,6 +87,43 @@ public class FileController {
                     .body(r);
         } catch (Exception e) {
             return ResponseEntity.status(404).build();
+        }
+    }
+
+    @PostMapping("/api/file/delete")
+    public ResponseEntity<?> deleteFile(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String path = payload.get("path");
+            fileService.delete(user, path);
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/file/rename")
+    public ResponseEntity<?> renameFile(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String path = payload.get("path");
+            String newName = payload.get("newName");
+            fileService.rename(user, path, newName);
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/api/folder/create")
+    public ResponseEntity<?> createFolder(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String path = payload.get("path");
+            fileService.createFolder(user, path);
+            return ResponseEntity.ok(Map.of("success", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 

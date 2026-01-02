@@ -1,10 +1,16 @@
 package com.glqyu.storeit.mapper;
 
-import com.glqyu.storeit.model.FileMetadata;
-import org.apache.ibatis.annotations.*;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+
+import com.glqyu.storeit.model.FileMetadata;
 
 @Mapper
 public interface FileMetadataMapper {
@@ -20,6 +26,12 @@ public interface FileMetadataMapper {
 
     @Update("UPDATE file_metadata SET size = #{size}, last_modified = #{lastModified}, content_type = #{contentType} WHERE id = #{id}")
     int update(FileMetadata meta);
+
+    @Update("UPDATE file_metadata SET path = #{path}, name = #{name}, parent_path = #{parentPath} WHERE id = #{id}")
+    int updatePathInfo(FileMetadata meta);
+
+    @Update("UPDATE file_metadata SET path = #{newPath} || SUBSTR(path, LENGTH(#{oldPath}) + 1), parent_path = #{newPath} || SUBSTR(parent_path, LENGTH(#{oldPath}) + 1) WHERE user_id = #{userId} AND path LIKE #{oldPathPattern}")
+    int renameFolderChildren(long userId, String oldPath, String newPath, String oldPathPattern);
 
     @Delete("DELETE FROM file_metadata WHERE user_id = #{userId} AND path = #{path}")
     int deleteByPath(long userId, String path);
