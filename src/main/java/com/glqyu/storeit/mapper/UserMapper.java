@@ -7,10 +7,13 @@ import java.util.Optional;
 
 @Mapper
 public interface UserMapper {
-    @Select("SELECT id, username, password_hash as passwordHash, created_at as createdAt FROM users WHERE username = #{username}")
+    @Select("SELECT id, username, password_hash as passwordHash, created_at as createdAt, role, storage_quota as storageQuota FROM users WHERE username = #{username}")
     Optional<User> findByUsername(String username);
 
-    @Insert("INSERT INTO users(username, password_hash, created_at) VALUES(#{username}, #{passwordHash}, #{createdAt})")
+    @Select("SELECT id, username, password_hash as passwordHash, created_at as createdAt, role, storage_quota as storageQuota FROM users WHERE id = #{id}")
+    Optional<User> findById(Long id);
+
+    @Insert("INSERT INTO users(username, password_hash, created_at, role, storage_quota) VALUES(#{username}, #{passwordHash}, #{createdAt}, #{role}, #{storageQuota})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(User user);
 

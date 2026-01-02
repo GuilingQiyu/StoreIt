@@ -7,6 +7,8 @@ public class FileShare {
     private Long expiry; // epoch seconds, nullable
     private Integer maxDownloads; // null or 0 for unlimited
     private Integer downloads;
+    private Long userId;
+    private Long createdAt;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -25,4 +27,10 @@ public class FileShare {
 
     public Integer getDownloads() { return downloads; }
     public void setDownloads(Integer downloads) { this.downloads = downloads; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+
+    public Long getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Long createdAt) { this.createdAt = createdAt; }
 }

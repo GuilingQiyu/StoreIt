@@ -5,6 +5,8 @@ public class User {
     private String username;
     private String passwordHash;
     private long createdAt; // epoch seconds
+    private String role; // USER, ADMIN
+    private long storageQuota; // bytes, 0 = unlimited
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -17,4 +19,10 @@ public class User {
 
     public long getCreatedAt() { return createdAt; }
     public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
+    public long getStorageQuota() { return storageQuota; }
+    public void setStorageQuota(long storageQuota) { this.storageQuota = storageQuota; }
 }

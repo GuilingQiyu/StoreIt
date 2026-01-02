@@ -75,7 +75,6 @@ function loadFileList(path=''){
         language: { 'search': { 'placeholder': '搜索...' }, 'pagination': { 'previous': '上一页', 'next': '下一页', 'showing': '显示', 'results': ()=>'条' } }
       });
       grid.render(gridEl);
-      // Grid.js 会在分页/排序时重渲染，使用全局事件委托处理按钮点击
     } else {
       // Fallback simple list
       gridEl.innerHTML = items.map(row=>`<div class="file-item ${row.isDirectory?'directory':'file'}">
@@ -83,9 +82,8 @@ function loadFileList(path=''){
         ${row.isDirectory? `<a href="#" onclick="loadFileList('${row.path}');return false;">${row.name}</a>` : `<a href="/storage/${row.path}" target="_blank">${row.name}</a>`}
         <div class="file-size">${row.sizeText}</div>
         <div class="file-date">${row.modifiedText}</div>
-        <div class="share-form">${row.isDirectory?'':`<button class="btn small" data-path="${row.path}">生成分享</button>`}</div>
+        <div class="share-form">${row.isDirectory?'':`<button class="btn small share-btn" data-path="${row.path}">生成分享</button>`}</div>
       </div>`).join('');
-      // 使用全局事件委托，无需显式绑定
     }
 
     setupUploadForm();
@@ -95,26 +93,94 @@ function loadFileList(path=''){
 // 使用事件委托处理分享按钮，兼容 Grid.js 的重渲染
 function bindGlobalDelegates(){
   if(window._storeitDelegatesBound) return; window._storeitDelegatesBound = true;
-  document.addEventListener('click', async (e)=>{
+  document.addEventListener('click', (e)=>{
     const btn = e.target.closest('.share-btn');
     if(btn){
       e.preventDefault();
       const path = btn.getAttribute('data-path');
-      const body = { filePath: path, expireDays: 30, maxDownloads: null };
-      try{
-        const res = await fetch('/api/share',{ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
-        const data = await res.json();
-        let holder = btn.closest('.share-form');
-        if(!holder){ holder = btn.parentElement; }
-        let node = holder.querySelector('.share-result');
-        if(!node){ node = document.createElement('div'); node.className = 'share-result'; holder.appendChild(node); }
-        if(res.ok && data.success){ const url = location.origin + data.data.url; node.innerHTML = `分享链接: <a href="${data.data.url}" target="_blank">${url}</a>`; }
-        else{ node.innerHTML = `<span class="error">生成失败: ${(data.message||'错误')}</span>`; }
-      }catch(err){ console.error('share failed', err); }
+      openShareModal(path);
     }
   });
 }
 
+function openShareModal(path) {
+    const modal = document.getElementById('shareModal');
+    const nameSpan = document.getElementById('modalFileName');
+    const pathInput = document.getElementById('modalFilePath');
+    const resultDiv = document.getElementById('shareResult');
+    
+    if(!modal || !nameSpan || !pathInput) return;
+    
+    nameSpan.textContent = path.split('/').pop();
+    pathInput.value = path;
+    resultDiv.innerHTML = '';
+    modal.style.display = "block";
+}
+
+function setupShareModal() {
+    const modal = document.getElementById('shareModal');
+    if(!modal) return;
+    
+    const closeBtn = modal.querySelector('.close');
+    const expireSelect = document.getElementById('expireSelect');
+    const customExpire = document.getElementById('customExpire');
+    const createBtn = document.getElementById('createShareBtn');
+    
+    if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+    window.onclick = (event) => { if (event.target == modal) modal.style.display = "none"; };
+    
+    if(expireSelect) {
+        expireSelect.onchange = () => {
+            if(expireSelect.value === 'custom') {
+                customExpire.style.display = 'block';
+            } else {
+                customExpire.style.display = 'none';
+            }
+        };
+    }
+    
+    if(createBtn) {
+        createBtn.onclick = async () => {
+            const path = document.getElementById('modalFilePath').value;
+            let expireHours = expireSelect.value;
+            if(expireHours === 'custom') {
+                expireHours = customExpire.value;
+                if(!expireHours || expireHours <= 0) {
+                    alert('请输入有效的小时数');
+                    return;
+                }
+            }
+            
+            const body = { 
+                filePath: path, 
+                expireHours: parseInt(expireHours), 
+                maxDownloads: null 
+            };
+            
+            const resultDiv = document.getElementById('shareResult');
+            resultDiv.innerHTML = '生成中...';
+            
+            try {
+                const res = await fetch('/api/share', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify(body)
+                });
+                const data = await res.json();
+                
+                if(res.ok && data.success) {
+                    const url = location.origin + data.data.url;
+                    resultDiv.innerHTML = `<p class="success">分享链接已生成:</p><input type="text" value="${url}" style="width:100%;padding:5px;" readonly onclick="this.select()"\>`;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">生成失败: ${data.message || '未知错误'}</p>`;
+                }
+            } catch(err) {
+                resultDiv.innerHTML = `<p class="error">请求失败: ${err.message}</p>`;
+            }
+        };
+    }
+}
+
 function setupUploadForm(){ const form=document.getElementById('uploadForm'); if(!form) return; form.addEventListener('submit',e=>{ e.preventDefault(); const fd=new FormData(form); const st=document.getElementById('uploadStatus'); st.innerHTML='上传中...'; fetch('/api/upload',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{ if(d.error){ st.innerHTML=`<p class="error">上传失败: ${d.error}</p>`; } else { st.innerHTML=`<p class="success">文件 ${d.file.name} 上传成功!</p>`; loadFileList(fd.get('directory')); } }).catch(err=>{ st.innerHTML=`<p class="error">上传错误: ${err.message}</p>`; }); }); }
 
-document.addEventListener('DOMContentLoaded', function(){ initFloatingBackground(); setupLoginForm(); setupRefreshButton(); loadUserStatus(); bindGlobalDelegates(); if(document.getElementById('fileList')){ loadFileList(); } });
+document.addEventListener('DOMContentLoaded', function(){ initFloatingBackground(); setupLoginForm(); setupRefreshButton(); loadUserStatus(); bindGlobalDelegates(); setupShareModal(); if(document.getElementById('fileList')){ loadFileList(); } });

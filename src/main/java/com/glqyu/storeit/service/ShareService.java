@@ -2,6 +2,7 @@ package com.glqyu.storeit.service;
 
 import com.glqyu.storeit.mapper.FileShareMapper;
 import com.glqyu.storeit.model.FileShare;
+import com.glqyu.storeit.model.User;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -22,11 +23,20 @@ public class ShareService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(buf);
     }
 
-    public FileShare createShare(String filePath, Integer expireDays, Integer maxDownloads) {
+    public FileShare createShare(User user, String filePath, Integer expireHours, Integer maxDownloads) {
         FileShare s = new FileShare();
+        s.setUserId(user.getId());
         s.setFilePath(filePath);
         s.setToken(createToken(12));
-        s.setExpiry(expireDays == null ? null : Instant.now().plus(expireDays, ChronoUnit.DAYS).getEpochSecond());
+        long now = Instant.now().getEpochSecond();
+        s.setCreatedAt(now);
+        
+        if (expireHours != null && expireHours == -1) {
+            s.setExpiry(null);
+        } else {
+            s.setExpiry(now + (expireHours == null ? 30 * 24 : expireHours) * 3600L);
+        }
+        
         s.setMaxDownloads(maxDownloads);
         s.setDownloads(0);
         mapper.insert(s);

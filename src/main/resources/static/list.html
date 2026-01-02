@@ -18,5 +18,33 @@
   <div id="fileList"></div>
   <p><a href="/" class="btn">返回首页</a></p>
 </div>
+
+<!-- Share Modal -->
+<div id="shareModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>生成分享链接</h2>
+    <div class="form-group">
+        <label>文件: <span id="modalFileName"></span></label>
+        <input type="hidden" id="modalFilePath">
+    </div>
+    <div class="form-group">
+        <label for="expireSelect">有效期:</label>
+        <select id="expireSelect">
+            <option value="24">1天</option>
+            <option value="168">7天</option>
+            <option value="720">30天</option>
+            <option value="-1">永久</option>
+            <option value="custom">自定义(小时)</option>
+        </select>
+        <input type="number" id="customExpire" placeholder="输入小时数" style="display:none; margin-top:5px;" min="1">
+    </div>
+    <div class="form-group">
+        <button id="createShareBtn" class="btn">生成链接</button>
+    </div>
+    <div id="shareResult" class="share-result"></div>
+  </div>
+</div>
+
 </body>
 </html>

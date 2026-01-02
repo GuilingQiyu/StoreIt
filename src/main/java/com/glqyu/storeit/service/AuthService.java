@@ -32,6 +32,10 @@ public class AuthService {
         return userMapper.findByUsername(username);
     }
 
+    public Optional<User> findUserById(Long id) {
+        return userMapper.findById(id);
+    }
+
     public boolean checkPassword(User user, String raw) {
         return BCrypt.checkpw(raw, user.getPasswordHash());
     }

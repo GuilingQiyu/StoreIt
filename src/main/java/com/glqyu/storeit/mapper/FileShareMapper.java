@@ -7,10 +7,10 @@ import java.util.Optional;
 
 @Mapper
 public interface FileShareMapper {
-    @Select("SELECT id, file_path as filePath, token, expiry, max_downloads as maxDownloads, downloads FROM file_shares WHERE token = #{token}")
+    @Select("SELECT id, file_path as filePath, token, expiry, max_downloads as maxDownloads, downloads, user_id as userId, created_at as createdAt FROM file_shares WHERE token = #{token}")
     Optional<FileShare> findByToken(String token);
 
-    @Insert("INSERT INTO file_shares(file_path, token, expiry, max_downloads, downloads) VALUES(#{filePath}, #{token}, #{expiry}, #{maxDownloads}, #{downloads})")
+    @Insert("INSERT INTO file_shares(file_path, token, expiry, max_downloads, downloads, user_id, created_at) VALUES(#{filePath}, #{token}, #{expiry}, #{maxDownloads}, #{downloads}, #{userId}, #{createdAt})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(FileShare share);
 
