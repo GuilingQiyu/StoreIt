@@ -1,10 +1,10 @@
-# StoreIt — File Service (v1.2.0)
+# StoreIt — File Service 
 
 [中文](./README.md) | English: 
 
 A lightweight file storage and sharing service built with Spring Boot 3 (JDK 21) and SQLite. Provides login sessions, browse/upload/download, share links, security headers, optional HTTPS, and externalized admin credentials.
 
-Version log:[Version.md](./Version.md)
+[Version log](./Version.md)
 
 Defaults:
 - Port: 59898
