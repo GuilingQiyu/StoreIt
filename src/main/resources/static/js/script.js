@@ -15,7 +15,7 @@ function setupLoginForm(){
       const res=await fetch('/api/login',{method:'POST',body:fd});
       const data=await res.json();
       msg.style.display='block'; msg.textContent=data.message; msg.className='message '+(res.ok?'success':'error');
-      if(res.ok){ setTimeout(()=>{ window.location.href='/list'; },800); }
+      if(res.ok){ setTimeout(()=>{ window.location.href='/'; },800); }
     }catch(err){ msg.style.display='block'; msg.className='message error'; msg.textContent='登录请求失败'; }
   });
 }
@@ -69,6 +69,14 @@ let selectedFileItem = null;
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', function(){ 
+    // Auth Redirect Logic
+    const path = window.location.pathname;
+    if (path === '/login' || path === '/login.html') {
+        fetch('/api/user/status').then(r=>r.json()).then(d=>{ if(d.logged_in) window.location.href='/'; });
+    } else if (path === '/' || path === '/list' || path === '/list.html') {
+        fetch('/api/user/status').then(r=>r.json()).then(d=>{ if(!d.logged_in) window.location.href='/login'; });
+    }
+
     initFloatingBackground(); 
     setupLoginForm(); 
     setupRefreshButton(); 
