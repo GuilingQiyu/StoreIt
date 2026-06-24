@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -52,7 +51,13 @@ public class ShareService {
         return Optional.of(s);
     }
 
-    public void markDownloaded(long id) { mapper.incrementDownloads(id); }
+    /**
+     * 原子化消费一次下载额度。返回 true 表示成功（已自增下载计数）；
+     * 返回 false 表示并发竞争下已过期或达到下载上限，不应继续提供文件。
+     */
+    public boolean consumeDownload(long id) {
+        return mapper.consumeDownload(id, Instant.now().getEpochSecond()) > 0;
+    }
 
     public int cleanup() { return mapper.deleteExpiredOrMaxed(Instant.now().getEpochSecond()); }
 }

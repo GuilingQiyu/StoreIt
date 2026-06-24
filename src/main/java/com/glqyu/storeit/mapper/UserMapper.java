@@ -19,4 +19,7 @@ public interface UserMapper {
 
     @Update("UPDATE users SET password_hash = #{passwordHash} WHERE username = #{username}")
     int updatePassword(User user);
+
+    @Update("UPDATE users SET role = #{role} WHERE username = #{username}")
+    int updateRole(@Param("username") String username, @Param("role") String role);
 }

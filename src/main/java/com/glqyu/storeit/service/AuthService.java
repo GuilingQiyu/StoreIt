@@ -8,11 +8,13 @@ import com.glqyu.storeit.model.User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,12 +49,15 @@ public class AuthService {
         SessionRecord r = new SessionRecord();
         r.setId(sid); r.setUsername(username); r.setCreatedAt(now); r.setExpiresAt(exp);
         sessionMapper.insert(r);
-        Cookie cookie = new Cookie(props.getSession().getCookieName(), sid);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge((int) (exp - now));
-        // In production with HTTPS, setSecure(true)
-        response.addCookie(cookie);
+        // SameSite=Lax 阻止跨站请求携带会话 Cookie，缓解 CSRF；Secure 跟随 SSL 配置开启
+        ResponseCookie cookie = ResponseCookie.from(props.getSession().getCookieName(), sid)
+                .httpOnly(true)
+                .secure(props.isSslEnabled())
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(Duration.ofSeconds(exp - now))
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return sid;
     }
 
@@ -61,10 +66,14 @@ public class AuthService {
         if (sid != null) {
             sessionMapper.deleteById(sid);
         }
-        Cookie cookie = new Cookie(props.getSession().getCookieName(), "");
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(props.getSession().getCookieName(), "")
+                .httpOnly(true)
+                .secure(props.isSslEnabled())
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(0)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     public boolean requireSession(HttpServletRequest request, HttpServletResponse response) {

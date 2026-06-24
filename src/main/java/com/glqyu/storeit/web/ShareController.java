@@ -9,15 +9,17 @@ import com.glqyu.storeit.service.FileService;
 import com.glqyu.storeit.service.ShareService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class ShareController {
+    private static final Logger log = LoggerFactory.getLogger(ShareController.class);
     private final ShareService shareService;
     private final FileService fileService;
     private final AuthService authService;
@@ -41,7 +43,8 @@ public class ShareController {
             FileShare s = shareService.createShare(user, req.getFilePath(), req.getExpireHours(), req.getMaxDownloads());
             return ResponseEntity.ok(ApiResponse.ok("分享链接已生成", Map.of("token", s.getToken(), "url", "/d/" + s.getToken())));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(ApiResponse.fail("生成分享失败: " + e.getMessage()));
+            log.warn("Create share failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(ApiResponse.fail("生成分享失败"));
         }
     }
 }

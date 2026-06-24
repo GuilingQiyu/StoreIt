@@ -14,8 +14,12 @@ public interface FileShareMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(FileShare share);
 
-    @Update("UPDATE file_shares SET downloads = downloads + 1 WHERE id = #{id}")
-    int incrementDownloads(long id);
+    // 原子化消费一次下载：仅当未过期且未达上限时才自增，返回受影响行数（0 表示不可下载）
+    @Update("UPDATE file_shares SET downloads = downloads + 1 "
+            + "WHERE id = #{id} "
+            + "AND (expiry IS NULL OR expiry >= #{now}) "
+            + "AND (max_downloads IS NULL OR max_downloads <= 0 OR downloads < max_downloads)")
+    int consumeDownload(@Param("id") long id, @Param("now") long now);
 
     @Delete("DELETE FROM file_shares WHERE (expiry IS NOT NULL AND expiry < #{now}) OR (max_downloads IS NOT NULL AND downloads >= max_downloads)")
     int deleteExpiredOrMaxed(long now);

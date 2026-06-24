@@ -60,6 +60,8 @@ public class StoreitApplication {
 					u.setUsername(props.getDefaultAdmin().getUsername());
 					u.setPasswordHash(BCrypt.hashpw(props.getDefaultAdmin().getPassword(), BCrypt.gensalt()));
 					u.setCreatedAt(Instant.now().getEpochSecond());
+					u.setRole("ADMIN");
+					u.setStorageQuota(0L); // 0 = 不限额
 					userMapper.insert(u);
 				} else {
 					// if config password has changed, update hash to keep in sync
@@ -67,6 +69,10 @@ public class StoreitApplication {
 					if (!BCrypt.checkpw(cfgPass, existing.getPasswordHash())) {
 						existing.setPasswordHash(BCrypt.hashpw(cfgPass, BCrypt.gensalt()));
 						userMapper.updatePassword(existing);
+					}
+					// backfill ADMIN role for pre-existing default admin (created before role support)
+					if (existing.getRole() == null || existing.getRole().isBlank()) {
+						userMapper.updateRole(existing.getUsername(), "ADMIN");
 					}
 				}
 				// cleanup expired sessions

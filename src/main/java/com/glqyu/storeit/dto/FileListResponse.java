@@ -17,6 +17,7 @@ public class FileListResponse {
         private long size;
         private long modifiedTime;
         private String path;
+        private String contentType;
 
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
@@ -28,5 +29,7 @@ public class FileListResponse {
         public void setModifiedTime(long modifiedTime) { this.modifiedTime = modifiedTime; }
         public String getPath() { return path; }
         public void setPath(String path) { this.path = path; }
+        public String getContentType() { return contentType; }
+        public void setContentType(String contentType) { this.contentType = contentType; }
     }
 }

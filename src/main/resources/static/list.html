@@ -53,6 +53,7 @@
                     <p><strong>修改时间:</strong> <span id="detailModified">-</span></p>
                 </div>
                 <div class="detail-actions">
+                    <button class="btn small" id="btnPreview" style="display:none;">预览</button>
                     <button class="btn small" id="btnDownload">下载</button>
                     <button class="btn small" id="btnShare">分享</button>
                     <button class="btn small" id="btnRename">重命名</button>
@@ -95,6 +96,7 @@
 
 <!-- Context Menu -->
 <div id="context-menu" class="context-menu">
+    <div class="menu-item" data-action="preview"><i class="fas fa-eye"></i> 预览</div>
     <div class="menu-item" data-action="download"><i class="fas fa-download"></i> 下载</div>
     <div class="menu-item" data-action="share"><i class="fas fa-share-alt"></i> 创建分享链接</div>
     <div class="menu-item" data-action="details"><i class="fas fa-info-circle"></i> 详细信息</div>

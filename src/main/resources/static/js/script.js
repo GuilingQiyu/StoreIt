@@ -24,6 +24,18 @@ function setupRefreshButton(){ const b=document.getElementById('refreshBtn'); if
 
 function formatFileSize(bytes){ if(bytes===0) return '0 Bytes'; const k=1024; const sizes=['Bytes','KB','MB','GB','TB']; const i=Math.floor(Math.log(bytes)/Math.log(k)); return (bytes/Math.pow(k,i)).toFixed(2)+' '+sizes[i]; }
 
+// 预览支持的扩展名
+const PREVIEW_IMAGE_EXTS = ['jpg','jpeg','png','gif','webp','bmp','svg'];
+const PREVIEW_VIDEO_EXTS = ['mp4','webm','ogg','ogv','mov'];
+const PREVIEW_TEXT_EXTS = ['txt','log','md','csv','ini','conf','yml','yaml','json','xml','html','htm','css','js','java','py','c','cpp','h','go','rs','sh','sql'];
+
+function getFileExt(name){ return (name.includes('.') ? name.split('.').pop() : '').toLowerCase(); }
+
+function isPreviewable(name){
+    const ext = getFileExt(name);
+    return PREVIEW_IMAGE_EXTS.includes(ext) || PREVIEW_VIDEO_EXTS.includes(ext) || PREVIEW_TEXT_EXTS.includes(ext);
+}
+
 function loadUserStatus(){ 
     const el=document.getElementById('sidebarUser'); 
     if(!el) return; 
@@ -45,15 +57,22 @@ function loadStorageUsage() {
         .then(data => {
             const text = document.getElementById('storageText');
             const fill = document.getElementById('storageFill');
-            if(text && fill) {
-                const percent = (data.used / data.total) * 100;
-                text.textContent = `${formatFileSize(data.used)} / ${formatFileSize(data.total)}`;
-                fill.style.width = `${Math.min(percent, 100)}%`;
-                if(percent > 90) fill.style.backgroundColor = '#d9534f';
-                else if(percent > 70) fill.style.backgroundColor = '#f0ad4e';
-                else fill.style.backgroundColor = 'var(--primary-color)';
+            if(!text || !fill) return;
+            const total = data.total || 0;
+            const used = data.used || 0;
+            const percent = total > 0 ? (used / total) * 100 : 0;
+            // 普通用户不限额时只展示已用 + “无限制”；管理员/有配额时展示 已用/总量
+            if(data.unlimited && data.scope === 'user') {
+                text.textContent = `${formatFileSize(used)} / 无限制`;
+            } else {
+                text.textContent = `${formatFileSize(used)} / ${formatFileSize(total)}`;
             }
-        });
+            fill.style.width = `${Math.min(percent, 100)}%`;
+            if(percent > 90) fill.style.backgroundColor = '#d9534f';
+            else if(percent > 70) fill.style.backgroundColor = '#f0ad4e';
+            else fill.style.backgroundColor = 'var(--primary-color)';
+        })
+        .catch(() => {});
 }
 
 function toggleSidebar() {
@@ -194,6 +213,15 @@ function renderFileGrid(items) {
                 selectFile(item, card);
             }
         });
+
+        // Double click: 文件夹进入；可预览文件直接预览
+        card.addEventListener('dblclick', (e) => {
+            if(item.isDirectory) {
+                loadFileList(item.path);
+            } else if(isPreviewable(item.name)) {
+                previewFile(item.path, item.name);
+            }
+        });
         
         // Context Menu Events
         card.addEventListener('contextmenu', (e) => {
@@ -274,11 +302,21 @@ function showFileDetails(item) {
     }
     
     // Bind buttons
+    const btnPreview = document.getElementById('btnPreview');
     const btnDownload = document.getElementById('btnDownload');
     const btnShare = document.getElementById('btnShare');
     const btnRename = document.getElementById('btnRename');
     const btnDelete = document.getElementById('btnDelete');
-    
+
+    // 仅对可预览的文件显示预览按钮
+    if(btnPreview) {
+        if(!item.isDirectory && isPreviewable(item.name)) {
+            btnPreview.style.display = 'inline-block';
+            btnPreview.onclick = () => previewFile(item.path, item.name);
+        } else {
+            btnPreview.style.display = 'none';
+        }
+    }
     // Clone nodes to remove old event listeners or just reassign onclick
     btnDownload.onclick = () => window.open(`/storage/${item.path}`, '_blank');
     btnShare.onclick = () => openShareModal(item.path);
@@ -329,6 +367,11 @@ function showContextMenu(x, y, item) {
 
 function handleMenuAction(action, item) {
     switch(action) {
+        case 'preview':
+            if(item.isDirectory) loadFileList(item.path);
+            else if(isPreviewable(item.name)) previewFile(item.path, item.name);
+            else window.open(`/storage/${item.path}`, '_blank');
+            break;
         case 'download':
             if(item.isDirectory) alert('暂不支持文件夹下载');
             else window.open(`/storage/${item.path}`, '_blank');
@@ -599,17 +642,43 @@ function renameFile(path, oldName) {
 }
 
 function previewFile(path, name) {
-    const ext = name.split('.').pop().toLowerCase();
-    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-    const videoExts = ['mp4', 'webm', 'ogg', 'mov'];
-    
-    if (imageExts.includes(ext)) {
-        openPreviewModal(`<img src="/storage/${path}" style="max-width:100%; max-height:80vh;">`, name);
-    } else if (videoExts.includes(ext)) {
-        openPreviewModal(`<video controls style="max-width:100%; max-height:80vh;"><source src="/storage/${path}" type="video/${ext}">您的浏览器不支持视频播放。</video>`, name);
+    const ext = getFileExt(name);
+    const src = `/api/preview?path=${encodeURIComponent(path)}`;
+
+    if (PREVIEW_IMAGE_EXTS.includes(ext)) {
+        openPreviewModal(`<img src="${src}" alt="${escapeHtml(name)}" style="max-width:100%; max-height:78vh; object-fit:contain;">`, name);
+    } else if (PREVIEW_VIDEO_EXTS.includes(ext)) {
+        openPreviewModal(`<video controls autoplay style="max-width:100%; max-height:78vh;"><source src="${src}">您的浏览器不支持视频播放。</video>`, name);
+    } else if (PREVIEW_TEXT_EXTS.includes(ext)) {
+        openPreviewModal('<p style="color:#666;">加载中...</p>', name);
+        fetch(src).then(r => {
+            if(!r.ok) throw new Error('无法加载');
+            return r.text();
+        }).then(txt => {
+            // 截断超大文本，避免卡顿
+            const MAX = 200000;
+            let truncated = false;
+            if(txt.length > MAX){ txt = txt.slice(0, MAX); truncated = true; }
+            const note = truncated ? '<p style="color:#f0ad4e; text-align:left;">内容过大，仅显示前 200,000 字符。</p>' : '';
+            const content = document.getElementById('previewContent');
+            if(content){
+                content.innerHTML = note;
+                const pre = document.createElement('pre');
+                pre.style.cssText = 'text-align:left; max-height:70vh; overflow:auto; white-space:pre-wrap; word-break:break-word; background:#f7f7f9; padding:12px; border-radius:8px; font-size:13px;';
+                pre.textContent = txt; // 用 textContent 防 XSS
+                content.appendChild(pre);
+            }
+        }).catch(err => {
+            const content = document.getElementById('previewContent');
+            if(content) content.innerHTML = `<p class="error">预览失败: ${escapeHtml(err.message)}</p>`;
+        });
     } else {
         window.open(`/storage/${path}`, '_blank');
     }
+}
+
+function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
 function openPreviewModal(content, title) {
