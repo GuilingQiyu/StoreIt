@@ -1,0 +1,43 @@
+name: Release
+
+# 推送形如 v1.3.2 的标签时触发；也支持在 Actions 页面手动运行
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 创建 Release / 上传产物需要写权限
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build (skip tests)
+        run: ./mvnw -B -ntp -DskipTests clean package
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p dist
+          # 仅取可运行的 fat jar，排除 *.jar.original
+          cp target/storeit-*.jar dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # 标签即版本；手动触发时 tag_name 为空则使用默认分支最新提交
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: dist/*.jar
