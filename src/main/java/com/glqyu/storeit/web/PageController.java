@@ -14,6 +14,18 @@ public class PageController {
     @GetMapping("/login")
     public String login() { return "forward:/static/login.html"; }
 
+    @GetMapping("/change-password")
+    public String changePassword() { return "forward:/static/change-password.html"; }
+
+    @GetMapping("/admin")
+    public String admin() { return "forward:/static/admin.html"; }
+
     @GetMapping("/list")
     public String list() { return "redirect:/"; }
+
+    @GetMapping("/404")
+    public String notFound() { return "forward:/static/404.html"; }
+
+    @GetMapping("/403")
+    public String forbidden() { return "forward:/static/403.html"; }
 }

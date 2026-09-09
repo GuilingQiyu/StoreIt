@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户管理 - 储之</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script defer src="/static/js/script.js"></script>
+</head>
+<body>
+<div class="floating-bg"></div>
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+<div class="admin-page">
+  <header class="admin-header">
+    <div>
+      <h1><i class="fas fa-users-cog"></i> 用户管理</h1>
+      <p class="subtitle">仅管理员可访问 · StoreIt 1.4</p>
+    </div>
+    <div class="admin-header-actions">
+      <a class="btn small" href="/">返回网盘</a>
+      <button class="btn small" id="adminLogoutBtn">退出</button>
+    </div>
+  </header>
+
+  <section class="admin-card">
+    <h2>创建用户</h2>
+    <form id="createUserForm" class="admin-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="newUsername">用户名</label>
+          <input id="newUsername" name="username" required pattern="[A-Za-z0-9_]{3,32}" placeholder="3–32 位字母数字下划线">
+        </div>
+        <div class="form-group">
+          <label for="newPassword">初始密码</label>
+          <input id="newPassword" name="password" type="password" required minlength="8" placeholder="至少 8 位">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="newRole">角色</label>
+          <select id="newRole" name="role">
+            <option value="USER" selected>USER</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="newQuota">配额（字节，0=不限）</label>
+          <input id="newQuota" name="storageQuota" type="number" min="0" value="0" step="1">
+          <p class="field-hint">快捷：1GB = 1073741824</p>
+        </div>
+      </div>
+      <button type="submit" class="btn">创建</button>
+    </form>
+  </section>
+
+  <section class="admin-card">
+    <div class="panel-toolbar">
+      <h2 style="margin:0;">用户列表</h2>
+      <button class="btn small" id="refreshUsersBtn"><i class="fas fa-sync"></i> 刷新</button>
+    </div>
+    <div id="usersTableWrap" class="table-wrap">
+      <p>加载中...</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>

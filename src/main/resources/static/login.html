@@ -7,22 +7,23 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <script defer src="/static/js/script.js"></script>
 </head>
-<body>
+<body class="login-page">
 <div class="floating-bg"></div>
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
 <div class="login-container">
     <h1>用户登录</h1>
-    <form id="loginForm">
+    <form id="loginForm" novalidate>
         <div class="input-group">
             <label for="username">用户名</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username" required autocomplete="username">
         </div>
         <div class="input-group">
             <label for="password">密码</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" required autocomplete="current-password">
         </div>
-        <button type="submit" class="btn">登录</button>
+        <button type="submit" class="btn" id="loginSubmitBtn">登录</button>
     </form>
-    <div id="messageArea" class="message" style="display: none;"></div>
+    <div id="messageArea" class="message" role="alert" aria-live="assertive" style="display: none;"></div>
     <footer>
         <p>
             <a href="/about" class="btn">关于</a>

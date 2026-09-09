@@ -12,18 +12,24 @@ import java.io.IOException;
 @Order(1)
 public class SecurityHeadersFilter implements Filter {
 
-    // 允许同源资源、内联脚本/样式（页面大量使用内联 handler）以及 FontAwesome CDN
+    /**
+     * CSP 说明（1.4.0）：
+     * - script-src 仅允许同源外部脚本（/static/js/*），页面不再依赖内联 onclick；
+     * - style-src 仍保留 'unsafe-inline'：列表/进度等大量动态 style 与 FontAwesome 共存，彻底外联成本过高；
+     * - FontAwesome 仍走 cdnjs。
+     */
     private static final String CONTENT_SECURITY_POLICY = String.join("; ",
             "default-src 'self'",
             "img-src 'self' data: blob:",
             "media-src 'self' blob:",
             "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com",
             "font-src 'self' https://cdnjs.cloudflare.com",
-            "script-src 'self' 'unsafe-inline'",
+            "script-src 'self'",
             "connect-src 'self'",
             "frame-ancestors 'self'",
             "object-src 'none'",
-            "base-uri 'self'");
+            "base-uri 'self'",
+            "form-action 'self'");
 
     private final AppProperties props;
 

@@ -561,3 +561,220 @@ footer { margin-top: 1rem; font-size: .9rem; color: var(--secondary-color); }
     
     .modal-content { margin: 20% auto; width: 95%; }
 }
+/* --- 1.4.0 UX: toasts, shares, admin --- */
+.toast-container {
+  position: fixed; top: 16px; right: 16px; z-index: 9999;
+  display: flex; flex-direction: column; gap: 8px; max-width: 360px;
+}
+.toast {
+  background: #333; color: #fff; padding: 10px 14px; border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.2); opacity: 1; transition: opacity .3s, transform .3s;
+  font-size: .9rem;
+}
+.toast.hide { opacity: 0; transform: translateY(-6px); }
+.toast-success { background: #2e7d32; }
+.toast-error { background: #c62828; }
+.toast-info { background: #455a64; }
+
+.empty-state-panel { text-align: center; margin-top: 50px; color: #666; }
+.empty-state-panel i { font-size: 48px; margin-bottom: 10px; display: block; color: #bbb; }
+.empty-state-panel .hint { font-size: .9rem; color: #999; margin-top: 6px; }
+
+.field-hint { font-size: .8rem; color: #888; margin: 4px 0 0; }
+.role-badge { font-size: .65rem; background: var(--primary-color); color: #fff; padding: 1px 6px; border-radius: 8px; vertical-align: middle; }
+
+.panel-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.checkbox-inline { font-size: .9rem; color: #555; display: inline-flex; align-items: center; gap: 6px; }
+
+.shares-list { display: flex; flex-direction: column; gap: 12px; }
+.share-card {
+  background: #fff; border-radius: 12px; padding: 14px 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06); border: 1px solid #eee;
+}
+.share-card.inactive { opacity: .75; background: #fafafa; }
+.share-path { font-weight: 600; margin-bottom: 8px; word-break: break-all; }
+.share-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: .85rem; color: #666; margin-bottom: 8px; }
+.share-status { font-weight: 600; }
+.share-status.ok { color: #2e7d32; }
+.share-status.bad { color: #c62828; }
+.share-url-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.share-url-input { flex: 1; min-width: 180px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; }
+
+.admin-page { max-width: 960px; margin: 24px auto; padding: 0 16px 40px; position: relative; z-index: 1; }
+.admin-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+.admin-header h1 { margin: 0; font-size: 1.8rem; color: var(--primary-color); }
+.admin-header .subtitle { color: #777; margin: 4px 0 0; }
+.admin-header-actions { display: flex; gap: 8px; }
+.admin-card {
+  background: rgba(255,255,255,.92); border-radius: 16px; padding: 20px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.08); margin-bottom: 20px;
+}
+.admin-form .form-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.admin-form .form-group { flex: 1; min-width: 200px; }
+.table-wrap { overflow-x: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.admin-table th, .admin-table td { border-bottom: 1px solid #eee; padding: 10px 8px; text-align: left; }
+.admin-table th { background: #f7f7fb; }
+.admin-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* --- 1.4.0 UX polish: modals, queue, FAB, dialogs, errors --- */
+.btn:disabled, .btn.loading {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none !important;
+  pointer-events: none;
+}
+
+.modal {
+  z-index: 2500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.modal.is-open { display: flex; }
+.modal-content {
+  margin: 0;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  max-width: 500px;
+  overflow: hidden;
+}
+.modal-content.modal-wide { max-width: 1000px; width: 80%; }
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+.modal-header h2 { margin: 0; font-size: 1.25rem; color: var(--primary-color); }
+.modal-header .close { float: none; line-height: 1; }
+.modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px 2px;
+  min-height: 0;
+}
+.modal-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  background: #fefefe;
+  position: sticky;
+  bottom: 0;
+}
+.modal-footer .btn { margin: 0; }
+.modal-danger-confirm { background: linear-gradient(135deg, #d9534f, #c9302c); }
+
+body.modal-open .upload-queue-panel {
+  z-index: 700;
+  opacity: 0.35;
+  pointer-events: none;
+}
+body.modal-open .fab-container { z-index: 700; }
+
+.upload-queue-panel {
+  z-index: 800;
+}
+.upload-queue-panel.hidden-empty {
+  display: none;
+}
+.queue-item.done-fade {
+  opacity: 0.55;
+}
+
+.breadcrumb-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.breadcrumb-row .breadcrumb {
+  flex: 1;
+  margin-bottom: 0;
+  min-width: 180px;
+}
+.btn-go-up {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.btn-go-up[hidden] { display: none !important; }
+
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.quick-actions .btn { margin: 0; }
+
+.fab-main { position: relative; }
+.fab-main-tip {
+  position: absolute;
+  right: 70px;
+  background: rgba(0,0,0,0.75);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.fab-main:hover .fab-main-tip,
+.fab-container.active .fab-main-tip { opacity: 1; }
+.fab-container.active .fab-label { opacity: 1; }
+.fab-label {
+  opacity: 0.95;
+  background: rgba(34, 34, 59, 0.88);
+}
+
+@media (max-width: 768px) {
+  .fab-label { display: block; }
+  .fab-main-tip { display: none; }
+  .quick-actions { width: 100%; }
+  .quick-actions .btn { flex: 1; text-align: center; }
+}
+
+body.login-page, body.error-page {
+  overflow: auto;
+  height: auto;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.error-container {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+}
+.error-container .error-code {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0 0 0.5rem;
+  line-height: 1;
+}
+.error-container .error-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+.error-container .error-actions .btn { margin: 0; }
+
+#messageArea.message { margin-top: 1rem; }

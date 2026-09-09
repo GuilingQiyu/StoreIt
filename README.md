@@ -11,23 +11,24 @@
 - 端口：59898
 - 数据库：`./data/storeit.db`（自动创建）
 - 存储根目录：`./storage/`
-- 默认管理员：`admin / authorized_users`（可通过外部配置覆盖）
+- 默认管理员：`admin / authorized_users`（**仅为开箱示例**；仍使用时强制改密，可通过外部配置覆盖）
 
 ## 功能一览
-- UI 页面：`/`、`/login`、`/list`（未登录访问云盘页面会由服务端直接重定向到 `/login`）
-- 认证与会话：`POST /api/login`、`POST /api/logout`、`GET /api/user/status`
+- UI 页面：`/`（文件列表）、`/login`、`/change-password`、`/admin`（管理员）、`/about`；未登录访问云盘页面由服务端重定向到 `/login`
+- 认证与会话：`POST /api/login`、`POST /api/logout`、`GET /api/user/status`、`POST /api/change-password`（弱口令强制改密）
 - 文件：`GET /api/files?path=...`、`POST /api/upload`（multipart）、受保护下载 `GET /storage/**`
 - 在线预览：`GET /api/preview?path=...`，内联返回图片 / 视频 / 纯文本，视频支持 HTTP Range 拖动定位
-- 分享直链：`POST /api/share` 生成分享，公开下载 `GET /d/{token}`（下载次数原子扣减，并发下不会超额）
+- 分享：创建 `POST /api/share`；列表 `GET /api/shares`；撤销 `DELETE /api/shares/{id}`；公开下载 `GET /d/{token}`（次数原子扣减）
+- 管理：`/api/admin/users*`、`/api/admin/shares`（ADMIN）；前端 `/admin` 可建用户、配额、启停账号
 - 存储用量：`GET /api/storage/usage`；普通用户展示个人目录实际占用与配额，管理员展示整盘容量
-- 安全：会话 Cookie 设置 `HttpOnly` / `SameSite=Lax`（启用 HTTPS 时附加 `Secure`）；`Content-Security-Policy` 与 `X-Content-Type-Options`、`X-Frame-Options`、`Referrer-Policy` 等响应头；`Strict-Transport-Security` 仅在 HTTPS 下下发；路径安全检查，防目录穿越
-- 配置：支持在 `src/main/resources/application.yml` 中配置；支持加载外部 `./config/admin.yml` 覆盖默认管理员凭据
+- 安全：会话 Cookie `HttpOnly` / `SameSite=Lax`（HTTPS 时 `Secure`）；CSP `script-src 'self'`；路径安全检查
+- 配置：`application.yml` + 外部 `./config/admin.yml`
 
 ## 快速开始
 前置要求：JDK 21、Maven
 
 - 构建：`mvn -DskipTests package`
-- 运行：`java -jar target/storeit-1.3.2.jar`
+- 运行：`java -jar target/storeit-1.4.0.jar`
 
 可选：在 `src/main/resources/application.yml` 调整配置；或通过外部文件覆盖（适用于发布 JAR 部署）：
 
@@ -61,7 +62,8 @@ spring:
 
 > ⚠️ **安全建议（务必修改默认凭据）**
 > 内置默认管理员 `admin / authorized_users` 仅为「开箱即用」，**严禁在生产/公网环境直接使用**。
-> 部署前请通过外部配置覆盖为强口令，应用启动时会自动用新口令重算 BCrypt 哈希并同步到数据库：
+> **1.4.0 起**：若库中口令仍为该示例弱口令，登录后只能访问改密页 / 健康检查，直至 `POST /api/change-password` 成功或通过外部配置设置**非弱**口令并重启同步。
+> 推荐部署方式——在 `config/admin.yml` 配置强口令（非示例值时启动会同步到数据库）：
 >
 > ```
 > # config/admin.yml
@@ -73,18 +75,31 @@ spring:
 >
 > 补充加固建议：
 > - **启用 HTTPS**：在 `config/application.yml` 配置 `server.ssl.*` 并设 `app.ssl-enabled: true`，会话 Cookie 会自动附加 `Secure`，并下发 HSTS。
-> - **置于反向代理之后**：由 Nginx/Caddy 终止 TLS 并按需做登录限流，弥补应用层暂未内置的登录速率限制。
-> - **设置用户配额**：普通用户的 `storage_quota`（字节，0=不限额）可用于约束单用户占用空间。
+> - **登录限流**：应用层已内置简易 IP 滑动窗口限流；置于反向代理后可再叠加一层，例如 Nginx：
+>   ```
+>   limit_req_zone $binary_remote_addr zone=storeit_login:10m rate=5r/m;
+>   location = /api/login {
+>       limit_req zone=storeit_login burst=5 nodelay;
+>       proxy_pass http://127.0.0.1:59898;
+>   }
+>   ```
+> - **用户配额**：普通用户 `storage_quota`（字节，0=不限额）在上传/建目录时强制校验；管理员按整盘可用空间，不受用户配额约束。
+> - **Actuator**：默认仅暴露 `GET /actuator/health`（无详情），勿随意扩大 `management.endpoints.web.exposure.include`。
 
 ### 路由与 API 说明
 - 页面：
-	- `GET /` -> `static/index.html`
+	- `GET /` -> `static/list.html`（网盘）
+	- `GET /about` -> `static/index.html`
 	- `GET /login` -> `static/login.html`
-	- `GET /list` -> `static/list.html`
+	- `GET /change-password` -> `static/change-password.html`
+	- `GET /admin` -> `static/admin.html`（需 ADMIN）
+	- `GET /list` -> 重定向到 `/`
 - 认证：
-	- `POST /api/login`（表单：username、password）
+	- `POST /api/login`（表单：username、password；成功时 `data.must_change_password` 指示是否需改密）
 	- `POST /api/logout`
-	- `GET /api/user/status`
+	- `GET /api/user/status`（含 `must_change_password`）
+	- `POST /api/change-password`（表单：currentPassword、newPassword；需登录）
+	- 页面：`GET /change-password`
 - 文件：
 	- `GET /api/files?path=...` — 列出目录内容
 	- `POST /api/upload` — 上传文件（multipart/form-data，字段名：file，可选 directory）
@@ -93,13 +108,26 @@ spring:
 	- `POST /api/file/delete`、`POST /api/file/rename`、`POST /api/folder/create` — 删除 / 重命名 / 新建文件夹
 	- `GET /api/storage/usage` — 存储用量（普通用户=个人占用/配额，管理员=整盘）
 - 分享：
-	- `POST /api/share` — 生成分享链接（请求体：`{"filePath":"...","expireHours":720,"maxDownloads":null}`，`expireHours=-1` 为永久）
-	- `GET /d/{token}` — 公开下载（受有效期/下载次数限制，次数原子扣减）
+	- `POST /api/share` — 生成分享（`filePath`、`expireHours`（-1=永久）、`maxDownloads`（null/0=不限））
+	- `GET /api/shares` — 当前用户分享列表（含剩余次数、是否有效）
+	- `DELETE /api/shares/{id}` — 撤销（所有者或 ADMIN）
+	- `GET /d/{token}` — 公开下载（有效期/次数，原子扣减）
+- 管理（ADMIN）：
+	- `GET /api/admin/users`、`POST /api/admin/users`（username/password/role/storageQuota）
+	- `POST /api/admin/users/{username}/quota`、`POST /api/admin/users/{username}/enabled`
+	- `GET /api/admin/shares` — 全站分享
+
+
+### 运维：备份、升级与健康检查
+- **备份**：停止写入或停服务后，一并备份 `./data/`（含 `storeit.db`）与 `./storage/`；配置目录 `./config/` 建议一并备份。
+- **升级到 1.4.0**：替换 jar 后启动即可；Flyway 会自动执行 `V3`（改密标记）与 `V4`（`users.enabled`）。升级前请先备份。弱默认口令管理员首次登录需改密。
+- **健康检查**：`GET /actuator/health`（默认无详情）；可用于进程探活。勿扩大 Actuator 暴露面。
+- **CSP 说明**：脚本已外置到 `/static/js/script.js`，CSP 使用 `script-src 'self'`；样式仍允许 `'unsafe-inline'`（列表/进度等动态 style + FontAwesome）。
 
 ### 数据库存储
 - SQLite 数据库：`./data/storeit.db`
 - 表：`users`、`sessions`、`file_shares`（初始由 Flyway `V1__init.sql` 创建）
-- 启动时会确保默认管理员存在；若配置中密码变更，会同步更新其哈希
+- 启动时会确保默认管理员存在；若外部配置为**非弱**口令且与库中不同则同步哈希；弱默认口令不会覆盖已改密的库记录
 
 ### HTTPS 与安全
 - 支持在 `server.ssl.*` 配置中启用证书（见 `application.yml` 注释）

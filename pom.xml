@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.glqyu</groupId>
 	<artifactId>storeit</artifactId>
-	<version>1.3.2</version>
+	<version>1.4.0</version>
 	<name>storeit</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>

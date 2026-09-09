@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,12 +40,42 @@ public class ShareController {
     public ResponseEntity<?> createShare(HttpServletRequest request, @Valid @RequestBody ShareRequest req) {
         try {
             User user = getCurrentUser(request);
-            if (!fileService.isSafePath(user, req.getFilePath())) return ResponseEntity.badRequest().body(ApiResponse.fail("无效路径"));
+            if (!fileService.isSafePath(user, req.getFilePath())) {
+                return ResponseEntity.badRequest().body(ApiResponse.fail("无效路径"));
+            }
             FileShare s = shareService.createShare(user, req.getFilePath(), req.getExpireHours(), req.getMaxDownloads());
-            return ResponseEntity.ok(ApiResponse.ok("分享链接已生成", Map.of("token", s.getToken(), "url", "/d/" + s.getToken())));
+            return ResponseEntity.ok(ApiResponse.ok("分享链接已生成", shareService.toView(s)));
         } catch (Exception e) {
             log.warn("Create share failed: {}", e.toString());
             return ResponseEntity.internalServerError().body(ApiResponse.fail("生成分享失败"));
+        }
+    }
+
+    /** 当前用户的分享列表（含已过期，便于管理）。 */
+    @GetMapping("/shares")
+    public ResponseEntity<?> myShares(HttpServletRequest request) {
+        try {
+            User user = getCurrentUser(request);
+            List<Map<String, Object>> list = shareService.toViewList(shareService.listByUser(user.getId()));
+            return ResponseEntity.ok(ApiResponse.ok("ok", list));
+        } catch (Exception e) {
+            log.warn("List shares failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(ApiResponse.fail("获取分享列表失败"));
+        }
+    }
+
+    @DeleteMapping("/shares/{id}")
+    public ResponseEntity<?> revokeShare(HttpServletRequest request, @PathVariable long id) {
+        try {
+            User user = getCurrentUser(request);
+            boolean ok = shareService.revoke(user, id);
+            if (!ok) return ResponseEntity.status(404).body(ApiResponse.fail("分享不存在"));
+            return ResponseEntity.ok(ApiResponse.ok("已撤销分享"));
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(ApiResponse.fail(e.getMessage()));
+        } catch (Exception e) {
+            log.warn("Revoke share failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(ApiResponse.fail("撤销失败"));
         }
     }
 }

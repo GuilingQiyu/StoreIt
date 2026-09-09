@@ -4,6 +4,7 @@ import com.glqyu.storeit.config.AppProperties;
 import com.glqyu.storeit.mapper.SessionMapper;
 import com.glqyu.storeit.mapper.UserMapper;
 import com.glqyu.storeit.model.User;
+import com.glqyu.storeit.service.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -54,21 +55,39 @@ public class StoreitApplication {
 				}
 
 				// ensure default admin exists
-				User existing = userMapper.findByUsername(props.getDefaultAdmin().getUsername()).orElse(null);
+				String cfgUser = props.getDefaultAdmin().getUsername();
+				String cfgPass = props.getDefaultAdmin().getPassword();
+				boolean cfgIsWeak = AuthService.isWeakDefaultPassword(cfgPass);
+				User existing = userMapper.findByUsername(cfgUser).orElse(null);
 				if (existing == null) {
 					User u = new User();
-					u.setUsername(props.getDefaultAdmin().getUsername());
-					u.setPasswordHash(BCrypt.hashpw(props.getDefaultAdmin().getPassword(), BCrypt.gensalt()));
+					u.setUsername(cfgUser);
+					u.setPasswordHash(BCrypt.hashpw(cfgPass, BCrypt.gensalt()));
 					u.setCreatedAt(Instant.now().getEpochSecond());
 					u.setRole("ADMIN");
 					u.setStorageQuota(0L); // 0 = 不限额
+					u.setMustChangePassword(cfgIsWeak);
+					u.setEnabled(true);
 					userMapper.insert(u);
+					if (cfgIsWeak) {
+						log.warn("Default admin created with documented weak password '{}'. "
+								+ "Normal use is blocked until password is changed via /change-password or a strong password is set in config/admin.yml.",
+								AuthService.WEAK_DEFAULT_PASSWORD);
+					}
 				} else {
-					// if config password has changed, update hash to keep in sync
-					String cfgPass = props.getDefaultAdmin().getPassword();
-					if (!BCrypt.checkpw(cfgPass, existing.getPasswordHash())) {
+					// 仅当外部配置为非弱口令且与库中不同时同步，避免改密后被弱默认配置覆盖
+					if (!cfgIsWeak && !BCrypt.checkpw(cfgPass, existing.getPasswordHash())) {
 						existing.setPasswordHash(BCrypt.hashpw(cfgPass, BCrypt.gensalt()));
+						existing.setMustChangePassword(false);
 						userMapper.updatePassword(existing);
+						log.info("Synced admin password from config/admin.yml for user '{}'", cfgUser);
+					} else if (BCrypt.checkpw(AuthService.WEAK_DEFAULT_PASSWORD, existing.getPasswordHash())) {
+						if (!existing.isMustChangePassword()) {
+							userMapper.updateMustChangePassword(existing.getUsername(), true);
+						}
+						log.warn("Admin '{}' still uses the documented default password. "
+								+ "Change it before normal use (POST /api/change-password or strong config/admin.yml).",
+								cfgUser);
 					}
 					// backfill ADMIN role for pre-existing default admin (created before role support)
 					if (existing.getRole() == null || existing.getRole().isBlank()) {

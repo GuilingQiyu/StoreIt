@@ -79,9 +79,13 @@ public class FileController {
                     "message", "文件上传成功",
                     "file", Map.of("name", file.getOriginalFilename(), "path", saved, "size", file.getSize())
             ));
+        } catch (com.glqyu.storeit.service.QuotaExceededException e) {
+            log.warn("Upload rejected by quota into '{}': {}", directory, e.getMessage());
+            return ResponseEntity.status(413).body(Map.of("error", e.getMessage(), "code", "QUOTA_EXCEEDED"));
         } catch (Exception e) {
             log.warn("Upload failed into '{}': {}", directory, e.toString());
-            return ResponseEntity.internalServerError().body(Map.of("error", "上传失败"));
+            String msg = e.getMessage() != null && e.getMessage().contains("磁盘空间不足") ? "磁盘空间不足" : "上传失败";
+            return ResponseEntity.internalServerError().body(Map.of("error", msg));
         }
     }
 
@@ -187,6 +191,9 @@ public class FileController {
             User user = getCurrentUser(request);
             fileService.createFolder(user, payload.get("path"));
             return ResponseEntity.ok(Map.of("success", true));
+        } catch (com.glqyu.storeit.service.QuotaExceededException e) {
+            log.warn("Create folder rejected by quota: {}", e.getMessage());
+            return ResponseEntity.status(413).body(Map.of("error", e.getMessage(), "code", "QUOTA_EXCEEDED"));
         } catch (Exception e) {
             log.warn("Create folder failed: {}", e.toString());
             return ResponseEntity.badRequest().body(Map.of("error", "创建失败"));

@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 - 未找到页面</title>
+    <title>404 - 未找到页面 · 储之</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body>
+<body class="error-page">
 <div class="floating-bg"></div>
 <div class="error-container error-404">
-    <h1>404 - 页面未找到</h1>
-    <p>抱歉，我们找不到您请求的页面。</p>
-    <p><a href="/" class="btn">返回首页</a></p>
+    <p class="error-code">404</p>
+    <h1>页面未找到</h1>
+    <p>抱歉，我们找不到您请求的页面。链接可能已失效，或地址有误。</p>
+    <div class="error-actions">
+        <a href="/" class="btn">返回首页</a>
+        <a href="/login" class="btn small">去登录</a>
+    </div>
 </div>
 <script src="/static/js/script.js"></script>
 </body>

@@ -5,36 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>文件列表 - 储之</title>
   <link rel="stylesheet" href="/static/css/style.css">
-  <!-- FontAwesome for Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script defer src="/static/js/script.js"></script>
 </head>
 <body>
 <div class="floating-bg"></div>
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
 
 <div class="app-layout">
-    <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
             <h2>储之 StoreIt</h2>
         </div>
         
-        <div class="sidebar-user" id="sidebarUser">
-            <!-- User info will be loaded here -->
-        </div>
+        <div class="sidebar-user" id="sidebarUser"></div>
 
-        <div class="sidebar-menu">
-            <div class="menu-item active" onclick="loadFileList('')">
+        <div class="sidebar-menu" id="sidebarMenu">
+            <div class="menu-item active" data-nav="files">
                 <i class="fas fa-hdd"></i> 我的文件
             </div>
-            <!-- Placeholder for future features -->
-            <div class="menu-item" onclick="alert('功能开发中')">
-                <i class="fas fa-clock"></i> 最近访问
+            <div class="menu-item" data-nav="shares">
+                <i class="fas fa-share-alt"></i> 我的分享
             </div>
-            <div class="menu-item" onclick="alert('功能开发中')">
-                <i class="fas fa-star"></i> 收藏夹
+            <div class="menu-item" data-nav="admin" id="navAdmin" style="display:none;">
+                <i class="fas fa-users-cog"></i> 用户管理
             </div>
-            <div class="menu-item" onclick="window.location.href='/about'">
+            <div class="menu-item" data-nav="about">
                 <i class="fas fa-info-circle"></i> 关于
             </div>
         </div>
@@ -73,28 +69,54 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="header-row">
-            <h1>文件列表</h1>
-            <!-- User status moved to sidebar, maybe keep a simple logout or profile here for mobile? -->
-            <div class="mobile-menu-toggle" onclick="toggleSidebar()">
+            <h1 id="mainTitle">文件列表</h1>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle" title="菜单">
                 <i class="fas fa-bars"></i>
             </div>
         </div>
         
-        <div id="breadcrumb" class="breadcrumb"></div>
-        
-        <div id="file-grid-view" class="file-grid-view"></div>
-        
-        <div id="empty-state" style="display:none; text-align:center; margin-top:50px; color:#666;">
-            <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 10px;"></i>
-            <p>暂无文件</p>
+        <div id="filesPane">
+            <div class="breadcrumb-row">
+                <button type="button" class="btn small btn-go-up" id="btnGoUp" hidden title="返回上级目录">
+                    <i class="fas fa-level-up-alt"></i> 返回上级
+                </button>
+                <div id="breadcrumb" class="breadcrumb"></div>
+            </div>
+            <div class="quick-actions" id="quickActions">
+                <button type="button" class="btn small" id="btnQuickUpload" title="上传文件">
+                    <i class="fas fa-file-upload"></i> 上传文件
+                </button>
+                <button type="button" class="btn small" id="btnQuickFolder" title="新建文件夹">
+                    <i class="fas fa-folder"></i> 新建文件夹
+                </button>
+            </div>
+            <div id="file-grid-view" class="file-grid-view"></div>
+            <div id="empty-state" class="empty-state-panel" style="display:none;">
+                <i class="fas fa-folder-open"></i>
+                <p>当前目录为空</p>
+                <p class="hint">使用上方「上传文件 / 新建文件夹」，或点击右下角 + 开始使用</p>
+            </div>
+        </div>
+
+        <div id="sharesPane" style="display:none;">
+            <div class="panel-toolbar">
+                <button class="btn small" id="refreshSharesBtn"><i class="fas fa-sync"></i> 刷新</button>
+                <label class="checkbox-inline" id="adminSharesToggleWrap" style="display:none;">
+                    <input type="checkbox" id="adminSharesToggle"> 查看全部用户分享
+                </label>
+            </div>
+            <div id="shares-list" class="shares-list"></div>
+            <div id="shares-empty" class="empty-state-panel" style="display:none;">
+                <i class="fas fa-link"></i>
+                <p>暂无分享链接</p>
+                <p class="hint">在文件详情或右键菜单中创建分享</p>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Context Menu -->
 <div id="context-menu" class="context-menu">
     <div class="menu-item" data-action="preview"><i class="fas fa-eye"></i> 预览</div>
     <div class="menu-item" data-action="download"><i class="fas fa-download"></i> 下载</div>
@@ -102,49 +124,44 @@
     <div class="menu-item" data-action="details"><i class="fas fa-info-circle"></i> 详细信息</div>
     <div class="menu-divider"></div>
     <div class="menu-item" data-action="rename"><i class="fas fa-edit"></i> 重命名</div>
-    <!-- <div class="menu-item" data-action="copy"><i class="fas fa-copy"></i> 复制</div> -->
-    <!-- <div class="menu-item" data-action="move"><i class="fas fa-arrows-alt"></i> 移动</div> -->
     <div class="menu-divider"></div>
     <div class="menu-item delete" data-action="delete"><i class="fas fa-trash-alt"></i> 删除</div>
 </div>
 
-<!-- FAB -->
 <div class="fab-container">
-    <div class="fab-menu">
-        <button class="fab-item" onclick="triggerUpload('file')" title="上传文件">
+    <div class="fab-menu" role="menu" aria-label="新建与上传">
+        <button class="fab-item" data-fab="file" title="上传文件" aria-label="上传文件">
             <i class="fas fa-file-upload"></i>
             <span class="fab-label">上传文件</span>
         </button>
-        <button class="fab-item" onclick="triggerUpload('folder')" title="上传目录">
+        <button class="fab-item" data-fab="folder" title="上传目录" aria-label="上传目录">
             <i class="fas fa-folder-plus"></i>
             <span class="fab-label">上传目录</span>
         </button>
-        <button class="fab-item" onclick="createNewFolderUI()" title="新建文件夹">
+        <button class="fab-item" data-fab="mkdir" title="新建文件夹" aria-label="新建文件夹">
             <i class="fas fa-folder"></i>
             <span class="fab-label">新建文件夹</span>
         </button>
     </div>
-    <button class="fab-main" id="fabMain">
+    <button class="fab-main" id="fabMain" title="新建 / 上传" aria-label="新建或上传" aria-expanded="false" aria-haspopup="true">
         <i class="fas fa-plus"></i>
+        <span class="fab-main-tip">新建 / 上传</span>
     </button>
 </div>
 
-<!-- Hidden Inputs -->
 <input type="file" id="fileInput" multiple style="display:none">
 <input type="file" id="folderInput" webkitdirectory multiple style="display:none">
 
-<!-- Upload Queue Panel -->
-<div id="upload-queue-panel" class="upload-queue-panel collapsed">
-    <div class="queue-header" onclick="toggleQueuePanel()">
+<div id="upload-queue-panel" class="upload-queue-panel collapsed hidden-empty">
+    <div class="queue-header" id="queueHeader">
         <span><i class="fas fa-cloud-upload-alt"></i> 上传队列</span>
         <div class="queue-controls">
             <span id="queue-summary"></span>
             <i class="fas fa-chevron-up toggle-icon"></i>
-            <i class="fas fa-times close-icon" onclick="clearCompletedUploads(event)"></i>
+            <i class="fas fa-times close-icon" id="clearUploadsBtn" title="清除已完成 / 关闭"></i>
         </div>
     </div>
     <div class="queue-list" id="queue-list">
-        <!-- Queue Items -->
         <div class="queue-empty-state">
             <i class="fas fa-box-open"></i>
             <p>没有上传任务</p>
@@ -152,30 +169,58 @@
     </div>
 </div>
 
-<!-- Share Modal -->
-<div id="shareModal" class="modal">
+<div id="shareModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="shareModalTitle">
   <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>生成分享链接</h2>
-    <div class="form-group">
-        <label>文件: <span id="modalFileName"></span></label>
-        <input type="hidden" id="modalFilePath">
+    <div class="modal-header">
+      <h2 id="shareModalTitle">生成分享链接</h2>
+      <span class="close" data-close-modal="shareModal" title="关闭" aria-label="关闭">&times;</span>
     </div>
-    <div class="form-group">
-        <label for="expireSelect">有效期:</label>
-        <select id="expireSelect">
-            <option value="24">1天</option>
-            <option value="168">7天</option>
-            <option value="720">30天</option>
-            <option value="-1">永久</option>
-            <option value="custom">自定义(小时)</option>
-        </select>
-        <input type="number" id="customExpire" placeholder="输入小时数" style="display:none; margin-top:5px;" min="1">
+    <div class="modal-body">
+      <div class="form-group">
+          <label>文件: <span id="modalFileName"></span></label>
+          <input type="hidden" id="modalFilePath">
+      </div>
+      <div class="form-group">
+          <label for="expireSelect">有效期</label>
+          <select id="expireSelect">
+              <option value="24">1 天</option>
+              <option value="168" selected>7 天</option>
+              <option value="720">30 天</option>
+              <option value="-1">永久有效</option>
+              <option value="custom">自定义（小时）</option>
+          </select>
+          <input type="number" id="customExpire" placeholder="输入小时数" style="display:none; margin-top:5px;" min="1">
+      </div>
+      <div class="form-group">
+          <label for="maxDownloadsInput">最大下载次数</label>
+          <input type="number" id="maxDownloadsInput" placeholder="留空或不填 = 不限次数" min="1" step="1">
+          <p class="field-hint">限制链接可被下载的次数；留空表示不限制</p>
+      </div>
+      <div id="shareResult" class="share-result"></div>
     </div>
-    <div class="form-group">
-        <button id="createShareBtn" class="btn">生成链接</button>
+    <div class="modal-footer" id="shareModalFooter">
+      <button type="button" id="createShareBtn" class="btn">生成链接</button>
     </div>
-    <div id="shareResult" class="share-result"></div>
+  </div>
+</div>
+
+<div id="appDialogModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="appDialogTitle">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="appDialogTitle">提示</h2>
+      <span class="close" id="appDialogClose" title="关闭" aria-label="关闭">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p id="appDialogMessage"></p>
+      <div class="form-group" id="appDialogInputWrap" style="display:none;">
+        <label for="appDialogInput" id="appDialogInputLabel">名称</label>
+        <input type="text" id="appDialogInput" autocomplete="off">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn small" id="appDialogCancel">取消</button>
+      <button type="button" class="btn small" id="appDialogConfirm">确定</button>
+    </div>
   </div>
 </div>
 

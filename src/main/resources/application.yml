@@ -38,3 +38,16 @@ app:
 logging:
   level:
     root: info
+
+# Actuator：默认仅暴露健康检查，禁止公开敏感端点（env/beans/mappings 等）
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+  info:
+    env:
+      enabled: false

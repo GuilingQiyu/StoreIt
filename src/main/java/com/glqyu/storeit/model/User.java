@@ -7,6 +7,10 @@ public class User {
     private long createdAt; // epoch seconds
     private String role; // USER, ADMIN
     private long storageQuota; // bytes, 0 = unlimited
+    /** 为 true 时仅允许改密 / 健康检查等受限操作，直至更换弱默认口令 */
+    private boolean mustChangePassword;
+    /** false 时禁止登录与业务 API */
+    private boolean enabled = true;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -25,4 +29,14 @@ public class User {
 
     public long getStorageQuota() { return storageQuota; }
     public void setStorageQuota(long storageQuota) { this.storageQuota = storageQuota; }
+
+    public boolean isMustChangePassword() { return mustChangePassword; }
+    public void setMustChangePassword(boolean mustChangePassword) { this.mustChangePassword = mustChangePassword; }
+
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
+
+    public boolean isAdmin() {
+        return role != null && "ADMIN".equalsIgnoreCase(role);
+    }
 }

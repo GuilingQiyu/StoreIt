@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +27,8 @@ import com.glqyu.storeit.model.User;
 
 @Service
 public class FileService {
+    private static final Logger log = LoggerFactory.getLogger(FileService.class);
+
     private final AppProperties props;
     private final FileMetadataMapper metaMapper;
 
@@ -126,7 +130,7 @@ public class FileService {
             }
             
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn("syncMetadata failed for user {} path '{}': {}", user.getUsername(), parentPath, e.toString());
         }
     }
 
@@ -147,6 +151,9 @@ public class FileService {
             fileName = baseName + " (" + count++ + ")." + extension;
             dest = dir.resolve(fileName);
         }
+
+        // USER 角色强制校验 storage_quota；ADMIN 仅检查整盘可用空间
+        ensureQuotaForWrite(user, file.getSize());
         
         if (dir.toFile().getUsableSpace() < file.getSize()) {
             throw new IOException("磁盘空间不足");
@@ -249,6 +256,8 @@ public class FileService {
     
     public void createFolder(User user, String path) throws IOException {
         if (!isSafePath(user, path)) throw new IOException("unsafe path");
+        // 已超配额的普通用户禁止继续写入（含新建空目录）
+        ensureQuotaForWrite(user, 0);
         Path base = getUserRoot(user);
         Path target = base.resolve(path).normalize();
         if (Files.exists(target)) throw new IOException("exists");
@@ -312,6 +321,23 @@ public class FileService {
             res.put("unlimited", true);
         }
         return res;
+    }
+
+
+    /**
+     * 普通用户（非 ADMIN）在 storage_quota > 0 时校验：used + additionalBytes 不得超过配额。
+     * 管理员不按用户配额限制，沿用整盘可用空间检查。
+     */
+    void ensureQuotaForWrite(User user, long additionalBytes) throws QuotaExceededException {
+        if (isAdmin(user)) return;
+        long quota = user.getStorageQuota();
+        if (quota <= 0) return; // 0 = 不限额
+        long used = directorySize(getUserRoot(user));
+        if (used + additionalBytes > quota) {
+            throw new QuotaExceededException(
+                    "存储配额不足：已用 " + used + " 字节，配额 " + quota + " 字节，本次需要 "
+                            + additionalBytes + " 字节");
+        }
     }
 
     private boolean isAdmin(User user) {

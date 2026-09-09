@@ -16,6 +16,9 @@ public interface SessionMapper {
     @Delete("DELETE FROM sessions WHERE id = #{id}")
     int deleteById(String id);
 
+    @Delete("DELETE FROM sessions WHERE username = #{username}")
+    int deleteByUsername(String username);
+
     @Delete("DELETE FROM sessions WHERE expires_at < #{now}")
     int deleteExpired(long now);
 }
