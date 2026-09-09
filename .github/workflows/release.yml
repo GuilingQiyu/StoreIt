@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write   # 创建 Release / 上传产物需要写权限
+  contents: write   # 创建/删除 Release、上传产物需要写权限
 
 jobs:
   build-and-release:
@@ -38,23 +38,15 @@ jobs:
           echo "Resolved tag=$TAG version=$VERSION"
 
       - name: Build changelog from Version.md
-        id: notes
         run: |
           python3 .github/scripts/extract-changelog.py \
             --version "${{ steps.ver.outputs.version }}" \
             --tag "${{ steps.ver.outputs.tag }}" \
             --repo "${{ github.repository }}" \
-            --out release-notes.md
-          # softprops 更新已有 Release 时，仅 body_path 可能不覆盖正文；
-          # 必须把内容放进 body 输出，显式传入 action 的 body 输入。
-          {
-            echo "body<<STOREIT_RELEASE_EOF"
-            cat release-notes.md
-            echo "STOREIT_RELEASE_EOF"
-          } >> "$GITHUB_OUTPUT"
-          echo "path=release-notes.md" >> "$GITHUB_OUTPUT"
+            --out "${{ github.workspace }}/release-notes.md"
+          test -s "${{ github.workspace }}/release-notes.md"
           echo "----- release notes preview -----"
-          cat release-notes.md
+          cat "${{ github.workspace }}/release-notes.md"
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -72,15 +64,26 @@ jobs:
           cp target/storeit-*.jar dist/
           ls -la dist/
 
+      # softprops 更新已有 Release 时，若 body 为空会保留旧正文（例如自动 Full Changelog）。
+      # 同 tag 重发前先删掉旧 Release（保留 git tag），再创建，确保 Version.md 写入正文。
+      - name: Remove existing GitHub Release (keep tag)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ steps.ver.outputs.tag }}"
+          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Deleting existing release $TAG (tag kept)..."
+            gh release delete "$TAG" --repo "${{ github.repository }}" --yes --cleanup-tag=false
+          else
+            echo "No existing release for $TAG"
+          fi
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.ver.outputs.tag }}
           name: StoreIt ${{ steps.ver.outputs.version }}
-          # 显式 body，确保覆盖已有 Release 的自动生成说明
-          body: ${{ steps.notes.outputs.body }}
-          body_path: ${{ steps.notes.outputs.path }}
-          append_body: false
+          body_path: ${{ github.workspace }}/release-notes.md
           draft: false
           prerelease: false
           files: dist/*.jar
