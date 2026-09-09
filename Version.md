@@ -43,6 +43,7 @@
 
 ### 维护
 - CI `maven-publish.yml` 与 `release.yml` / `pom.xml` 对齐为 **JDK 21**。
+- Release 工作流发版说明改为嵌入本文件对应版本章节（`Version.md`），同 tag 重跑会更新 Release 正文与产物。
 - 移除未使用的 `AsyncConfig.ioExecutor`；关键路径错误改为日志而非 `printStackTrace`。
 - 补充分享撤销 / 管理员建用户等单元测试。
 
