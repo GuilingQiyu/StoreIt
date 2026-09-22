@@ -87,6 +87,7 @@ function toggleSidebar() {
 let currentUsername = '';
 let currentRole = '';
 let currentPath = '';
+let viewMode = 'files';
 let uploadQueue = [];
 let isUploading = false;
 let contextMenuTarget = null;
@@ -116,12 +117,31 @@ document.addEventListener('DOMContentLoaded', function(){
         setupContextMenu();
         setupFAB();
         setupUploadQueue();
+        setupSearch();
     } 
 });
+
+function setActiveMenu(id) {
+    document.querySelectorAll('.sidebar-menu > .menu-item').forEach(el => el.classList.remove('active'));
+    const item = document.getElementById(id);
+    if (item) item.classList.add('active');
+}
+
+function setupSearch() {
+    const form = document.getElementById('searchForm');
+    const input = document.getElementById('searchInput');
+    if (!form || !input) return;
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        loadSearch(input.value.trim());
+    });
+}
 
 // --- File List Logic ---
 
 function loadFileList(path=''){
+  viewMode = 'files';
+  setActiveMenu('menuFiles');
   const gridView = document.getElementById('file-grid-view');
   const emptyState = document.getElementById('empty-state');
   if(!gridView) return;
@@ -137,26 +157,77 @@ function loadFileList(path=''){
     
     currentPath = data.currentPath ?? data.current_path ?? '';
     renderBreadcrumb(currentPath);
-    
-    const items = (data.items||[]).map(item=>{
-      const isDir = (item.isDirectory !== undefined ? item.isDirectory : (item.directory !== undefined ? item.directory : false));
-      return {
-        name: item.name,
-        path: item.path,
-        isDirectory: !!isDir,
-        size: item.size,
-        modified: item.modifiedTime || item.modified_time
-      };
-    });
+    showItems(data.items || []);
+  }).catch(err=>{ gridView.innerHTML=`<p class="error">加载失败: ${err.message}</p>`; });
+}
 
-    if(items.length === 0) {
+function loadRecent() {
+    viewMode = 'recent';
+    setActiveMenu('menuRecent');
+    loadCollection('/api/files/recent', '最近访问');
+}
+
+function loadFavorites() {
+    viewMode = 'favorites';
+    setActiveMenu('menuFavorites');
+    loadCollection('/api/favorites', '收藏夹');
+}
+
+function loadSearch(query) {
+    viewMode = 'search';
+    setActiveMenu('menuFiles');
+    loadCollection('/api/files/search?q=' + encodeURIComponent(query || ''), '搜索：' + (query || ''));
+}
+
+function loadCollection(url, label) {
+    const gridView = document.getElementById('file-grid-view');
+    const emptyState = document.getElementById('empty-state');
+    if (!gridView) return;
+    gridView.innerHTML = '<p style="text-align:center; width:100%;">加载中...</p>';
+    if (emptyState) emptyState.style.display = 'none';
+    fetch(url).then(r => r.json()).then(data => {
+        if (data.error) {
+            gridView.innerHTML = `<p class="error">错误: ${escapeHtml(data.error)}</p>`;
+            return;
+        }
+        renderSpecialBreadcrumb(label);
+        showItems(data.items || []);
+    }).catch(err => { gridView.innerHTML = `<p class="error">加载失败: ${escapeHtml(err.message)}</p>`; });
+}
+
+function showItems(rawItems) {
+    const gridView = document.getElementById('file-grid-view');
+    const emptyState = document.getElementById('empty-state');
+    const items = rawItems.map(item => {
+        const isDir = (item.isDirectory !== undefined ? item.isDirectory : (item.directory !== undefined ? item.directory : false));
+        return {
+            name: item.name,
+            path: item.path,
+            isDirectory: !!isDir,
+            size: item.size,
+            modified: item.modifiedTime || item.modified_time
+        };
+    });
+    if (items.length === 0) {
         gridView.innerHTML = '';
-        emptyState.style.display = 'block';
+        if (emptyState) emptyState.style.display = 'block';
     } else {
+        if (emptyState) emptyState.style.display = 'none';
         renderFileGrid(items);
     }
+}
 
-  }).catch(err=>{ gridView.innerHTML=`<p class="error">加载失败: ${err.message}</p>`; });
+function renderSpecialBreadcrumb(label) {
+    const container = document.getElementById('breadcrumb');
+    if (!container) return;
+    container.innerHTML = `<div class="breadcrumb-item" onclick="loadFileList('')"><i class="fas fa-home"></i></div><span class="breadcrumb-separator">/</span><div class="breadcrumb-item active">${escapeHtml(label)}</div>`;
+}
+
+function reloadCurrentView() {
+    if (viewMode === 'recent') loadRecent();
+    else if (viewMode === 'favorites') loadFavorites();
+    else if (viewMode === 'search') loadSearch((document.getElementById('searchInput') || {}).value || '');
+    else loadFileList(currentPath);
 }
 
 function renderBreadcrumb(path) {
@@ -314,6 +385,7 @@ function showFileDetails(item) {
     const btnDownload = document.getElementById('btnDownload');
     const btnShare = document.getElementById('btnShare');
     const btnRename = document.getElementById('btnRename');
+    const btnFavorite = document.getElementById('btnFavorite');
     const btnDelete = document.getElementById('btnDelete');
 
     // 仅对可预览的文件显示预览按钮
@@ -329,6 +401,7 @@ function showFileDetails(item) {
     btnDownload.onclick = () => window.open(`/storage/${item.path}`, '_blank');
     btnShare.onclick = () => openShareModal(item.path);
     btnRename.onclick = () => renameFile(item.path, item.name);
+    if (btnFavorite) btnFavorite.onclick = () => favoritePath(item.path, true);
     btnDelete.onclick = () => deleteFile(item.path);
 }
 
@@ -393,14 +466,43 @@ function handleMenuAction(action, item) {
         case 'rename':
             renameFile(item.path, item.name);
             break;
+        case 'move':
+            moveFile(item);
+            break;
+        case 'favorite':
+            favoritePath(item.path, true);
+            break;
+        case 'unfavorite':
+            favoritePath(item.path, false);
+            break;
         case 'delete':
             deleteFile(item.path);
             break;
-        case 'copy':
-        case 'move':
-            alert('功能开发中...');
-            break;
     }
+}
+
+function favoritePath(path, add) {
+    const request = add
+        ? fetch('/api/favorites', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ path }) })
+        : fetch('/api/favorites?path=' + encodeURIComponent(path), { method: 'DELETE' });
+    request.then(async (response) => {
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok && data.message) alert(data.message);
+        if (viewMode === 'favorites') loadFavorites();
+    }).catch(() => alert(add ? '收藏失败' : '取消收藏失败'));
+}
+
+function moveFile(item) {
+    const destination = prompt('移动到目录，留空表示根目录', currentPath || '');
+    if (destination === null) return;
+    fetch('/api/file/move', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ path: item.path, destination: destination.trim() })
+    }).then(r => r.json()).then(data => {
+        if (data.error) alert(data.error);
+        else reloadCurrentView();
+    }).catch(() => alert('移动失败'));
 }
 
 // --- FAB & Upload ---
@@ -632,10 +734,8 @@ function deleteFile(path) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({path: path})
         }).then(r=>r.json()).then(d=>{
-            if(d.success) {
-                const parent = path.includes('/') ? path.substring(0, path.lastIndexOf('/')) : '';
-                loadFileList(parent);
-            } else alert("删除失败: " + d.error);
+            if(d.success) reloadCurrentView();
+            else alert("删除失败: " + d.error);
         });
     }
 }
@@ -648,10 +748,8 @@ function renameFile(path, oldName) {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({path: path, newName: newName})
         }).then(r=>r.json()).then(d=>{
-            if(d.success) {
-                const parent = path.includes('/') ? path.substring(0, path.lastIndexOf('/')) : '';
-                loadFileList(parent);
-            } else alert("重命名失败: " + d.error);
+            if(d.success) reloadCurrentView();
+            else alert("重命名失败: " + d.error);
         });
     }
 }

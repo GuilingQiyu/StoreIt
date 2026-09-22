@@ -1,51 +1,41 @@
 # 储之文件服务器 (StoreIt) - 版本日志
 
-## 1.4.0c (2026-09-22)
+## 1.4.0-Alpha (2026-09-22)
 
-### 用户管理
-- 管理员可以开户、修改配额和角色、重置口令。接口为 `GET/POST /api/admin/users`、`PATCH /api/admin/users/{username}`、`POST /api/admin/users/{username}/password`。
-- 列表不返回口令哈希。非管理员调用返回 403。
-- 用户名只允许字母、数字、点、下划线和短横线，拒绝空串、`.`、`..` 和路径分隔符。
-- 不能取消自己的管理员角色。新口令至少 8 位。配额 0 仍表示不限额。
-- 云盘侧边栏仅对管理员显示「用户管理」。`GET /api/user/status` 增加 `role`。
-
-### 分享
-- `GET /api/shares` 列出当前用户自己的分享，`DELETE /api/shares/{id}` 撤销。撤销后公开下载立即失效。
-- 创建分享时可填写最大下载次数。侧边栏「我的分享」可查看和撤销。
-
-## 1.4.0b (2026-09-22)
+本版合并 1.4.0a、1.4.0b、1.4.0c 以及最近访问、收藏、搜索和移动。
 
 ### 许可证
-- 项目改为 **AGPL-3.0-or-later**。关于页和登录页提供源码链接（`https://github.com/GuilingQiyu/StoreIt`）。
+- 项目以 **AGPL-3.0-or-later** 授权。关于页和登录页提供源码链接（`https://github.com/GuilingQiyu/StoreIt`）。
 
-### 登录
-- 同一 IP 与用户名在 15 分钟内连续失败 5 次后，后续尝试返回「登录尝试过多，请稍后再试」。次数和时间可通过 `app.login.max-failures`、`app.login.window-minutes` 调整。
-- 用户不存在时仍做一次 BCrypt 比较，避免用响应时间判断用户名。
-- 若管理员仍是内置口令 `admin / authorized_users`，启动时写入警告。`app.require-custom-admin: true` 时直接拒绝启动。
-
-### 预览与路径
-- 图片（不含 SVG）、视频、音频、PDF 的预览响应保持内联和真实类型。HTML、SVG、XML 以及其他文本改为 `text/plain`，并覆盖 `script-src 'none'` 的内容安全策略。
-- 路径检查会解析符号链接。真实路径必须仍在该用户目录内，上传目录的父路径同样检查。
-
-### 运行
+### 配置与运行
+- 外部 `./config/application.yml` 在 `./config/admin.yml` 之前加载。端口、数据源、SSL、存储目录和 `app.ssl-enabled` 以前者为准；同名项以后者为准，管理员口令写在 `admin.yml`。
+- SQLite 连接初始化执行 `PRAGMA foreign_keys=ON`，连接池最大连接数为 1。
+- 404、403 页面由 `static/error/` 提供；`/error` 无需登录。
 - 只公开 `GET /actuator/health`。移除未使用的异步线程池。
 - 已跟踪的 `config/auth info here.txt` 移出版本库。
 
-## 1.4.0a (2026-09-22)
+### 登录与路径
+- 同一 IP 与用户名在 15 分钟内连续失败 5 次后，后续尝试返回「登录尝试过多，请稍后再试」。可用 `app.login.max-failures` 和 `app.login.window-minutes` 调整。
+- 用户不存在时仍做一次 BCrypt 比较。内置口令 `admin / authorized_users` 会在启动时告警；`app.require-custom-admin: true` 时拒绝启动。
+- 路径检查解析符号链接，真实路径必须留在该用户目录内。
 
-### 配置
-- 外部 `./config/application.yml` 会在 `./config/admin.yml` 之前加载。端口、数据源、SSL、存储目录和 `app.ssl-enabled` 以该文件为准；同名项以后加载的 `admin.yml` 为准，管理员口令仍写在 `admin.yml`。
+### 存储、预览与分享
+- `storage_quota` 大于 0 时，上传会校验个人配额，超出返回「存储配额不足」。0 表示不限额。
+- 根目录元数据按文件名索引。
+- 图片（不含 SVG）、视频、音频、PDF 预览保持内联。HTML、SVG、XML 及其他文本改为 `text/plain`，并使用 `script-src 'none'`。
+- 公开下载先确认文件可读，再原子扣减次数。文件已删除时不扣次。
+- `GET /api/shares` 列出本人的分享，`DELETE /api/shares/{id}` 撤销后链接立即失效。创建分享时可设置最大下载次数。
 
-### 存储
-- 上传时执行配额：`storage_quota` 大于 0 时，个人目录已占用加上本次大小不得超过配额，超出返回「存储配额不足」。配额为 0 表示不限额。
-- 修正根目录文件元数据的查找路径。父路径为空时按文件名索引，重复上传不会再因为查到 `/文件名` 而插入失败。
+### 用户
+- 管理员可开户、改配额、改角色、重置口令。列表不含口令哈希，非管理员返回 403。
+- 用户名只允许字母、数字、点、下划线和短横线。不能取消自己的管理员角色。新口令至少 8 位。
+- 侧边栏仅对管理员显示「用户管理」。`GET /api/user/status` 返回 `role`。
 
-### 分享
-- 公开下载先确认文件仍在拥有者目录中可读，再原子扣减下载次数。文件已删除时返回「文件不存在」，次数不变。
-
-### 运行
-- SQLite 连接初始化执行 `PRAGMA foreign_keys=ON`，连接池最大连接数为 1。
-- 404、403 页面由 `static/error/` 提供；错误转发路径 `/error` 无需登录。
+### 文件
+- `GET /api/files/recent` 按修改时间列出最近文件，侧边栏「最近访问」已接上。
+- 新增收藏表。侧边栏可收藏和取消收藏；删除、重命名、移动时同步收藏路径。
+- `GET /api/files/search?q=` 按文件名搜索当前用户的文件。
+- `POST /api/file/move` 在同一用户目录内移动文件或文件夹，并更新元数据前缀。不能移出个人目录，也不能把文件夹移进自身。
 
 ## 1.3.3 (2026-09-22)
 

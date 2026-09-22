@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -38,4 +39,10 @@ public interface FileMetadataMapper {
     
     @Delete("DELETE FROM file_metadata WHERE user_id = #{userId} AND path LIKE #{pathPattern}")
     int deleteByPathPattern(long userId, String pathPattern);
+
+    @Select("SELECT id, user_id as userId, path, name, is_directory as isDirectory, size, last_modified as lastModified, content_type as contentType, parent_path as parentPath FROM file_metadata WHERE user_id = #{userId} AND is_directory = 0 ORDER BY last_modified DESC, name LIMIT #{limit}")
+    List<FileMetadata> findRecent(@Param("userId") long userId, @Param("limit") int limit);
+
+    @Select("SELECT id, user_id as userId, path, name, is_directory as isDirectory, size, last_modified as lastModified, content_type as contentType, parent_path as parentPath FROM file_metadata WHERE user_id = #{userId} AND name LIKE #{pattern} ESCAPE '\\' ORDER BY is_directory DESC, name LIMIT #{limit}")
+    List<FileMetadata> searchByName(@Param("userId") long userId, @Param("pattern") String pattern, @Param("limit") int limit);
 }

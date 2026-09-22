@@ -156,6 +156,46 @@ public class FileController {
         }
     }
 
+    @GetMapping("/api/files/recent")
+    public ResponseEntity<?> recent(HttpServletRequest request) {
+        try {
+            return ResponseEntity.ok(fileService.recent(getCurrentUser(request), 50));
+        } catch (Exception e) {
+            log.warn("Recent files failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "无法读取最近文件"));
+        }
+    }
+
+    @GetMapping("/api/files/search")
+    public ResponseEntity<?> search(HttpServletRequest request, @RequestParam(value = "q", required = false) String query) {
+        try {
+            return ResponseEntity.ok(fileService.search(getCurrentUser(request), query));
+        } catch (Exception e) {
+            log.warn("Search failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "搜索失败"));
+        }
+    }
+
+    @PostMapping("/api/file/move")
+    public ResponseEntity<?> moveFile(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String moved = fileService.move(user, payload.get("path"), payload.get("destination"));
+            return ResponseEntity.ok(Map.of("success", true, "path", moved));
+        } catch (IOException e) {
+            String message = e.getMessage();
+            if (FileService.MOVE_INTO_SELF.equals(message) || FileService.MOVE_EXISTS.equals(message)
+                    || FileService.MOVE_DEST_MISSING.equals(message) || "无效路径".equals(message)) {
+                return ResponseEntity.badRequest().body(Map.of("error", message));
+            }
+            log.warn("Move failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "移动失败"));
+        } catch (Exception e) {
+            log.warn("Move failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "移动失败"));
+        }
+    }
+
     @PostMapping("/api/file/delete")
     public ResponseEntity<?> deleteFile(HttpServletRequest request, @RequestBody Map<String, String> payload) {
         try {

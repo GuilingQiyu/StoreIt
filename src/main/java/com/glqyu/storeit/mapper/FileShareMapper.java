@@ -30,4 +30,7 @@ public interface FileShareMapper {
 
     @Delete("DELETE FROM file_shares WHERE id = #{id} AND user_id = #{userId}")
     int deleteByIdAndUser(@Param("id") long id, @Param("userId") long userId);
+
+    @Update("UPDATE file_shares SET file_path = #{newPath} || SUBSTR(file_path, LENGTH(#{oldPath}) + 1) WHERE user_id = #{userId} AND (file_path = #{oldPath} OR file_path LIKE #{pattern})")
+    int retarget(@Param("userId") long userId, @Param("oldPath") String oldPath, @Param("newPath") String newPath, @Param("pattern") String pattern);
 }

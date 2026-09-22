@@ -198,7 +198,16 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 12px;
     margin-bottom: 20px;
+}
+
+.search-form { flex: 1; max-width: 280px; }
+.search-form input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0,0,0,0.12);
 }
 
 .mobile-menu-toggle {

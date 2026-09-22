@@ -20,13 +20,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.glqyu.storeit.config.AppProperties;
 import com.glqyu.storeit.dto.FileListResponse;
+import com.glqyu.storeit.mapper.FavoriteMapper;
 import com.glqyu.storeit.mapper.FileMetadataMapper;
+import com.glqyu.storeit.mapper.FileShareMapper;
 import com.glqyu.storeit.model.FileMetadata;
 import com.glqyu.storeit.model.User;
 
 @Service
 public class FileService {
     public static final String QUOTA_EXCEEDED = "存储配额不足";
+    public static final String MOVE_INTO_SELF = "不能移动到自身内部";
+    public static final String MOVE_EXISTS = "目标已存在";
+    public static final String MOVE_DEST_MISSING = "目标目录不存在";
     public static final String PREVIEW_CSP = String.join("; ",
             "default-src 'none'",
             "script-src 'none'",
@@ -39,10 +44,14 @@ public class FileService {
 
     private final AppProperties props;
     private final FileMetadataMapper metaMapper;
+    private final FavoriteMapper favoriteMapper;
+    private final FileShareMapper shareMapper;
 
-    public FileService(AppProperties props, FileMetadataMapper metaMapper) {
+    public FileService(AppProperties props, FileMetadataMapper metaMapper, FavoriteMapper favoriteMapper, FileShareMapper shareMapper) {
         this.props = props;
         this.metaMapper = metaMapper;
+        this.favoriteMapper = favoriteMapper;
+        this.shareMapper = shareMapper;
         ensureStorage();
     }
 
@@ -239,9 +248,11 @@ public class FileService {
             }
             metaMapper.deleteByPath(user.getId(), path);
             metaMapper.deleteByPathPattern(user.getId(), path + "/%");
+            favoriteMapper.deleteTree(user.getId(), path, path + "/%");
         } else {
             Files.delete(target);
             metaMapper.deleteByPath(user.getId(), path);
+            favoriteMapper.deleteTree(user.getId(), path, path + "/%");
         }
     }
 
@@ -277,6 +288,90 @@ public class FileService {
                  metaMapper.updatePathInfo(m);
              }
         }
+        retargetReferences(user.getId(), path, newPath);
+    }
+
+    public String move(User user, String path, String destinationDir) throws IOException {
+        if (path == null || path.isBlank()) throw new IOException("无效路径");
+        String destDir = destinationDir == null ? "" : destinationDir;
+        if (!isSafePath(user, path) || !isSafePath(user, destDir)) throw new IOException("无效路径");
+        Path base = getUserRoot(user);
+        Path source = base.resolve(path).normalize();
+        if (!Files.exists(source) || !source.startsWith(base)) throw new IOException("not found");
+        boolean directory = Files.isDirectory(source);
+        if (!destDir.isEmpty()) {
+            Path parent = base.resolve(destDir).normalize();
+            if (!parent.startsWith(base) || !Files.isDirectory(parent)) throw new IOException(MOVE_DEST_MISSING);
+        }
+        String name = source.getFileName().toString();
+        String newPath = destDir.isEmpty() ? name : destDir + "/" + name;
+        if (newPath.equals(path)) return path;
+        if (directory && (destDir.equals(path) || destDir.startsWith(path + "/"))) {
+            throw new IOException(MOVE_INTO_SELF);
+        }
+        Path dest = base.resolve(newPath).normalize();
+        if (!dest.startsWith(base)) throw new IOException("无效路径");
+        if (Files.exists(dest)) throw new IOException(MOVE_EXISTS);
+        Files.move(source, dest);
+        if (directory) {
+            metaMapper.renameFolderChildren(user.getId(), path, newPath, path + "/%");
+            FileMetadata folder = metaMapper.findByUserIdAndPath(user.getId(), path).orElse(null);
+            if (folder != null) {
+                folder.setName(name);
+                folder.setPath(newPath);
+                folder.setParentPath(destDir);
+                metaMapper.updatePathInfo(folder);
+            }
+        } else {
+            FileMetadata file = metaMapper.findByUserIdAndPath(user.getId(), path).orElse(null);
+            if (file != null) {
+                file.setName(name);
+                file.setPath(newPath);
+                file.setParentPath(destDir);
+                metaMapper.updatePathInfo(file);
+            }
+        }
+        retargetReferences(user.getId(), path, newPath);
+        return newPath;
+    }
+
+    public FileListResponse recent(User user, int limit) {
+        int capped = Math.min(Math.max(limit, 1), 100);
+        return responseOf("", metaMapper.findRecent(user.getId(), capped));
+    }
+
+    public FileListResponse search(User user, String query) {
+        FileListResponse empty = new FileListResponse();
+        empty.setCurrentPath("");
+        empty.setItems(List.of());
+        if (query == null || query.isBlank()) return empty;
+        String pattern = "%" + query.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%";
+        return responseOf("", metaMapper.searchByName(user.getId(), pattern, 200));
+    }
+
+    private FileListResponse responseOf(String currentPath, List<FileMetadata> metas) {
+        List<FileListResponse.Item> items = metas.stream().map(this::toItem).collect(Collectors.toList());
+        FileListResponse res = new FileListResponse();
+        res.setCurrentPath(currentPath);
+        res.setItems(items);
+        return res;
+    }
+
+    private FileListResponse.Item toItem(FileMetadata meta) {
+        FileListResponse.Item item = new FileListResponse.Item();
+        item.setName(meta.getName());
+        item.setDirectory(meta.isDirectory());
+        item.setSize(meta.getSize());
+        item.setModifiedTime(meta.getLastModified());
+        item.setContentType(meta.getContentType());
+        item.setPath(meta.getPath());
+        return item;
+    }
+
+    private void retargetReferences(long userId, String oldPath, String newPath) {
+        String pattern = oldPath + "/%";
+        favoriteMapper.retarget(userId, oldPath, newPath, pattern);
+        shareMapper.retarget(userId, oldPath, newPath, pattern);
     }
     
     public void createFolder(User user, String path) throws IOException {
