@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,4 +61,12 @@ public class ShareService {
     }
 
     public int cleanup() { return mapper.deleteExpiredOrMaxed(Instant.now().getEpochSecond()); }
+
+    public List<FileShare> list(User user) {
+        return mapper.findByUserId(user.getId());
+    }
+
+    public boolean revoke(User user, long id) {
+        return mapper.deleteByIdAndUser(id, user.getId()) > 0;
+    }
 }

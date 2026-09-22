@@ -40,9 +40,13 @@ function loadUserStatus(){
     const el=document.getElementById('sidebarUser'); 
     if(!el) return; 
     fetch('/api/user/status').then(r=>r.json()).then(d=>{ 
+        currentUsername = d.username || '';
+        currentRole = d.role || '';
+        const adminMenu = document.getElementById('adminMenu');
+        if (adminMenu) adminMenu.style.display = (currentRole || '').toUpperCase() === 'ADMIN' ? 'block' : 'none';
         el.innerHTML = d.logged_in ? 
             `<div style="display:flex; align-items:center; gap:10px; width:100%; justify-content:space-between;">
-                <span style="overflow:hidden; text-overflow:ellipsis;"><i class="fas fa-user-circle"></i> ${d.username}</span>
+                <span style="overflow:hidden; text-overflow:ellipsis;"><i class="fas fa-user-circle"></i> ${escapeHtml(d.username)}</span>
                 <i class="fas fa-sign-out-alt" id="logoutBtn" style="cursor:pointer; color:var(--error-color);" title="退出"></i>
              </div>` : 
             `<a href="/login" class="btn small">登录</a>`; 
@@ -80,6 +84,8 @@ function toggleSidebar() {
 }
 
 // Global State
+let currentUsername = '';
+let currentRole = '';
 let currentPath = '';
 let uploadQueue = [];
 let isUploading = false;
@@ -100,7 +106,9 @@ document.addEventListener('DOMContentLoaded', function(){
     setupLoginForm(); 
     setupRefreshButton(); 
     loadUserStatus(); 
-    setupShareModal(); 
+    setupShareModal();
+    setupSharesPanel();
+    setupAdminPanel(); 
     
     if(document.getElementById('file-grid-view')){ 
         loadFileList(); 
@@ -757,10 +765,20 @@ function setupShareModal() {
                 }
             }
             
+            const maxInput = document.getElementById('maxDownloads');
+            const rawMax = maxInput ? maxInput.value.trim() : '';
+            let maxDownloads = null;
+            if (rawMax !== '') {
+                maxDownloads = parseInt(rawMax, 10);
+                if (!Number.isFinite(maxDownloads) || maxDownloads <= 0) {
+                    alert('下载次数需为正整数，留空表示不限制');
+                    return;
+                }
+            }
             const body = { 
                 filePath: path, 
                 expireHours: parseInt(expireHours), 
-                maxDownloads: null 
+                maxDownloads: maxDownloads 
             };
             
             const resultDiv = document.getElementById('shareResult');
@@ -784,5 +802,154 @@ function setupShareModal() {
                 resultDiv.innerHTML = `<p class="error">请求失败: ${err.message}</p>`;
             }
         };
+    }
+}
+
+function setupSharesPanel() {
+    const openBtn = document.getElementById('openSharesBtn');
+    const modal = document.getElementById('sharesModal');
+    const closeBtn = document.getElementById('closeSharesBtn');
+    if (!openBtn || !modal) return;
+    openBtn.onclick = () => { modal.style.display = 'block'; loadMyShares(); };
+    if (closeBtn) closeBtn.onclick = () => { modal.style.display = 'none'; };
+}
+
+async function loadMyShares() {
+    const box = document.getElementById('sharesList');
+    if (!box) return;
+    box.textContent = '加载中...';
+    try {
+        const res = await fetch('/api/shares');
+        const data = await res.json();
+        box.innerHTML = '';
+        const items = data.data || [];
+        if (!items.length) {
+            box.textContent = '还没有分享链接';
+            return;
+        }
+        items.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'share-row';
+            const name = document.createElement('strong');
+            name.textContent = item.filePath || '';
+            const link = document.createElement('input');
+            link.readOnly = true;
+            link.value = location.origin + item.url;
+            const meta = document.createElement('span');
+            const limit = item.maxDownloads ? item.downloads + '/' + item.maxDownloads : (item.downloads || 0) + '/不限';
+            const expiry = item.expiry ? new Date(item.expiry * 1000).toLocaleString() : '永久';
+            meta.textContent = limit + ' · ' + expiry;
+            const revoke = document.createElement('button');
+            revoke.className = 'btn small delete-btn';
+            revoke.textContent = '撤销';
+            revoke.onclick = async () => {
+                const done = await fetch('/api/shares/' + item.id, { method: 'DELETE' });
+                const body = await done.json();
+                if (!done.ok) alert(body.message || '撤销失败');
+                loadMyShares();
+            };
+            row.append(name, link, meta, revoke);
+            box.appendChild(row);
+        });
+    } catch (err) {
+        box.textContent = '无法读取分享';
+    }
+}
+
+function setupAdminPanel() {
+    const openBtn = document.getElementById('openAdminBtn');
+    const modal = document.getElementById('adminModal');
+    const closeBtn = document.getElementById('closeAdminBtn');
+    const form = document.getElementById('createUserForm');
+    if (!openBtn || !modal || !form) return;
+    openBtn.onclick = () => { modal.style.display = 'block'; loadAdminUsers(); };
+    if (closeBtn) closeBtn.onclick = () => { modal.style.display = 'none'; };
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const status = document.getElementById('createUserStatus');
+        const quota = Number(document.getElementById('newQuota').value || 0);
+        const res = await fetch('/api/admin/users', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: document.getElementById('newUsername').value.trim(),
+                password: document.getElementById('newPassword').value,
+                storageQuota: quota
+            })
+        });
+        const data = await res.json();
+        if (status) status.textContent = data.message || (res.ok ? '已创建' : '失败');
+        if (res.ok) {
+            form.reset();
+            document.getElementById('newQuota').value = '0';
+            loadAdminUsers();
+        }
+    };
+}
+
+async function loadAdminUsers() {
+    const box = document.getElementById('adminUserList');
+    if (!box) return;
+    box.textContent = '加载中...';
+    try {
+        const res = await fetch('/api/admin/users');
+        const data = await res.json();
+        box.innerHTML = '';
+        (data.data || []).forEach(user => {
+            const row = document.createElement('div');
+            row.className = 'admin-user-row';
+            const name = document.createElement('strong');
+            name.textContent = user.username;
+            const quota = document.createElement('input');
+            quota.type = 'number';
+            quota.min = '0';
+            quota.value = user.storageQuota;
+            const role = document.createElement('select');
+            ['USER', 'ADMIN'].forEach(value => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                if ((user.role || '').toUpperCase() === value) option.selected = true;
+                role.appendChild(option);
+            });
+            if (user.username === currentUsername) role.disabled = true;
+            const save = document.createElement('button');
+            save.className = 'btn small';
+            save.textContent = '保存';
+            save.onclick = async () => {
+                const done = await fetch('/api/admin/users/' + encodeURIComponent(user.username), {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ storageQuota: Number(quota.value || 0), role: role.value })
+                });
+                const body = await done.json();
+                alert(body.message || (done.ok ? '已保存' : '失败'));
+                if (done.ok) loadAdminUsers();
+            };
+            const password = document.createElement('input');
+            password.type = 'password';
+            password.placeholder = '新口令';
+            const reset = document.createElement('button');
+            reset.className = 'btn small';
+            reset.textContent = '重置口令';
+            reset.onclick = async () => {
+                if ((password.value || '').length < 8) {
+                    alert('口令至少 8 位');
+                    return;
+                }
+                const done = await fetch('/api/admin/users/' + encodeURIComponent(user.username) + '/password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: password.value })
+                });
+                const body = await done.json();
+                alert(body.message || (done.ok ? '已重置' : '失败'));
+                if (done.ok) password.value = '';
+            };
+            row.append(name, quota, role, save, password, reset);
+            box.appendChild(row);
+        });
+    } catch (err) {
+        box.textContent = '无法读取用户';
     }
 }

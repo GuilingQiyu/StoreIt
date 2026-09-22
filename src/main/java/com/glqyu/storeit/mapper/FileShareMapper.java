@@ -3,6 +3,7 @@ package com.glqyu.storeit.mapper;
 import com.glqyu.storeit.model.FileShare;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -23,4 +24,10 @@ public interface FileShareMapper {
 
     @Delete("DELETE FROM file_shares WHERE (expiry IS NOT NULL AND expiry < #{now}) OR (max_downloads IS NOT NULL AND downloads >= max_downloads)")
     int deleteExpiredOrMaxed(long now);
+
+    @Select("SELECT id, file_path as filePath, token, expiry, max_downloads as maxDownloads, downloads, user_id as userId, created_at as createdAt FROM file_shares WHERE user_id = #{userId} ORDER BY created_at DESC, id DESC")
+    List<FileShare> findByUserId(long userId);
+
+    @Delete("DELETE FROM file_shares WHERE id = #{id} AND user_id = #{userId}")
+    int deleteByIdAndUser(@Param("id") long id, @Param("userId") long userId);
 }

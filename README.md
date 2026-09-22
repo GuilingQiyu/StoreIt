@@ -21,7 +21,8 @@
 - 文件：`GET /api/files?path=...`、`POST /api/upload`（multipart）、受保护下载 `GET /storage/**`
 - 在线预览：`GET /api/preview?path=...`。图片（不含 SVG）、视频、音频、PDF 内联；HTML、SVG、XML 以 `text/plain` 返回，并附带 `script-src 'none'`。视频支持 HTTP Range
 - 健康检查：`GET /actuator/health` 无需登录；其余 Actuator 端点不暴露
-- 分享直链：`POST /api/share` 生成分享，公开下载 `GET /d/{token}`（先确认文件可读，再原子扣减下载次数；文件已删除时不扣次）
+- 分享直链：`POST /api/share` 生成分享，公开下载 `GET /d/{token}`（先确认文件可读，再原子扣减下载次数；文件已删除时不扣次）。`GET /api/shares` 列出本人的链接，`DELETE /api/shares/{id}` 撤销后立即失效
+- 用户管理（仅管理员）：`GET/POST /api/admin/users`、`PATCH /api/admin/users/{username}`、`POST /api/admin/users/{username}/password`。用户名只能包含字母、数字、点、下划线和短横线
 - 存储用量：`GET /api/storage/usage`；普通用户展示个人目录实际占用与配额，管理员展示整盘容量。`storage_quota` 大于 0 时上传会校验配额，超出返回「存储配额不足」；0 表示不限额
 - 安全：会话 Cookie 设置 `HttpOnly` / `SameSite=Lax`（`app.ssl-enabled: true` 时附加 `Secure`）；`Content-Security-Policy` 与 `X-Content-Type-Options`、`X-Frame-Options`、`Referrer-Policy` 等响应头；`Strict-Transport-Security` 仅在 HTTPS 下下发；路径安全检查，防目录穿越
 - 配置：classpath 中的 `application.yml` 会先导入外部 `./config/application.yml`（端口、SSL、数据源、存储目录、`app.ssl-enabled`），再导入 `./config/admin.yml`（管理员口令；同名项以后者为准）
@@ -30,7 +31,7 @@
 前置要求：JDK 21、Maven
 
 - 构建：`mvn package`（会运行测试）
-- 运行：`java -jar target/storeit-1.4.0b.jar`
+- 运行：`java -jar target/storeit-1.4.0c.jar`
 
 可选：在 `src/main/resources/application.yml` 调整配置；或通过外部文件覆盖（适用于发布 JAR 部署）：
 
@@ -88,7 +89,7 @@ spring:
 - 认证：
 	- `POST /api/login`（表单：username、password）
 	- `POST /api/logout`
-	- `GET /api/user/status`
+	- `GET /api/user/status`（返回 `logged_in`、`username`、`role`）
 - 文件：
 	- `GET /api/files?path=...` — 列出目录内容
 	- `POST /api/upload` — 上传文件（multipart/form-data，字段名：file，可选 directory）。配额不足时返回 400，`error` 为「存储配额不足」
@@ -97,8 +98,16 @@ spring:
 	- `POST /api/file/delete`、`POST /api/file/rename`、`POST /api/folder/create` — 删除 / 重命名 / 新建文件夹
 	- `GET /api/storage/usage` — 存储用量（普通用户=个人占用/配额，管理员=整盘）
 - 分享：
-	- `POST /api/share` — 生成分享链接（请求体：`{"filePath":"...","expireHours":720,"maxDownloads":null}`，`expireHours=-1` 为永久）
+	- `POST /api/share` — 生成分享链接（请求体：`{"filePath":"...","expireHours":720,"maxDownloads":null}`，`expireHours=-1` 为永久，`maxDownloads` 为空表示不限次数）
+	- `GET /api/shares` — 列出当前用户的分享
+	- `DELETE /api/shares/{id}` — 撤销本人的分享，之后 `GET /d/{token}` 立即失效
 	- `GET /d/{token}` — 公开下载（受有效期/下载次数限制）。文件仍可读时才原子扣减次数；文件已删除时返回「文件不存在」且不扣次
+- 管理员：
+	- `GET /api/admin/users` — 用户列表，不含口令哈希
+	- `POST /api/admin/users` — 开户，请求体 `{"username","password","storageQuota"}`，口令至少 8 位，配额 0 表示不限额
+	- `PATCH /api/admin/users/{username}` — 修改 `storageQuota` 和/或 `role`（`USER` / `ADMIN`）。不能取消自己的管理员角色
+	- `POST /api/admin/users/{username}/password` — 重置口令
+	- 非管理员调用以上接口返回 403
 
 ### 数据库存储
 - SQLite 数据库：`./data/storeit.db`

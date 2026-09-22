@@ -68,8 +68,11 @@ public class AuthController {
 
     @GetMapping("/user/status")
     public Map<String, Object> userStatus(HttpServletRequest request) {
-        Optional<String> u = authService.getUsernameFromRequest(request);
-        // Map.of 不允许 null，避免 NPE
-        return Map.of("logged_in", u.isPresent(), "username", u.orElse(""));
+        Optional<String> name = authService.getUsernameFromRequest(request);
+        if (name.isEmpty()) {
+            return Map.of("logged_in", false, "username", "", "role", "");
+        }
+        String role = authService.findUser(name.get()).map(User::getRole).orElse("");
+        return Map.of("logged_in", true, "username", name.get(), "role", role == null ? "" : role);
     }
 }

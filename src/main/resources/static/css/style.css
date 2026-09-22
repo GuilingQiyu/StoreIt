@@ -94,6 +94,20 @@ body {
     font-size: 1rem;
 }
 
+.admin-user-row, .share-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.admin-user-row input, .admin-user-row select, .share-row input {
+    padding: 4px 6px;
+    max-width: 140px;
+}
+.share-row input { max-width: 100%; flex: 1; }
+
 .sidebar-menu .menu-item:hover, .sidebar-menu .menu-item.active {
     background: rgba(74, 78, 105, 0.1);
     color: var(--primary-color);

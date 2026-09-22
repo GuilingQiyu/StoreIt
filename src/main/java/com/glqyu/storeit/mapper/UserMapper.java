@@ -3,6 +3,7 @@ package com.glqyu.storeit.mapper;
 import com.glqyu.storeit.model.User;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -22,4 +23,10 @@ public interface UserMapper {
 
     @Update("UPDATE users SET role = #{role} WHERE username = #{username}")
     int updateRole(@Param("username") String username, @Param("role") String role);
+
+    @Update("UPDATE users SET storage_quota = #{quota} WHERE username = #{username}")
+    int updateQuota(@Param("username") String username, @Param("quota") long quota);
+
+    @Select("SELECT id, username, created_at as createdAt, role, storage_quota as storageQuota FROM users ORDER BY username")
+    List<User> findAll();
 }

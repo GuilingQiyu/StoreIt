@@ -20,7 +20,8 @@ Defaults:
 - Files: `GET /api/files?path=...`, `POST /api/upload` (multipart), protected download `GET /storage/**`
 - Preview: images (except SVG), video, audio, and PDF stay inline. HTML, SVG, and XML are served as `text/plain` with `script-src 'none'`.
 - Health: `GET /actuator/health` is public. Other Actuator endpoints are not exposed.
-- Share: `POST /api/share` to create, public `GET /d/{token}` to download. The download count is consumed only after the file is readable.
+- Share: `POST /api/share` to create, `GET /api/shares` to list your links, `DELETE /api/shares/{id}` to revoke, public `GET /d/{token}` to download. The download count is consumed only after the file is readable.
+- Admin users: `GET/POST /api/admin/users`, `PATCH /api/admin/users/{username}`, `POST /api/admin/users/{username}/password`. Usernames are limited to letters, digits, `.`, `_`, and `-`. Other users receive 403.
 - Storage quota: `storage_quota` greater than 0 is enforced on upload (0 means unlimited). Over quota returns "存储配额不足".
 - Security: common headers (`HSTS`, `X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`), path safety checks. Session cookie is `Secure` when `app.ssl-enabled` is true.
 - Config: `./config/application.yml` is imported first (port, SSL, datasource, storage, `app.ssl-enabled`), then `./config/admin.yml` (admin password wins on duplicate keys).
@@ -29,7 +30,7 @@ Defaults:
 Prereqs: JDK 21, Maven
 
 - Build: `mvn package` (runs tests)
-- Run: `java -jar target/storeit-1.4.0b.jar`
+- Run: `java -jar target/storeit-1.4.0c.jar`
 
 ### External admin credentials
 Path: `./config/admin.yml`
