@@ -19,7 +19,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         String path = request.getRequestURI();
         // permit static assets, the public login/about pages, error pages, and share links
         if (path.startsWith("/static/") || path.equals("/login") || path.equals("/about")
-                || path.equals("/403") || path.equals("/404") || path.startsWith("/d/")) {
+                || path.equals("/403") || path.equals("/404") || path.equals("/error") || path.startsWith("/error/")
+                || path.startsWith("/d/")) {
             return true;
         }
         // allow login/logout and user status queries

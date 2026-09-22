@@ -1,4 +1,5 @@
 # External application overrides for StoreIt (copy generated to ./config/application.yml)
+# Loaded before ./config/admin.yml. Duplicate keys in admin.yml win (keep the admin password there).
 # You can override any Spring Boot or `app.*` property here when running the jar.
 
 server:

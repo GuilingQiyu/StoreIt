@@ -16,15 +16,16 @@ Defaults:
 - UI: `/`, `/login`, `/list`
 - Auth: `POST /api/login`, `POST /api/logout`, `GET /api/user/status`
 - Files: `GET /api/files?path=...`, `POST /api/upload` (multipart), protected download `GET /storage/**`
-- Share: `POST /api/share` to create, public `GET /d/{token}` to download
-- Security: common headers (`HSTS`, `X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`), path safety checks
-- Config: `application.yml` and external `./config/admin.yml`
+- Share: `POST /api/share` to create, public `GET /d/{token}` to download. The download count is consumed only after the file is readable.
+- Storage quota: `storage_quota` greater than 0 is enforced on upload (0 means unlimited). Over quota returns "存储配额不足".
+- Security: common headers (`HSTS`, `X-Content-Type-Options`, `X-Frame-Options`, `X-XSS-Protection`), path safety checks. Session cookie is `Secure` when `app.ssl-enabled` is true.
+- Config: `./config/application.yml` is imported first (port, SSL, datasource, storage, `app.ssl-enabled`), then `./config/admin.yml` (admin password wins on duplicate keys).
 
 ## Quick start
 Prereqs: JDK 21, Maven
 
-- Build: `mvn -DskipTests package`
-- Run: `java -jar target/storeit-1.3.3.jar`
+- Build: `mvn package` (runs tests)
+- Run: `java -jar target/storeit-1.4.0a.jar`
 
 ### External admin credentials
 Path: `./config/admin.yml`
@@ -36,7 +37,7 @@ app:
     password: your_secret_here
 ```
 
-Already imported via `spring.config.import=optional:file:./config/admin.yml`. Ignored by VCS.
+Imported via `spring.config.import`, with `optional:file:./config/application.yml` before `optional:file:./config/admin.yml`. Both files are ignored by VCS.
 
 ## Routes & APIs
 - Pages: `/`, `/login`, `/list`

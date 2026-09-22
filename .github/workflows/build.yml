@@ -24,4 +24,4 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: ./mvnw -B -ntp -DskipTests package
+        run: ./mvnw -B -ntp package

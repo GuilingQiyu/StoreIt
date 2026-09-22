@@ -547,7 +547,14 @@ function processUploadQueue() {
             }
         } else {
             next.status = 'error';
-            statusText.textContent = 'HTTP错误';
+            let msg = 'HTTP错误';
+            try {
+                const d = JSON.parse(xhr.responseText);
+                if (d && d.error) msg = d.error;
+            } catch (e) { /* 非 JSON 错误页保持通用文案 */ }
+            statusText.textContent = '失败: ' + msg;
+            statusText.style.color = 'var(--error-color)';
+            fill.style.background = 'var(--error-color)';
         }
         updateQueueSummary();
         processUploadQueue(); // Next

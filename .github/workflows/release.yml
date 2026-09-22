@@ -54,8 +54,8 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Build (skip tests)
-        run: ./mvnw -B -ntp -DskipTests clean package
+      - name: Build
+        run: ./mvnw -B -ntp clean package
 
       - name: Collect artifacts
         run: |

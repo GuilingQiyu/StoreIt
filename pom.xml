@@ -10,21 +10,26 @@
 	</parent>
 	<groupId>com.glqyu</groupId>
 	<artifactId>storeit</artifactId>
-	<version>1.3.3</version>
+	<version>1.4.0a</version>
 	<name>storeit</name>
-	<description>Demo project for Spring Boot</description>
-	<url/>
+	<description>轻量级文件存储与分享服务</description>
+	<url>https://github.com/GuilingQiyu/StoreIt</url>
 	<licenses>
-		<license/>
+		<license>
+			<name>All Rights Reserved</name>
+			<comments>© 归灵祈昱</comments>
+		</license>
 	</licenses>
 	<developers>
-		<developer/>
+		<developer>
+			<name>归灵祈昱</name>
+		</developer>
 	</developers>
 	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
+		<connection>scm:git:https://github.com/GuilingQiyu/StoreIt.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/GuilingQiyu/StoreIt.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/GuilingQiyu/StoreIt</url>
 	</scm>
 	<properties>
 		<java.version>21</java.version>

@@ -16,10 +16,15 @@ server:
 spring:
   config:
     import:
+      # application.yml 在前，admin.yml 在后；同名项以后者为准（管理员口令以 admin.yml 为准）
+      - optional:file:./config/application.yml
       - optional:file:./config/admin.yml
   datasource:
     url: jdbc:sqlite:./data/storeit.db
     driver-class-name: org.sqlite.JDBC
+    hikari:
+      maximum-pool-size: 1
+      connection-init-sql: PRAGMA foreign_keys=ON
   flyway:
     enabled: true
     locations: classpath:db/migration

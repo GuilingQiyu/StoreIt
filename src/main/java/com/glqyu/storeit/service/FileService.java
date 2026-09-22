@@ -25,6 +25,8 @@ import com.glqyu.storeit.model.User;
 
 @Service
 public class FileService {
+    public static final String QUOTA_EXCEEDED = "存储配额不足";
+
     private final AppProperties props;
     private final FileMetadataMapper metaMapper;
 
@@ -148,6 +150,7 @@ public class FileService {
             dest = dir.resolve(fileName);
         }
         
+        enforceQuota(user, file.getSize());
         if (dir.toFile().getUsableSpace() < file.getSize()) {
             throw new IOException("磁盘空间不足");
         }
@@ -174,17 +177,19 @@ public class FileService {
     // 新增 updateSingleFileMetadata 方法
     private void updateSingleFileMetadata(User user, String parentPath, File file) {
         String name = file.getName();
-        Optional<FileMetadata> existing = metaMapper.findByUserIdAndPath(user.getId(), parentPath + "/" + name); // 需确保 Mapper 有此方法或类似逻辑
-        
+        String parent = parentPath == null ? "" : parentPath;
+        String relPath = childPath(parent, name);
+        Optional<FileMetadata> existing = metaMapper.findByUserIdAndPath(user.getId(), relPath);
+
         FileMetadata m = existing.orElse(new FileMetadata());
         m.setUserId(user.getId());
-        m.setPath((parentPath == null || parentPath.isEmpty()) ? name : parentPath + "/" + name);
+        m.setPath(relPath);
         m.setName(name);
         m.setDirectory(file.isDirectory());
         m.setSize(file.isDirectory() ? 0 : file.length());
         m.setLastModified(file.lastModified() / 1000);
         m.setContentType(file.isDirectory() ? null : detectContentType(name));
-        m.setParentPath(parentPath == null ? "" : parentPath);
+        m.setParentPath(parent);
         if (existing.isPresent()) {
             metaMapper.update(m);
         } else {
@@ -318,12 +323,43 @@ public class FileService {
         return user.getRole() != null && user.getRole().equalsIgnoreCase("ADMIN");
     }
 
-    private long directorySize(Path dir) {
-        if (!Files.exists(dir)) return 0L;
+    /** 父路径为空时路径就是文件名，避免根目录被写成 "/文件名"。 */
+    private static String childPath(String parentPath, String name) {
+        if (parentPath == null || parentPath.isEmpty()) {
+            return name;
+        }
+        return parentPath + "/" + name;
+    }
+
+    /**
+     * storage_quota 大于 0 时，已占用加上本次大小不得超过配额。
+     * 0 与负数表示不限额（管理员默认配额为 0）。
+     */
+    private void enforceQuota(User user, long incomingBytes) throws IOException {
+        long quota = user.getStorageQuota();
+        if (quota <= 0) {
+            return;
+        }
+        long used = usedBytes(getUserRoot(user));
+        if (used > quota || incomingBytes > quota - used) {
+            throw new IOException(QUOTA_EXCEEDED);
+        }
+    }
+
+    private long usedBytes(Path dir) throws IOException {
+        if (!Files.exists(dir)) {
+            return 0L;
+        }
         try (java.util.stream.Stream<Path> walk = Files.walk(dir)) {
             return walk.filter(Files::isRegularFile)
                     .mapToLong(p -> p.toFile().length())
                     .sum();
+        }
+    }
+
+    private long directorySize(Path dir) {
+        try {
+            return usedBytes(dir);
         } catch (IOException e) {
             return 0L;
         }

@@ -79,6 +79,13 @@ public class FileController {
                     "message", "文件上传成功",
                     "file", Map.of("name", file.getOriginalFilename(), "path", saved, "size", file.getSize())
             ));
+        } catch (IOException e) {
+            if (FileService.QUOTA_EXCEEDED.equals(e.getMessage())) {
+                log.warn("Upload rejected by quota into '{}'", directory);
+                return ResponseEntity.badRequest().body(Map.of("error", FileService.QUOTA_EXCEEDED));
+            }
+            log.warn("Upload failed into '{}': {}", directory, e.toString());
+            return ResponseEntity.internalServerError().body(Map.of("error", "上传失败"));
         } catch (Exception e) {
             log.warn("Upload failed into '{}': {}", directory, e.toString());
             return ResponseEntity.internalServerError().body(Map.of("error", "上传失败"));
@@ -209,21 +216,25 @@ public class FileController {
         Optional<FileShare> s = shareService.validateToken(token);
         if (s.isEmpty()) return ResponseEntity.status(404).body(Map.of("error", "分享链接无效或已过期"));
         FileShare share = s.get();
-        // 原子化扣减下载额度，避免并发下超出 maxDownloads
-        if (!shareService.consumeDownload(share.getId())) {
-            return ResponseEntity.status(404).body(Map.of("error", "分享链接无效或已过期"));
-        }
+        Resource resource;
         try {
             User owner = authService.findUserById(share.getUserId()).orElseThrow(() -> new IOException("Owner not found"));
-            Resource r = fileService.getResource(owner, share.getFilePath());
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, attachment(r.getFilename()))
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(r);
+            resource = fileService.getResource(owner, share.getFilePath());
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.status(404).body(Map.of("error", "文件不存在"));
+            }
         } catch (Exception e) {
             log.warn("Shared download failed for token: {}", e.toString());
             return ResponseEntity.status(404).body(Map.of("error", "文件不存在"));
         }
+        // 文件确认可读后再原子扣减，避免文件已删除仍消耗次数
+        if (!shareService.consumeDownload(share.getId())) {
+            return ResponseEntity.status(404).body(Map.of("error", "分享链接无效或已过期"));
+        }
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, attachment(resource.getFilename()))
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
     // --- helpers ---
