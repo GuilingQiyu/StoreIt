@@ -1,6 +1,6 @@
 name: Release
 
-# 推送形如 v1.3.2 的标签时构建，并把 Version.md 中对应版本写入 Release 页。
+# 推送形如 v1.3.3 的标签时构建，并把 Version.md 中对应版本写入 Release 页。
 # 也可在 Actions 页面手动运行（版本取自 pom.xml）。
 on:
   push:

@@ -24,7 +24,7 @@ Defaults:
 Prereqs: JDK 21, Maven
 
 - Build: `mvn -DskipTests package`
-- Run: `java -jar target/storeit-1.1.1.jar`
+- Run: `java -jar target/storeit-1.3.3.jar`
 
 ### External admin credentials
 Path: `./config/admin.yml`

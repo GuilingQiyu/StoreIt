@@ -27,7 +27,7 @@
 前置要求：JDK 21、Maven
 
 - 构建：`mvn -DskipTests package`
-- 运行：`java -jar target/storeit-1.3.2.jar`
+- 运行：`java -jar target/storeit-1.3.3.jar`
 
 可选：在 `src/main/resources/application.yml` 调整配置；或通过外部文件覆盖（适用于发布 JAR 部署）：
 
