@@ -25,6 +25,9 @@ class StoreitApplicationTests {
 		assertThat(admin).isGreaterThan(application);
 		assertThat(yml).contains("maximum-pool-size: 1");
 		assertThat(yml).contains("PRAGMA foreign_keys=ON");
+		assertThat(yml).contains("include: health");
+		assertThat(yml).contains("require-custom-admin: false");
+		assertThat(yml).contains("max-failures: 5");
 	}
 
 	@Test

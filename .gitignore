@@ -2,6 +2,7 @@ TODO
 # External sensitive configs
 config/admin.yml
 config/application.yml
+config/auth info here.txt
 # keep example files tracked
 !config/*.example
 # Python

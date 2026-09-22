@@ -42,6 +42,16 @@ public class AuthService {
         return BCrypt.checkpw(raw, user.getPasswordHash());
     }
 
+    /**
+     * 用户不存在时仍做一次 BCrypt 比较，避免用响应时间判断用户名是否存在。
+     * 哈希在类加载时生成，不对应任何真实口令。
+     */
+    private static final String DUMMY_PASSWORD_HASH = BCrypt.hashpw("storeit-timing-equalizer", BCrypt.gensalt(10));
+
+    public void checkDummyPassword(String raw) {
+        BCrypt.checkpw(raw == null ? "" : raw, DUMMY_PASSWORD_HASH);
+    }
+
     public String createSession(String username, HttpServletResponse response) {
         String sid = UUID.randomUUID().toString().replace("-", "");
         long now = Instant.now().getEpochSecond();

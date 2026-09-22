@@ -33,9 +33,23 @@ spring:
       max-file-size: 10GB
       max-request-size: 10GB
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
 app:
   storage-root: storage
   ssl-enabled: false
+  # true 时，若管理员仍是内置口令 admin / authorized_users，启动直接失败
+  require-custom-admin: false
+  login:
+    max-failures: 5
+    window-minutes: 15
   session:
     max-age-days: 30
     cookie-name: STOREIT_SESSION

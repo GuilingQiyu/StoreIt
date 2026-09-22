@@ -3,6 +3,8 @@
 
 一个基于 Spring Boot 3（JDK 21）、SQLite 的轻量级文件存储与分享服务。支持登录会话、文件浏览/上传/下载、分享直链、基础安全头、可选 HTTPS，以及通过外部配置文件管理默认管理员账号。
 
+本程序以 [GNU AGPL-3.0 或更高版本](https://www.gnu.org/licenses/agpl-3.0.html)（SPDX：`AGPL-3.0-or-later`）授权，全文见 [LICENSE](./LICENSE)。通过网络使用本服务时，可在关于页获取源码：<https://github.com/GuilingQiyu/StoreIt>。
+
 ![StoreIt Example](./example.png)
 
 [更新日志](./Version.md)
@@ -15,9 +17,10 @@
 
 ## 功能一览
 - UI 页面：`/`、`/login`、`/list`（未登录访问云盘页面会由服务端直接重定向到 `/login`）
-- 认证与会话：`POST /api/login`、`POST /api/logout`、`GET /api/user/status`
+- 认证与会话：`POST /api/login`、`POST /api/logout`、`GET /api/user/status`。同一 IP 与用户名 15 分钟内连续失败 5 次后暂时拒绝
 - 文件：`GET /api/files?path=...`、`POST /api/upload`（multipart）、受保护下载 `GET /storage/**`
-- 在线预览：`GET /api/preview?path=...`，内联返回图片 / 视频 / 纯文本，视频支持 HTTP Range 拖动定位
+- 在线预览：`GET /api/preview?path=...`。图片（不含 SVG）、视频、音频、PDF 内联；HTML、SVG、XML 以 `text/plain` 返回，并附带 `script-src 'none'`。视频支持 HTTP Range
+- 健康检查：`GET /actuator/health` 无需登录；其余 Actuator 端点不暴露
 - 分享直链：`POST /api/share` 生成分享，公开下载 `GET /d/{token}`（先确认文件可读，再原子扣减下载次数；文件已删除时不扣次）
 - 存储用量：`GET /api/storage/usage`；普通用户展示个人目录实际占用与配额，管理员展示整盘容量。`storage_quota` 大于 0 时上传会校验配额，超出返回「存储配额不足」；0 表示不限额
 - 安全：会话 Cookie 设置 `HttpOnly` / `SameSite=Lax`（`app.ssl-enabled: true` 时附加 `Secure`）；`Content-Security-Policy` 与 `X-Content-Type-Options`、`X-Frame-Options`、`Referrer-Policy` 等响应头；`Strict-Transport-Security` 仅在 HTTPS 下下发；路径安全检查，防目录穿越
@@ -27,7 +30,7 @@
 前置要求：JDK 21、Maven
 
 - 构建：`mvn package`（会运行测试）
-- 运行：`java -jar target/storeit-1.4.0a.jar`
+- 运行：`java -jar target/storeit-1.4.0b.jar`
 
 可选：在 `src/main/resources/application.yml` 调整配置；或通过外部文件覆盖（适用于发布 JAR 部署）：
 
@@ -73,7 +76,8 @@ spring:
 >
 > 补充加固建议：
 > - **启用 HTTPS**：在 `config/application.yml` 配置 `server.ssl.*` 并设 `app.ssl-enabled: true`，会话 Cookie 会自动附加 `Secure`，并下发 HSTS。
-> - **置于反向代理之后**：由 Nginx/Caddy 终止 TLS 并按需做登录限流，弥补应用层暂未内置的登录速率限制。
+> - **置于反向代理之后**：由 Nginx/Caddy 终止 TLS。应用已对同一 IP 与用户名做登录失败限流，代理上仍可再加一层。
+> - **拒绝内置口令启动**：在 `config/application.yml` 设置 `app.require-custom-admin: true` 后，若口令仍是 `admin / authorized_users`，进程会拒绝启动。
 > - **设置用户配额**：`storage_quota`（字节）大于 0 时，上传前会比较个人目录已占用与本次文件大小，超出则拒绝；0 表示不限额。管理员默认配额为 0。
 
 ### 路由与 API 说明
@@ -89,7 +93,7 @@ spring:
 	- `GET /api/files?path=...` — 列出目录内容
 	- `POST /api/upload` — 上传文件（multipart/form-data，字段名：file，可选 directory）。配额不足时返回 400，`error` 为「存储配额不足」
 	- `GET /storage/**` — 已登录受保护下载（`attachment`）
-	- `GET /api/preview?path=...` — 已登录内联预览（`inline`，图片/视频/纯文本，视频支持 Range）
+	- `GET /api/preview?path=...` — 已登录预览。图片（不含 SVG）、视频、音频、PDF 为内联真实类型；HTML、SVG、XML 及其他文本为 `text/plain`，CSP 为 `script-src 'none'`。视频支持 Range
 	- `POST /api/file/delete`、`POST /api/file/rename`、`POST /api/folder/create` — 删除 / 重命名 / 新建文件夹
 	- `GET /api/storage/usage` — 存储用量（普通用户=个人占用/配额，管理员=整盘）
 - 分享：

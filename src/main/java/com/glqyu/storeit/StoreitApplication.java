@@ -43,6 +43,13 @@ public class StoreitApplication {
 		return new ApplicationRunner() {
 			@Override
 			public void run(ApplicationArguments args) throws Exception {
+				if (props.isBuiltInDefaultAdmin()) {
+					log.warn("仍在使用内置默认管理员口令 {} / {}。请在 config/admin.yml 中修改后再暴露到公网。",
+							AppProperties.BUILTIN_ADMIN_USERNAME, AppProperties.BUILTIN_ADMIN_PASSWORD);
+					if (props.isRequireCustomAdmin()) {
+						throw new IllegalStateException("app.require-custom-admin=true，但默认管理员仍是内置口令");
+					}
+				}
 				// 1) Generate external config templates on first run (won't affect current process config)
 				try {
 					Path cfgDir = Paths.get("config");

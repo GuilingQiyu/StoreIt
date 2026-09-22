@@ -25,9 +25,9 @@ function setupRefreshButton(){ const b=document.getElementById('refreshBtn'); if
 function formatFileSize(bytes){ if(bytes===0) return '0 Bytes'; const k=1024; const sizes=['Bytes','KB','MB','GB','TB']; const i=Math.floor(Math.log(bytes)/Math.log(k)); return (bytes/Math.pow(k,i)).toFixed(2)+' '+sizes[i]; }
 
 // 预览支持的扩展名
-const PREVIEW_IMAGE_EXTS = ['jpg','jpeg','png','gif','webp','bmp','svg'];
+const PREVIEW_IMAGE_EXTS = ['jpg','jpeg','png','gif','webp','bmp'];
 const PREVIEW_VIDEO_EXTS = ['mp4','webm','ogg','ogv','mov'];
-const PREVIEW_TEXT_EXTS = ['txt','log','md','csv','ini','conf','yml','yaml','json','xml','html','htm','css','js','java','py','c','cpp','h','go','rs','sh','sql'];
+const PREVIEW_TEXT_EXTS = ['txt','log','md','csv','ini','conf','yml','yaml','json','xml','html','htm','svg','css','js','java','py','c','cpp','h','go','rs','sh','sql'];
 
 function getFileExt(name){ return (name.includes('.') ? name.split('.').pop() : '').toLowerCase(); }
 

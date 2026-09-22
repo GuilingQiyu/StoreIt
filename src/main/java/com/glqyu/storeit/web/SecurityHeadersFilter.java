@@ -1,7 +1,9 @@
 package com.glqyu.storeit.web;
 
 import com.glqyu.storeit.config.AppProperties;
+import com.glqyu.storeit.service.FileService;
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -42,7 +44,9 @@ public class SecurityHeadersFilter implements Filter {
         res.setHeader("X-Frame-Options", "SAMEORIGIN");
         res.setHeader("X-XSS-Protection", "1; mode=block");
         res.setHeader("Referrer-Policy", "same-origin");
-        res.setHeader("Content-Security-Policy", CONTENT_SECURITY_POLICY);
+        String path = request instanceof HttpServletRequest http ? http.getRequestURI() : "";
+        res.setHeader("Content-Security-Policy",
+                path.startsWith("/api/preview") ? FileService.PREVIEW_CSP : CONTENT_SECURITY_POLICY);
         chain.doFilter(request, response);
     }
 }

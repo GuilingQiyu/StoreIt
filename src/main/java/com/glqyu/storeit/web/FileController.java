@@ -120,13 +120,10 @@ public class FileController {
             User user = getCurrentUser(request);
             Resource r = fileService.getResource(user, path);
             long length = r.contentLength();
-            MediaType mediaType = MediaType.parseMediaType(fileService.detectContentType(r.getFilename()));
+            String filename = r.getFilename();
 
             if (rangeHeader == null) {
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.ACCEPT_RANGES, "bytes")
-                        .header(HttpHeaders.CONTENT_DISPOSITION, inline(r.getFilename()))
-                        .contentType(mediaType)
+                return previewResponse(HttpStatus.OK, filename)
                         .contentLength(length)
                         .body(r);
             }
@@ -134,9 +131,7 @@ public class FileController {
             List<HttpRange> ranges = HttpRange.parseRanges(rangeHeader);
             HttpRange range = ranges.isEmpty() ? null : ranges.get(0);
             if (range == null) {
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.ACCEPT_RANGES, "bytes")
-                        .contentType(mediaType)
+                return previewResponse(HttpStatus.OK, filename)
                         .contentLength(length)
                         .body(r);
             }
@@ -151,11 +146,8 @@ public class FileController {
                 raf.seek(start);
                 raf.readFully(data);
             }
-            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
-                    .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+            return previewResponse(HttpStatus.PARTIAL_CONTENT, filename)
                     .header(HttpHeaders.CONTENT_RANGE, "bytes " + start + "-" + end + "/" + length)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, inline(r.getFilename()))
-                    .contentType(mediaType)
                     .contentLength(chunk)
                     .body(data);
         } catch (Exception e) {
@@ -242,6 +234,13 @@ public class FileController {
     private String decodeStoragePath(HttpServletRequest request, String prefix) {
         String rel = request.getRequestURI().substring(prefix.length());
         return java.net.URLDecoder.decode(rel, StandardCharsets.UTF_8);
+    }
+
+    private ResponseEntity.BodyBuilder previewResponse(HttpStatus status, String filename) {
+        return ResponseEntity.status(status)
+                .header(HttpHeaders.ACCEPT_RANGES, "bytes")
+                .header(HttpHeaders.CONTENT_DISPOSITION, inline(filename))
+                .contentType(fileService.previewMediaType(filename));
     }
 
     private String attachment(String filename) {

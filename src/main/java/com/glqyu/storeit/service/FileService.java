@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,15 @@ import com.glqyu.storeit.model.User;
 @Service
 public class FileService {
     public static final String QUOTA_EXCEEDED = "存储配额不足";
+    public static final String PREVIEW_CSP = String.join("; ",
+            "default-src 'none'",
+            "script-src 'none'",
+            "style-src 'none'",
+            "img-src 'none'",
+            "media-src 'none'",
+            "object-src 'none'",
+            "base-uri 'none'",
+            "frame-ancestors 'none'");
 
     private final AppProperties props;
     private final FileMetadataMapper metaMapper;
@@ -46,9 +56,25 @@ public class FileService {
     }
 
     public boolean isSafePath(User user, String relativePath) {
-        Path base = getUserRoot(user);
-        Path target = base.resolve(relativePath == null ? "" : relativePath).normalize();
-        return target.startsWith(base);
+        try {
+            Path base = getUserRoot(user);
+            Files.createDirectories(base);
+            Path realBase = base.toRealPath();
+            Path target = realBase.resolve(relativePath == null ? "" : relativePath).normalize();
+            if (!target.startsWith(realBase)) {
+                return false;
+            }
+            Path existing = target;
+            while (existing != null && !Files.exists(existing)) {
+                existing = existing.getParent();
+            }
+            if (existing == null) {
+                return false;
+            }
+            return existing.toRealPath().startsWith(realBase);
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     public FileListResponse list(User user, String relativePath) throws IOException {
@@ -150,6 +176,7 @@ public class FileService {
             dest = dir.resolve(fileName);
         }
         
+        if (!isSafePath(user, directory)) throw new IOException("unsafe path");
         enforceQuota(user, file.getSize());
         if (dir.toFile().getUsableSpace() < file.getSize()) {
             throw new IOException("磁盘空间不足");
@@ -366,7 +393,31 @@ public class FileService {
     }
 
     /**
-     * 根据文件名推断 MIME 类型，用于元数据与预览。优先用扩展名映射，回退到 NIO 探测。
+     * 预览用的 Content-Type。图片（不含 SVG）、视频、音频和 PDF 保持真实类型并内联；
+     * HTML、SVG、XML 以及其他文本改为 text/plain，避免浏览器把响应当成可执行文档。
+     */
+    public MediaType previewMediaType(String name) {
+        if (isInlinePreview(name)) {
+            return MediaType.parseMediaType(detectContentType(name));
+        }
+        return MediaType.parseMediaType("text/plain; charset=UTF-8");
+    }
+
+    private boolean isInlinePreview(String name) {
+        String ext = FilenameUtils.getExtension(name == null ? "" : name).toLowerCase();
+        switch (ext) {
+            case "jpg": case "jpeg": case "png": case "gif": case "webp": case "bmp":
+            case "mp4": case "webm": case "ogg": case "ogv": case "mov":
+            case "mp3": case "wav":
+            case "pdf":
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 根据文件名推断 MIME 类型，用于元数据。优先用扩展名映射，回退到 NIO 探测。
      */
     public String detectContentType(String name) {
         String ext = FilenameUtils.getExtension(name == null ? "" : name).toLowerCase();

@@ -1,5 +1,23 @@
 # 储之文件服务器 (StoreIt) - 版本日志
 
+## 1.4.0b (2026-09-22)
+
+### 许可证
+- 项目改为 **AGPL-3.0-or-later**。关于页和登录页提供源码链接（`https://github.com/GuilingQiyu/StoreIt`）。
+
+### 登录
+- 同一 IP 与用户名在 15 分钟内连续失败 5 次后，后续尝试返回「登录尝试过多，请稍后再试」。次数和时间可通过 `app.login.max-failures`、`app.login.window-minutes` 调整。
+- 用户不存在时仍做一次 BCrypt 比较，避免用响应时间判断用户名。
+- 若管理员仍是内置口令 `admin / authorized_users`，启动时写入警告。`app.require-custom-admin: true` 时直接拒绝启动。
+
+### 预览与路径
+- 图片（不含 SVG）、视频、音频、PDF 的预览响应保持内联和真实类型。HTML、SVG、XML 以及其他文本改为 `text/plain`，并覆盖 `script-src 'none'` 的内容安全策略。
+- 路径检查会解析符号链接。真实路径必须仍在该用户目录内，上传目录的父路径同样检查。
+
+### 运行
+- 只公开 `GET /actuator/health`。移除未使用的异步线程池。
+- 已跟踪的 `config/auth info here.txt` 移出版本库。
+
 ## 1.4.0a (2026-09-22)
 
 ### 配置
