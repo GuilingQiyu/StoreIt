@@ -30,7 +30,7 @@ Defaults:
 Prereqs: JDK 21, Maven
 
 - Build: `mvn package` (runs tests)
-- Run: `java -jar target/storeit-1.4.0-Alpha.jar`
+- Run: `java -jar target/storeit-1.4.0-Alpha.1.jar`
 
 ### External admin credentials
 Path: `./config/admin.yml`

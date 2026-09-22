@@ -1,5 +1,11 @@
 # 储之文件服务器 (StoreIt) - 版本日志
 
+## 1.4.0-Alpha.1 (2026-09-22)
+
+### 修复
+- 收藏迁移改为 `V5__favorites.sql`。服务器库里版本 3 已是 `must_change_password`，版本 4 已是 `user enabled`，1.4.0-Alpha 把收藏写成 V3 后启动校验失败。
+- 补回与已上线库校验和一致的 `V3__must_change_password.sql` 和 `V4__user_enabled.sql`。已有库只会继续执行 V5。
+
 ## 1.4.0-Alpha (2026-09-22)
 
 本版合并 1.4.0a、1.4.0b、1.4.0c 以及最近访问、收藏、搜索和移动。
