@@ -279,6 +279,22 @@ a:hover { text-decoration: underline; }
     padding: 10px 0;
 }
 
+.file-grid-view.panel-mode {
+    display: block;
+}
+
+/* Embedded Panel Card for About / Shares / Admin */
+.panel-card {
+    background: rgba(255, 255, 255, 0.88);
+    border-radius: 15px;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    backdrop-filter: blur(5px);
+    margin: 15px auto;
+    box-sizing: border-box;
+    animation: fadeIn 0.3s ease-out;
+}
+
 .file-card {
     background: white;
     border-radius: 10px;

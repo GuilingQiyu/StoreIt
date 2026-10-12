@@ -122,9 +122,14 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 
 function setActiveMenu(id) {
-    document.querySelectorAll('.sidebar-menu > .menu-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.sidebar-menu .menu-item').forEach(el => el.classList.remove('active'));
     const item = document.getElementById(id);
     if (item) item.classList.add('active');
+}
+
+function setPageTitle(title) {
+    const el = document.getElementById('pageTitle') || document.querySelector('.header-row h1');
+    if (el) el.textContent = title;
 }
 
 function setupSearch() {
@@ -142,9 +147,11 @@ function setupSearch() {
 function loadFileList(path=''){
   viewMode = 'files';
   setActiveMenu('menuFiles');
+  setPageTitle('文件列表');
   const gridView = document.getElementById('file-grid-view');
   const emptyState = document.getElementById('empty-state');
   if(!gridView) return;
+  gridView.classList.remove('panel-mode');
   
   gridView.innerHTML = '<p style="text-align:center; width:100%;">加载中...</p>';
   emptyState.style.display = 'none';
@@ -164,18 +171,21 @@ function loadFileList(path=''){
 function loadRecent() {
     viewMode = 'recent';
     setActiveMenu('menuRecent');
+    setPageTitle('最近访问');
     loadCollection('/api/files/recent', '最近访问');
 }
 
 function loadFavorites() {
     viewMode = 'favorites';
     setActiveMenu('menuFavorites');
+    setPageTitle('收藏夹');
     loadCollection('/api/favorites', '收藏夹');
 }
 
 function loadSearch(query) {
     viewMode = 'search';
     setActiveMenu('menuFiles');
+    setPageTitle('搜索结果');
     loadCollection('/api/files/search?q=' + encodeURIComponent(query || ''), '搜索：' + (query || ''));
 }
 
@@ -183,6 +193,7 @@ function loadCollection(url, label) {
     const gridView = document.getElementById('file-grid-view');
     const emptyState = document.getElementById('empty-state');
     if (!gridView) return;
+    gridView.classList.remove('panel-mode');
     gridView.innerHTML = '<p style="text-align:center; width:100%;">加载中...</p>';
     if (emptyState) emptyState.style.display = 'none';
     fetch(url).then(r => r.json()).then(data => {
@@ -195,9 +206,129 @@ function loadCollection(url, label) {
     }).catch(err => { gridView.innerHTML = `<p class="error">加载失败: ${escapeHtml(err.message)}</p>`; });
 }
 
+function loadAbout() {
+    viewMode = 'about';
+    setActiveMenu('menuAbout');
+    setPageTitle('关于');
+    const gridView = document.getElementById('file-grid-view');
+    const emptyState = document.getElementById('empty-state');
+    if (!gridView) return;
+    if (emptyState) emptyState.style.display = 'none';
+    gridView.classList.add('panel-mode');
+    renderSpecialBreadcrumb('关于');
+    gridView.innerHTML = `
+        <div class="panel-card about-card" style="max-width:680px; margin:30px auto; text-align:center;">
+            <h1 style="color:var(--primary-color); font-size:2rem; margin-bottom:0.8rem;">关于 储之</h1>
+            <p style="font-size:1.1rem; color:var(--text-color); margin:1.2rem 0; line-height:1.6;">
+                储之是一个基于 Spring Boot 构建的简单文件服务器。
+            </p>
+            <div class="status" style="margin:1.5rem 0;">
+                <div class="status-dot"></div>
+                <span style="font-size:0.95rem; color:#4CAF50; font-weight:500;">服务器运行中</span>
+            </div>
+            <div style="margin:1.8rem 0;">
+                <a href="https://github.com/GuilingQiyu/StoreIt" target="_blank" class="btn" style="display:inline-flex; align-items:center; gap:8px;">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
+            </div>
+            <footer style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid rgba(0,0,0,0.06); font-size:0.9rem; color:var(--secondary-color);">
+                <p style="margin:6px 0;">© 2025–2026 归灵祈昱</p>
+                <p style="margin:6px 0;">本程序以 <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank">GNU AGPL-3.0 或更高版本</a>授权。源码：<a href="https://github.com/GuilingQiyu/StoreIt" target="_blank">github.com/GuilingQiyu/StoreIt</a></p>
+            </footer>
+        </div>
+    `;
+}
+
+function loadShares() {
+    viewMode = 'shares';
+    setActiveMenu('menuShares');
+    setPageTitle('我的分享');
+    const gridView = document.getElementById('file-grid-view');
+    const emptyState = document.getElementById('empty-state');
+    if (!gridView) return;
+    if (emptyState) emptyState.style.display = 'none';
+    gridView.classList.add('panel-mode');
+    renderSpecialBreadcrumb('我的分享');
+    gridView.innerHTML = `
+        <div class="panel-card" style="max-width:960px; margin:20px auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:12px;">
+                <h2 style="color:var(--primary-color); font-size:1.4rem; margin:0; display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-share-alt"></i> 我的分享
+                </h2>
+                <button class="btn small" onclick="loadMyShares()" title="刷新分享列表">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
+            </div>
+            <div id="sharesList"><p style="text-align:center; color:var(--secondary-color); padding:20px;">加载中...</p></div>
+        </div>
+    `;
+    loadMyShares();
+}
+
+function loadAdmin() {
+    viewMode = 'admin';
+    setActiveMenu('menuAdmin');
+    setPageTitle('用户管理');
+    const gridView = document.getElementById('file-grid-view');
+    const emptyState = document.getElementById('empty-state');
+    if (!gridView) return;
+    if (emptyState) emptyState.style.display = 'none';
+    gridView.classList.add('panel-mode');
+    renderSpecialBreadcrumb('用户管理');
+    gridView.innerHTML = `
+        <div class="panel-card" style="max-width:960px; margin:20px auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(0,0,0,0.06); padding-bottom:12px;">
+                <h2 style="color:var(--primary-color); font-size:1.4rem; margin:0; display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-users-cog"></i> 用户管理
+                </h2>
+                <button class="btn small" onclick="loadAdminUsers()" title="刷新用户列表">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
+            </div>
+            <div style="background:rgba(255,255,255,0.7); border:1px solid rgba(0,0,0,0.08); border-radius:10px; padding:20px; margin-bottom:25px;">
+                <h3 style="color:var(--primary-color); font-size:1.1rem; margin-bottom:15px; display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-user-plus"></i> 新增用户
+                </h3>
+                <form id="createUserForm" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; align-items:end;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="newUsername" style="font-size:0.9rem; margin-bottom:5px;">用户名</label>
+                        <input type="text" id="newUsername" required maxlength="64" placeholder="字母、数字、点、下划线、短横线" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid #ccc;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="newPassword" style="font-size:0.9rem; margin-bottom:5px;">初始口令</label>
+                        <input type="password" id="newPassword" required minlength="8" placeholder="至少 8 位" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid #ccc;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label for="newQuota" style="font-size:0.9rem; margin-bottom:5px;">配额 (字节，0表示不限)</label>
+                        <input type="number" id="newQuota" min="0" value="0" style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid #ccc;">
+                    </div>
+                    <div>
+                        <button type="submit" class="btn" style="margin:0; white-space:nowrap; height:38px;">
+                            <i class="fas fa-check"></i> 开户
+                        </button>
+                    </div>
+                </form>
+                <p id="createUserStatus" style="margin-top:10px; margin-bottom:0; font-size:0.9rem;"></p>
+            </div>
+            <div>
+                <h3 style="color:var(--primary-color); font-size:1.1rem; margin-bottom:15px; display:flex; align-items:center; gap:8px;">
+                    <i class="fas fa-users"></i> 用户列表
+                </h3>
+                <div id="adminUserList" style="overflow-x:auto;">
+                    <p style="text-align:center; color:var(--secondary-color); padding:20px;">加载中...</p>
+                </div>
+            </div>
+        </div>
+    `;
+    setupAdminForm();
+    loadAdminUsers();
+}
+
+
 function showItems(rawItems) {
     const gridView = document.getElementById('file-grid-view');
     const emptyState = document.getElementById('empty-state');
+    if (gridView) gridView.classList.remove('panel-mode');
     const items = rawItems.map(item => {
         const isDir = (item.isDirectory !== undefined ? item.isDirectory : (item.directory !== undefined ? item.directory : false));
         return {
@@ -227,6 +358,9 @@ function reloadCurrentView() {
     if (viewMode === 'recent') loadRecent();
     else if (viewMode === 'favorites') loadFavorites();
     else if (viewMode === 'search') loadSearch((document.getElementById('searchInput') || {}).value || '');
+    else if (viewMode === 'about') loadAbout();
+    else if (viewMode === 'shares') loadShares();
+    else if (viewMode === 'admin') loadAdmin();
     else loadFileList(currentPath);
 }
 
@@ -598,6 +732,9 @@ function addToUploadQueue(files) {
     updateQueueSummary();
 }
 
+const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB
+const CHUNK_THRESHOLD = 50 * 1024 * 1024; // 50MB — files above this use chunked upload
+
 function processUploadQueue() {
     if(isUploading) return;
     
@@ -607,6 +744,14 @@ function processUploadQueue() {
     isUploading = true;
     next.status = 'uploading';
     
+    if (next.file.size > CHUNK_THRESHOLD) {
+        processChunkedUpload(next);
+    } else {
+        processSimpleUpload(next);
+    }
+}
+
+function processSimpleUpload(next) {
     const el = document.getElementById(`queue-item-${next.id}`);
     const statusText = el.querySelector('.queue-item-status span:first-child');
     const fill = el.querySelector('.queue-progress-fill');
@@ -615,9 +760,6 @@ function processUploadQueue() {
     
     const fd = new FormData();
     fd.append('file', next.file);
-    // If it's a folder upload, webkitRelativePath might be available, but our backend expects 'directory' param.
-    // For simple file upload, use stored path.
-    // For folder upload, we might need to parse relative path.
     let targetDir = next.path;
     if(next.file.webkitRelativePath) {
         const rel = next.file.webkitRelativePath;
@@ -651,8 +793,6 @@ function processUploadQueue() {
                 statusText.textContent = '完成';
                 statusText.style.color = 'var(--success-color)';
                 fill.style.width = '100%';
-                
-                // Refresh list if we are in the same directory
                 if(currentPath === next.path) loadFileList(currentPath);
             }
         } else {
@@ -667,7 +807,7 @@ function processUploadQueue() {
             fill.style.background = 'var(--error-color)';
         }
         updateQueueSummary();
-        processUploadQueue(); // Next
+        processUploadQueue();
     };
     
     xhr.onerror = () => {
@@ -679,6 +819,125 @@ function processUploadQueue() {
     };
     
     xhr.send(fd);
+}
+
+async function processChunkedUpload(next) {
+    const el = document.getElementById(`queue-item-${next.id}`);
+    const statusText = el.querySelector('.queue-item-status span:first-child');
+    const fill = el.querySelector('.queue-progress-fill');
+    
+    statusText.textContent = '初始化...';
+
+    let targetDir = next.path;
+    if(next.file.webkitRelativePath) {
+        const rel = next.file.webkitRelativePath;
+        const folderPart = rel.substring(0, rel.lastIndexOf('/'));
+        if(folderPart) targetDir = (targetDir ? targetDir + '/' : '') + folderPart;
+    }
+
+    try {
+        // Step 1: Check for existing upload session (resume support)
+        let uploadId = next.uploadId || null;
+        let totalChunks, uploadedChunks = [];
+
+        if (uploadId) {
+            // Resume: query server for already-uploaded chunks
+            const statusRes = await fetch(`/api/upload/status?uploadId=${encodeURIComponent(uploadId)}`);
+            if (statusRes.ok) {
+                const statusData = await statusRes.json();
+                totalChunks = statusData.totalChunks;
+                uploadedChunks = statusData.uploadedChunks || [];
+            } else {
+                uploadId = null; // Session expired, start fresh
+            }
+        }
+
+        if (!uploadId) {
+            // Step 1b: Initialize new upload session
+            const initRes = await fetch('/api/upload/init', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    fileName: next.file.name,
+                    fileSize: next.file.size,
+                    directory: targetDir
+                })
+            });
+            if (!initRes.ok) {
+                const err = await initRes.json().catch(() => ({}));
+                throw new Error(err.error || '初始化上传失败');
+            }
+            const initData = await initRes.json();
+            uploadId = initData.uploadId;
+            totalChunks = initData.totalChunks;
+            uploadedChunks = [];
+            next.uploadId = uploadId; // Save for resume
+        }
+
+        // Step 2: Upload chunks
+        let completedChunks = uploadedChunks.length;
+        for (let i = 0; i < totalChunks; i++) {
+            if (uploadedChunks.includes(i)) continue; // Skip already uploaded
+
+            const start = i * CHUNK_SIZE;
+            const end = Math.min(start + CHUNK_SIZE, next.file.size);
+            const chunk = next.file.slice(start, end);
+
+            const fd = new FormData();
+            fd.append('uploadId', uploadId);
+            fd.append('chunkIndex', i);
+            fd.append('chunk', chunk);
+
+            const chunkRes = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/upload/chunk', true);
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const chunkProgress = (completedChunks + e.loaded / e.total) / totalChunks * 100;
+                        fill.style.width = chunkProgress + '%';
+                        statusText.textContent = Math.round(chunkProgress) + '%';
+                    }
+                };
+                xhr.onload = () => resolve(xhr);
+                xhr.onerror = () => reject(new Error('网络错误'));
+                xhr.send(fd);
+            });
+
+            if (chunkRes.status !== 200) {
+                const errData = JSON.parse(chunkRes.responseText || '{}');
+                throw new Error(errData.error || '分片上传失败');
+            }
+            completedChunks++;
+        }
+
+        // Step 3: Complete upload
+        statusText.textContent = '合并中...';
+        fill.style.width = '99%';
+        const completeRes = await fetch('/api/upload/complete', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ uploadId: uploadId })
+        });
+        if (!completeRes.ok) {
+            const err = await completeRes.json().catch(() => ({}));
+            throw new Error(err.error || '合并文件失败');
+        }
+
+        next.status = 'success';
+        statusText.textContent = '完成';
+        statusText.style.color = 'var(--success-color)';
+        fill.style.width = '100%';
+        if(currentPath === next.path) loadFileList(currentPath);
+    } catch (err) {
+        next.status = 'error';
+        statusText.textContent = '失败: ' + err.message;
+        statusText.style.color = 'var(--error-color)';
+        fill.style.background = 'var(--error-color)';
+    }
+
+    isUploading = false;
+    updateQueueSummary();
+    processUploadQueue();
 }
 
 function updateQueueSummary() {
@@ -904,83 +1163,135 @@ function setupShareModal() {
 }
 
 function setupSharesPanel() {
-    const openBtn = document.getElementById('openSharesBtn');
-    const modal = document.getElementById('sharesModal');
-    const closeBtn = document.getElementById('closeSharesBtn');
-    if (!openBtn || !modal) return;
-    openBtn.onclick = () => { modal.style.display = 'block'; loadMyShares(); };
-    if (closeBtn) closeBtn.onclick = () => { modal.style.display = 'none'; };
+    // Shares are now rendered inline via loadShares(); no modal setup needed.
 }
 
 async function loadMyShares() {
     const box = document.getElementById('sharesList');
     if (!box) return;
-    box.textContent = '加载中...';
+    box.innerHTML = '<p style="text-align:center; color:var(--secondary-color); padding:20px;">加载中...</p>';
     try {
         const res = await fetch('/api/shares');
         const data = await res.json();
         box.innerHTML = '';
         const items = data.data || [];
         if (!items.length) {
-            box.textContent = '还没有分享链接';
+            box.innerHTML = `
+                <div style="text-align:center; padding:40px 20px; color:var(--secondary-color);">
+                    <i class="fas fa-share-alt" style="font-size:3rem; opacity:0.3; margin-bottom:12px;"></i>
+                    <p style="margin:0; font-size:1rem;">还没有分享链接</p>
+                </div>
+            `;
             return;
         }
         items.forEach(item => {
             const row = document.createElement('div');
             row.className = 'share-row';
+            row.style.cssText = 'display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; padding:12px; border-bottom:1px solid rgba(0,0,0,0.06); border-radius:8px; transition:background 0.2s;';
+            row.onmouseenter = () => row.style.background = 'rgba(0,0,0,0.02)';
+            row.onmouseleave = () => row.style.background = 'transparent';
+
+            const fileInfo = document.createElement('div');
+            fileInfo.style.cssText = 'flex:1; min-width:240px; display:flex; flex-direction:column; gap:6px;';
             const name = document.createElement('strong');
             name.textContent = item.filePath || '';
+            name.style.wordBreak = 'break-all';
+            fileInfo.appendChild(name);
+
+            const inputGroup = document.createElement('div');
+            inputGroup.style.cssText = 'display:flex; align-items:center; gap:8px; width:100%;';
             const link = document.createElement('input');
             link.readOnly = true;
             link.value = location.origin + item.url;
+            link.style.cssText = 'flex:1; padding:6px 10px; border:1px solid rgba(0,0,0,0.15); border-radius:6px; font-size:0.85rem; background:#fafafa;';
+            link.onclick = () => link.select();
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'btn small';
+            copyBtn.innerHTML = '<i class="fas fa-copy"></i> 复制';
+            copyBtn.onclick = () => {
+                const text = link.value;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                        setTimeout(() => copyBtn.innerHTML = '<i class="fas fa-copy"></i> 复制', 1500);
+                    }).catch(() => {
+                        link.select();
+                        document.execCommand('copy');
+                        copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                        setTimeout(() => copyBtn.innerHTML = '<i class="fas fa-copy"></i> 复制', 1500);
+                    });
+                } else {
+                    link.select();
+                    document.execCommand('copy');
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                    setTimeout(() => copyBtn.innerHTML = '<i class="fas fa-copy"></i> 复制', 1500);
+                }
+            };
+            inputGroup.append(link, copyBtn);
+            fileInfo.appendChild(inputGroup);
+
             const meta = document.createElement('span');
+            meta.style.cssText = 'color:var(--secondary-color); font-size:0.85rem; white-space:nowrap;';
             const limit = item.maxDownloads ? item.downloads + '/' + item.maxDownloads : (item.downloads || 0) + '/不限';
             const expiry = item.expiry ? new Date(item.expiry * 1000).toLocaleString() : '永久';
-            meta.textContent = limit + ' · ' + expiry;
+            meta.textContent = `${limit} 次 · 到期: ${expiry}`;
+
             const revoke = document.createElement('button');
             revoke.className = 'btn small delete-btn';
-            revoke.textContent = '撤销';
+            revoke.innerHTML = '<i class="fas fa-trash-alt"></i> 撤销';
             revoke.onclick = async () => {
+                if (!confirm(`确定要撤销文件 "${item.filePath}" 的分享链接吗？`)) return;
                 const done = await fetch('/api/shares/' + item.id, { method: 'DELETE' });
                 const body = await done.json();
                 if (!done.ok) alert(body.message || '撤销失败');
                 loadMyShares();
             };
-            row.append(name, link, meta, revoke);
+
+            row.append(fileInfo, meta, revoke);
             box.appendChild(row);
         });
     } catch (err) {
-        box.textContent = '无法读取分享';
+        box.innerHTML = `<p class="error" style="text-align:center; padding:20px;">无法读取分享: ${escapeHtml(err.message)}</p>`;
     }
 }
 
 function setupAdminPanel() {
-    const openBtn = document.getElementById('openAdminBtn');
-    const modal = document.getElementById('adminModal');
-    const closeBtn = document.getElementById('closeAdminBtn');
+    // Admin panel is now rendered inline via loadAdmin(); no modal setup needed.
+}
+
+function setupAdminForm() {
     const form = document.getElementById('createUserForm');
-    if (!openBtn || !modal || !form) return;
-    openBtn.onclick = () => { modal.style.display = 'block'; loadAdminUsers(); };
-    if (closeBtn) closeBtn.onclick = () => { modal.style.display = 'none'; };
+    if (!form) return;
     form.onsubmit = async (e) => {
         e.preventDefault();
         const status = document.getElementById('createUserStatus');
         const quota = Number(document.getElementById('newQuota').value || 0);
-        const res = await fetch('/api/admin/users', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                username: document.getElementById('newUsername').value.trim(),
-                password: document.getElementById('newPassword').value,
-                storageQuota: quota
-            })
-        });
-        const data = await res.json();
-        if (status) status.textContent = data.message || (res.ok ? '已创建' : '失败');
-        if (res.ok) {
-            form.reset();
-            document.getElementById('newQuota').value = '0';
-            loadAdminUsers();
+        try {
+            const res = await fetch('/api/admin/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('newUsername').value.trim(),
+                    password: document.getElementById('newPassword').value,
+                    storageQuota: quota
+                })
+            });
+            const data = await res.json();
+            if (status) {
+                status.textContent = data.message || (res.ok ? '已创建' : '失败');
+                status.style.color = res.ok ? 'var(--success-color)' : 'var(--error-color)';
+            }
+            if (res.ok) {
+                form.reset();
+                document.getElementById('newQuota').value = '0';
+                loadAdminUsers();
+            }
+        } catch (err) {
+            if (status) {
+                status.textContent = '请求失败: ' + err.message;
+                status.style.color = 'var(--error-color)';
+            }
         }
     };
 }
@@ -988,66 +1299,141 @@ function setupAdminPanel() {
 async function loadAdminUsers() {
     const box = document.getElementById('adminUserList');
     if (!box) return;
-    box.textContent = '加载中...';
+    box.innerHTML = '<p style="text-align:center; color:var(--secondary-color); padding:20px;">加载中...</p>';
     try {
         const res = await fetch('/api/admin/users');
         const data = await res.json();
         box.innerHTML = '';
-        (data.data || []).forEach(user => {
-            const row = document.createElement('div');
-            row.className = 'admin-user-row';
-            const name = document.createElement('strong');
-            name.textContent = user.username;
-            const quota = document.createElement('input');
-            quota.type = 'number';
-            quota.min = '0';
-            quota.value = user.storageQuota;
-            const role = document.createElement('select');
+        const users = data.data || [];
+        if (!users.length) {
+            box.innerHTML = '<p style="text-align:center; color:var(--secondary-color); padding:20px;">暂无用户</p>';
+            return;
+        }
+
+        const table = document.createElement('table');
+        table.style.cssText = 'width:100%; border-collapse:collapse; text-align:left; font-size:0.9rem;';
+        table.innerHTML = `
+            <thead>
+                <tr style="border-bottom:2px solid rgba(0,0,0,0.08); color:var(--primary-color);">
+                    <th style="padding:10px 8px;">用户名</th>
+                    <th style="padding:10px 8px;">存储配额</th>
+                    <th style="padding:10px 8px;">角色</th>
+                    <th style="padding:10px 8px;">保存属性</th>
+                    <th style="padding:10px 8px;">重置口令</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+        const tbody = table.querySelector('tbody');
+
+        users.forEach(user => {
+            const tr = document.createElement('tr');
+            tr.style.cssText = 'border-bottom:1px solid rgba(0,0,0,0.06); transition:background 0.2s;';
+            tr.onmouseenter = () => tr.style.background = 'rgba(0,0,0,0.02)';
+            tr.onmouseleave = () => tr.style.background = 'transparent';
+
+            // Username cell
+            const tdName = document.createElement('td');
+            tdName.style.padding = '12px 8px';
+            tdName.innerHTML = `<strong><i class="fas fa-user" style="color:var(--secondary-color); margin-right:6px;"></i>${escapeHtml(user.username)}</strong>`;
+
+            // Quota cell
+            const tdQuota = document.createElement('td');
+            tdQuota.style.padding = '12px 8px';
+            const quotaInput = document.createElement('input');
+            quotaInput.type = 'number';
+            quotaInput.min = '0';
+            quotaInput.value = user.storageQuota;
+            quotaInput.style.cssText = 'width:110px; padding:4px 8px; border:1px solid #ccc; border-radius:4px;';
+            const quotaHint = document.createElement('div');
+            quotaHint.style.cssText = 'font-size:0.75rem; color:#888; margin-top:2px;';
+            quotaHint.textContent = user.storageQuota === 0 ? '不限额' : formatFileSize(user.storageQuota);
+            quotaInput.oninput = () => {
+                const val = Number(quotaInput.value || 0);
+                quotaHint.textContent = val === 0 ? '不限额' : formatFileSize(val);
+            };
+            tdQuota.append(quotaInput, quotaHint);
+
+            // Role cell
+            const tdRole = document.createElement('td');
+            tdRole.style.padding = '12px 8px';
+            const roleSelect = document.createElement('select');
+            roleSelect.style.cssText = 'padding:4px 8px; border:1px solid #ccc; border-radius:4px;';
             ['USER', 'ADMIN'].forEach(value => {
                 const option = document.createElement('option');
                 option.value = value;
                 option.textContent = value;
                 if ((user.role || '').toUpperCase() === value) option.selected = true;
-                role.appendChild(option);
+                roleSelect.appendChild(option);
             });
-            if (user.username === currentUsername) role.disabled = true;
-            const save = document.createElement('button');
-            save.className = 'btn small';
-            save.textContent = '保存';
-            save.onclick = async () => {
-                const done = await fetch('/api/admin/users/' + encodeURIComponent(user.username), {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ storageQuota: Number(quota.value || 0), role: role.value })
-                });
-                const body = await done.json();
-                alert(body.message || (done.ok ? '已保存' : '失败'));
-                if (done.ok) loadAdminUsers();
+            if (user.username === currentUsername) {
+                roleSelect.disabled = true;
+                roleSelect.title = '不可修改当前登录管理员角色';
+            }
+            tdRole.appendChild(roleSelect);
+
+            // Save button cell
+            const tdSave = document.createElement('td');
+            tdSave.style.padding = '12px 8px';
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'btn small';
+            saveBtn.innerHTML = '<i class="fas fa-save"></i> 保存';
+            saveBtn.onclick = async () => {
+                try {
+                    const done = await fetch('/api/admin/users/' + encodeURIComponent(user.username), {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ storageQuota: Number(quotaInput.value || 0), role: roleSelect.value })
+                    });
+                    const body = await done.json();
+                    alert(body.message || (done.ok ? '已保存' : '失败'));
+                    if (done.ok) loadAdminUsers();
+                } catch (err) {
+                    alert('保存失败: ' + err.message);
+                }
             };
-            const password = document.createElement('input');
-            password.type = 'password';
-            password.placeholder = '新口令';
-            const reset = document.createElement('button');
-            reset.className = 'btn small';
-            reset.textContent = '重置口令';
-            reset.onclick = async () => {
-                if ((password.value || '').length < 8) {
+            tdSave.appendChild(saveBtn);
+
+            // Reset password cell
+            const tdPass = document.createElement('td');
+            tdPass.style.padding = '12px 8px';
+            const passGroup = document.createElement('div');
+            passGroup.style.cssText = 'display:flex; gap:6px; align-items:center;';
+            const passInput = document.createElement('input');
+            passInput.type = 'password';
+            passInput.placeholder = '新口令 (≥8位)';
+            passInput.style.cssText = 'width:120px; padding:4px 8px; border:1px solid #ccc; border-radius:4px;';
+            const resetBtn = document.createElement('button');
+            resetBtn.className = 'btn small';
+            resetBtn.innerHTML = '<i class="fas fa-key"></i> 重置';
+            resetBtn.onclick = async () => {
+                if ((passInput.value || '').length < 8) {
                     alert('口令至少 8 位');
                     return;
                 }
-                const done = await fetch('/api/admin/users/' + encodeURIComponent(user.username) + '/password', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: password.value })
-                });
-                const body = await done.json();
-                alert(body.message || (done.ok ? '已重置' : '失败'));
-                if (done.ok) password.value = '';
+                try {
+                    const done = await fetch('/api/admin/users/' + encodeURIComponent(user.username) + '/password', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ password: passInput.value })
+                    });
+                    const body = await done.json();
+                    alert(body.message || (done.ok ? '已重置' : '失败'));
+                    if (done.ok) passInput.value = '';
+                } catch (err) {
+                    alert('重置失败: ' + err.message);
+                }
             };
-            row.append(name, quota, role, save, password, reset);
-            box.appendChild(row);
+            passGroup.append(passInput, resetBtn);
+            tdPass.appendChild(passGroup);
+
+            tr.append(tdName, tdQuota, tdRole, tdSave, tdPass);
+            tbody.appendChild(tr);
         });
+
+        box.appendChild(table);
     } catch (err) {
-        box.textContent = '无法读取用户';
+        box.innerHTML = `<p class="error" style="text-align:center; padding:20px;">无法读取用户: ${escapeHtml(err.message)}</p>`;
     }
 }
+

@@ -18,10 +18,12 @@ public class CleanupTask {
 
     private final SessionMapper sessionMapper;
     private final ShareService shareService;
+    private final FileService fileService;
 
-    public CleanupTask(SessionMapper sessionMapper, ShareService shareService) {
+    public CleanupTask(SessionMapper sessionMapper, ShareService shareService, FileService fileService) {
         this.sessionMapper = sessionMapper;
         this.shareService = shareService;
+        this.fileService = fileService;
     }
 
     // 每小时整点执行一次
@@ -30,6 +32,7 @@ public class CleanupTask {
         try {
             int sessions = sessionMapper.deleteExpired(Instant.now().getEpochSecond());
             int shares = shareService.cleanup();
+            fileService.cleanStaleChunks();
             if (sessions > 0 || shares > 0) {
                 log.info("Cleanup done: removed {} expired sessions, {} expired/maxed shares", sessions, shares);
             }

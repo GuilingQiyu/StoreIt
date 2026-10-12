@@ -30,8 +30,8 @@ spring:
     locations: classpath:db/migration
   servlet:
     multipart:
-      max-file-size: 10GB
-      max-request-size: 10GB
+      max-file-size: 100GB
+      max-request-size: 100GB
 
 management:
   endpoints:

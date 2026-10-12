@@ -92,6 +92,128 @@ public class FileController {
         }
     }
 
+    @PostMapping("/api/upload/init")
+    public ResponseEntity<?> initUpload(HttpServletRequest request, @RequestBody Map<String, Object> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String fileName = (String) payload.get("fileName");
+            long fileSize = Long.parseLong(payload.get("fileSize").toString());
+            String directory = (String) payload.getOrDefault("directory", "");
+            
+            String uploadId = java.util.UUID.randomUUID().toString();
+            long chunkSize = 5L * 1024 * 1024;
+            int totalChunks = (int) Math.ceil((double) fileSize / chunkSize);
+            
+            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
+            java.nio.file.Files.createDirectories(userChunksDir);
+            
+            Map<String, Object> meta = new java.util.HashMap<>();
+            meta.put("uploadId", uploadId);
+            meta.put("fileName", fileName);
+            meta.put("fileSize", fileSize);
+            meta.put("directory", directory);
+            meta.put("chunkSize", chunkSize);
+            meta.put("totalChunks", totalChunks);
+            
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            mapper.writeValue(userChunksDir.resolve("meta.json").toFile(), meta);
+            
+            return ResponseEntity.ok(Map.of("uploadId", uploadId, "chunkSize", chunkSize, "totalChunks", totalChunks));
+        } catch (Exception e) {
+            log.warn("Init upload failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(Map.of("error", "初始化上传失败"));
+        }
+    }
+
+    @PostMapping(value = "/api/upload/chunk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadChunk(HttpServletRequest request,
+                                         @RequestParam("uploadId") String uploadId,
+                                         @RequestParam("chunkIndex") int chunkIndex,
+                                         @RequestParam("chunk") MultipartFile chunk) {
+        try {
+            User user = getCurrentUser(request);
+            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
+            if (!java.nio.file.Files.exists(userChunksDir)) {
+                return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
+            }
+            chunk.transferTo(userChunksDir.resolve(chunkIndex + ".part"));
+            return ResponseEntity.ok(Map.of("success", true, "chunkIndex", chunkIndex));
+        } catch (Exception e) {
+            log.warn("Upload chunk failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(Map.of("error", "分片上传失败"));
+        }
+    }
+
+    @PostMapping("/api/upload/complete")
+    public ResponseEntity<?> completeUpload(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String uploadId = payload.get("uploadId");
+            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
+            
+            if (!java.nio.file.Files.exists(userChunksDir.resolve("meta.json"))) {
+                return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
+            }
+            
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            Map<String, Object> meta = mapper.readValue(userChunksDir.resolve("meta.json").toFile(), Map.class);
+            
+            String fileName = (String) meta.get("fileName");
+            String directory = (String) meta.get("directory");
+            int totalChunks = (Integer) meta.get("totalChunks");
+            long fileSize = Long.parseLong(meta.get("fileSize").toString());
+            
+            String saved = fileService.saveChunkedFile(user, directory, fileName, userChunksDir, totalChunks, fileSize);
+            
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "文件上传成功",
+                    "file", Map.of("name", fileName, "path", saved, "size", fileSize)
+            ));
+        } catch (IOException e) {
+            if (FileService.QUOTA_EXCEEDED.equals(e.getMessage())) {
+                return ResponseEntity.badRequest().body(Map.of("error", FileService.QUOTA_EXCEEDED));
+            }
+            log.warn("Complete upload failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(Map.of("error", "合并文件失败"));
+        } catch (Exception e) {
+            log.warn("Complete upload failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(Map.of("error", "合并文件失败"));
+        }
+    }
+
+    @GetMapping("/api/upload/status")
+    public ResponseEntity<?> getUploadStatus(HttpServletRequest request, @RequestParam("uploadId") String uploadId) {
+        try {
+            User user = getCurrentUser(request);
+            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
+            
+            if (!java.nio.file.Files.exists(userChunksDir.resolve("meta.json"))) {
+                return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
+            }
+            
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            Map<String, Object> meta = mapper.readValue(userChunksDir.resolve("meta.json").toFile(), Map.class);
+            
+            List<Integer> uploadedChunks = new java.util.ArrayList<>();
+            try (java.util.stream.Stream<java.nio.file.Path> stream = java.nio.file.Files.list(userChunksDir)) {
+                stream.forEach(p -> {
+                    String name = p.getFileName().toString();
+                    if (name.endsWith(".part")) {
+                        uploadedChunks.add(Integer.parseInt(name.substring(0, name.length() - 5)));
+                    }
+                });
+            }
+            java.util.Collections.sort(uploadedChunks);
+            meta.put("uploadedChunks", uploadedChunks);
+            
+            return ResponseEntity.ok(meta);
+        } catch (Exception e) {
+            log.warn("Get upload status failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(Map.of("error", "获取上传状态失败"));
+        }
+    }
+
     @GetMapping("/storage/**")
     public ResponseEntity<Resource> downloadStorage(HttpServletRequest request) {
         try {

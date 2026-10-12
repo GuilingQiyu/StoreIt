@@ -205,6 +205,87 @@ public class FileService {
         if (!Files.exists(target)) throw new IOException("not found");
         return new FileSystemResource(target);
     }
+
+    public String saveChunkedFile(User user, String directory, String fileName, Path chunksDir, int totalChunks, long fileSize) throws IOException {
+        if (!isSafePath(user, directory)) throw new IOException("unsafe path");
+        enforceQuota(user, fileSize);
+
+        Path base = getUserRoot(user);
+        Path dir = base.resolve(directory == null ? "" : directory).normalize();
+        Files.createDirectories(dir);
+        
+        String originalName = FilenameUtils.getName(fileName);
+        String finalFileName = originalName;
+        Path dest = dir.resolve(finalFileName);
+        
+        int count = 1;
+        String baseName = FilenameUtils.getBaseName(originalName);
+        String extension = FilenameUtils.getExtension(originalName);
+        while (Files.exists(dest)) {
+            finalFileName = baseName + " (" + count++ + ")." + extension;
+            dest = dir.resolve(finalFileName);
+        }
+        
+        if (dir.toFile().getUsableSpace() < fileSize) {
+            throw new IOException("磁盘空间不足");
+        }
+
+        try (java.io.OutputStream out = Files.newOutputStream(dest)) {
+            for (int i = 0; i < totalChunks; i++) {
+                Path partFile = chunksDir.resolve(i + ".part");
+                if (!Files.exists(partFile)) {
+                    Files.deleteIfExists(dest);
+                    throw new IOException("Missing chunk: " + i);
+                }
+                Files.copy(partFile, out);
+            }
+        }
+        
+        updateSingleFileMetadata(user, directory, dest.toFile());
+        
+        try (java.util.stream.Stream<Path> walk = Files.walk(chunksDir)) {
+             walk.sorted(Comparator.reverseOrder())
+                 .map(Path::toFile)
+                 .forEach(File::delete);
+        }
+        
+        return (directory == null || directory.isEmpty()) ? finalFileName : directory + "/" + finalFileName;
+    }
+
+    public void cleanStaleChunks() {
+        Path storageRoot = Paths.get(props.getStorageRoot());
+        if (!Files.exists(storageRoot)) return;
+        
+        long cutoff = System.currentTimeMillis() - 24 * 60 * 60 * 1000L;
+        
+        try (java.util.stream.Stream<Path> userDirs = Files.list(storageRoot)) {
+            userDirs.filter(Files::isDirectory).forEach(userDir -> {
+                Path chunksBase = userDir.resolve(".chunks");
+                if (Files.exists(chunksBase) && Files.isDirectory(chunksBase)) {
+                    try (java.util.stream.Stream<Path> uploadDirs = Files.list(chunksBase)) {
+                        uploadDirs.filter(Files::isDirectory).forEach(uploadDir -> {
+                            try {
+                                if (Files.getLastModifiedTime(uploadDir).toMillis() < cutoff) {
+                                    try (java.util.stream.Stream<Path> walk = Files.walk(uploadDir)) {
+                                        walk.sorted(Comparator.reverseOrder())
+                                            .map(Path::toFile)
+                                            .forEach(File::delete);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                // ignore
+                            }
+                        });
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            });
+        } catch (Exception e) {
+            // ignore
+        }
+    }
+
     
     public Resource getResourceForUser(User owner, String relativePath) throws IOException {
         return getResource(owner, relativePath);
