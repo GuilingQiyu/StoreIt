@@ -214,6 +214,21 @@ public class FileController {
         }
     }
 
+    @DeleteMapping("/api/upload/{uploadId}")
+    public ResponseEntity<?> cancelUpload(HttpServletRequest request, @PathVariable("uploadId") String uploadId) {
+        try {
+            User user = getCurrentUser(request);
+            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
+            if (java.nio.file.Files.exists(userChunksDir)) {
+                org.springframework.util.FileSystemUtils.deleteRecursively(userChunksDir);
+            }
+            return ResponseEntity.ok(Map.of("success", true, "message", "上传任务已取消并清理"));
+        } catch (Exception e) {
+            log.warn("Cancel upload failed: {}", e.toString());
+            return ResponseEntity.internalServerError().body(Map.of("error", "取消上传失败"));
+        }
+    }
+
     @GetMapping("/storage/**")
     public ResponseEntity<Resource> downloadStorage(HttpServletRequest request) {
         try {

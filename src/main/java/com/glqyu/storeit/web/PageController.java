@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
     @GetMapping("/")
-    public String index() { return "forward:/static/list.html"; }
+    public String index() { return "forward:/static/index.html"; }
 
     @GetMapping("/about")
     public String about() { return "forward:/static/index.html"; }
