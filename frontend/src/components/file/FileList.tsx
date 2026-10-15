@@ -92,6 +92,8 @@ export function FileList() {
     onSuccess: () => {
       refetch();
       queryClient.invalidateQueries({ queryKey: ["quota"] });
+      // 后端删除会同步移除对应收藏，立即刷新收藏列表避免星标短暂错误
+      queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       setSelectedFile(null);
     },
     onError: (err: any) => alert(err.message || "删除文件失败"),

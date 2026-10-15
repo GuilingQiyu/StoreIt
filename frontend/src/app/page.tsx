@@ -26,6 +26,26 @@ export default function MainPage() {
   const { checkAuth, isAuthenticated, isLoading } = useAuthStore();
   const viewMode = useFileStore((s) => s.viewMode);
 
+  // URL ↔ 视图模式同步：启动时识别后端映射的 /about 与 hash，
+  // 浏览器前进/后退（popstate）时恢复对应视图
+  useEffect(() => {
+    const VALID_MODES = ["files", "recent", "favorites", "shares", "admin", "settings", "about", "search"];
+    const applyLocation = () => {
+      if (window.location.pathname === "/about" && !window.location.hash) {
+        // 后端将 /about 转发到首页，前端据此直接打开「关于」标签页
+        useFileStore.getState().setViewMode("about");
+        return;
+      }
+      const mode = window.location.hash.replace(/^#\/?/, "");
+      if (VALID_MODES.includes(mode)) {
+        useFileStore.setState({ viewMode: mode as any, selectedFile: null });
+      }
+    };
+    applyLocation();
+    window.addEventListener("popstate", applyLocation);
+    return () => window.removeEventListener("popstate", applyLocation);
+  }, []);
+
   useEffect(() => {
     checkAuth().then((loggedIn) => {
       if (!loggedIn) {

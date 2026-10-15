@@ -31,6 +31,8 @@ export function RenameModal() {
     mutationFn: (name: string) => api.renameFile(item!.path, name),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
+      // 后端重命名会同步更新收藏路径，立即刷新收藏列表避免星标短暂错误
+      queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       setRenameModalFile(null);
     },
     onError: (err: any) => {

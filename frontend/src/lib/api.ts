@@ -320,29 +320,59 @@ export const api = {
     uploadId: string,
     chunkIndex: number,
     chunk: Blob,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    onProgress?: (loaded: number) => void
   ): Promise<{ success: boolean; chunkIndex: number }> {
-    const fd = new FormData();
-    fd.append("uploadId", uploadId);
-    fd.append("chunkIndex", String(chunkIndex));
-    fd.append("chunk", chunk, `chunk_${chunkIndex}.part`);
+    // 使用 XHR 以获取上传进度事件（fetch 无法监听上传进度）
+    return new Promise((resolve, reject) => {
+      const fd = new FormData();
+      fd.append("uploadId", uploadId);
+      fd.append("chunkIndex", String(chunkIndex));
+      fd.append("chunk", chunk, `chunk_${chunkIndex}.part`);
 
-    const res = await fetch("/api/upload/chunk", {
-      method: "POST",
-      body: fd,
-      signal,
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/upload/chunk", true);
+
+      if (signal) {
+        if (signal.aborted) {
+          reject(new DOMException("Upload aborted", "AbortError"));
+          return;
+        }
+        signal.addEventListener("abort", () => {
+          xhr.abort();
+          reject(new DOMException("Upload aborted", "AbortError"));
+        });
+      }
+
+      if (xhr.upload && onProgress) {
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) onProgress(e.loaded);
+        };
+      }
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            resolve(JSON.parse(xhr.responseText));
+          } catch {
+            resolve({ success: true, chunkIndex });
+          }
+        } else {
+          let msg = "分片上传失败";
+          try {
+            const body = JSON.parse(xhr.responseText);
+            msg = body.message || body.error || msg;
+          } catch {}
+          reject(new ApiError(msg, xhr.status));
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(new ApiError("网络错误，分片上传失败"));
+      };
+
+      xhr.send(fd);
     });
-
-    if (!res.ok) {
-      let msg = "分片上传失败";
-      try {
-        const body = await res.json();
-        msg = body.message || body.error || msg;
-      } catch {}
-      throw new ApiError(msg, res.status);
-    }
-
-    return res.json();
   },
 
   async completeChunkedUpload(uploadId: string) {

@@ -51,8 +51,34 @@ export function getFileCategory(filename: string): FileCategory {
 }
 
 export function isPreviewable(filename: string): boolean {
-  const cat = getFileCategory(filename);
-  return ["image", "video", "audio", "pdf", "code"].includes(cat);
+  return getPreviewKind(filename) !== null;
+}
+
+/**
+ * 预览方式判定。与后端 FileService.isInlinePreview 白名单严格对齐：
+ * 仅以下类型后端会以内联真实类型返回；文本类后端按 text/plain 返回源码；
+ * 其余格式（svg/ico/mkv/avi/flv/flac/aac/m4a 等）后端按 text/plain 返回，
+ * 用 <img>/<video>/<audio> 加载只会得到坏图或无法播放，必须视为不可预览。
+ */
+const INLINE_IMAGE_EXTS = ["png", "jpg", "jpeg", "gif", "webp", "bmp"];
+const INLINE_VIDEO_EXTS = ["mp4", "webm", "ogg", "ogv", "mov"];
+const INLINE_AUDIO_EXTS = ["mp3", "wav"];
+const TEXT_PREVIEW_EXTS = [
+  "txt", "log", "md", "csv", "ini", "conf", "yml", "yaml",
+  "json", "xml", "html", "htm", "css", "js", "ts", "jsx", "tsx",
+  "py", "java", "c", "cpp", "go", "rs", "sql", "sh", "svg",
+];
+
+export type PreviewKind = "image" | "video" | "audio" | "pdf" | "text";
+
+export function getPreviewKind(filename: string): PreviewKind | null {
+  const ext = getFileExtension(filename);
+  if (INLINE_IMAGE_EXTS.includes(ext)) return "image";
+  if (INLINE_VIDEO_EXTS.includes(ext)) return "video";
+  if (INLINE_AUDIO_EXTS.includes(ext)) return "audio";
+  if (ext === "pdf") return "pdf";
+  if (TEXT_PREVIEW_EXTS.includes(ext)) return "text";
+  return null;
 }
 
 export function getDownloadUrl(path: string): string {

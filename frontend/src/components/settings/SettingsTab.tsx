@@ -104,6 +104,24 @@ export function SettingsTab() {
   });
 
   const handleSaveVisual = () => {
+    // 数值范围校验：清空输入框会得到 Number("") === 0，必须拦下非法值
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      setMessage({ text: "保存失败：服务端口必须是 1–65535 之间的整数", type: "error" });
+      return;
+    }
+    if (!Number.isInteger(sessionMaxAgeDays) || sessionMaxAgeDays < 1 || sessionMaxAgeDays > 365) {
+      setMessage({ text: "保存失败：会话保持天数必须是 1–365 之间的整数", type: "error" });
+      return;
+    }
+    if (!Number.isInteger(maxFailures) || maxFailures < 1 || maxFailures > 1000) {
+      setMessage({ text: "保存失败：连续错误锁定次数必须是不小于 1 的整数", type: "error" });
+      return;
+    }
+    if (!Number.isInteger(windowMinutes) || windowMinutes < 1 || windowMinutes > 1440) {
+      setMessage({ text: "保存失败：统计时间窗口分钟数必须是不小于 1 的整数", type: "error" });
+      return;
+    }
+
     // Send safe patch without overwriting unmapped YAML configurations
     saveMutation.mutate({
       visualConfig: {
@@ -141,7 +159,8 @@ export function SettingsTab() {
             系统配置管理
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            安全维护 StoreIt 核心运行参数与外部配置文件（./config/*.yml），自动创建 .bak 备份
+            安全维护 StoreIt 核心运行参数与外部配置文件（./config/*.yml），自动创建 .bak 备份。
+            注意：可视化保存会重写 YAML 且不保留注释，如需保留注释请使用「YAML 原文编辑」模式。
           </p>
         </div>
 
@@ -212,6 +231,8 @@ export function SettingsTab() {
                 </label>
                 <Input
                   type="number"
+                  min={1}
+                  max={65535}
                   value={port}
                   onChange={(e) => setPort(Number(e.target.value))}
                   placeholder="59898"
@@ -254,7 +275,10 @@ export function SettingsTab() {
                   checked={sslEnabled}
                   onCheckedChange={(checked) => {
                     setSslEnabled(checked);
-                    if (checked) setAppSslEnabled(true);
+                    // 与 Cookie Secure 标记双向联动：
+                    // 关闭直连 SSL 时同步关闭，避免残留 Secure 导致 HTTP 下浏览器不保存会话 Cookie 而无法登录；
+                    // 反向代理终结 HTTPS 的场景可在下方「Cookie Secure」开关单独重新开启
+                    setAppSslEnabled(checked);
                   }}
                 />
               </div>
@@ -310,15 +334,21 @@ export function SettingsTab() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t text-xs">
-                  <div>
-                    <p className="font-medium text-foreground">Cookie Secure 强制安全标记 (app.ssl-enabled)</p>
-                    <p className="text-muted-foreground text-[11px]">开启后仅允许在 HTTPS 安全加密通道下发送用户 Session Cookie</p>
-                  </div>
-                  <Switch checked={appSslEnabled} onCheckedChange={setAppSslEnabled} />
-                </div>
               </div>
             )}
+
+            {/* Cookie Secure 开关始终可见：直连 SSL 与反向代理终结 HTTPS 两种部署都需要独立控制它 */}
+            <div className="flex items-center justify-between pt-3 border-t text-xs">
+              <div>
+                <p className="font-medium text-foreground">Cookie Secure 强制安全标记 (app.ssl-enabled)</p>
+                <p className="text-muted-foreground text-[11px] max-w-lg">
+                  开启后 Session Cookie 仅允许在 HTTPS 加密通道下发送。直连 SSL 或由 Nginx / Caddy
+                  等反向代理终结 HTTPS 时均应开启；纯 HTTP 部署必须关闭，否则浏览器不会保存会话
+                  Cookie，导致任何人无法登录（只能手工修改 yml 恢复）。
+                </p>
+              </div>
+              <Switch checked={appSslEnabled} onCheckedChange={setAppSslEnabled} />
+            </div>
           </div>
 
           {/* Storage & Rate Limiting */}
@@ -345,6 +375,8 @@ export function SettingsTab() {
                 </label>
                 <Input
                   type="number"
+                  min={1}
+                  max={1000}
                   value={maxFailures}
                   onChange={(e) => setMaxFailures(Number(e.target.value))}
                 />
@@ -355,6 +387,8 @@ export function SettingsTab() {
                 </label>
                 <Input
                   type="number"
+                  min={1}
+                  max={1440}
                   value={windowMinutes}
                   onChange={(e) => setWindowMinutes(Number(e.target.value))}
                 />

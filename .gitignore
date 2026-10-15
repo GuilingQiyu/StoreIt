@@ -27,11 +27,15 @@ ip_whitelist.json
 *.swp
 *.swo
 *.bak
+*.bak.1
 *.tmp
 *.log
 .idea/
 .vscode/
 *.DS_Store
+
+# Frontend build artifacts
+*.tsbuildinfo
 
 *.jar
 trashbin/

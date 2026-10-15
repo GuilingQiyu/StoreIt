@@ -55,7 +55,22 @@ export const useUploadStore = create<UploadState>()(
         );
 
         if (existing) {
+          // 刷新后重选同一文件时重新绑定文件句柄
           fileMap.set(existing.id, file);
+
+          const isActive =
+            existing.status === "pending" ||
+            existing.status === "uploading" ||
+            existing.status === "initializing" ||
+            existing.status === "merging";
+
+          if (isActive) {
+            // 任务已在队列或传输中：仅聚焦抽屉，不重置状态，
+            // 避免同一上传会话被并发重复执行导致分片重复上传
+            set((state) => ({ isDrawerOpen: true }));
+            return existing.id;
+          }
+
           set((state) => ({
             isDrawerOpen: true,
             tasks: state.tasks.map((t) =>
@@ -442,6 +457,10 @@ async function executeChunkedUpload(
       fileMap.delete(taskId);
       fileMap.set(realUploadId, file);
 
+      // 会话握手期间用户可能已点击暂停：保持暂停状态，等待用户手动继续
+      const pausedDuringHandshake =
+        get().tasks.find((t) => t.id === taskId)?.status === "paused";
+
       set((state) => ({
         tasks: state.tasks.map((t) =>
           t.id === taskId
@@ -450,31 +469,78 @@ async function executeChunkedUpload(
                 id: realUploadId,
                 totalChunks,
                 chunkSize,
-                status: "uploading",
+                uploadedChunks: [],
+                status: pausedDuringHandshake
+                  ? ("paused" as UploadStatus)
+                  : ("uploading" as UploadStatus),
               }
             : t
         ),
       }));
     } else {
-      const statusRes = await api.getUploadStatus(taskId);
-      serverUploadedChunks = statusRes.uploadedChunks || [];
-      totalChunks = statusRes.totalChunks;
-      chunkSize = statusRes.chunkSize;
+      try {
+        const statusRes = await api.getUploadStatus(taskId);
+        serverUploadedChunks = statusRes.uploadedChunks || [];
+        totalChunks = statusRes.totalChunks;
+        chunkSize = statusRes.chunkSize;
 
-      set((state) => ({
-        tasks: state.tasks.map((t) =>
-          t.id === taskId
-            ? {
-                ...t,
-                uploadedChunks: serverUploadedChunks,
-                totalChunks,
-                chunkSize,
-                progress: Math.floor((serverUploadedChunks.length / totalChunks) * 100),
-                status: "uploading",
-              }
-            : t
-        ),
-      }));
+        const pausedDuringHandshake =
+          get().tasks.find((t) => t.id === taskId)?.status === "paused";
+
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === taskId
+              ? {
+                  ...t,
+                  uploadedChunks: serverUploadedChunks,
+                  totalChunks,
+                  chunkSize,
+                  progress: Math.floor((serverUploadedChunks.length / totalChunks) * 100),
+                  status: pausedDuringHandshake
+                    ? ("paused" as UploadStatus)
+                    : ("uploading" as UploadStatus),
+                }
+              : t
+          ),
+        }));
+      } catch (err: any) {
+        // 服务端分片会话可能已被清理（如超过 24 小时的定时清扫）。
+        // 此时不再反复报「上传会话无效」，而是自动重建全新会话从头续传。
+        if (err?.status !== 400) throw err;
+
+        const initRes = await api.initChunkedUpload(file.name, file.size, task.directory);
+        const previousId = taskId;
+        realUploadId = initRes.uploadId;
+        totalChunks = initRes.totalChunks;
+        chunkSize = initRes.chunkSize;
+        serverUploadedChunks = [];
+
+        fileMap.delete(previousId);
+        fileMap.set(realUploadId, file);
+        activeChunkControllers.delete(previousId);
+
+        const pausedDuringHandshake =
+          get().tasks.find((t) => t.id === previousId)?.status === "paused";
+
+        set((state) => ({
+          tasks: state.tasks.map((t) =>
+            t.id === previousId
+              ? {
+                  ...t,
+                  id: realUploadId,
+                  uploadedChunks: [],
+                  progress: 0,
+                  totalChunks,
+                  chunkSize,
+                  errorMessage: undefined,
+                  status: pausedDuringHandshake
+                    ? ("paused" as UploadStatus)
+                    : ("uploading" as UploadStatus),
+                }
+              : t
+          ),
+        }));
+      }
     }
   } catch (err: any) {
     set((state) => ({
@@ -485,6 +551,19 @@ async function executeChunkedUpload(
       ),
     }));
     scheduleNextUploads(get, set);
+    return;
+  }
+
+  // 握手期间任务被取消：清理刚创建的服务端会话并退出
+  if (!get().tasks.some((t) => t.id === realUploadId)) {
+    try {
+      await api.cancelChunkedUpload(realUploadId);
+    } catch {}
+    return;
+  }
+
+  // 握手期间被用户暂停：保持暂停，等待用户点击继续
+  if (get().tasks.find((t) => t.id === realUploadId)?.status !== "uploading") {
     return;
   }
 
@@ -591,7 +670,16 @@ async function executeChunkedUpload(
     controllers.set(chunkIndex, controller);
 
     try {
-      await api.uploadChunk(realUploadId, chunkIndex, chunkBlob, controller.signal);
+      await api.uploadChunk(
+        realUploadId,
+        chunkIndex,
+        chunkBlob,
+        controller.signal,
+        (loaded) => {
+          // 实时跟踪在途字节，供平滑进度与速率计算使用
+          inFlightBytes.set(chunkIndex, loaded);
+        }
+      );
       controllers.delete(chunkIndex);
       inFlightBytes.delete(chunkIndex);
 
@@ -617,11 +705,15 @@ async function executeChunkedUpload(
         return;
       }
 
-      // Retry up to 2 times
+      // Retry up to 2 times with exponential backoff (500ms / 1s)
       const retries = chunkRetryCount.get(chunkIndex) || 0;
       if (retries < 2) {
         chunkRetryCount.set(chunkIndex, retries + 1);
+        // 先同步放回队列，避免其他 worker 误判队列已空而提前触发合并
         pendingChunks.push(chunkIndex);
+        // 指数退避后再派发，避免网络抖动时瞬时连发三次全部失败
+        setTimeout(() => next(), 500 * Math.pow(2, retries));
+        return;
       } else {
         isAbortedOrDone = true;
         clearInterval(progressInterval);

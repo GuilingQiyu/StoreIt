@@ -25,6 +25,8 @@ export function MoveModal() {
     mutationFn: (to: string) => api.moveFile(item!.path, to),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
+      // 后端移动会同步更新收藏路径，立即刷新收藏列表避免星标短暂错误
+      queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       setMoveModalFile(null);
       setTargetDir("");
     },

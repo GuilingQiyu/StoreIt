@@ -132,9 +132,20 @@ public class ConfigAdminController {
                     if (loaded instanceof Map) appMap = (Map<String, Object>) loaded;
                 } catch (Exception ignored) {}
 
+                // 数值范围校验：先整体校验再落盘，避免 port: 0（重启后随机端口）、
+                // max-failures: 0、max-age-days: 0 之类的非法配置写入 yml
+                StringBuilder validationError = new StringBuilder();
+                Integer port = parseVisualInt(visual, "port", "服务端口 (port)", 1, 65535, validationError);
+                Integer maxFailures = parseVisualInt(visual, "maxFailures", "连续错误锁定次数 (max-failures)", 1, 1000, validationError);
+                Integer windowMinutes = parseVisualInt(visual, "windowMinutes", "统计时间窗口 (window-minutes)", 1, 1440, validationError);
+                Integer sessionMaxAgeDays = parseVisualInt(visual, "sessionMaxAgeDays", "会话保持天数 (max-age-days)", 1, 365, validationError);
+                if (validationError.length() > 0) {
+                    return ResponseEntity.badRequest().body(ApiResponse.fail(validationError.toString()));
+                }
+
                 Map<String, Object> server = (Map<String, Object>) appMap.computeIfAbsent("server", k -> new HashMap<>());
-                if (visual.containsKey("port")) {
-                    server.put("port", Integer.parseInt(String.valueOf(visual.get("port"))));
+                if (port != null) {
+                    server.put("port", port);
                 }
 
                 Map<String, Object> ssl = (Map<String, Object>) server.computeIfAbsent("ssl", k -> new HashMap<>());
@@ -151,16 +162,14 @@ public class ConfigAdminController {
                 }
 
                 Map<String, Object> login = (Map<String, Object>) app.computeIfAbsent("login", k -> new HashMap<>());
-                if (visual.containsKey("maxFailures")) login.put("max-failures", Integer.parseInt(String.valueOf(visual.get("maxFailures"))));
-                if (visual.containsKey("windowMinutes")) login.put("window-minutes", Integer.parseInt(String.valueOf(visual.get("windowMinutes"))));
+                if (maxFailures != null) login.put("max-failures", maxFailures);
+                if (windowMinutes != null) login.put("window-minutes", windowMinutes);
 
                 Map<String, Object> session = (Map<String, Object>) app.computeIfAbsent("session", k -> new HashMap<>());
-                if (visual.containsKey("sessionMaxAgeDays")) session.put("max-age-days", Integer.parseInt(String.valueOf(visual.get("sessionMaxAgeDays"))));
+                if (sessionMaxAgeDays != null) session.put("max-age-days", sessionMaxAgeDays);
 
                 // Save application.yml with backup
-                if (Files.exists(APP_CONFIG)) {
-                    Files.copy(APP_CONFIG, CONFIG_DIR.resolve("application.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
-                }
+                backupConfig(APP_CONFIG);
                 Files.writeString(APP_CONFIG, yaml.dump(appMap), StandardCharsets.UTF_8);
 
                 // Patch admin.yml
@@ -182,9 +191,7 @@ public class ConfigAdminController {
                     defAdmin.put("password", newPass);
                 }
 
-                if (Files.exists(ADMIN_CONFIG)) {
-                    Files.copy(ADMIN_CONFIG, CONFIG_DIR.resolve("admin.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
-                }
+                backupConfig(ADMIN_CONFIG);
                 Files.writeString(ADMIN_CONFIG, yaml.dump(adminMap), StandardCharsets.UTF_8);
 
                 return ResponseEntity.ok(ApiResponse.ok("可视化配置已安全更新并备份。提示：端口与SSL等核心服务配置需重启后端应用后生效。"));
@@ -211,16 +218,12 @@ public class ConfigAdminController {
             }
 
             if (newAppYaml != null) {
-                if (Files.exists(APP_CONFIG)) {
-                    Files.copy(APP_CONFIG, CONFIG_DIR.resolve("application.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
-                }
+                backupConfig(APP_CONFIG);
                 Files.writeString(APP_CONFIG, newAppYaml, StandardCharsets.UTF_8);
             }
 
             if (newAdminYaml != null) {
-                if (Files.exists(ADMIN_CONFIG)) {
-                    Files.copy(ADMIN_CONFIG, CONFIG_DIR.resolve("admin.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
-                }
+                backupConfig(ADMIN_CONFIG);
                 Files.writeString(ADMIN_CONFIG, newAdminYaml, StandardCharsets.UTF_8);
             }
 
@@ -239,6 +242,43 @@ public class ConfigAdminController {
         options.setPrettyFlow(true);
         options.setIndent(2);
         return new Yaml(options);
+    }
+
+    /**
+     * 读取并校验可视化配置中的整数字段（带范围）。
+     * 字段缺失时返回 null（不修改）；格式或范围非法时写入 error 并返回 null。
+     */
+    private Integer parseVisualInt(Map<String, Object> visual, String key, String label,
+                                   int min, int max, StringBuilder error) {
+        if (!visual.containsKey(key)) return null;
+        int value;
+        try {
+            value = Integer.parseInt(String.valueOf(visual.get(key)).trim());
+        } catch (NumberFormatException e) {
+            if (error.length() > 0) error.append("；");
+            error.append(label).append("必须是整数");
+            return null;
+        }
+        if (value < min || value > max) {
+            if (error.length() > 0) error.append("；");
+            error.append(label).append("必须在 ").append(min).append("–").append(max).append(" 之间");
+            return null;
+        }
+        return value;
+    }
+
+    /**
+     * 保存前轮转备份：.bak 保留上一版，.bak.1 保留上上版，共两代。
+     */
+    private void backupConfig(Path target) throws IOException {
+        Path bak = target.resolveSibling(target.getFileName().toString() + ".bak");
+        Path bak1 = target.resolveSibling(target.getFileName().toString() + ".bak.1");
+        if (Files.exists(bak)) {
+            Files.copy(bak, bak1, StandardCopyOption.REPLACE_EXISTING);
+        }
+        if (Files.exists(target)) {
+            Files.copy(target, bak, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
     private String readFileOrExample(Path primary, Path example) throws IOException {
