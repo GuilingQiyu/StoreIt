@@ -26,13 +26,18 @@ export function UploadItem({ task }: UploadItemProps) {
   const pauseTask = useUploadStore((s) => s.pauseTask);
   const resumeTask = useUploadStore((s) => s.resumeTask);
   const cancelTask = useUploadStore((s) => s.cancelTask);
+  const retryTask = useUploadStore((s) => s.retryTask);
   const rebindFileAndResume = useUploadStore((s) => s.rebindFileAndResume);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFilePicked = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilePicked = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      rebindFileAndResume(task.id, file);
+      try {
+        await rebindFileAndResume(task.id, file);
+      } catch (err: any) {
+        alert(err.message || "文件匹配失败");
+      }
     }
   };
 
@@ -147,6 +152,18 @@ export function UploadItem({ task }: UploadItemProps) {
             </Button>
           )}
 
+          {task.status === "error" && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-6 px-2 text-xs gap-1 border-rose-200 text-rose-700 hover:bg-rose-50"
+              onClick={() => retryTask(task.id)}
+              title="重试上传"
+            >
+              <RefreshCw className="w-3 h-3" /> 重试
+            </Button>
+          )}
+
           {(task.status === "interrupted" || task.status === "error") && (
             <>
               <input
@@ -162,7 +179,7 @@ export function UploadItem({ task }: UploadItemProps) {
                 onClick={() => fileInputRef.current?.click()}
                 title="重新选取同名文件以恢复断点续传"
               >
-                <Upload className="w-3 h-3" /> 续传
+                <Upload className="w-3 h-3" /> 绑定续传
               </Button>
             </>
           )}

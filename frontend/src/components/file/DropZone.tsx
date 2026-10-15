@@ -13,26 +13,29 @@ export function DropZone({ children }: DropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const dragCounter = useRef(0);
   const currentPath = useFileStore((s) => s.currentPath);
+  const viewMode = useFileStore((s) => s.viewMode);
   const addFile = useUploadStore((s) => s.addFile);
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (viewMode !== "files") return;
     dragCounter.current++;
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
       setIsDragOver(true);
     }
-  }, []);
+  }, [viewMode]);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (viewMode !== "files") return;
     dragCounter.current--;
     if (dragCounter.current <= 0) {
       setIsDragOver(false);
       dragCounter.current = 0;
     }
-  }, []);
+  }, [viewMode]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -46,6 +49,8 @@ export function DropZone({ children }: DropZoneProps) {
       e.stopPropagation();
       setIsDragOver(false);
       dragCounter.current = 0;
+
+      if (viewMode !== "files") return;
 
       const items = e.dataTransfer.items;
       if (!items || items.length === 0) return;

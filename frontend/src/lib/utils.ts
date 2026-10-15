@@ -49,3 +49,48 @@ export function getFileCategory(filename: string): FileCategory {
   if (["doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv"].includes(ext)) return "document";
   return "other";
 }
+
+export function isPreviewable(filename: string): boolean {
+  const cat = getFileCategory(filename);
+  return ["image", "video", "audio", "pdf", "code"].includes(cat);
+}
+
+export function getDownloadUrl(path: string): string {
+  if (!path) return "/storage/";
+  const encoded = path
+    .split("/")
+    .map((seg) => encodeURIComponent(seg))
+    .join("/");
+  return `/storage/${encoded}`;
+}
+
+export function getPreviewUrl(path: string): string {
+  return `/api/preview?path=${encodeURIComponent(path || "")}`;
+}
+
+export async function copyToClipboard(text: string): Promise<boolean> {
+  if (typeof window === "undefined") return false;
+  if (navigator?.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fallback below
+    }
+  }
+  try {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const success = document.execCommand("copy");
+    document.body.removeChild(textArea);
+    return success;
+  } catch {
+    return false;
+  }
+}

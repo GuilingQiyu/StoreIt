@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Eye, Download, X, FileText, AlertCircle, RefreshCw } from "lucide-react";
 import { useFileStore } from "@/stores/useFileStore";
-import { getFileCategory, formatBytes } from "@/lib/utils";
+import { getFileCategory, formatBytes, getDownloadUrl, getPreviewUrl } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -12,23 +12,36 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
+const MAX_TEXT_LENGTH = 200000;
+
 export function PreviewModal() {
   const item = useFileStore((s) => s.previewFile);
   const setPreviewFile = useFileStore((s) => s.setPreviewFile);
 
   const [textContent, setTextContent] = useState<string | null>(null);
+  const [isTruncated, setIsTruncated] = useState(false);
   const [loadingText, setLoadingText] = useState(false);
 
   const cat = item ? getFileCategory(item.name) : "other";
-  const fileUrl = item ? `/storage/${encodeURIComponent(item.path)}` : "";
+  const previewUrl = item ? getPreviewUrl(item.path) : "";
+  const downloadUrl = item ? getDownloadUrl(item.path) : "";
 
   useEffect(() => {
     if (item && cat === "code") {
       setLoadingText(true);
-      fetch(fileUrl)
-        .then((r) => r.text())
+      setIsTruncated(false);
+      fetch(previewUrl)
+        .then((r) => {
+          if (!r.ok) throw new Error("无法加载文本");
+          return r.text();
+        })
         .then((text) => {
-          setTextContent(text);
+          if (text.length > MAX_TEXT_LENGTH) {
+            setTextContent(text.slice(0, MAX_TEXT_LENGTH));
+            setIsTruncated(true);
+          } else {
+            setTextContent(text);
+          }
           setLoadingText(false);
         })
         .catch(() => {
@@ -38,12 +51,12 @@ export function PreviewModal() {
     } else {
       setTextContent(null);
     }
-  }, [item, cat, fileUrl]);
+  }, [item, cat, previewUrl]);
 
   const handleDownload = () => {
     if (!item) return;
     const a = document.createElement("a");
-    a.href = fileUrl;
+    a.href = downloadUrl;
     a.download = item.name;
     document.body.appendChild(a);
     a.click();
@@ -73,7 +86,7 @@ export function PreviewModal() {
         <div className="flex-1 overflow-auto min-h-[300px] flex items-center justify-center p-2 bg-black/5 rounded-xl mt-3">
           {cat === "image" && (
             <img
-              src={fileUrl}
+              src={previewUrl}
               alt={item?.name}
               className="max-h-[60vh] max-w-full object-contain rounded-lg shadow-sm"
             />
@@ -81,7 +94,7 @@ export function PreviewModal() {
 
           {cat === "video" && (
             <video
-              src={fileUrl}
+              src={previewUrl}
               controls
               autoPlay
               className="max-h-[60vh] max-w-full rounded-lg shadow-sm"
@@ -91,27 +104,35 @@ export function PreviewModal() {
           {cat === "audio" && (
             <div className="p-8 w-full max-w-md bg-white rounded-2xl shadow-sm text-center space-y-4">
               <p className="text-sm font-medium text-foreground">{item?.name}</p>
-              <audio src={fileUrl} controls className="w-full" />
+              <audio src={previewUrl} controls className="w-full" />
             </div>
           )}
 
           {cat === "pdf" && (
             <iframe
-              src={fileUrl}
+              src={previewUrl}
               className="w-full h-[60vh] rounded-lg border bg-white"
               title={item?.name}
             />
           )}
 
           {cat === "code" && (
-            <div className="w-full h-[60vh] overflow-auto bg-[#1e1e2e] text-[#cdd6f4] p-4 rounded-lg font-mono text-xs leading-relaxed">
-              {loadingText ? (
-                <div className="flex items-center justify-center h-full gap-2 text-muted-foreground">
-                  <RefreshCw className="w-4 h-4 animate-spin" /> 加载中...
+            <div className="w-full h-[60vh] flex flex-col bg-[#1e1e2e] text-[#cdd6f4] p-4 rounded-lg font-mono text-xs leading-relaxed">
+              {isTruncated && (
+                <div className="mb-2 p-2 rounded bg-amber-500/20 text-amber-300 text-[11px] flex items-center gap-1.5 shrink-0">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>内容过大，仅显示前 200,000 字符。完整内容请下载后查看。</span>
                 </div>
-              ) : (
-                <pre>{textContent}</pre>
               )}
+              <div className="flex-1 overflow-auto">
+                {loadingText ? (
+                  <div className="flex items-center justify-center h-full gap-2 text-muted-foreground">
+                    <RefreshCw className="w-4 h-4 animate-spin" /> 加载中...
+                  </div>
+                ) : (
+                  <pre>{textContent}</pre>
+                )}
+              </div>
             </div>
           )}
 

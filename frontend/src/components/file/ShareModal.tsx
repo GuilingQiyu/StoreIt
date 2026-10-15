@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Share2, Copy, Check, Link as LinkIcon } from "lucide-react";
 import { api } from "@/lib/api";
 import { useFileStore } from "@/stores/useFileStore";
+import { copyToClipboard } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -62,12 +63,15 @@ export function ShareModal() {
     });
   };
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!generatedLink) return;
-    navigator.clipboard.writeText(generatedLink).then(() => {
+    const ok = await copyToClipboard(generatedLink);
+    if (ok) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    });
+    } else {
+      alert("复制失败，请手动选取输入框文本复制");
+    }
   };
 
   return (

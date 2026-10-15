@@ -22,6 +22,7 @@ interface FileState {
   moveModalFile: FileItem | null;
   renameModalFile: FileItem | null;
   newFolderModalOpen: boolean;
+  sidebarOpen: boolean;
 
   setCurrentPath: (path: string) => void;
   setViewMode: (mode: ViewMode) => void;
@@ -33,7 +34,10 @@ interface FileState {
   setMoveModalFile: (file: FileItem | null) => void;
   setRenameModalFile: (file: FileItem | null) => void;
   setNewFolderModalOpen: (open: boolean) => void;
-  navigateToFolder: (folderName: string) => void;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebar: () => void;
+  navigateToFolder: (target: string) => void;
+  openFolder: (path: string) => void;
   navigateUp: () => void;
 }
 
@@ -48,6 +52,7 @@ export const useFileStore = create<FileState>((set, get) => ({
   moveModalFile: null,
   renameModalFile: null,
   newFolderModalOpen: false,
+  sidebarOpen: false,
 
   setCurrentPath: (path: string) => set({ currentPath: path, selectedFile: null }),
   setViewMode: (mode: ViewMode) => set({ viewMode: mode, selectedFile: null }),
@@ -59,11 +64,22 @@ export const useFileStore = create<FileState>((set, get) => ({
   setMoveModalFile: (file: FileItem | null) => set({ moveModalFile: file }),
   setRenameModalFile: (file: FileItem | null) => set({ renameModalFile: file }),
   setNewFolderModalOpen: (open: boolean) => set({ newFolderModalOpen: open }),
+  setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
+  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
-  navigateToFolder: (folderName: string) => {
-    const { currentPath } = get();
-    const newPath = currentPath ? `${currentPath}/${folderName}` : folderName;
-    set({ currentPath: newPath, viewMode: "files", selectedFile: null });
+  navigateToFolder: (target: string) => {
+    const { currentPath, viewMode } = get();
+    // If opening from search/recent/favorites or target already has path, open directly
+    if (viewMode !== "files" || target.includes("/")) {
+      set({ currentPath: target, viewMode: "files", selectedFile: null });
+    } else {
+      const newPath = currentPath ? `${currentPath}/${target}` : target;
+      set({ currentPath: newPath, viewMode: "files", selectedFile: null });
+    }
+  },
+
+  openFolder: (path: string) => {
+    set({ currentPath: path, viewMode: "files", selectedFile: null });
   },
 
   navigateUp: () => {
@@ -71,6 +87,6 @@ export const useFileStore = create<FileState>((set, get) => ({
     if (!currentPath) return;
     const parts = currentPath.split("/");
     parts.pop();
-    set({ currentPath: parts.join("/"), selectedFile: null });
+    set({ currentPath: parts.join("/"), selectedFile: null, viewMode: "files" });
   },
 }));

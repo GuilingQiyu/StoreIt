@@ -19,6 +19,11 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
     let msg = `HTTP ${res.status}`;
     try {
       const errData = await res.json();
@@ -61,14 +66,6 @@ export const api = {
 
   async logout() {
     return fetchJson<{ success: boolean }>("/api/logout", { method: "POST" });
-  },
-
-  async changePassword(password: string) {
-    return fetchJson("/api/user/password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
   },
 
   // Files & Folders
@@ -128,39 +125,45 @@ export const api = {
     return items;
   },
 
-  async getQuota() {
-    const data = await fetchJson<any>("/api/quota");
+  async getQuota(): Promise<StorageQuota> {
+    const data = await fetchJson<any>("/api/storage/usage");
     return {
-      used: data.used || 0,
-      total: data.total || 0,
-      ratio: data.ratio || 0,
-    } as StorageQuota;
+      used: Number(data.used) || 0,
+      total: Number(data.total) || 0,
+      free: Number(data.free) || 0,
+      quota: Number(data.quota) || 0,
+      unlimited: Boolean(data.unlimited),
+      scope: data.scope,
+    };
   },
 
-  async createDirectory(path: string, name: string) {
-    return fetchJson("/api/mkdir", {
+  async createDirectory(parentPath: string, name: string) {
+    const fullPath = parentPath ? `${parentPath}/${name}` : name;
+    return fetchJson<{ success: boolean }>("/api/folder/create", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path, name }),
+      body: JSON.stringify({ path: fullPath }),
     });
   },
 
   async deleteFile(path: string) {
-    return fetchJson(`/api/files?path=${encodeURIComponent(path)}`, {
-      method: "DELETE",
+    return fetchJson<{ success: boolean }>("/api/file/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path }),
     });
   },
 
   async moveFile(from: string, to: string) {
-    return fetchJson("/api/move", {
+    return fetchJson<{ success: boolean; path: string }>("/api/file/move", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to }),
+      body: JSON.stringify({ path: from, destination: to }),
     });
   },
 
   async renameFile(path: string, newName: string) {
-    return fetchJson("/api/rename", {
+    return fetchJson<{ success: boolean }>("/api/file/rename", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path, newName }),
@@ -168,10 +171,71 @@ export const api = {
   },
 
   async setFavorite(path: string, favorite: boolean) {
-    return fetchJson("/api/favorites", {
-      method: favorite ? "POST" : "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path }),
+    if (favorite) {
+      return fetchJson<{ success: boolean }>("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path }),
+      });
+    } else {
+      return fetchJson<{ success: boolean }>(`/api/favorites?path=${encodeURIComponent(path)}`, {
+        method: "DELETE",
+      });
+    }
+  },
+
+  // Upload (Single / Simple upload for <= 50MB files & 0-byte files)
+  async uploadSingleFile(
+    file: File,
+    directory: string,
+    onProgress?: (percent: number) => void,
+    signal?: AbortSignal
+  ): Promise<{ success: boolean; message: string; file: any }> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/upload", true);
+
+      if (signal) {
+        signal.addEventListener("abort", () => {
+          xhr.abort();
+          reject(new DOMException("Upload aborted", "AbortError"));
+        });
+      }
+
+      if (xhr.upload && onProgress) {
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            onProgress(Math.round((e.loaded / e.total) * 100));
+          }
+        };
+      }
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            resolve(data);
+          } catch {
+            resolve({ success: true, message: "文件上传成功", file: { name: file.name } });
+          }
+        } else {
+          let msg = `上传失败 (HTTP ${xhr.status})`;
+          try {
+            const data = JSON.parse(xhr.responseText);
+            msg = data.error || data.message || msg;
+          } catch {}
+          reject(new ApiError(msg, xhr.status));
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(new ApiError("网络错误，上传失败"));
+      };
+
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("directory", directory || "");
+      xhr.send(fd);
     });
   },
 
@@ -231,7 +295,11 @@ export const api = {
     return res.data;
   },
 
-  async updateAdminConfig(payload: { applicationYaml?: string; adminYaml?: string }) {
+  async updateAdminConfig(payload: {
+    visualConfig?: Record<string, any>;
+    applicationYaml?: string;
+    adminYaml?: string;
+  }) {
     return fetchJson<{ message: string }>("/api/admin/config", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

@@ -40,6 +40,7 @@ interface FileTableRowProps {
   onMove: (item: FileItem) => void;
   onRename: (item: FileItem) => void;
   onPreview: (item: FileItem) => void;
+  onContextMenu?: (e: React.MouseEvent, item: FileItem) => void;
 }
 
 export function FileTableRow({
@@ -52,6 +53,7 @@ export function FileTableRow({
   onMove,
   onRename,
   onPreview,
+  onContextMenu,
 }: FileTableRowProps) {
   const selectedFile = useFileStore((s) => s.selectedFile);
   const setSelectedFile = useFileStore((s) => s.setSelectedFile);
@@ -84,6 +86,7 @@ export function FileTableRow({
     <tr
       onClick={() => setSelectedFile(item)}
       onDoubleClick={() => onOpen(item)}
+      onContextMenu={(e) => onContextMenu?.(e, item)}
       className={`border-b transition-colors cursor-pointer select-none group ${
         isSelected ? "bg-brand-primary/10" : "hover:bg-white/80"
       }`}

@@ -11,6 +11,13 @@ if (!fs.existsSync(outDir)) {
 
 console.log(`Syncing compiled Next.js build from ${outDir} to ${staticDir}...`);
 
+// Clean stale _next directory before syncing new build
+const nextStaticDir = path.join(staticDir, '_next');
+if (fs.existsSync(nextStaticDir)) {
+  console.log(`Removing old ${nextStaticDir}...`);
+  fs.rmSync(nextStaticDir, { recursive: true, force: true });
+}
+
 // Recursive copy directory
 function copyFolderSync(from, to) {
   if (!fs.existsSync(to)) fs.mkdirSync(to, { recursive: true });

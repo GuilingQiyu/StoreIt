@@ -74,11 +74,23 @@ public class ConfigAdminController {
                 log.warn("Parse admin yaml warning: {}", e.getMessage());
             }
 
+            boolean keystoreExists = false;
+            try {
+                Map<String, Object> server = (Map<String, Object>) appMap.get("server");
+                if (server != null) {
+                    Map<String, Object> ssl = (Map<String, Object>) server.get("ssl");
+                    if (ssl != null && ssl.get("key-store") != null) {
+                        keystoreExists = Files.exists(Paths.get(ssl.get("key-store").toString()));
+                    }
+                }
+            } catch (Exception ignored) {}
+
             Map<String, Object> result = new HashMap<>();
             result.put("applicationYaml", appYamlStr);
             result.put("adminYaml", adminYamlStr);
             result.put("applicationConfig", appMap);
             result.put("adminConfig", adminMap);
+            result.put("keystoreExists", keystoreExists);
 
             return ResponseEntity.ok(ApiResponse.ok("获取配置成功", result));
         } catch (RuntimeException e) {
@@ -90,14 +102,98 @@ public class ConfigAdminController {
     }
 
     @PostMapping
-    public ResponseEntity<?> updateConfig(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> updateConfig(HttpServletRequest request, @RequestBody Map<String, Object> payload) {
         try {
             requireAdmin(request);
-            String newAppYaml = payload.get("applicationYaml");
-            String newAdminYaml = payload.get("adminYaml");
 
-            Yaml yaml = new Yaml();
-            // Validate YAML syntax
+            if (!Files.exists(CONFIG_DIR)) {
+                Files.createDirectories(CONFIG_DIR);
+            }
+
+            Yaml yaml = createYaml();
+
+            // 1. Visual Form Mode: safely patch existing YAML configurations without overwriting other properties
+            if (payload.containsKey("visualConfig")) {
+                Map<String, Object> visual = (Map<String, Object>) payload.get("visualConfig");
+
+                // Check keystore existence if SSL enabled
+                boolean sslEnabled = Boolean.parseBoolean(String.valueOf(visual.get("sslEnabled")));
+                String keyStorePath = String.valueOf(visual.getOrDefault("keyStorePath", "./keystore.p12"));
+                if (sslEnabled && !Files.exists(Paths.get(keyStorePath))) {
+                    return ResponseEntity.badRequest().body(ApiResponse.fail(
+                            "无法启用 HTTPS/SSL：未找到证书文件 [" + keyStorePath + "]。请先生成或将证书文件放置在该路径下。"));
+                }
+
+                // Patch application.yml
+                String appYamlStr = readFileOrExample(APP_CONFIG, APP_EXAMPLE);
+                Map<String, Object> appMap = new HashMap<>();
+                try {
+                    Object loaded = yaml.load(appYamlStr);
+                    if (loaded instanceof Map) appMap = (Map<String, Object>) loaded;
+                } catch (Exception ignored) {}
+
+                Map<String, Object> server = (Map<String, Object>) appMap.computeIfAbsent("server", k -> new HashMap<>());
+                if (visual.containsKey("port")) {
+                    server.put("port", Integer.parseInt(String.valueOf(visual.get("port"))));
+                }
+
+                Map<String, Object> ssl = (Map<String, Object>) server.computeIfAbsent("ssl", k -> new HashMap<>());
+                ssl.put("enabled", sslEnabled);
+                ssl.put("key-store", keyStorePath);
+                if (visual.containsKey("keyStorePass")) ssl.put("key-store-password", visual.get("keyStorePass"));
+                if (visual.containsKey("keyStoreType")) ssl.put("key-store-type", visual.get("keyStoreType"));
+
+                Map<String, Object> app = (Map<String, Object>) appMap.computeIfAbsent("app", k -> new HashMap<>());
+                if (visual.containsKey("storageRoot")) app.put("storage-root", visual.get("storageRoot"));
+                app.put("ssl-enabled", Boolean.parseBoolean(String.valueOf(visual.getOrDefault("appSslEnabled", sslEnabled))));
+                if (visual.containsKey("requireCustomAdmin")) {
+                    app.put("require-custom-admin", Boolean.parseBoolean(String.valueOf(visual.get("requireCustomAdmin"))));
+                }
+
+                Map<String, Object> login = (Map<String, Object>) app.computeIfAbsent("login", k -> new HashMap<>());
+                if (visual.containsKey("maxFailures")) login.put("max-failures", Integer.parseInt(String.valueOf(visual.get("maxFailures"))));
+                if (visual.containsKey("windowMinutes")) login.put("window-minutes", Integer.parseInt(String.valueOf(visual.get("windowMinutes"))));
+
+                Map<String, Object> session = (Map<String, Object>) app.computeIfAbsent("session", k -> new HashMap<>());
+                if (visual.containsKey("sessionMaxAgeDays")) session.put("max-age-days", Integer.parseInt(String.valueOf(visual.get("sessionMaxAgeDays"))));
+
+                // Save application.yml with backup
+                if (Files.exists(APP_CONFIG)) {
+                    Files.copy(APP_CONFIG, CONFIG_DIR.resolve("application.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
+                }
+                Files.writeString(APP_CONFIG, yaml.dump(appMap), StandardCharsets.UTF_8);
+
+                // Patch admin.yml
+                String adminYamlStr = readFileOrExample(ADMIN_CONFIG, ADMIN_EXAMPLE);
+                Map<String, Object> adminMap = new HashMap<>();
+                try {
+                    Object loaded = yaml.load(adminYamlStr);
+                    if (loaded instanceof Map) adminMap = (Map<String, Object>) loaded;
+                } catch (Exception ignored) {}
+
+                Map<String, Object> adminApp = (Map<String, Object>) adminMap.computeIfAbsent("app", k -> new HashMap<>());
+                Map<String, Object> defAdmin = (Map<String, Object>) adminApp.computeIfAbsent("default-admin", k -> new HashMap<>());
+                if (visual.containsKey("adminUsername") && visual.get("adminUsername") != null) {
+                    defAdmin.put("username", visual.get("adminUsername"));
+                }
+                // Only overwrite password if user provided a new non-blank password
+                String newPass = visual.get("adminPassword") != null ? String.valueOf(visual.get("adminPassword")).trim() : "";
+                if (!newPass.isEmpty()) {
+                    defAdmin.put("password", newPass);
+                }
+
+                if (Files.exists(ADMIN_CONFIG)) {
+                    Files.copy(ADMIN_CONFIG, CONFIG_DIR.resolve("admin.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
+                }
+                Files.writeString(ADMIN_CONFIG, yaml.dump(adminMap), StandardCharsets.UTF_8);
+
+                return ResponseEntity.ok(ApiResponse.ok("可视化配置已安全更新并备份。提示：端口与SSL等核心服务配置需重启后端应用后生效。"));
+            }
+
+            // 2. Raw YAML Mode
+            String newAppYaml = (String) payload.get("applicationYaml");
+            String newAdminYaml = (String) payload.get("adminYaml");
+
             if (newAppYaml != null) {
                 try {
                     yaml.load(newAppYaml);
@@ -114,10 +210,6 @@ public class ConfigAdminController {
                 }
             }
 
-            if (!Files.exists(CONFIG_DIR)) {
-                Files.createDirectories(CONFIG_DIR);
-            }
-
             if (newAppYaml != null) {
                 if (Files.exists(APP_CONFIG)) {
                     Files.copy(APP_CONFIG, CONFIG_DIR.resolve("application.yml.bak"), StandardCopyOption.REPLACE_EXISTING);
@@ -132,13 +224,21 @@ public class ConfigAdminController {
                 Files.writeString(ADMIN_CONFIG, newAdminYaml, StandardCharsets.UTF_8);
             }
 
-            return ResponseEntity.ok(ApiResponse.ok("配置已保存。提示：端口与SSL等核心服务配置需重启后端应用后生效。"));
+            return ResponseEntity.ok(ApiResponse.ok("原始配置已保存并备份。提示：端口与SSL等核心服务配置需重启后端应用后生效。"));
         } catch (RuntimeException e) {
             return ResponseEntity.status(403).body(ApiResponse.fail(e.getMessage()));
         } catch (Exception e) {
             log.error("Failed to save config", e);
             return ResponseEntity.internalServerError().body(ApiResponse.fail("保存配置失败: " + e.getMessage()));
         }
+    }
+
+    private Yaml createYaml() {
+        org.yaml.snakeyaml.DumperOptions options = new org.yaml.snakeyaml.DumperOptions();
+        options.setDefaultFlowStyle(org.yaml.snakeyaml.DumperOptions.FlowStyle.BLOCK);
+        options.setPrettyFlow(true);
+        options.setIndent(2);
+        return new Yaml(options);
     }
 
     private String readFileOrExample(Path primary, Path example) throws IOException {

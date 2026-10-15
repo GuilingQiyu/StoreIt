@@ -113,9 +113,28 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        <div className="text-center pt-2">
+        <div className="text-center pt-2 space-y-1">
           <p className="text-[11px] text-muted-foreground">
-            © 2025–2026 归灵祈昱 · 基于 GNU AGPL-3.0 授权
+            © 2025–2026 归灵祈昱 · 基于{" "}
+            <a
+              href="https://www.gnu.org/licenses/agpl-3.0.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-primary hover:underline font-medium"
+            >
+              GNU AGPL-3.0
+            </a>{" "}
+            开源协议发布
+          </p>
+          <p className="text-[11px] text-muted-foreground">
+            <a
+              href="https://github.com/GuilingQiyu/StoreIt"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand-primary hover:underline inline-flex items-center gap-1 font-medium"
+            >
+              查看源码 (GitHub: GuilingQiyu/StoreIt)
+            </a>
           </p>
         </div>
       </div>

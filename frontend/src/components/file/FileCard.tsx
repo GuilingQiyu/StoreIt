@@ -40,6 +40,7 @@ interface FileCardProps {
   onMove: (item: FileItem) => void;
   onRename: (item: FileItem) => void;
   onPreview: (item: FileItem) => void;
+  onContextMenu?: (e: React.MouseEvent, item: FileItem) => void;
 }
 
 export function FileCard({
@@ -52,6 +53,7 @@ export function FileCard({
   onMove,
   onRename,
   onPreview,
+  onContextMenu,
 }: FileCardProps) {
   const selectedFile = useFileStore((s) => s.selectedFile);
   const setSelectedFile = useFileStore((s) => s.setSelectedFile);
@@ -86,6 +88,7 @@ export function FileCard({
     <div
       onClick={() => setSelectedFile(item)}
       onDoubleClick={() => onOpen(item)}
+      onContextMenu={(e) => onContextMenu?.(e, item)}
       className={`group relative flex flex-col items-center justify-between p-4 rounded-2xl bg-white/80 hover:bg-white border transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md select-none ${
         isSelected
           ? "ring-2 ring-brand-primary border-transparent bg-white shadow-md"

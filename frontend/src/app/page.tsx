@@ -34,6 +34,12 @@ export default function MainPage() {
     });
   }, [checkAuth, router]);
 
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
+
   if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-brand-bg text-muted-foreground gap-3">

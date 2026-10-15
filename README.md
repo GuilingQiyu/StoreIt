@@ -31,8 +31,16 @@
 ## 快速开始
 前置要求：JDK 21、Maven
 
-- 构建：`mvn package`（会运行测试）
+- 构建：`mvn package`（会运行测试，如需更新前端请先在 `frontend` 目录执行 `npm run export`）
 - 运行：`java -jar target/storeit-2.0.0.jar`
+
+### 前端开发与构建
+StoreIt 2.0.0 前端基于 Next.js 14、React 18、TypeScript、Tailwind CSS、shadcn/ui、TanStack Query 与 Zustand 全新重构，支持百 GB 级大文件多并发分片断点续传、可视化系统配置、右键快捷菜单与移动端响应式设计：
+
+1. 进入前端目录：`cd frontend`
+2. 安装依赖：`npm ci`（或 `npm install`）
+3. 开发预览：`npm run dev`（内置反向代理，开发时 API 自动代理至后端 `http://localhost:59898`）
+4. 构建并导出静态产物：`npm run export`（执行静态导出并将静态资源自动同步到 `src/main/resources/static/`，无缝嵌入单可执行 JAR）
 
 可选：在 `src/main/resources/application.yml` 调整配置；或通过外部文件覆盖（适用于发布 JAR 部署）：
 

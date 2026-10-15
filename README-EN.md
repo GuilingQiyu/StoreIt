@@ -29,8 +29,16 @@ Defaults:
 ## Quick start
 Prereqs: JDK 21, Maven
 
-- Build: `mvn package` (runs tests)
+- Build: `mvn package` (runs tests; to rebuild frontend, run `npm run export` inside `frontend/` first)
 - Run: `java -jar target/storeit-2.0.0.jar`
+
+### Frontend Development & Build
+The StoreIt 2.0.0 frontend is completely refactored with Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, and Zustand, supporting 100GB+ chunked concurrent resumable uploads, visual configuration, context menus, and responsive design:
+
+1. Enter frontend folder: `cd frontend`
+2. Install dependencies: `npm ci` (or `npm install`)
+3. Development mode: `npm run dev` (built-in proxy forwards `/api/*` to backend `http://localhost:59898`)
+4. Build & sync to JAR static directory: `npm run export` (builds static export and syncs into `src/main/resources/static/`)
 
 ### External admin credentials
 Path: `./config/admin.yml`

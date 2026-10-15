@@ -99,7 +99,9 @@ public class FileService {
 
         List<FileMetadata> metas = metaMapper.findByUserIdAndParentPath(user.getId(), relativePath == null ? "" : relativePath);
         
-        List<FileListResponse.Item> items = metas.stream().map(m -> {
+        List<FileListResponse.Item> items = metas.stream()
+                .filter(m -> !".chunks".equals(m.getName()) && (m.getPath() == null || !m.getPath().startsWith(".chunks")))
+                .map(m -> {
             FileListResponse.Item it = new FileListResponse.Item();
             it.setName(m.getName());
             it.setDirectory(m.isDirectory());
@@ -129,6 +131,7 @@ public class FileService {
 
             for (File f : diskFiles) {
                 String name = f.getName();
+                if (".chunks".equals(name) || (name.startsWith(".") && f.isDirectory())) continue;
                 diskFileNames.add(name);
                 
                 Optional<FileMetadata> existing = dbFiles.stream().filter(m -> m.getName().equals(name)).findFirst();
@@ -431,7 +434,10 @@ public class FileService {
     }
 
     private FileListResponse responseOf(String currentPath, List<FileMetadata> metas) {
-        List<FileListResponse.Item> items = metas.stream().map(this::toItem).collect(Collectors.toList());
+        List<FileListResponse.Item> items = metas.stream()
+                .filter(m -> !".chunks".equals(m.getName()) && (m.getPath() == null || !m.getPath().startsWith(".chunks")))
+                .map(this::toItem)
+                .collect(Collectors.toList());
         FileListResponse res = new FileListResponse();
         res.setCurrentPath(currentPath);
         res.setItems(items);

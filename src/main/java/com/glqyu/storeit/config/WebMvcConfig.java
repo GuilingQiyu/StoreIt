@@ -23,5 +23,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
+        // expose /_next/** so Next.js static chunks and css load directly
+        registry
+                .addResourceHandler("/_next/**")
+                .addResourceLocations("classpath:/static/_next/");
+        registry
+                .addResourceHandler("/favicon.ico")
+                .addResourceLocations("classpath:/static/favicon.ico");
     }
 }

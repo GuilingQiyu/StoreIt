@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Share2, Copy, Check, Trash2, RefreshCw, Link as LinkIcon, Clock } from "lucide-react";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
+import { formatDate, copyToClipboard } from "@/lib/utils";
 
 export function SharesTab() {
   const queryClient = useQueryClient();
@@ -21,14 +21,18 @@ export function SharesTab() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shares"] });
     },
+    onError: (err: any) => alert(err.message || "撤销分享失败"),
   });
 
-  const handleCopy = (shareId: number, url: string) => {
+  const handleCopy = async (shareId: number, url: string) => {
     const fullUrl = window.location.origin + url;
-    navigator.clipboard.writeText(fullUrl).then(() => {
+    const ok = await copyToClipboard(fullUrl);
+    if (ok) {
       setCopiedId(shareId);
       setTimeout(() => setCopiedId(null), 2000);
-    });
+    } else {
+      alert("复制失败，请手动选取复制");
+    }
   };
 
   const handleRevoke = (id: number, filePath: string) => {

@@ -19,7 +19,10 @@ export interface User {
 export interface StorageQuota {
   used: number;
   total: number;
-  ratio: number;
+  free?: number;
+  quota?: number;
+  unlimited?: boolean;
+  scope?: "disk" | "user";
 }
 
 export interface FileShare {
@@ -65,4 +68,5 @@ export interface AdminConfigData {
   adminYaml: string;
   applicationConfig: Record<string, any>;
   adminConfig: Record<string, any>;
+  keystoreExists?: boolean;
 }
