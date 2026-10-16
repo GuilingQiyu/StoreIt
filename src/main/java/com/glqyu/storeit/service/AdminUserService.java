@@ -31,6 +31,10 @@ public class AdminUserService {
     }
 
     public User create(String username, String rawPassword, long storageQuota) throws IOException {
+        return create(username, rawPassword, storageQuota, false);
+    }
+
+    public User create(String username, String rawPassword, long storageQuota, boolean mustChangePassword) throws IOException {
         Usernames.check(username);
         checkPassword(rawPassword);
         checkQuota(storageQuota);
@@ -43,14 +47,21 @@ public class AdminUserService {
         user.setCreatedAt(Instant.now().getEpochSecond());
         user.setRole("USER");
         user.setStorageQuota(storageQuota);
+        user.setMustChangePassword(mustChangePassword);
+        user.setEnabled(true);
         userMapper.insert(user);
         Files.createDirectories(Paths.get(props.getStorageRoot(), username));
         return user;
     }
 
     public void update(String actorUsername, String username, Long storageQuota, String role) {
+        update(actorUsername, username, storageQuota, role, null, null);
+    }
+
+    public void update(String actorUsername, String username, Long storageQuota, String role,
+                       Boolean enabled, Boolean mustChangePassword) {
         User existing = userMapper.findByUsername(username).orElseThrow(NoSuchElementException::new);
-        if (storageQuota == null && (role == null || role.isBlank())) {
+        if (storageQuota == null && (role == null || role.isBlank()) && enabled == null && mustChangePassword == null) {
             throw new IllegalArgumentException("没有要修改的内容");
         }
         if (storageQuota != null) {
@@ -64,12 +75,26 @@ public class AdminUserService {
             }
             userMapper.updateRole(existing.getUsername(), normalized);
         }
+        if (enabled != null) {
+            if (actorUsername.equals(existing.getUsername()) && !enabled) {
+                throw new IllegalArgumentException("不能禁用当前登录的管理员账号");
+            }
+            userMapper.updateEnabled(existing.getUsername(), enabled);
+        }
+        if (mustChangePassword != null) {
+            userMapper.updateMustChangePassword(existing.getUsername(), mustChangePassword);
+        }
     }
 
     public void resetPassword(String username, String rawPassword) {
+        resetPassword(username, rawPassword, false);
+    }
+
+    public void resetPassword(String username, String rawPassword, boolean mustChangePassword) {
         User existing = userMapper.findByUsername(username).orElseThrow(NoSuchElementException::new);
         checkPassword(rawPassword);
         existing.setPasswordHash(BCrypt.hashpw(rawPassword, BCrypt.gensalt()));
+        existing.setMustChangePassword(mustChangePassword);
         userMapper.updatePassword(existing);
     }
 

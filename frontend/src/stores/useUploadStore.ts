@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { UploadTask, UploadStatus } from "@/types";
+import { FileConflictStrategy, PendingUploadEntry, UploadTask, UploadStatus } from "@/types";
+import { useFileStore } from "@/stores/useFileStore";
 import { api } from "@/lib/api";
 import { formatBytes } from "@/lib/utils";
 
@@ -26,7 +27,8 @@ interface UploadState {
   // Actions
   toggleDrawer: () => void;
   setDrawerOpen: (open: boolean) => void;
-  addFile: (file: File, directory: string) => Promise<string>;
+  addFile: (file: File, directory: string, conflictStrategy?: FileConflictStrategy) => Promise<string>;
+  enqueueWithConflictCheck: (entries: PendingUploadEntry[], emptyDirs: string[], targetDir: string) => Promise<void>;
   pauseTask: (id: string) => void;
   resumeTask: (id: string) => Promise<void>;
   cancelTask: (id: string) => Promise<void>;
@@ -45,7 +47,7 @@ export const useUploadStore = create<UploadState>()(
       toggleDrawer: () => set((state) => ({ isDrawerOpen: !state.isDrawerOpen })),
       setDrawerOpen: (open) => set({ isDrawerOpen: open }),
 
-      addFile: async (file: File, directory: string): Promise<string> => {
+      addFile: async (file: File, directory: string, conflictStrategy: FileConflictStrategy = "rename"): Promise<string> => {
         const fingerprint = generateFingerprint(file, directory);
         const { tasks } = get();
 
@@ -93,6 +95,7 @@ export const useUploadStore = create<UploadState>()(
           name: file.name,
           size: file.size,
           directory,
+          conflictStrategy,
           chunkSize: CHUNK_SIZE,
           totalChunks,
           uploadedChunks: [],
@@ -256,6 +259,74 @@ export const useUploadStore = create<UploadState>()(
           ),
         }));
       },
+
+      enqueueWithConflictCheck: async (
+        entries: PendingUploadEntry[],
+        emptyDirs: string[],
+        targetDir: string
+      ) => {
+        let existingItems: { name: string; isDirectory: boolean }[] = [];
+        try {
+          const res = await api.getFiles(targetDir);
+          existingItems = res.items;
+        } catch {}
+
+        const existingFolders = new Set(
+          existingItems.filter((i) => i.isDirectory).map((i) => i.name)
+        );
+        const existingFiles = new Set(
+          existingItems.filter((i) => !i.isDirectory).map((i) => i.name)
+        );
+
+        const topFolders = new Set<string>();
+        const topFiles = new Set<string>();
+
+        for (const e of entries) {
+          if (e.subPath) {
+            const top = e.subPath.split("/")[0];
+            if (top) topFolders.add(top);
+          } else {
+            topFiles.add(e.file.name);
+          }
+        }
+        for (const d of emptyDirs) {
+          const top = d.split("/")[0];
+          if (top) topFolders.add(top);
+        }
+
+        const conflictingFolders = Array.from(topFolders).filter((f) =>
+          existingFolders.has(f)
+        );
+        const conflictingFiles = Array.from(topFiles).filter((f) =>
+          existingFiles.has(f)
+        );
+
+        if (conflictingFolders.length > 0 || conflictingFiles.length > 0) {
+          useFileStore.getState().setUploadConflict({
+            targetDir,
+            entries,
+            emptyDirs,
+            conflictingFolders,
+            conflictingFiles,
+          });
+          return;
+        }
+
+        // 无同名冲突：直接创建空文件夹并入队上传
+        for (const emptySub of emptyDirs) {
+          try {
+            await api.createDirectory(targetDir, emptySub);
+          } catch {}
+        }
+        for (const item of entries) {
+          const dest = item.subPath
+            ? targetDir
+              ? `${targetDir}/${item.subPath}`
+              : item.subPath
+            : targetDir;
+          await get().addFile(item.file, dest, "rename");
+        }
+      },
     }),
     {
       name: "storeit-upload-tasks",
@@ -282,6 +353,7 @@ export const useUploadStore = create<UploadState>()(
           name: t.name,
           size: t.size,
           directory: t.directory,
+          conflictStrategy: t.conflictStrategy,
           chunkSize: t.chunkSize,
           totalChunks: t.totalChunks,
           uploadedChunks: [], // Empty in localStorage, queried from server on resume
@@ -390,7 +462,8 @@ async function executeSimpleUpload(
           ),
         }));
       },
-      controller.signal
+      controller.signal,
+      task.conflictStrategy || "rename"
     );
 
     activeSimpleControllers.delete(taskId);
@@ -449,7 +522,7 @@ async function executeChunkedUpload(
   // Initialize or resume chunked session with backend
   try {
     if (taskId.startsWith("task_")) {
-      const initRes = await api.initChunkedUpload(file.name, file.size, task.directory);
+      const initRes = await api.initChunkedUpload(file.name, file.size, task.directory, task.conflictStrategy || "rename");
       realUploadId = initRes.uploadId;
       totalChunks = initRes.totalChunks;
       chunkSize = initRes.chunkSize;
@@ -508,7 +581,7 @@ async function executeChunkedUpload(
         // 此时不再反复报「上传会话无效」，而是自动重建全新会话从头续传。
         if (err?.status !== 400) throw err;
 
-        const initRes = await api.initChunkedUpload(file.name, file.size, task.directory);
+        const initRes = await api.initChunkedUpload(file.name, file.size, task.directory, task.conflictStrategy || "rename");
         const previousId = taskId;
         realUploadId = initRes.uploadId;
         totalChunks = initRes.totalChunks;

@@ -15,12 +15,15 @@ import {
   Share2,
   Trash2,
   FolderInput,
+  FolderOpen,
   Edit2,
-  Eye
+  Eye,
+  Check
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { useFileStore } from "@/stores/useFileStore";
-import { formatBytes, formatDate, getFileCategory, isPreviewable } from "@/lib/utils";
+import { formatBytes, formatDate, getFileCategory, getParentDirectory, isEditableText, isPreviewable } from "@/lib/utils";
+import { Edit3 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,7 +60,16 @@ export function FileTableRow({
 }: FileTableRowProps) {
   const selectedFile = useFileStore((s) => s.selectedFile);
   const setSelectedFile = useFileStore((s) => s.setSelectedFile);
+  const selectedPaths = useFileStore((s) => s.selectedPaths);
+  const toggleSelectPath = useFileStore((s) => s.toggleSelectPath);
+  const viewMode = useFileStore((s) => s.viewMode);
+  const openContainingFolder = useFileStore((s) => s.openContainingFolder);
+  const openEditor = useFileStore((s) => s.openEditor);
+
   const isSelected = selectedFile?.path === item.path;
+  const isChecked = selectedPaths.includes(item.path);
+  const parentDir = getParentDirectory(item.path);
+  const showParentBadge = viewMode !== "files" && Boolean(parentDir);
 
   const renderIcon = () => {
     if (item.isDirectory) {
@@ -84,33 +96,62 @@ export function FileTableRow({
 
   return (
     <tr
-      onClick={() => setSelectedFile(item)}
+      onClick={(e) => {
+        if (e.ctrlKey || e.metaKey) {
+          toggleSelectPath(item.path);
+        }
+        setSelectedFile(item);
+      }}
       onDoubleClick={() => onOpen(item)}
       onContextMenu={(e) => onContextMenu?.(e, item)}
       className={`border-b transition-colors cursor-pointer select-none group ${
-        isSelected ? "bg-brand-primary/10" : "hover:bg-white/80"
+        isChecked || isSelected ? "bg-brand-primary/10" : "hover:bg-white/80"
       }`}
     >
-      <td className="py-2.5 px-3 w-10">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite(item);
-          }}
-          className={`text-muted-foreground/40 hover:text-amber-500 transition-colors ${
-            item.isFavorite ? "text-amber-500 fill-amber-500 opacity-100" : ""
-          }`}
-        >
-          <Star className={`w-4 h-4 ${item.isFavorite ? "fill-amber-500" : ""}`} />
-        </button>
+      <td className="py-2.5 px-3 w-16">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleSelectPath(item.path);
+            }}
+            className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+              isChecked
+                ? "bg-brand-primary border-brand-primary text-white"
+                : "border-black/25 bg-white hover:border-brand-primary"
+            }`}
+          >
+            {isChecked && <Check className="w-3 h-3" />}
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(item);
+            }}
+            className={`text-muted-foreground/40 hover:text-amber-500 transition-colors ${
+              item.isFavorite ? "text-amber-500 fill-amber-500 opacity-100" : ""
+            }`}
+          >
+            <Star className={`w-4 h-4 ${item.isFavorite ? "fill-amber-500" : ""}`} />
+          </button>
+        </div>
       </td>
 
       <td className="py-2.5 px-3">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <div className="shrink-0">{renderIcon()}</div>
-          <span className="font-medium text-sm text-foreground truncate max-w-md" title={item.name}>
-            {item.name}
-          </span>
+          <div className="min-w-0">
+            <span className="font-medium text-sm text-foreground truncate block max-w-md" title={item.name}>
+              {item.name}
+            </span>
+            {showParentBadge && (
+              <span className="text-[11px] text-muted-foreground font-mono block truncate">
+                所在目录: /{parentDir}
+              </span>
+            )}
+          </div>
         </div>
       </td>
 
@@ -129,12 +170,17 @@ export function FileTableRow({
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="end" className="w-44">
             {!item.isDirectory && (
               <>
                 {isPreviewable(item.name) && (
                   <DropdownMenuItem onClick={() => onPreview(item)} className="gap-2">
                     <Eye className="w-4 h-4 text-brand-secondary" /> 预览
+                  </DropdownMenuItem>
+                )}
+                {isEditableText(item.name) && (
+                  <DropdownMenuItem onClick={() => openEditor(item)} className="gap-2">
+                    <Edit3 className="w-4 h-4 text-brand-secondary" /> 在线编辑
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
@@ -145,6 +191,11 @@ export function FileTableRow({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
+            )}
+            {viewMode !== "files" && (
+              <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">
+                <FolderOpen className="w-4 h-4 text-brand-secondary" /> 打开所在目录
+              </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={() => onRename(item)} className="gap-2">
               <Edit2 className="w-4 h-4 text-brand-secondary" /> 重命名

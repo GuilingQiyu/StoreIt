@@ -1,50 +1,58 @@
-# External application overrides for StoreIt (copy generated to ./config/application.yml)
+# External application overrides for StoreIt (copy to ./config/application.yml)
 # Loaded before ./config/admin.yml. Duplicate keys in admin.yml win (keep the admin password there).
 # You can override any Spring Boot or `app.*` property here when running the jar.
 
 server:
-  # HTTP(S) port
+  # HTTP(S) listening port (1 - 65535)
   port: 59898
   servlet:
     session:
-      # Spring session timeout (ISO-8601 duration)
+      # Spring servlet container session timeout (ISO-8601 duration, e.g. 30d, 12h, 60m)
       timeout: 30d
   ssl:
-    # Enable HTTPS. If true, configure keystore below
+    # Enable direct HTTPS/SSL on this server. If true, configure keystore below
     enabled: false
-    # Path to PKCS12 keystore file (relative to working dir)
+    # Path to PKCS12/JKS keystore file (relative to working directory)
     key-store: ./keystore.p12
-    # Keystore password
+    # Keystore access password
     key-store-password: changeit
-    # Usually PKCS12 for generated keystores
+    # Keystore type (usually PKCS12)
     key-store-type: PKCS12
 
 spring:
   datasource:
-    # SQLite DB file location
+    # SQLite database file location
     url: jdbc:sqlite:./data/storeit.db
     driver-class-name: org.sqlite.JDBC
   flyway:
     enabled: true
     locations: classpath:db/migration
+  servlet:
+    multipart:
+      # Max single file upload size (e.g. 100GB, 10GB, 500MB)
+      max-file-size: 100GB
+      # Max multipart request size (e.g. 100GB, 10GB, 500MB)
+      max-request-size: 100GB
 
 app:
-  # Root folder for files served by the app
+  # Root folder on disk for user files served by the app
   storage-root: storage
-  # Refuse to start while the built-in admin password is still in use
+  # Whether to mark session cookie as Secure and send HSTS header (enable for direct SSL or HTTPS reverse proxy)
+  ssl-enabled: false
+  # Refuse to start while the built-in default admin password (admin / authorized_users) is still in use
   require-custom-admin: false
   login:
+    # Lock login for same IP + username after N consecutive failures
     max-failures: 5
+    # Sliding time window (minutes) for counting login failures
     window-minutes: 15
-  # Whether to treat app as SSL-enabled (used for cookie secure, etc.)
-  ssl-enabled: false
   session:
-    # Session max age (days) used for cookie expiry
+    # Session max age (days, 1 - 365) used for session & cookie expiry
     max-age-days: 30
-    # Cookie name for session id
+    # Cookie name for session token
     cookie-name: STOREIT_SESSION
 
 logging:
   level:
-    # Log level (info/debug/warn/error)
+    # Root log level (info / warn / error / debug / trace)
     root: info

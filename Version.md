@@ -1,5 +1,28 @@
 # 储之文件服务器 (StoreIt) - 版本日志
 
+## 2.0.1 (2026-10-19)
+
+### 功能与体验升级
+- **全文本格式支持与媒体预览扩充**：
+  - **全量文本格式与无扩展名文本探测**：支持所有文本、代码与配置文件格式（包括无扩展名的 `Dockerfile`、`Makefile`、`LICENSE`、`README`、`hosts`、`.env`、`.gitignore` 以及自定义扩展名文本文件）；前后端通过前 8 KB NUL（`0x00`）字节探测自动区分纯文本与二进制文件。
+  - **更多媒体内联预览格式**：新增 `apng`、`jfif`、`avif`、`ico`、`cur`（图片），`m4v`、`3gp`、`mkv`（视频），以及 `flac`、`aac`、`m4a`、`oga`、`opus`、`weba`、`mid`、`midi`、`amr`（音频）原生内联预览支持。
+  - **预览器增强**：支持同目录可预览文件「上一个 / 下一个」快捷切换（含键盘 `←` / `→` 方向键）、图片缩放与 90° 旋转、Markdown（`.md`）渲染视图与源码视图一键切换。
+- **文本类文件在线编辑**：
+  - 新增 `GET /api/file/content` 与 `PUT / POST /api/file/content` 接口，支持 5 MB 以内任意文本类文件的在线读取与保存，保存时自动按净增字节校验用户配额并同步更新 `file_metadata` 表。
+  - 预览弹窗、文件卡片/表格行操作菜单、右键菜单及侧边栏详情面板均新增「在线编辑」入口，内置代码编辑器支持 `Tab` 缩进、`Ctrl+S` / `Cmd+S` 快捷保存与未保存状态提示。
+- **上传同名冲突策略（同名文件夹合并/重命名/覆盖，同名文件重命名/覆盖）**：
+  - **同名文件夹冲突处理**：新增 `POST /api/folder/resolve-conflict`，上传文件夹遇到同名目录时支持选择 **合并目录（`merge`）**、**自动重命名（`rename`，如 `文件夹 (1)`）** 或 **覆盖原目录（`overwrite`）**。
+  - **同名文件冲突处理**：`POST /api/upload` 与分片上传 `POST /api/upload/init` + `complete` 新增 `conflictStrategy` 参数，支持 **自动重命名（`rename`）** 或 **覆盖同名文件（`overwrite`，按净增字节校验配额并原地更新元数据）**。
+  - **前端冲突检测弹窗（`UploadConflictModal`）**：拖拽或选择文件/文件夹上传时自动检测目标目录同名项，弹出策略选择框供用户一键决策；同时支持拖拽保留空子文件夹。
+- **系统设置与 `*.yml.example` 全量可配置项覆盖**：
+  - 补齐 `config/application.yml.example` 与 `src/main/resources/config/application.yml.example`，完整覆盖 `server.port`、`server.servlet.session.timeout`、`server.ssl.*`、`spring.datasource.url`、`spring.servlet.multipart.max-file-size` / `max-request-size`、`app.storage-root`、`app.ssl-enabled`、`app.require-custom-admin`、`app.login.*`、`app.session.*`、`logging.level.root` 及 `admin.yml` 全部可调项。
+  - 「系统设置」可视化配置表单与 `ConfigAdminController` 同步扩展，支持上述全部 19 项参数的表单维护与后端格式/范围双重校验。
+- **日常管理与交互体验完善**：
+  - **子目录 URL Hash 同步**：支持 `#/files/<path>` 路径同步，页面刷新或浏览器前进/后退可逐级导航父子目录。
+  - **可视化目录树移动与多选批量操作**：移动弹窗内置可展开文件夹目录树；文件列表支持名称/大小/时间排序及多选批量移动、批量收藏、批量删除（`POST /api/file/batch-delete`、`POST /api/file/batch-move`）。
+  - **账号生命周期与配额单位选择器**：新增个人自助改密接口 `POST /api/user/password`；管理员用户管理支持 `MB / GB / TB / 不限额` 配额单位选择器、账号启用/禁用实时拦截及强制改密标记。
+  - **防爬虫预抓取与分片配额精准计算**：分享直链 `/d/{token}` 对 `HEAD` 与社交软件预览爬虫（Telegram/Discord/Twitter/Slack/WhatsApp 等）不扣减下载次数；排除 `.chunks` 临时目录消除分片合并时的配额双倍计费。
+
 ## 2.0.0 (2026-10-14)
 
 ### 重大变更与前端全面重构
@@ -28,6 +51,10 @@
 
 ### 后端 API 新增与调整
 - 新增 `DELETE /api/upload/{uploadId}`：用于客户端主动取消上传任务时级联删除服务端临时切片目录。
+- 新增 `POST /api/user/password`：支持已登录用户自助修改个人登录口令，并自动清除首次改密标记（`must_change_password`）。
+- 新增 `POST /api/file/batch-delete` 与 `POST /api/file/batch-move`：支持多选文件或目录的批量删除与批量移动。
+- 增强 `AdminUserController`：支持按 `enabled` 启用/禁用用户账号（禁用后实时注销会话并拦截登录）及设置 `mustChangePassword` 强制改密标记。
+- 增强 `GET / HEAD /d/{token}`：对 `HEAD` 预检请求及常见社交软件链接预览爬虫（Telegram/Discord/Twitter/Slack/WhatsApp 等 Bot UA）不扣减 `maxDownloads` 下载次数；当浏览器访问失效外链时返回自包含的美观中文 HTML 错误页。
 - 新增 `ConfigAdminController`：
   - `GET /api/admin/config`：读取并解析外部配置文件，返回结构化配置信息及 SSL Keystore 状态。
   - `POST /api/admin/config`：验证并写入配置更新，支持局部增量打补丁与 YAML 全文安全覆写，修改前自动生成 `.bak` 备份文件。
@@ -39,7 +66,13 @@
 - **全局并发队列控制**：引入任务级并发限制（限制最大同时活跃任务数），防止百个大文件同时启动导致网络与服务端 I/O 阻塞。
 - **分片上传容错与重试**：网络抖动或临时切片失败时自动进行多次指数回退重试，并在重新绑定文件时严格校验文件指纹。
 - **配置持久化安全加固**：重构配置管理接口，支持局部精准增量更新，杜绝覆盖破坏未暴露项；增加 keystore 文件存在性校验，防止错误开启 SSL 导致服务宕机。
-- **用户体验补全**：补回文件列表右键快捷菜单、文件详细信息面板完整属性与快捷操作、移动端抽屉导航栏，以及登录页面 AGPL-3.0 协议与 GitHub 源码链接。
+- **用户体验全方位增强**：
+  - **URL 子目录深度同步**：Hash 路由扩展支持 `#/files/<path>`，页面刷新（F5）或点击浏览器前进/后退可逐级导航父子文件夹。
+  - **可视化目录树移动选择器**：移动文件/批量移动弹窗内置可展开的文件夹目录树，点击即可选择目标文件夹。
+  - **列表排序、多选批量操作与实时防抖搜索**：支持按名称/大小/修改时间升序或降序排列；支持多选批量移动、批量收藏、批量删除；搜索框支持 300ms 实时防抖检索，并在搜索/最近/收藏视图展示所在父目录路径及「打开所在目录」一键定位。
+  - **多媒体预览增强**：预览弹窗支持同目录「上一个/下一个」切换（含键盘 `←`/`→` 快捷键）、图片缩放与 90° 旋转、Markdown（`.md`）渲染视图与源码视图一键切换，并扩充 `.avif`/`.ico`/`.flac`/`.aac`/`.m4a` 内联预览支持。
+  - **人性化配额单位与个人改密**：管理员设置用户配额升级为「数值 + `MB`/`GB`/`TB`/`不限额` 单位选择器」并支持一键启用/禁用账号；右上角用户菜单新增个人「修改登录口令」弹窗；全站操作采用非阻塞 Toast 通知与自定义确认对话框替代原生 `alert`/`confirm`。
+  - **修复分片合并配额双倍计费**：统计用户已用空间时排除 `.chunks` 临时目录，避免大文件在 99% 合并阶段因临时分片与目标文件大小重复累加而误报“存储配额不足”；拖拽上传支持保留空子文件夹。
 - **SSL / Cookie 开关治理**：`app.ssl-enabled`（Cookie Secure 标记）独立于直连 SSL 开关常驻展示并双向联动，补充反向代理场景说明，修复关闭 HTTPS 后 Cookie 残留 Secure 导致 HTTP 环境全员无法登录的隐患。
 - **配置数值范围校验**：可视化配置的端口（1–65535）、会话天数（1–365）、防暴力破解参数新增前后端双重范围校验，杜绝 `port: 0`（重启后随机端口）等非法值写入。
 - **上传引擎健壮性加固**：会话初始化 / 状态查询期间暂停立即生效；重复添加正在上传的文件不再触发并发重复分片；服务端分片会话失效（如超 24 小时清理）后自动重建会话继续上传；分片失败重试增加 500ms / 1s 指数退避。

@@ -7,6 +7,8 @@ public class User {
     private long createdAt; // epoch seconds
     private String role; // USER, ADMIN
     private long storageQuota; // bytes, 0 = unlimited
+    private boolean mustChangePassword;
+    private boolean enabled = true;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -25,4 +27,10 @@ public class User {
 
     public long getStorageQuota() { return storageQuota; }
     public void setStorageQuota(long storageQuota) { this.storageQuota = storageQuota; }
+
+    public boolean isMustChangePassword() { return mustChangePassword; }
+    public void setMustChangePassword(boolean mustChangePassword) { this.mustChangePassword = mustChangePassword; }
+
+    public boolean isEnabled() { return enabled; }
+    public void setEnabled(boolean enabled) { this.enabled = enabled; }
 }

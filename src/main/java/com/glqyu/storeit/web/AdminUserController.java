@@ -51,7 +51,8 @@ public class AdminUserController {
         requireAdmin(request);
         try {
             long quota = req.getStorageQuota() == null ? 0L : req.getStorageQuota();
-            User created = adminUserService.create(req.getUsername(), req.getPassword(), quota);
+            boolean mustChange = Boolean.TRUE.equals(req.getMustChangePassword());
+            User created = adminUserService.create(req.getUsername(), req.getPassword(), quota, mustChange);
             return ResponseEntity.ok(ApiResponse.ok("用户已创建", summary(created)));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
@@ -66,7 +67,8 @@ public class AdminUserController {
                                     @RequestBody UpdateUserRequest req) {
         User actor = requireAdmin(request);
         try {
-            adminUserService.update(actor.getUsername(), username, req.getStorageQuota(), req.getRole());
+            adminUserService.update(actor.getUsername(), username, req.getStorageQuota(), req.getRole(),
+                    req.getEnabled(), req.getMustChangePassword());
             return ResponseEntity.ok(ApiResponse.ok("用户已更新"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
@@ -83,7 +85,8 @@ public class AdminUserController {
                                            @Valid @RequestBody ResetPasswordRequest req) {
         requireAdmin(request);
         try {
-            adminUserService.resetPassword(username, req.getPassword());
+            boolean mustChange = Boolean.TRUE.equals(req.getMustChangePassword());
+            adminUserService.resetPassword(username, req.getPassword(), mustChange);
             return ResponseEntity.ok(ApiResponse.ok("口令已重置"));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
@@ -110,6 +113,8 @@ public class AdminUserController {
         row.put("username", user.getUsername());
         row.put("role", user.getRole() == null ? "USER" : user.getRole());
         row.put("storageQuota", user.getStorageQuota());
+        row.put("enabled", user.isEnabled());
+        row.put("mustChangePassword", user.isMustChangePassword());
         row.put("createdAt", user.getCreatedAt());
         return row;
     }

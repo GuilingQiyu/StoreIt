@@ -99,6 +99,10 @@ public class AuthService {
             // expired
             return Optional.empty();
         }
+        Optional<User> u = userMapper.findByUsername(r.get().getUsername());
+        if (u.isPresent() && !u.get().isEnabled()) {
+            return Optional.empty();
+        }
         return Optional.of(r.get().getUsername());
     }
 

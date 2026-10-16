@@ -19,6 +19,7 @@ export function NewFolderModal() {
   const isOpen = useFileStore((s) => s.newFolderModalOpen);
   const setOpen = useFileStore((s) => s.setNewFolderModalOpen);
   const currentPath = useFileStore((s) => s.currentPath);
+  const showToast = useFileStore((s) => s.showToast);
   const [folderName, setFolderName] = useState("");
   const queryClient = useQueryClient();
 
@@ -26,11 +27,12 @@ export function NewFolderModal() {
     mutationFn: (name: string) => api.createDirectory(currentPath, name),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
+      showToast("文件夹创建成功", "success");
       setFolderName("");
       setOpen(false);
     },
     onError: (err: any) => {
-      alert(err.message || "创建文件夹失败");
+      showToast(err.message || "创建文件夹失败", "error");
     },
   });
 

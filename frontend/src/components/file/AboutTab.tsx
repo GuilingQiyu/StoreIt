@@ -21,7 +21,7 @@ export function AboutTab() {
 
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          系统运行正常 · 版本 v2.0.0
+          系统运行正常 · 版本 v2.0.1
         </div>
 
         <p className="text-sm text-foreground/80 leading-relaxed max-w-lg mx-auto">

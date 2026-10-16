@@ -32,10 +32,10 @@
 前置要求：JDK 21、Maven
 
 - 构建：`mvn package`（会运行测试，如需更新前端请先在 `frontend` 目录执行 `npm run export`）
-- 运行：`java -jar target/storeit-2.0.0.jar`
+- 运行：`java -jar target/storeit-2.0.1.jar`
 
 ### 前端开发与构建
-StoreIt 2.0.0 前端基于 Next.js 14、React 18、TypeScript、Tailwind CSS、shadcn/ui、TanStack Query 与 Zustand 全新重构，支持百 GB 级大文件多并发分片断点续传、可视化系统配置、右键快捷菜单与移动端响应式设计：
+StoreIt 2.0.1 前端基于 Next.js 14、React 18、TypeScript、Tailwind CSS、shadcn/ui、TanStack Query 与 Zustand 全新重构，支持百 GB 级大文件多并发分片断点续传、可视化系统配置、右键快捷菜单与移动端响应式设计：
 
 1. 进入前端目录：`cd frontend`
 2. 安装依赖：`npm ci`（或 `npm install`）
@@ -106,7 +106,8 @@ spring:
 	- `POST /api/upload/init`、`POST /api/upload/chunk`、`GET /api/upload/status`、`POST /api/upload/complete`、`DELETE /api/upload/{uploadId}` — 特大文件（> 50 MB，默认上限 100 GB）5 MB 分片并发上传、断点续传状态同步、合并与取消清理
 	- `GET /storage/**` — 已登录受保护下载（`attachment`）
 	- `GET /api/preview?path=...` — 已登录预览。图片（不含 SVG）、视频、音频、PDF 为内联真实类型；HTML、SVG、XML 及其他文本为 `text/plain`，CSP 为 `script-src 'none'`。视频支持 Range
-	- `POST /api/file/delete`、`POST /api/file/rename`、`POST /api/file/move`、`POST /api/folder/create` — 删除 / 重命名 / 移动 / 新建文件夹
+	- `POST /api/file/delete`、`POST /api/file/batch-delete`、`POST /api/file/rename`、`POST /api/file/move`、`POST /api/file/batch-move`、`POST /api/folder/create`、`POST /api/folder/resolve-conflict` — 删除（含批量）/ 重命名 / 移动（含批量）/ 新建文件夹 / 同名文件夹冲突处理（合并、重命名、覆盖）
+	- `GET /api/file/content?path=...`、`PUT /api/file/content` — 文本类文件在线读取与在线编辑保存（≤ 5 MB）
 	- `GET /api/files/recent` — 最近修改的文件
 	- `GET /api/files/search?q=` — 按文件名搜索
 	- `GET/POST /api/favorites`、`DELETE /api/favorites?path=` — 收藏列表、加入、取消

@@ -32,21 +32,56 @@ export function formatDate(timestamp: number | string | undefined): string {
 }
 
 export function getFileExtension(filename: string): string {
-  const parts = filename.split(".");
+  if (!filename) return "";
+  const base = filename.split("/").pop() || filename;
+  if (base.startsWith(".") && !base.slice(1).includes(".")) {
+    return base.slice(1).toLowerCase();
+  }
+  const parts = base.split(".");
   return parts.length > 1 ? parts.pop()?.toLowerCase() || "" : "";
+}
+
+export function getParentDirectory(path: string): string {
+  if (!path || !path.includes("/")) return "";
+  return path.slice(0, path.lastIndexOf("/"));
 }
 
 export type FileCategory = "image" | "video" | "audio" | "archive" | "code" | "pdf" | "document" | "other";
 
+const INLINE_IMAGE_EXTS = [
+  "png", "apng", "jpg", "jpeg", "jfif", "pjpeg", "pjp",
+  "gif", "webp", "bmp", "avif", "ico", "cur",
+];
+const INLINE_VIDEO_EXTS = [
+  "mp4", "m4v", "webm", "ogg", "ogv", "mov", "3gp", "mkv",
+];
+const INLINE_AUDIO_EXTS = [
+  "mp3", "wav", "flac", "aac", "m4a", "oga", "opus", "weba", "mid", "midi", "amr",
+];
+const ARCHIVE_EXTS = [
+  "zip", "tar", "gz", "tgz", "bz2", "xz", "7z", "rar", "zst", "lz4", "cab", "iso", "dmg", "img",
+];
+const OFFICE_DOC_EXTS = [
+  "doc", "docx", "xls", "xlsx", "ppt", "pptx", "odt", "ods", "odp", "epub", "mobi",
+];
+const KNOWN_BINARY_EXTS = [
+  ...ARCHIVE_EXTS,
+  ...OFFICE_DOC_EXTS,
+  "exe", "dll", "so", "dylib", "bin", "dat", "class", "jar", "war", "ear", "pyc", "pyo",
+  "wasm", "o", "a", "lib", "obj", "db", "sqlite", "sqlite3", "mdb",
+  "woff", "woff2", "ttf", "otf", "eot", "psd", "ai", "sketch", "fig",
+  "apk", "ipa", "deb", "rpm", "msi", "flv", "avi", "wmv", "rmvb", "wma",
+];
+
 export function getFileCategory(filename: string): FileCategory {
   const ext = getFileExtension(filename);
-  if (["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp", "ico"].includes(ext)) return "image";
-  if (["mp4", "webm", "ogg", "mov", "mkv", "flv", "avi"].includes(ext)) return "video";
-  if (["mp3", "wav", "flac", "aac", "m4a", "ogg"].includes(ext)) return "audio";
-  if (["zip", "tar", "gz", "tgz", "bz2", "7z", "rar"].includes(ext)) return "archive";
-  if (["pdf"].includes(ext)) return "pdf";
-  if (["txt", "md", "json", "xml", "html", "css", "js", "ts", "jsx", "tsx", "py", "java", "c", "cpp", "go", "rs", "sql", "sh", "yml", "yaml"].includes(ext)) return "code";
-  if (["doc", "docx", "xls", "xlsx", "ppt", "pptx", "csv"].includes(ext)) return "document";
+  if (INLINE_IMAGE_EXTS.includes(ext) || ext === "svg") return "image";
+  if (INLINE_VIDEO_EXTS.includes(ext) || ["flv", "avi", "wmv"].includes(ext)) return "video";
+  if (INLINE_AUDIO_EXTS.includes(ext) || ["wma"].includes(ext)) return "audio";
+  if (ARCHIVE_EXTS.includes(ext)) return "archive";
+  if (ext === "pdf") return "pdf";
+  if (OFFICE_DOC_EXTS.includes(ext)) return "document";
+  if (!KNOWN_BINARY_EXTS.includes(ext)) return "code";
   return "other";
 }
 
@@ -54,31 +89,26 @@ export function isPreviewable(filename: string): boolean {
   return getPreviewKind(filename) !== null;
 }
 
-/**
- * 预览方式判定。与后端 FileService.isInlinePreview 白名单严格对齐：
- * 仅以下类型后端会以内联真实类型返回；文本类后端按 text/plain 返回源码；
- * 其余格式（svg/ico/mkv/avi/flv/flac/aac/m4a 等）后端按 text/plain 返回，
- * 用 <img>/<video>/<audio> 加载只会得到坏图或无法播放，必须视为不可预览。
- */
-const INLINE_IMAGE_EXTS = ["png", "jpg", "jpeg", "gif", "webp", "bmp"];
-const INLINE_VIDEO_EXTS = ["mp4", "webm", "ogg", "ogv", "mov"];
-const INLINE_AUDIO_EXTS = ["mp3", "wav"];
-const TEXT_PREVIEW_EXTS = [
-  "txt", "log", "md", "csv", "ini", "conf", "yml", "yaml",
-  "json", "xml", "html", "htm", "css", "js", "ts", "jsx", "tsx",
-  "py", "java", "c", "cpp", "go", "rs", "sql", "sh", "svg",
-];
+export function isEditableText(filename: string): boolean {
+  return getPreviewKind(filename) === "text";
+}
 
 export type PreviewKind = "image" | "video" | "audio" | "pdf" | "text";
 
+/**
+ * 预览方式判定：
+ * - 媒体与 PDF 匹配后端内联白名单；
+ * - 其余只要不属于已知二进制归档/可执行/Office/字体格式，统一归为 "text"，
+ *   从而支持所有代码、配置、无扩展名文本（如 Dockerfile/Makefile/LICENSE/README）及自定义文本格式预览与在线编辑。
+ */
 export function getPreviewKind(filename: string): PreviewKind | null {
   const ext = getFileExtension(filename);
   if (INLINE_IMAGE_EXTS.includes(ext)) return "image";
   if (INLINE_VIDEO_EXTS.includes(ext)) return "video";
   if (INLINE_AUDIO_EXTS.includes(ext)) return "audio";
   if (ext === "pdf") return "pdf";
-  if (TEXT_PREVIEW_EXTS.includes(ext)) return "text";
-  return null;
+  if (KNOWN_BINARY_EXTS.includes(ext)) return null;
+  return "text";
 }
 
 export function getDownloadUrl(path: string): string {
