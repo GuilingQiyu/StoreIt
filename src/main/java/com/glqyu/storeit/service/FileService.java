@@ -247,6 +247,7 @@ public class FileService {
             }
         }
         
+        ensureParentDirectoriesMetadata(user, directory);
         updateSingleFileMetadata(user, directory, dest.toFile());
         
         try (java.util.stream.Stream<Path> walk = Files.walk(chunksDir)) {
