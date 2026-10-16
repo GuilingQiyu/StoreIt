@@ -68,6 +68,7 @@ export function Sidebar() {
       setSelectedFile(null);
       queryClient.invalidateQueries({ queryKey: ["files"] });
       queryClient.invalidateQueries({ queryKey: ["quota"] });
+      queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
     },
     onError: (err: any) => alert(err.message || "删除失败"),
   });

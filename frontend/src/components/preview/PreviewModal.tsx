@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 
 // 文本预览仅通过 HTTP Range 拉取前 256KB，避免整文件下载
 const MAX_TEXT_BYTES = 256 * 1024;
-const MAX_TEXT_LENGTH = 200000;
 
 export function PreviewModal() {
   const item = useFileStore((s) => s.previewFile);
@@ -41,15 +40,30 @@ export function PreviewModal() {
       setIsTruncated(false);
       setTextContent(null);
 
-      // 后端 /api/preview 支持 HTTP Range，仅取前 256KB 按需加载
+      if (item.size === 0) {
+        setTextContent("");
+        setIsTruncated(false);
+        setLoadingText(false);
+        return;
+      }
+
+      // 后端 /api/preview 支持 HTTP Range，仅取前 256KB 按需加载；
+      // 依据文件字节数（item.size 或 Content-Range 总长度）判断是否截断，并清理多字节字符被截断产生的末尾 �
       fetch(previewUrl, { headers: { Range: `bytes=0-${MAX_TEXT_BYTES - 1}` } })
-        .then((r) => {
+        .then(async (r) => {
           if (!r.ok) throw new Error("无法加载文本");
-          return r.text();
+          const contentRange = r.headers.get("Content-Range") || "";
+          const match = contentRange.match(/\/(\d+)$/);
+          const totalBytes = match ? Number(match[1]) : (item.size ?? 0);
+          const truncated = (item.size ?? 0) > MAX_TEXT_BYTES || totalBytes > MAX_TEXT_BYTES;
+          const raw = await r.text();
+          return {
+            text: truncated ? raw.replace(/\uFFFD+$/, "") : raw,
+            truncated,
+          };
         })
-        .then((text) => {
-          const truncated = text.length > MAX_TEXT_LENGTH;
-          setTextContent(truncated ? text.slice(0, MAX_TEXT_LENGTH) : text);
+        .then(({ text, truncated }) => {
+          setTextContent(text);
           setIsTruncated(truncated);
           setLoadingText(false);
         })
@@ -152,7 +166,7 @@ export function PreviewModal() {
               {isTruncated && (
                 <div className="mb-2 p-2 rounded bg-amber-500/20 text-amber-300 text-[11px] flex items-center gap-1.5 shrink-0">
                   <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                  <span>内容过大，仅显示前 200,000 字符。完整内容请下载后查看。</span>
+                  <span>内容过大，仅显示前 256 KB 内容。完整内容请下载后查看。</span>
                 </div>
               )}
               <div className="flex-1 overflow-auto">

@@ -27,6 +27,10 @@ export function MoveModal() {
       queryClient.invalidateQueries({ queryKey: ["files"] });
       // 后端移动会同步更新收藏路径，立即刷新收藏列表避免星标短暂错误
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
+      const selected = useFileStore.getState().selectedFile;
+      if (item && selected && selected.path === item.path) {
+        useFileStore.getState().setSelectedFile(null);
+      }
       setMoveModalFile(null);
       setTargetDir("");
     },

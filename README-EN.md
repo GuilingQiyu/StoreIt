@@ -53,10 +53,12 @@ app:
 Imported via `spring.config.import`, with `optional:file:./config/application.yml` before `optional:file:./config/admin.yml`. Both files are ignored by VCS.
 
 ## Routes & APIs
-- Pages: `/`, `/login`, `/list`
+- Pages: `/`, `/about`, `/login`, `/list`
 - Auth: `POST /api/login`, `POST /api/logout`, `GET /api/user/status`
-- Files: `GET /api/files?path=...`, `POST /api/upload`, `GET /storage/**`
-- Share: `POST /api/share`, `GET /d/{token}`
+- Files: `GET /api/files?path=...`, `POST /api/upload`, `POST /api/upload/{init,chunk,complete}`, `GET /api/upload/status`, `DELETE /api/upload/{uploadId}`, `GET /api/preview`, `GET /storage/**`
+- File Ops & Metadata: `POST /api/folder/create`, `POST /api/file/{delete,rename,move}`, `GET /api/files/{recent,search}`, `GET/POST/DELETE /api/favorites`, `GET /api/storage/usage`
+- Share: `POST /api/share`, `GET /api/shares`, `DELETE /api/shares/{id}`, `GET /d/{token}`
+- Admin: `GET/POST /api/admin/users`, `PATCH /api/admin/users/{username}`, `POST /api/admin/users/{username}/password`, `GET/POST /api/admin/config`
 
 ## DB & Security
 - SQLite at `./data/storeit.db` with Flyway initialization

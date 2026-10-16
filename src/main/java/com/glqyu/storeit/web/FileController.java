@@ -93,21 +93,42 @@ public class FileController {
         }
     }
 
+    private static final java.util.regex.Pattern SAFE_UPLOAD_ID =
+            java.util.regex.Pattern.compile("^[A-Za-z0-9_-]{1,64}$");
+
+    private java.nio.file.Path resolveChunksDir(User user, String uploadId) throws IOException {
+        if (uploadId == null || !SAFE_UPLOAD_ID.matcher(uploadId).matches()) {
+            throw new IllegalArgumentException("无效的 uploadId");
+        }
+        java.nio.file.Path chunksBase = java.nio.file.Paths
+                .get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath())
+                .resolve(".chunks")
+                .toAbsolutePath()
+                .normalize();
+        java.nio.file.Path target = chunksBase.resolve(uploadId).normalize();
+        if (!target.startsWith(chunksBase) || target.equals(chunksBase)) {
+            throw new IllegalArgumentException("无效的 uploadId");
+        }
+        return target;
+    }
+
     @PostMapping("/api/upload/init")
     public ResponseEntity<?> initUpload(HttpServletRequest request, @RequestBody Map<String, Object> payload) {
         try {
             User user = getCurrentUser(request);
-            String fileName = (String) payload.get("fileName");
-            long fileSize = Long.parseLong(payload.get("fileSize").toString());
-            String directory = (String) payload.getOrDefault("directory", "");
-            
+            String fileName = payload.get("fileName") != null ? String.valueOf(payload.get("fileName")) : "";
+            long fileSize = Long.parseLong(String.valueOf(payload.get("fileSize")));
+            String directory = payload.get("directory") != null ? String.valueOf(payload.get("directory")) : "";
+
+            fileService.validateUploadInit(user, directory, fileName, fileSize);
+
             String uploadId = java.util.UUID.randomUUID().toString();
             long chunkSize = 5L * 1024 * 1024;
-            int totalChunks = (int) Math.ceil((double) fileSize / chunkSize);
-            
-            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
+            int totalChunks = Math.max(1, (int) Math.ceil((double) fileSize / chunkSize));
+
+            java.nio.file.Path userChunksDir = resolveChunksDir(user, uploadId);
             java.nio.file.Files.createDirectories(userChunksDir);
-            
+
             Map<String, Object> meta = new java.util.HashMap<>();
             meta.put("uploadId", uploadId);
             meta.put("fileName", fileName);
@@ -115,14 +136,23 @@ public class FileController {
             meta.put("directory", directory);
             meta.put("chunkSize", chunkSize);
             meta.put("totalChunks", totalChunks);
-            
+
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             mapper.writeValue(userChunksDir.resolve("meta.json").toFile(), meta);
-            
+
             return ResponseEntity.ok(Map.of("uploadId", uploadId, "chunkSize", chunkSize, "totalChunks", totalChunks));
-        } catch (Exception e) {
+        } catch (IOException e) {
+            if (FileService.QUOTA_EXCEEDED.equals(e.getMessage())) {
+                return ResponseEntity.badRequest().body(Map.of("error", FileService.QUOTA_EXCEEDED));
+            }
+            if ("unsafe path".equals(e.getMessage()) || "无效路径".equals(e.getMessage())) {
+                return ResponseEntity.badRequest().body(Map.of("error", "无效路径"));
+            }
             log.warn("Init upload failed: {}", e.toString());
             return ResponseEntity.internalServerError().body(Map.of("error", "初始化上传失败"));
+        } catch (Exception e) {
+            log.warn("Init upload failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "初始化上传失败"));
         }
     }
 
@@ -133,12 +163,17 @@ public class FileController {
                                          @RequestParam("chunk") MultipartFile chunk) {
         try {
             User user = getCurrentUser(request);
-            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
-            if (!java.nio.file.Files.exists(userChunksDir)) {
+            if (chunkIndex < 0) {
+                return ResponseEntity.badRequest().body(Map.of("error", "无效的分片索引"));
+            }
+            java.nio.file.Path userChunksDir = resolveChunksDir(user, uploadId);
+            if (!java.nio.file.Files.exists(userChunksDir.resolve("meta.json"))) {
                 return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
             }
             chunk.transferTo(userChunksDir.resolve(chunkIndex + ".part"));
             return ResponseEntity.ok(Map.of("success", true, "chunkIndex", chunkIndex));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
         } catch (Exception e) {
             log.warn("Upload chunk failed: {}", e.toString());
             return ResponseEntity.internalServerError().body(Map.of("error", "分片上传失败"));
@@ -150,27 +185,29 @@ public class FileController {
         try {
             User user = getCurrentUser(request);
             String uploadId = payload.get("uploadId");
-            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
-            
+            java.nio.file.Path userChunksDir = resolveChunksDir(user, uploadId);
+
             if (!java.nio.file.Files.exists(userChunksDir.resolve("meta.json"))) {
                 return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
             }
-            
+
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             Map<String, Object> meta = mapper.readValue(userChunksDir.resolve("meta.json").toFile(), Map.class);
-            
+
             String fileName = (String) meta.get("fileName");
             String directory = (String) meta.get("directory");
             int totalChunks = (Integer) meta.get("totalChunks");
             long fileSize = Long.parseLong(meta.get("fileSize").toString());
-            
+
             String saved = fileService.saveChunkedFile(user, directory, fileName, userChunksDir, totalChunks, fileSize);
-            
+
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "文件上传成功",
                     "file", Map.of("name", fileName, "path", saved, "size", fileSize)
             ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
         } catch (IOException e) {
             if (FileService.QUOTA_EXCEEDED.equals(e.getMessage())) {
                 return ResponseEntity.badRequest().body(Map.of("error", FileService.QUOTA_EXCEEDED));
@@ -187,15 +224,15 @@ public class FileController {
     public ResponseEntity<?> getUploadStatus(HttpServletRequest request, @RequestParam("uploadId") String uploadId) {
         try {
             User user = getCurrentUser(request);
-            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
-            
+            java.nio.file.Path userChunksDir = resolveChunksDir(user, uploadId);
+
             if (!java.nio.file.Files.exists(userChunksDir.resolve("meta.json"))) {
                 return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
             }
-            
+
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             Map<String, Object> meta = mapper.readValue(userChunksDir.resolve("meta.json").toFile(), Map.class);
-            
+
             List<Integer> uploadedChunks = new java.util.ArrayList<>();
             try (java.util.stream.Stream<java.nio.file.Path> stream = java.nio.file.Files.list(userChunksDir)) {
                 stream.forEach(p -> {
@@ -207,8 +244,10 @@ public class FileController {
             }
             java.util.Collections.sort(uploadedChunks);
             meta.put("uploadedChunks", uploadedChunks);
-            
+
             return ResponseEntity.ok(meta);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
         } catch (Exception e) {
             log.warn("Get upload status failed: {}", e.toString());
             return ResponseEntity.internalServerError().body(Map.of("error", "获取上传状态失败"));
@@ -219,11 +258,13 @@ public class FileController {
     public ResponseEntity<?> cancelUpload(HttpServletRequest request, @PathVariable("uploadId") String uploadId) {
         try {
             User user = getCurrentUser(request);
-            java.nio.file.Path userChunksDir = java.nio.file.Paths.get(fileService.getResourceForUser(user, "").getFile().getAbsolutePath()).resolve(".chunks").resolve(uploadId);
+            java.nio.file.Path userChunksDir = resolveChunksDir(user, uploadId);
             if (java.nio.file.Files.exists(userChunksDir)) {
                 org.springframework.util.FileSystemUtils.deleteRecursively(userChunksDir);
             }
             return ResponseEntity.ok(Map.of("success", true, "message", "上传任务已取消并清理"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "上传会话无效"));
         } catch (Exception e) {
             log.warn("Cancel upload failed: {}", e.toString());
             return ResponseEntity.internalServerError().body(Map.of("error", "取消上传失败"));
@@ -260,7 +301,7 @@ public class FileController {
             long length = r.contentLength();
             String filename = r.getFilename();
 
-            if (rangeHeader == null) {
+            if (rangeHeader == null || length == 0) {
                 return previewResponse(HttpStatus.OK, filename)
                         .contentLength(length)
                         .body(r);

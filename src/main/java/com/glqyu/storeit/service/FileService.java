@@ -35,12 +35,12 @@ public class FileService {
     public static final String PREVIEW_CSP = String.join("; ",
             "default-src 'none'",
             "script-src 'none'",
-            "style-src 'none'",
-            "img-src 'none'",
-            "media-src 'none'",
-            "object-src 'none'",
+            "style-src 'unsafe-inline'",
+            "img-src 'self' data: blob:",
+            "media-src 'self' blob:",
+            "object-src 'self'",
             "base-uri 'none'",
-            "frame-ancestors 'none'");
+            "frame-ancestors 'self'");
 
     private final AppProperties props;
     private final FileMetadataMapper metaMapper;
@@ -179,12 +179,13 @@ public class FileService {
         Files.createDirectories(dir);
         Path dest = dir.resolve(fileName);
         
-        // 自动重命名逻辑
+        // 自动重命名逻辑（兼容无扩展名文件，避免产生尾随点）
         int count = 1;
         String baseName = FilenameUtils.getBaseName(originalName);
         String extension = FilenameUtils.getExtension(originalName);
+        String extSuffix = (extension == null || extension.isEmpty()) ? "" : "." + extension;
         while (Files.exists(dest)) {
-            fileName = baseName + " (" + count++ + ")." + extension;
+            fileName = baseName + " (" + count++ + ")" + extSuffix;
             dest = dir.resolve(fileName);
         }
         
@@ -195,7 +196,8 @@ public class FileService {
         }
         file.transferTo(dest);
         
-        // syncMetadata(user, directory, dir);
+        ensureParentDirectoriesMetadata(user, directory);
+        ensureParentDirectoriesMetadata(user, directory);
         updateSingleFileMetadata(user, directory, dest.toFile());
         
         return (directory == null || directory.isEmpty()) ? fileName : directory + "/" + fileName;
@@ -224,8 +226,9 @@ public class FileService {
         int count = 1;
         String baseName = FilenameUtils.getBaseName(originalName);
         String extension = FilenameUtils.getExtension(originalName);
+        String extSuffix = (extension == null || extension.isEmpty()) ? "" : "." + extension;
         while (Files.exists(dest)) {
-            finalFileName = baseName + " (" + count++ + ")." + extension;
+            finalFileName = baseName + " (" + count++ + ")" + extSuffix;
             dest = dir.resolve(finalFileName);
         }
         
@@ -292,6 +295,45 @@ public class FileService {
     
     public Resource getResourceForUser(User owner, String relativePath) throws IOException {
         return getResource(owner, relativePath);
+    }
+
+    /**
+     * 分片上传初始化前置校验：校验文件名、大小、目标目录路径安全性以及用户存储配额。
+     */
+    public void validateUploadInit(User user, String directory, String fileName, long fileSize) throws IOException {
+        String safeName = FilenameUtils.getName(fileName == null ? "" : fileName.trim());
+        if (safeName.isEmpty() || ".".equals(safeName) || "..".equals(safeName) || fileSize < 0) {
+            throw new IOException("无效路径");
+        }
+        String dir = directory == null ? "" : directory;
+        if (!isSafePath(user, dir)) {
+            throw new IOException("unsafe path");
+        }
+        enforceQuota(user, fileSize);
+        Path base = getUserRoot(user);
+        Files.createDirectories(base);
+        if (base.toFile().getUsableSpace() < fileSize) {
+            throw new IOException("磁盘空间不足");
+        }
+    }
+
+    /**
+     * 多级文件夹拖拽/上传时，确保中间父目录均已写入 file_metadata 表。
+     */
+    private void ensureParentDirectoriesMetadata(User user, String directory) {
+        if (directory == null || directory.isBlank()) return;
+        Path base = getUserRoot(user);
+        String[] parts = directory.split("/");
+        String currentParent = "";
+        for (String part : parts) {
+            if (part == null || part.isEmpty()) continue;
+            String currentPath = currentParent.isEmpty() ? part : currentParent + "/" + part;
+            Path dirFile = base.resolve(currentPath).normalize();
+            if (Files.exists(dirFile) && Files.isDirectory(dirFile)) {
+                updateSingleFileMetadata(user, currentParent, dirFile.toFile());
+            }
+            currentParent = currentPath;
+        }
     }
 
     // 新增 updateSingleFileMetadata 方法

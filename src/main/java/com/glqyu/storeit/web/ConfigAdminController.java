@@ -285,8 +285,19 @@ public class ConfigAdminController {
         if (Files.exists(primary)) {
             return Files.readString(primary, StandardCharsets.UTF_8);
         }
+        Path externalExample = primary.resolveSibling(primary.getFileName().toString() + ".example");
+        if (Files.exists(externalExample)) {
+            return Files.readString(externalExample, StandardCharsets.UTF_8);
+        }
         if (Files.exists(example)) {
             return Files.readString(example, StandardCharsets.UTF_8);
+        }
+        org.springframework.core.io.ClassPathResource cp =
+                new org.springframework.core.io.ClassPathResource("config/" + primary.getFileName().toString() + ".example");
+        if (cp.exists()) {
+            try (java.io.InputStream in = cp.getInputStream()) {
+                return new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            }
         }
         return "";
     }

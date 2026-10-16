@@ -29,10 +29,16 @@ export function RenameModal() {
 
   const renameMutation = useMutation({
     mutationFn: (name: string) => api.renameFile(item!.path, name),
-    onSuccess: () => {
+    onSuccess: (_data, name) => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
       // 后端重命名会同步更新收藏路径，立即刷新收藏列表避免星标短暂错误
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
+      const selected = useFileStore.getState().selectedFile;
+      if (item && selected && selected.path === item.path) {
+        const parent = item.path.includes("/") ? item.path.slice(0, item.path.lastIndexOf("/")) : "";
+        const nextPath = parent ? `${parent}/${name}` : name;
+        useFileStore.getState().setSelectedFile({ ...selected, name, path: nextPath });
+      }
       setRenameModalFile(null);
     },
     onError: (err: any) => {

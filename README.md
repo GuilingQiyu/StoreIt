@@ -92,16 +92,18 @@ spring:
 
 ### 路由与 API 说明
 - 页面：
-	- `GET /` -> `static/index.html`
+	- `GET /` -> `static/index.html`（支持 `#/files`、`#/recent`、`#/favorites`、`#/shares`、`#/admin`、`#/settings`、`#/about` 视图路由）
+	- `GET /about` -> `static/index.html`（直接打开「关于」标签页）
 	- `GET /login` -> `static/login.html`
-	- `GET /list` -> `static/list.html`
+	- `GET /list` -> 重定向至 `/`
 - 认证：
 	- `POST /api/login`（表单：username、password）
 	- `POST /api/logout`
 	- `GET /api/user/status`（返回 `logged_in`、`username`、`role`）
 - 文件：
 	- `GET /api/files?path=...` — 列出目录内容
-	- `POST /api/upload` — 上传文件（multipart/form-data，字段名：file，可选 directory）。配额不足时返回 400，`error` 为「存储配额不足」
+	- `POST /api/upload` — 单次上传文件（≤ 50 MB 及 0 字节文件，multipart/form-data，字段名：file，可选 directory）。配额不足时返回 400，`error` 为「存储配额不足」
+	- `POST /api/upload/init`、`POST /api/upload/chunk`、`GET /api/upload/status`、`POST /api/upload/complete`、`DELETE /api/upload/{uploadId}` — 特大文件（> 50 MB，默认上限 100 GB）5 MB 分片并发上传、断点续传状态同步、合并与取消清理
 	- `GET /storage/**` — 已登录受保护下载（`attachment`）
 	- `GET /api/preview?path=...` — 已登录预览。图片（不含 SVG）、视频、音频、PDF 为内联真实类型；HTML、SVG、XML 及其他文本为 `text/plain`，CSP 为 `script-src 'none'`。视频支持 Range
 	- `POST /api/file/delete`、`POST /api/file/rename`、`POST /api/file/move`、`POST /api/folder/create` — 删除 / 重命名 / 移动 / 新建文件夹
@@ -119,6 +121,7 @@ spring:
 	- `POST /api/admin/users` — 开户，请求体 `{"username","password","storageQuota"}`，口令至少 8 位，配额 0 表示不限额
 	- `PATCH /api/admin/users/{username}` — 修改 `storageQuota` 和/或 `role`（`USER` / `ADMIN`）。不能取消自己的管理员角色
 	- `POST /api/admin/users/{username}/password` — 重置口令
+	- `GET /api/admin/config`、`POST /api/admin/config` — 读取与更新外部配置文件（`./config/application.yml` 与 `./config/admin.yml`，支持可视化增量更新与 YAML 原文编辑，自动保留 `.bak` / `.bak.1` 两代备份）
 	- 非管理员调用以上接口返回 403
 
 ### 数据库存储

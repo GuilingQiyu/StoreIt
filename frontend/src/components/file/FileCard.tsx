@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { useFileStore } from "@/stores/useFileStore";
-import { formatBytes, getFileCategory } from "@/lib/utils";
+import { formatBytes, getFileCategory, isPreviewable } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -119,9 +119,11 @@ export function FileCard({
           <DropdownMenuContent align="end" className="w-40">
             {!item.isDirectory && (
               <>
-                <DropdownMenuItem onClick={() => onPreview(item)} className="gap-2">
-                  <Eye className="w-4 h-4 text-brand-secondary" /> 预览
-                </DropdownMenuItem>
+                {isPreviewable(item.name) && (
+                  <DropdownMenuItem onClick={() => onPreview(item)} className="gap-2">
+                    <Eye className="w-4 h-4 text-brand-secondary" /> 预览
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
                   <Download className="w-4 h-4 text-brand-secondary" /> 下载
                 </DropdownMenuItem>

@@ -30,13 +30,13 @@ export default function MainPage() {
   // 浏览器前进/后退（popstate）时恢复对应视图
   useEffect(() => {
     const VALID_MODES = ["files", "recent", "favorites", "shares", "admin", "settings", "about", "search"];
+    if (window.location.pathname === "/about" && !window.location.hash) {
+      // 后端将 /about 转发到首页，仅在首次加载时用 replaceState 写入 hash，避免 pushState 造成后退死循环
+      window.history.replaceState(null, "", "#/about");
+      useFileStore.setState({ viewMode: "about", selectedFile: null });
+    }
     const applyLocation = () => {
-      if (window.location.pathname === "/about" && !window.location.hash) {
-        // 后端将 /about 转发到首页，前端据此直接打开「关于」标签页
-        useFileStore.getState().setViewMode("about");
-        return;
-      }
-      const mode = window.location.hash.replace(/^#\/?/, "");
+      const mode = window.location.hash.replace(/^#\/?/, "") || "files";
       if (VALID_MODES.includes(mode)) {
         useFileStore.setState({ viewMode: mode as any, selectedFile: null });
       }

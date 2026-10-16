@@ -495,7 +495,7 @@ async function executeChunkedUpload(
                   uploadedChunks: serverUploadedChunks,
                   totalChunks,
                   chunkSize,
-                  progress: Math.floor((serverUploadedChunks.length / totalChunks) * 100),
+                  progress: Math.min(99, Math.floor((serverUploadedChunks.length / totalChunks) * 100)),
                   status: pausedDuringHandshake
                     ? ("paused" as UploadStatus)
                     : ("uploading" as UploadStatus),
@@ -692,7 +692,10 @@ async function executeChunkedUpload(
           return {
             ...t,
             uploadedChunks: newUploaded,
-            progress: Math.min(99, Math.floor((newUploaded.length / t.totalChunks) * 100)),
+            progress: Math.max(
+              t.progress,
+              Math.min(99, Math.floor((newUploaded.length / t.totalChunks) * 100))
+            ),
             lastUpdated: Date.now(),
           };
         }),

@@ -11,11 +11,13 @@ if (!fs.existsSync(outDir)) {
 
 console.log(`Syncing compiled Next.js build from ${outDir} to ${staticDir}...`);
 
-// Clean stale _next directory before syncing new build
-const nextStaticDir = path.join(staticDir, '_next');
-if (fs.existsSync(nextStaticDir)) {
-  console.log(`Removing old ${nextStaticDir}...`);
-  fs.rmSync(nextStaticDir, { recursive: true, force: true });
+// Clean stale _next directory and legacy v1.x assets before syncing new build
+for (const stale of ['_next', 'css', 'js', '403.html']) {
+  const target = path.join(staticDir, stale);
+  if (fs.existsSync(target)) {
+    console.log(`Removing old ${target}...`);
+    fs.rmSync(target, { recursive: true, force: true });
+  }
 }
 
 // Recursive copy directory
