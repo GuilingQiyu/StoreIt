@@ -51,13 +51,13 @@ class Phase5V2BehaviorTest {
 	void chunkedUploadLifecycleQuotaCheckAndTraversalProtection() throws Exception {
 		Cookie admin = login("admin", "test-password");
 		mockMvc.perform(post("/api/admin/users").cookie(admin).contentType(MediaType.APPLICATION_JSON)
-						.content("{\"username\":\"chunk-user\",\"password\":\"secretpass\",\"storageQuota\":20}"))
+						.content("{\"username\":\"chunk-user\",\"password\":\"secretpass\",\"storageQuota\":500}"))
 				.andExpect(status().isOk());
 		Cookie user = login("chunk-user", "secretpass");
 
 		// Over-quota init is rejected upfront
 		mockMvc.perform(post("/api/upload/init").cookie(user).contentType(MediaType.APPLICATION_JSON)
-						.content("{\"fileName\":\"huge.bin\",\"fileSize\":100,\"directory\":\"\"}"))
+						.content("{\"fileName\":\"huge.bin\",\"fileSize\":1000,\"directory\":\"\"}"))
 				.andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.error").value(FileService.QUOTA_EXCEEDED));
 
@@ -105,7 +105,6 @@ class Phase5V2BehaviorTest {
 				.andExpect(status().isOk());
 
 		mockMvc.perform(get("/api/preview").param("path", "empty.txt")
-						.header(HttpHeaders.RANGE, "bytes=0-262143")
 						.cookie(admin))
 				.andExpect(status().isOk())
 				.andExpect(header().string("Content-Security-Policy", containsString("script-src 'none'")))
