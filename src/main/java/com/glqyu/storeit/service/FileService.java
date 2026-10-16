@@ -171,6 +171,10 @@ public class FileService {
     }
 
     public String saveFile(User user, String directory, MultipartFile file) throws IOException {
+        return saveFile(user, directory, file, "rename");
+    }
+
+    public String saveFile(User user, String directory, MultipartFile file, String conflictStrategy) throws IOException {
         if (!isSafePath(user, directory)) throw new IOException("unsafe path");
         String originalName = FilenameUtils.getName(file.getOriginalFilename());
         String fileName = originalName;
@@ -178,28 +182,39 @@ public class FileService {
         Path dir = base.resolve(directory == null ? "" : directory).normalize();
         Files.createDirectories(dir);
         Path dest = dir.resolve(fileName);
-        
-        // 自动重命名逻辑（兼容无扩展名文件，避免产生尾随点）
-        int count = 1;
-        String baseName = FilenameUtils.getBaseName(originalName);
-        String extension = FilenameUtils.getExtension(originalName);
-        String extSuffix = (extension == null || extension.isEmpty()) ? "" : "." + extension;
-        while (Files.exists(dest)) {
-            fileName = baseName + " (" + count++ + ")" + extSuffix;
-            dest = dir.resolve(fileName);
+
+        boolean overwrite = "overwrite".equalsIgnoreCase(conflictStrategy);
+        if (overwrite && Files.exists(dest) && !Files.isDirectory(dest)) {
+            long existingSize = Files.size(dest);
+            long netIncoming = Math.max(0L, file.getSize() - existingSize);
+            enforceQuota(user, netIncoming);
+            if (dir.toFile().getUsableSpace() < netIncoming) {
+                throw new IOException("磁盘空间不足");
+            }
+            try (java.io.InputStream in = file.getInputStream()) {
+                Files.copy(in, dest, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            }
+        } else {
+            // 自动重命名逻辑（兼容无扩展名文件，避免产生尾随点）
+            int count = 1;
+            String baseName = FilenameUtils.getBaseName(originalName);
+            String extension = FilenameUtils.getExtension(originalName);
+            String extSuffix = (extension == null || extension.isEmpty()) ? "" : "." + extension;
+            while (Files.exists(dest)) {
+                fileName = baseName + " (" + count++ + ")" + extSuffix;
+                dest = dir.resolve(fileName);
+            }
+            if (!isSafePath(user, directory)) throw new IOException("unsafe path");
+            enforceQuota(user, file.getSize());
+            if (dir.toFile().getUsableSpace() < file.getSize()) {
+                throw new IOException("磁盘空间不足");
+            }
+            file.transferTo(dest);
         }
-        
-        if (!isSafePath(user, directory)) throw new IOException("unsafe path");
-        enforceQuota(user, file.getSize());
-        if (dir.toFile().getUsableSpace() < file.getSize()) {
-            throw new IOException("磁盘空间不足");
-        }
-        file.transferTo(dest);
-        
-        ensureParentDirectoriesMetadata(user, directory);
+
         ensureParentDirectoriesMetadata(user, directory);
         updateSingleFileMetadata(user, directory, dest.toFile());
-        
+
         return (directory == null || directory.isEmpty()) ? fileName : directory + "/" + fileName;
     }
 
@@ -212,50 +227,66 @@ public class FileService {
     }
 
     public String saveChunkedFile(User user, String directory, String fileName, Path chunksDir, int totalChunks, long fileSize) throws IOException {
+        return saveChunkedFile(user, directory, fileName, chunksDir, totalChunks, fileSize, "rename");
+    }
+
+    public String saveChunkedFile(User user, String directory, String fileName, Path chunksDir, int totalChunks, long fileSize, String conflictStrategy) throws IOException {
         if (!isSafePath(user, directory)) throw new IOException("unsafe path");
-        enforceQuota(user, fileSize);
 
         Path base = getUserRoot(user);
         Path dir = base.resolve(directory == null ? "" : directory).normalize();
         Files.createDirectories(dir);
-        
+
         String originalName = FilenameUtils.getName(fileName);
         String finalFileName = originalName;
         Path dest = dir.resolve(finalFileName);
-        
-        int count = 1;
-        String baseName = FilenameUtils.getBaseName(originalName);
-        String extension = FilenameUtils.getExtension(originalName);
-        String extSuffix = (extension == null || extension.isEmpty()) ? "" : "." + extension;
-        while (Files.exists(dest)) {
-            finalFileName = baseName + " (" + count++ + ")" + extSuffix;
-            dest = dir.resolve(finalFileName);
-        }
-        
-        if (dir.toFile().getUsableSpace() < fileSize) {
-            throw new IOException("磁盘空间不足");
+
+        boolean overwrite = "overwrite".equalsIgnoreCase(conflictStrategy);
+        if (overwrite && Files.exists(dest) && !Files.isDirectory(dest)) {
+            long existingSize = Files.size(dest);
+            long netIncoming = Math.max(0L, fileSize - existingSize);
+            enforceQuota(user, netIncoming);
+            if (dir.toFile().getUsableSpace() < netIncoming) {
+                throw new IOException("磁盘空间不足");
+            }
+        } else {
+            enforceQuota(user, fileSize);
+            int count = 1;
+            String baseName = FilenameUtils.getBaseName(originalName);
+            String extension = FilenameUtils.getExtension(originalName);
+            String extSuffix = (extension == null || extension.isEmpty()) ? "" : "." + extension;
+            while (Files.exists(dest)) {
+                finalFileName = baseName + " (" + count++ + ")" + extSuffix;
+                dest = dir.resolve(finalFileName);
+            }
+            if (dir.toFile().getUsableSpace() < fileSize) {
+                throw new IOException("磁盘空间不足");
+            }
         }
 
-        try (java.io.OutputStream out = Files.newOutputStream(dest)) {
+        try (java.io.OutputStream out = Files.newOutputStream(dest,
+                java.nio.file.StandardOpenOption.CREATE,
+                java.nio.file.StandardOpenOption.TRUNCATE_EXISTING,
+                java.nio.file.StandardOpenOption.WRITE)) {
             for (int i = 0; i < totalChunks; i++) {
                 Path partFile = chunksDir.resolve(i + ".part");
                 if (!Files.exists(partFile)) {
-                    Files.deleteIfExists(dest);
+                    if (!overwrite) Files.deleteIfExists(dest);
                     throw new IOException("Missing chunk: " + i);
                 }
                 Files.copy(partFile, out);
             }
         }
-        
+
         ensureParentDirectoriesMetadata(user, directory);
         updateSingleFileMetadata(user, directory, dest.toFile());
-        
+
         try (java.util.stream.Stream<Path> walk = Files.walk(chunksDir)) {
              walk.sorted(Comparator.reverseOrder())
                  .map(Path::toFile)
                  .forEach(File::delete);
         }
-        
+
         return (directory == null || directory.isEmpty()) ? finalFileName : directory + "/" + finalFileName;
     }
 
@@ -302,6 +333,10 @@ public class FileService {
      * 分片上传初始化前置校验：校验文件名、大小、目标目录路径安全性以及用户存储配额。
      */
     public void validateUploadInit(User user, String directory, String fileName, long fileSize) throws IOException {
+        validateUploadInit(user, directory, fileName, fileSize, "rename");
+    }
+
+    public void validateUploadInit(User user, String directory, String fileName, long fileSize, String conflictStrategy) throws IOException {
         String safeName = FilenameUtils.getName(fileName == null ? "" : fileName.trim());
         if (safeName.isEmpty() || ".".equals(safeName) || "..".equals(safeName) || fileSize < 0) {
             throw new IOException("无效路径");
@@ -310,12 +345,151 @@ public class FileService {
         if (!isSafePath(user, dir)) {
             throw new IOException("unsafe path");
         }
-        enforceQuota(user, fileSize);
         Path base = getUserRoot(user);
         Files.createDirectories(base);
-        if (base.toFile().getUsableSpace() < fileSize) {
+        long netSize = fileSize;
+        if ("overwrite".equalsIgnoreCase(conflictStrategy)) {
+            Path existing = base.resolve(dir).normalize().resolve(safeName);
+            if (Files.exists(existing) && Files.isRegularFile(existing)) {
+                netSize = Math.max(0L, fileSize - Files.size(existing));
+            }
+        }
+        enforceQuota(user, netSize);
+        if (base.toFile().getUsableSpace() < netSize) {
             throw new IOException("磁盘空间不足");
         }
+    }
+
+    /**
+     * 同名文件夹上传冲突处理：支持 merge（合并）、rename（重命名）、overwrite（覆盖原目录）。
+     */
+    public java.util.Map<String, String> resolveFolderConflict(User user, String parentPath, String folderName, String strategy) throws IOException {
+        String cleanName = FilenameUtils.getName(folderName == null ? "" : folderName.trim());
+        if (cleanName.isEmpty() || ".".equals(cleanName) || "..".equals(cleanName)
+                || cleanName.contains("/") || cleanName.contains("\\")) {
+            throw new IOException("无效文件夹名称");
+        }
+        String parent = parentPath == null ? "" : parentPath.trim();
+        if (!isSafePath(user, parent)) {
+            throw new IOException("无效路径");
+        }
+        Path base = getUserRoot(user);
+        Path parentDir = base.resolve(parent).normalize();
+        Files.createDirectories(parentDir);
+
+        String mode = strategy == null ? "merge" : strategy.trim().toLowerCase();
+        String finalName = cleanName;
+        String targetRel = childPath(parent, finalName);
+        Path targetDir = parentDir.resolve(finalName).normalize();
+
+        if ("overwrite".equals(mode)) {
+            if (Files.exists(targetDir)) {
+                delete(user, targetRel);
+            }
+            createFolder(user, targetRel);
+        } else if ("rename".equals(mode)) {
+            int count = 1;
+            while (Files.exists(targetDir)) {
+                finalName = cleanName + " (" + count++ + ")";
+                targetRel = childPath(parent, finalName);
+                targetDir = parentDir.resolve(finalName).normalize();
+            }
+            createFolder(user, targetRel);
+        } else {
+            // merge
+            if (!Files.exists(targetDir)) {
+                createFolder(user, targetRel);
+            } else if (!Files.isDirectory(targetDir)) {
+                int count = 1;
+                while (Files.exists(targetDir)) {
+                    finalName = cleanName + " (" + count++ + ")";
+                    targetRel = childPath(parent, finalName);
+                    targetDir = parentDir.resolve(finalName).normalize();
+                }
+                createFolder(user, targetRel);
+            } else {
+                ensureParentDirectoriesMetadata(user, targetRel);
+            }
+        }
+        return java.util.Map.of("folderName", finalName, "targetPath", targetRel);
+    }
+
+    public static final long MAX_EDITABLE_TEXT_BYTES = 5L * 1024 * 1024; // 5 MB
+
+    /**
+     * 探测文件是否为二进制文件（检查前 8KB 是否包含 NUL 0x00 字节）。
+     * 无 NUL 字节的任意扩展名或无扩展名文件均视为文本文件。
+     */
+    public boolean isBinaryFile(Path file) throws IOException {
+        if (!Files.exists(file) || Files.isDirectory(file)) return false;
+        long size = Files.size(file);
+        if (size == 0) return false;
+        int toRead = (int) Math.min(size, 8192L);
+        byte[] buf = new byte[toRead];
+        try (java.io.InputStream in = Files.newInputStream(file)) {
+            int n = in.read(buf);
+            for (int i = 0; i < n; i++) {
+                if (buf[i] == 0) return true;
+            }
+        }
+        return false;
+    }
+
+    public java.util.Map<String, Object> readTextFile(User user, String relativePath) throws IOException {
+        if (relativePath == null || relativePath.isBlank() || !isSafePath(user, relativePath)) {
+            throw new IOException("无效路径");
+        }
+        Path base = getUserRoot(user);
+        Path target = base.resolve(relativePath).normalize();
+        if (!Files.exists(target) || Files.isDirectory(target)) {
+            throw new IOException("文件不存在");
+        }
+        long size = Files.size(target);
+        if (size > MAX_EDITABLE_TEXT_BYTES) {
+            throw new IOException("文件超过 5 MB，不支持在线编辑，请下载到本地修改");
+        }
+        if (isBinaryFile(target)) {
+            throw new IOException("该文件为二进制格式，不支持作为文本在线编辑");
+        }
+        byte[] bytes = Files.readAllBytes(target);
+        String content = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+        java.util.Map<String, Object> res = new java.util.HashMap<>();
+        res.put("path", relativePath);
+        res.put("name", target.getFileName().toString());
+        res.put("size", size);
+        res.put("modifiedTime", target.toFile().lastModified() / 1000);
+        res.put("content", content);
+        return res;
+    }
+
+    public java.util.Map<String, Object> saveTextFile(User user, String relativePath, String content) throws IOException {
+        if (relativePath == null || relativePath.isBlank() || !isSafePath(user, relativePath)) {
+            throw new IOException("无效路径");
+        }
+        Path base = getUserRoot(user);
+        Path target = base.resolve(relativePath).normalize();
+        if (!Files.exists(target) || Files.isDirectory(target)) {
+            throw new IOException("文件不存在");
+        }
+        byte[] newBytes = (content == null ? "" : content).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        if (newBytes.length > MAX_EDITABLE_TEXT_BYTES) {
+            throw new IOException("文本内容超过 5 MB 上限");
+        }
+        long oldSize = Files.size(target);
+        long delta = newBytes.length - oldSize;
+        if (delta > 0) {
+            enforceQuota(user, delta);
+        }
+        Files.write(target, newBytes);
+        String parent = relativePath.contains("/") ? relativePath.substring(0, relativePath.lastIndexOf('/')) : "";
+        updateSingleFileMetadata(user, parent, target.toFile());
+
+        java.util.Map<String, Object> res = new java.util.HashMap<>();
+        res.put("path", relativePath);
+        res.put("name", target.getFileName().toString());
+        res.put("size", (long) newBytes.length);
+        res.put("modifiedTime", target.toFile().lastModified() / 1000);
+        return res;
     }
 
     /**
@@ -602,8 +776,10 @@ public class FileService {
         if (!Files.exists(dir)) {
             return 0L;
         }
+        Path chunksRoot = dir.resolve(".chunks").normalize();
         try (java.util.stream.Stream<Path> walk = Files.walk(dir)) {
             return walk.filter(Files::isRegularFile)
+                    .filter(p -> !p.normalize().startsWith(chunksRoot))
                     .mapToLong(p -> p.toFile().length())
                     .sum();
         }
@@ -631,9 +807,10 @@ public class FileService {
     private boolean isInlinePreview(String name) {
         String ext = FilenameUtils.getExtension(name == null ? "" : name).toLowerCase();
         switch (ext) {
-            case "jpg": case "jpeg": case "png": case "gif": case "webp": case "bmp":
-            case "mp4": case "webm": case "ogg": case "ogv": case "mov":
-            case "mp3": case "wav":
+            case "jpg": case "jpeg": case "jfif": case "pjpeg": case "pjp":
+            case "png": case "apng": case "gif": case "webp": case "bmp": case "avif": case "ico": case "cur":
+            case "mp4": case "m4v": case "webm": case "ogg": case "ogv": case "mov": case "3gp": case "mkv":
+            case "mp3": case "wav": case "flac": case "aac": case "m4a": case "oga": case "opus": case "weba": case "mid": case "midi": case "amr":
             case "pdf":
                 return true;
             default:
@@ -647,27 +824,50 @@ public class FileService {
     public String detectContentType(String name) {
         String ext = FilenameUtils.getExtension(name == null ? "" : name).toLowerCase();
         switch (ext) {
-            case "txt": case "log": case "md": case "csv": case "ini": case "conf": case "yml": case "yaml":
+            case "txt": case "log": case "md": case "markdown": case "rst": case "adoc": case "org":
+            case "csv": case "tsv": case "ini": case "conf": case "cfg": case "config": case "properties":
+            case "yml": case "yaml": case "toml": case "env": case "lock": case "gitignore": case "gitattributes":
+            case "editorconfig": case "npmrc": case "yarnrc": case "babelrc": case "eslintrc": case "prettierrc":
+            case "java": case "kt": case "kts": case "scala": case "groovy": case "gradle":
+            case "py": case "pyw": case "pyi": case "rb": case "php": case "pl": case "pm": case "lua": case "r": case "jl":
+            case "c": case "h": case "cpp": case "hpp": case "cc": case "cxx": case "cs": case "go": case "rs":
+            case "swift": case "m": case "mm": case "dart": case "ex": case "exs": case "erl": case "hs": case "clj":
+            case "ts": case "tsx": case "jsx": case "mjs": case "cjs": case "vue": case "svelte": case "astro":
+            case "scss": case "sass": case "less": case "sql": case "graphql": case "gql": case "proto":
+            case "sh": case "bash": case "zsh": case "fish": case "bat": case "cmd": case "ps1":
+            case "tex": case "bib": case "srt": case "vtt": case "ass": case "diff": case "patch":
+            case "cmake": case "mk": case "nix": case "tf": case "hcl": case "sol":
                 return "text/plain; charset=UTF-8";
-            case "json": return "application/json";
-            case "xml": return "application/xml";
-            case "html": case "htm": return "text/html; charset=UTF-8";
+            case "json": case "jsonl": case "ndjson": case "json5": return "application/json";
+            case "xml": case "plist": return "application/xml";
+            case "html": case "htm": case "xhtml": return "text/html; charset=UTF-8";
             case "css": return "text/css; charset=UTF-8";
             case "js": return "text/javascript; charset=UTF-8";
-            case "java": case "py": case "c": case "cpp": case "h": case "go": case "rs": case "sh": case "sql":
-                return "text/plain; charset=UTF-8";
-            case "jpg": case "jpeg": return "image/jpeg";
+            case "jpg": case "jpeg": case "jfif": case "pjpeg": case "pjp": return "image/jpeg";
             case "png": return "image/png";
+            case "apng": return "image/apng";
             case "gif": return "image/gif";
             case "webp": return "image/webp";
             case "bmp": return "image/bmp";
+            case "avif": return "image/avif";
+            case "ico": case "cur": return "image/x-icon";
             case "svg": return "image/svg+xml";
-            case "mp4": return "video/mp4";
+            case "mp4": case "m4v": return "video/mp4";
             case "webm": return "video/webm";
             case "ogg": case "ogv": return "video/ogg";
             case "mov": return "video/quicktime";
+            case "3gp": return "video/3gpp";
+            case "mkv": return "video/x-matroska";
             case "mp3": return "audio/mpeg";
             case "wav": return "audio/wav";
+            case "flac": return "audio/flac";
+            case "aac": return "audio/aac";
+            case "m4a": return "audio/mp4";
+            case "oga": return "audio/ogg";
+            case "opus": return "audio/opus";
+            case "weba": return "audio/webm";
+            case "mid": case "midi": return "audio/midi";
+            case "amr": return "audio/amr";
             case "pdf": return "application/pdf";
             default:
                 try {

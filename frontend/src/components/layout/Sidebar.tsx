@@ -4,6 +4,7 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
   Folder, 
+  FolderOpen,
   Clock, 
   Star, 
   Share2, 
@@ -28,7 +29,8 @@ import {
 import { useFileStore, ViewMode } from "@/stores/useFileStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { api } from "@/lib/api";
-import { formatBytes, formatDate, getFileCategory, getDownloadUrl, isPreviewable } from "@/lib/utils";
+import { formatBytes, formatDate, getFileCategory, getDownloadUrl, isEditableText, isPreviewable } from "@/lib/utils";
+import { Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Sidebar() {
@@ -38,12 +40,16 @@ export function Sidebar() {
   const setCurrentPath = useFileStore((s) => s.setCurrentPath);
   const selectedFile = useFileStore((s) => s.selectedFile);
   const setSelectedFile = useFileStore((s) => s.setSelectedFile);
+  const openContainingFolder = useFileStore((s) => s.openContainingFolder);
   const setPreviewFile = useFileStore((s) => s.setPreviewFile);
+  const openEditor = useFileStore((s) => s.openEditor);
   const setShareModalFile = useFileStore((s) => s.setShareModalFile);
   const setMoveModalFile = useFileStore((s) => s.setMoveModalFile);
   const setRenameModalFile = useFileStore((s) => s.setRenameModalFile);
   const sidebarOpen = useFileStore((s) => s.sidebarOpen);
   const setSidebarOpen = useFileStore((s) => s.setSidebarOpen);
+  const showToast = useFileStore((s) => s.showToast);
+  const openConfirm = useFileStore((s) => s.openConfirm);
 
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.role?.toUpperCase() === "ADMIN";
@@ -69,18 +75,20 @@ export function Sidebar() {
       queryClient.invalidateQueries({ queryKey: ["files"] });
       queryClient.invalidateQueries({ queryKey: ["quota"] });
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
+      showToast("删除成功", "success");
     },
-    onError: (err: any) => alert(err.message || "删除失败"),
+    onError: (err: any) => showToast(err.message || "删除失败", "error"),
   });
 
   const favoriteMutation = useMutation({
     mutationFn: ({ path, favorite }: { path: string; favorite: boolean }) =>
       api.setFavorite(path, favorite),
-    onSuccess: () => {
+    onSuccess: (_res, vars) => {
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       queryClient.invalidateQueries({ queryKey: ["files"] });
+      showToast(vars.favorite ? "已加入收藏夹" : "已取消收藏", "success");
     },
-    onError: (err: any) => alert(err.message || "收藏操作失败"),
+    onError: (err: any) => showToast(err.message || "收藏操作失败", "error"),
   });
 
   const navItems: { mode: ViewMode; label: string; icon: React.ReactNode; adminOnly?: boolean }[] = [
@@ -94,10 +102,10 @@ export function Sidebar() {
   ];
 
   const handleNavClick = (mode: ViewMode) => {
-    setViewMode(mode);
     if (mode === "files") {
       setCurrentPath("");
     }
+    setViewMode(mode);
     setSidebarOpen(false);
   };
 
@@ -251,6 +259,17 @@ export function Sidebar() {
                 </Button>
               )}
 
+              {!selectedFile.isDirectory && isEditableText(selectedFile.name) && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs gap-1"
+                  onClick={() => openEditor(selectedFile)}
+                >
+                  <Edit3 className="w-3 h-3 text-brand-secondary" /> 编辑
+                </Button>
+              )}
+
               {!selectedFile.isDirectory && (
                 <Button
                   size="sm"
@@ -272,6 +291,17 @@ export function Sidebar() {
                   onClick={() => setShareModalFile(selectedFile)}
                 >
                   <Share2 className="w-3 h-3 text-brand-secondary" /> 分享
+                </Button>
+              )}
+
+              {viewMode !== "files" && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-7 text-xs gap-1"
+                  onClick={() => openContainingFolder(selectedFile)}
+                >
+                  <FolderOpen className="w-3 h-3 text-brand-secondary" /> 所在目录
                 </Button>
               )}
 
@@ -313,9 +343,13 @@ export function Sidebar() {
                 variant="outline"
                 className="col-span-2 h-7 text-xs gap-1 text-destructive hover:bg-destructive/10 border-destructive/20"
                 onClick={() => {
-                  if (confirm(`确定要彻底删除 "${selectedFile.name}" 吗？此操作不可撤销！`)) {
-                    deleteMutation.mutate(selectedFile.path);
-                  }
+                  openConfirm({
+                    title: "确认彻底删除",
+                    description: `确定要彻底删除 "${selectedFile.name}" 吗？此操作不可撤销！`,
+                    confirmText: "彻底删除",
+                    destructive: true,
+                    onConfirm: () => deleteMutation.mutate(selectedFile.path),
+                  });
                 }}
               >
                 <Trash2 className="w-3 h-3" /> 删除
@@ -333,12 +367,10 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Desktop sidebar */}
       <aside className="hidden md:flex w-64 border-r bg-white/50 backdrop-blur-sm flex-col shrink-0">
         {sidebarContent}
       </aside>
 
-      {/* Mobile drawer overlay */}
       {sidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div

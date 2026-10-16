@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 export function RenameModal() {
   const item = useFileStore((s) => s.renameModalFile);
   const setRenameModalFile = useFileStore((s) => s.setRenameModalFile);
+  const showToast = useFileStore((s) => s.showToast);
   const [newName, setNewName] = useState("");
   const queryClient = useQueryClient();
 
@@ -31,7 +32,6 @@ export function RenameModal() {
     mutationFn: (name: string) => api.renameFile(item!.path, name),
     onSuccess: (_data, name) => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
-      // 后端重命名会同步更新收藏路径，立即刷新收藏列表避免星标短暂错误
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       const selected = useFileStore.getState().selectedFile;
       if (item && selected && selected.path === item.path) {
@@ -39,10 +39,11 @@ export function RenameModal() {
         const nextPath = parent ? `${parent}/${name}` : name;
         useFileStore.getState().setSelectedFile({ ...selected, name, path: nextPath });
       }
+      showToast("重命名成功", "success");
       setRenameModalFile(null);
     },
     onError: (err: any) => {
-      alert(err.message || "重命名失败");
+      showToast(err.message || "重命名失败", "error");
     },
   });
 

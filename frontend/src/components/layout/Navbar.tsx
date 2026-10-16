@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { 
   HardDrive, 
   Search, 
@@ -11,13 +10,12 @@ import {
   FolderPlus, 
   LogOut, 
   Menu,
-  ChevronDown
+  ChevronDown,
+  KeyRound
 } from "lucide-react";
-import { api } from "@/lib/api";
 import { useFileStore } from "@/stores/useFileStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useUploadStore } from "@/stores/useUploadStore";
-import { formatBytes } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -37,66 +35,78 @@ export function Navbar() {
   const viewMode = useFileStore((s) => s.viewMode);
   const setViewMode = useFileStore((s) => s.setViewMode);
   const setNewFolderModalOpen = useFileStore((s) => s.setNewFolderModalOpen);
+  const setPasswordModalOpen = useFileStore((s) => s.setPasswordModalOpen);
   const toggleSidebar = useFileStore((s) => s.toggleSidebar);
 
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const addFile = useUploadStore((s) => s.addFile);
+  const enqueueWithConflictCheck = useUploadStore((s) => s.enqueueWithConflictCheck);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
+  const searchDebounceRef = useRef<any>(null);
 
-  // Local uncommitted search input to prevent re-querying on every keystroke
   const [localSearch, setLocalSearch] = useState(searchQuery);
 
   useEffect(() => {
     setLocalSearch(searchQuery);
   }, [searchQuery]);
 
-  const { data: quota } = useQuery({
-    queryKey: ["quota"],
-    queryFn: () => api.getQuota(),
-  });
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const query = localSearch.trim();
+  const triggerSearch = (rawValue: string) => {
+    const query = rawValue.trim();
     if (query) {
       setSearchQuery(query);
-      setViewMode("search");
+      if (useFileStore.getState().viewMode !== "search") {
+        setViewMode("search");
+      }
     } else {
       setSearchQuery("");
-      if (viewMode === "search") {
+      if (useFileStore.getState().viewMode === "search") {
         setViewMode("files");
       }
     }
   };
 
+  const handleSearchChange = (val: string) => {
+    setLocalSearch(val);
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => {
+      triggerSearch(val);
+    }, 300);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    triggerSearch(localSearch);
+  };
+
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
+    if (viewMode !== "files") setViewMode("files");
+    const entries = [];
     for (let i = 0; i < files.length; i++) {
-      addFile(files[i], currentPath);
+      entries.push({ file: files[i], subPath: "" });
     }
+    enqueueWithConflictCheck(entries, [], currentPath);
     e.target.value = "";
   };
 
   const handleFoldersSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
+    if (viewMode !== "files") setViewMode("files");
+    const entries = [];
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const relPath = file.webkitRelativePath || "";
       const pathParts = relPath.split("/");
-      pathParts.pop(); // Remove filename
+      pathParts.pop();
       const subDir = pathParts.join("/");
-      const targetDir = subDir
-        ? currentPath
-          ? `${currentPath}/${subDir}`
-          : subDir
-        : currentPath;
-      addFile(file, targetDir);
+      entries.push({ file, subPath: subDir });
     }
+    enqueueWithConflictCheck(entries, [], currentPath);
     e.target.value = "";
   };
 
@@ -124,8 +134,8 @@ export function Navbar() {
 
         <div 
           onClick={() => {
-            setViewMode("files");
             useFileStore.getState().setCurrentPath("");
+            setViewMode("files");
           }}
           className="flex items-center gap-2.5 cursor-pointer"
         >
@@ -138,27 +148,20 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* Search Bar (with 300ms live debounce) */}
       <form onSubmit={handleSearchSubmit} className="relative flex-1 max-w-xs sm:max-w-md">
         <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="search"
-          placeholder="搜索文件并回车..."
+          placeholder="输入关键词实时搜索文件..."
           value={localSearch}
-          onChange={(e) => {
-            setLocalSearch(e.target.value);
-            if (!e.target.value.trim() && viewMode === "search") {
-              setSearchQuery("");
-              setViewMode("files");
-            }
-          }}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="pl-9 h-9 bg-muted/40 border-0 focus-visible:bg-white focus-visible:ring-1 rounded-xl text-xs"
         />
       </form>
 
       {/* Action controls */}
       <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-        {/* Hidden File inputs */}
         <input
           ref={fileInputRef}
           type="file"
@@ -176,7 +179,6 @@ export function Navbar() {
           onChange={handleFoldersSelected}
         />
 
-        {/* Upload Buttons */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="sm" className="gap-1.5 rounded-xl shadow-sm px-2.5 sm:px-3">
@@ -208,7 +210,6 @@ export function Navbar() {
           <FolderPlus className="w-4 h-4 text-amber-500" /> 新建文件夹
         </Button>
 
-        {/* Layout toggle (grid/list) */}
         <div className="flex items-center border rounded-xl p-0.5 bg-muted/40">
           <Button
             variant="ghost"
@@ -247,6 +248,13 @@ export function Navbar() {
               <p className="text-sm font-semibold truncate">{user?.username}</p>
               <p className="text-xs text-muted-foreground">角色: {user?.role || "USER"}</p>
             </div>
+            <DropdownMenuItem
+              onClick={() => setPasswordModalOpen(true)}
+              className="gap-2 cursor-pointer"
+            >
+              <KeyRound className="w-4 h-4 text-brand-secondary" /> 修改登录口令
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleLogout}
               className="gap-2 text-destructive focus:text-destructive cursor-pointer"

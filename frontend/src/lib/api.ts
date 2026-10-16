@@ -1,4 +1,12 @@
-import { AdminConfigData, FileItem, FileShare, StorageQuota, User } from "@/types";
+import {
+  AdminConfigData,
+  FileConflictStrategy,
+  FileItem,
+  FileShare,
+  FolderConflictStrategy,
+  StorageQuota,
+  User,
+} from "@/types";
 
 export class ApiError extends Error {
   status?: number;
@@ -66,6 +74,14 @@ export const api = {
 
   async logout() {
     return fetchJson<{ success: boolean }>("/api/logout", { method: "POST" });
+  },
+
+  async changeOwnPassword(oldPassword: string, newPassword: string) {
+    return fetchJson<{ success: boolean; message: string }>("/api/user/password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ oldPassword, newPassword }),
+    });
   },
 
   // Files & Folders
@@ -146,6 +162,43 @@ export const api = {
     });
   },
 
+  async resolveFolderConflict(
+    parentPath: string,
+    folderName: string,
+    strategy: FolderConflictStrategy
+  ) {
+    return fetchJson<{ success: boolean; folderName: string; targetPath: string }>(
+      "/api/folder/resolve-conflict",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ parentPath, folderName, strategy }),
+      }
+    );
+  },
+
+  async getFileContent(path: string) {
+    return fetchJson<{
+      path: string;
+      name: string;
+      size: number;
+      modifiedTime: number;
+      content: string;
+    }>(`/api/file/content?path=${encodeURIComponent(path)}`);
+  },
+
+  async saveFileContent(path: string, content: string) {
+    return fetchJson<{
+      success: boolean;
+      message: string;
+      file: { path: string; name: string; size: number; modifiedTime: number };
+    }>("/api/file/content", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path, content }),
+    });
+  },
+
   async deleteFile(path: string) {
     return fetchJson<{ success: boolean }>("/api/file/delete", {
       method: "POST",
@@ -154,11 +207,27 @@ export const api = {
     });
   },
 
+  async batchDeleteFiles(paths: string[]) {
+    return fetchJson<{ success: boolean; deleted: number }>("/api/file/batch-delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paths }),
+    });
+  },
+
   async moveFile(from: string, to: string) {
     return fetchJson<{ success: boolean; path: string }>("/api/file/move", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: from, destination: to }),
+    });
+  },
+
+  async batchMoveFiles(paths: string[], destination: string) {
+    return fetchJson<{ success: boolean; moved: number }>("/api/file/batch-move", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paths, destination }),
     });
   },
 
@@ -189,7 +258,8 @@ export const api = {
     file: File,
     directory: string,
     onProgress?: (percent: number) => void,
-    signal?: AbortSignal
+    signal?: AbortSignal,
+    conflictStrategy: FileConflictStrategy = "rename"
   ): Promise<{ success: boolean; message: string; file: any }> {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
@@ -235,6 +305,7 @@ export const api = {
       const fd = new FormData();
       fd.append("file", file);
       fd.append("directory", directory || "");
+      fd.append("conflictStrategy", conflictStrategy || "rename");
       xhr.send(fd);
     });
   },
@@ -265,7 +336,12 @@ export const api = {
     return data.data || [];
   },
 
-  async createAdminUser(data: { username: string; password: string; storageQuota: number }) {
+  async createAdminUser(data: {
+    username: string;
+    password: string;
+    storageQuota: number;
+    mustChangePassword?: boolean;
+  }) {
     return fetchJson<{ data: User }>("/api/admin/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -273,7 +349,10 @@ export const api = {
     });
   },
 
-  async updateAdminUser(username: string, data: { storageQuota?: number; role?: string }) {
+  async updateAdminUser(
+    username: string,
+    data: { storageQuota?: number; role?: string; enabled?: boolean; mustChangePassword?: boolean }
+  ) {
     return fetchJson(`/api/admin/users/${encodeURIComponent(username)}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -281,11 +360,11 @@ export const api = {
     });
   },
 
-  async resetAdminUserPassword(username: string, password: string) {
+  async resetAdminUserPassword(username: string, password: string, mustChangePassword?: boolean) {
     return fetchJson(`/api/admin/users/${encodeURIComponent(username)}/password`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
+      body: JSON.stringify({ password, mustChangePassword }),
     });
   },
 
@@ -308,11 +387,16 @@ export const api = {
   },
 
   // Resumable Chunked Uploads
-  async initChunkedUpload(fileName: string, fileSize: number, directory: string) {
+  async initChunkedUpload(
+    fileName: string,
+    fileSize: number,
+    directory: string,
+    conflictStrategy: FileConflictStrategy = "rename"
+  ) {
     return fetchJson<{ uploadId: string; chunkSize: number; totalChunks: number }>("/api/upload/init", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ fileName, fileSize, directory }),
+      body: JSON.stringify({ fileName, fileSize, directory, conflictStrategy }),
     });
   },
 
@@ -323,7 +407,6 @@ export const api = {
     signal?: AbortSignal,
     onProgress?: (loaded: number) => void
   ): Promise<{ success: boolean; chunkIndex: number }> {
-    // 使用 XHR 以获取上传进度事件（fetch 无法监听上传进度）
     return new Promise((resolve, reject) => {
       const fd = new FormData();
       fd.append("uploadId", uploadId);

@@ -2,13 +2,16 @@
 
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Share2, Copy, Check, Trash2, RefreshCw, Link as LinkIcon, Clock } from "lucide-react";
+import { Share2, Copy, Check, Trash2, RefreshCw } from "lucide-react";
 import { api } from "@/lib/api";
+import { useFileStore } from "@/stores/useFileStore";
 import { Button } from "@/components/ui/button";
 import { formatDate, copyToClipboard } from "@/lib/utils";
 
 export function SharesTab() {
   const queryClient = useQueryClient();
+  const showToast = useFileStore((s) => s.showToast);
+  const openConfirm = useFileStore((s) => s.openConfirm);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
   const { data, isLoading, refetch } = useQuery({
@@ -20,8 +23,9 @@ export function SharesTab() {
     mutationFn: (id: number) => api.revokeShare(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shares"] });
+      showToast("分享链接已撤销", "success");
     },
-    onError: (err: any) => alert(err.message || "撤销分享失败"),
+    onError: (err: any) => showToast(err.message || "撤销分享失败", "error"),
   });
 
   const handleCopy = async (shareId: number, url: string) => {
@@ -29,16 +33,21 @@ export function SharesTab() {
     const ok = await copyToClipboard(fullUrl);
     if (ok) {
       setCopiedId(shareId);
+      showToast("分享链接已复制", "success");
       setTimeout(() => setCopiedId(null), 2000);
     } else {
-      alert("复制失败，请手动选取复制");
+      showToast("复制失败，请手动选取复制", "error");
     }
   };
 
   const handleRevoke = (id: number, filePath: string) => {
-    if (confirm(`确定要撤销对 "${filePath}" 的分享链接吗？`)) {
-      revokeMutation.mutate(id);
-    }
+    openConfirm({
+      title: "确认撤销分享链接",
+      description: `确定要撤销对 "${filePath}" 的对外分享链接吗？撤销后该链接将立即失效。`,
+      confirmText: "确认撤销",
+      destructive: true,
+      onConfirm: () => revokeMutation.mutate(id),
+    });
   };
 
   const shares = data || [];

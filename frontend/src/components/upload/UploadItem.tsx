@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { UploadTask } from "@/types";
 import { useUploadStore } from "@/stores/useUploadStore";
+import { useFileStore } from "@/stores/useFileStore";
 import { formatBytes } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,7 @@ export function UploadItem({ task }: UploadItemProps) {
       try {
         await rebindFileAndResume(task.id, file);
       } catch (err: any) {
-        alert(err.message || "文件匹配失败");
+        useFileStore.getState().showToast(err.message || "文件匹配失败", "error");
       }
     }
   };

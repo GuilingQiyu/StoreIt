@@ -30,10 +30,10 @@ Defaults:
 Prereqs: JDK 21, Maven
 
 - Build: `mvn package` (runs tests; to rebuild frontend, run `npm run export` inside `frontend/` first)
-- Run: `java -jar target/storeit-2.0.0.jar`
+- Run: `java -jar target/storeit-2.0.1.jar`
 
 ### Frontend Development & Build
-The StoreIt 2.0.0 frontend is completely refactored with Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, and Zustand, supporting 100GB+ chunked concurrent resumable uploads, visual configuration, context menus, and responsive design:
+The StoreIt 2.0.1 frontend is completely refactored with Next.js 14, React 18, TypeScript, Tailwind CSS, shadcn/ui, TanStack Query, and Zustand, supporting 100GB+ chunked concurrent resumable uploads, visual configuration, context menus, and responsive design:
 
 1. Enter frontend folder: `cd frontend`
 2. Install dependencies: `npm ci` (or `npm install`)
@@ -56,7 +56,7 @@ Imported via `spring.config.import`, with `optional:file:./config/application.ym
 - Pages: `/`, `/about`, `/login`, `/list`
 - Auth: `POST /api/login`, `POST /api/logout`, `GET /api/user/status`
 - Files: `GET /api/files?path=...`, `POST /api/upload`, `POST /api/upload/{init,chunk,complete}`, `GET /api/upload/status`, `DELETE /api/upload/{uploadId}`, `GET /api/preview`, `GET /storage/**`
-- File Ops & Metadata: `POST /api/folder/create`, `POST /api/file/{delete,rename,move}`, `GET /api/files/{recent,search}`, `GET/POST/DELETE /api/favorites`, `GET /api/storage/usage`
+- File Ops & Online Edit: `POST /api/folder/{create,resolve-conflict}`, `POST /api/file/{delete,batch-delete,rename,move,batch-move}`, `GET/PUT /api/file/content`, `GET /api/files/{recent,search}`, `GET/POST/DELETE /api/favorites`, `GET /api/storage/usage`
 - Share: `POST /api/share`, `GET /api/shares`, `DELETE /api/shares/{id}`, `GET /d/{token}`
 - Admin: `GET/POST /api/admin/users`, `PATCH /api/admin/users/{username}`, `POST /api/admin/users/{username}/password`, `GET/POST /api/admin/config`
 

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Share2, Copy, Check, Link as LinkIcon } from "lucide-react";
+import { Share2, Copy, Check } from "lucide-react";
 import { api } from "@/lib/api";
 import { useFileStore } from "@/stores/useFileStore";
 import { copyToClipboard } from "@/lib/utils";
@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 export function ShareModal() {
   const item = useFileStore((s) => s.shareModalFile);
   const setShareModalFile = useFileStore((s) => s.setShareModalFile);
+  const showToast = useFileStore((s) => s.showToast);
   const queryClient = useQueryClient();
 
   const [expireHours, setExpireHours] = useState("24");
@@ -27,6 +28,16 @@ export function ShareModal() {
   const [generatedLink, setGeneratedLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    if (item) {
+      setExpireHours("24");
+      setCustomHours("");
+      setMaxDownloads("");
+      setGeneratedLink(null);
+      setCopied(false);
+    }
+  }, [item]);
+
   const shareMutation = useMutation({
     mutationFn: (data: { filePath: string; expireHours: number; maxDownloads?: number }) =>
       api.createShare(data.filePath, data.expireHours, data.maxDownloads),
@@ -34,9 +45,10 @@ export function ShareModal() {
       const fullUrl = window.location.origin + res.data.url;
       setGeneratedLink(fullUrl);
       queryClient.invalidateQueries({ queryKey: ["shares"] });
+      showToast("分享链接已生成", "success");
     },
     onError: (err: any) => {
-      alert(err.message || "生成分享链接失败");
+      showToast(err.message || "生成分享链接失败", "error");
     },
   });
 
@@ -52,10 +64,22 @@ export function ShareModal() {
 
     let hours = parseInt(expireHours, 10);
     if (expireHours === "custom") {
-      hours = parseInt(customHours, 10) || 24;
+      hours = parseInt(customHours, 10);
+      if (!Number.isInteger(hours) || hours < 1) {
+        showToast("自定义有效小时数必须为正整数", "error");
+        return;
+      }
     }
 
-    const max = maxDownloads ? parseInt(maxDownloads, 10) : undefined;
+    let max: number | undefined = undefined;
+    if (maxDownloads.trim()) {
+      max = parseInt(maxDownloads, 10);
+      if (!Number.isInteger(max) || max < 1) {
+        showToast("最大下载次数必须为正整数", "error");
+        return;
+      }
+    }
+
     shareMutation.mutate({
       filePath: item.path,
       expireHours: hours,
@@ -68,9 +92,10 @@ export function ShareModal() {
     const ok = await copyToClipboard(generatedLink);
     if (ok) {
       setCopied(true);
+      showToast("分享直链已复制到剪贴板", "success");
       setTimeout(() => setCopied(false), 2000);
     } else {
-      alert("复制失败，请手动选取输入框文本复制");
+      showToast("复制失败，请手动选取输入框文本复制", "error");
     }
   };
 
@@ -87,7 +112,7 @@ export function ShareModal() {
         {generatedLink ? (
           <div className="space-y-4 py-2">
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs">
-              分享链接已成功生成！可将下方链接直接发送给好友或对外公开发布。
+              分享链接已成功生成！可将下方链接直接发送给好友或对外公开发布（已内置防聊天软件预览爬虫误扣下载次数保护）。
             </div>
 
             <div>

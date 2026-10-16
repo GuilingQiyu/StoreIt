@@ -14,6 +14,7 @@ export interface User {
   storageQuota?: number;
   createdAt?: number | string;
   mustChangePassword?: boolean;
+  enabled?: boolean;
 }
 
 export interface StorageQuota {
@@ -46,12 +47,16 @@ export type UploadStatus =
   | "error" 
   | "interrupted";
 
+export type FileConflictStrategy = "rename" | "overwrite";
+export type FolderConflictStrategy = "merge" | "rename" | "overwrite";
+
 export interface UploadTask {
   id: string; // uploadId
   fingerprint: string; // filename-filesize-lastmodified-dir
   name: string;
   size: number;
   directory: string;
+  conflictStrategy?: FileConflictStrategy;
   chunkSize: number;
   totalChunks: number;
   uploadedChunks: number[]; // indices of completed chunks
@@ -63,10 +68,40 @@ export interface UploadTask {
   lastUpdated: number;
 }
 
+export interface PendingUploadEntry {
+  file: File;
+  subPath: string;
+}
+
+export interface UploadConflictState {
+  targetDir: string;
+  entries: PendingUploadEntry[];
+  emptyDirs: string[];
+  conflictingFolders: string[];
+  conflictingFiles: string[];
+}
+
 export interface AdminConfigData {
   applicationYaml: string;
   adminYaml: string;
   applicationConfig: Record<string, any>;
   adminConfig: Record<string, any>;
   keystoreExists?: boolean;
+}
+
+export type SortField = "name" | "size" | "modifiedTime";
+export type SortOrder = "asc" | "desc";
+
+export interface ToastItem {
+  id: string;
+  text: string;
+  type: "success" | "error" | "info";
+}
+
+export interface ConfirmDialogOptions {
+  title: string;
+  description: string;
+  confirmText?: string;
+  destructive?: boolean;
+  onConfirm: () => void;
 }

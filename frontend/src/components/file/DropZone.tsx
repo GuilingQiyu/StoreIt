@@ -2,6 +2,8 @@
 
 import React, { useState, useCallback, useRef } from "react";
 import { UploadCloud, FolderPlus } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { api } from "@/lib/api";
 import { useUploadStore } from "@/stores/useUploadStore";
 import { useFileStore } from "@/stores/useFileStore";
 
@@ -12,14 +14,17 @@ interface DropZoneProps {
 export function DropZone({ children }: DropZoneProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const dragCounter = useRef(0);
+  const queryClient = useQueryClient();
   const currentPath = useFileStore((s) => s.currentPath);
   const viewMode = useFileStore((s) => s.viewMode);
-  const addFile = useUploadStore((s) => s.addFile);
+  const setViewMode = useFileStore((s) => s.setViewMode);
+  const showToast = useFileStore((s) => s.showToast);
+  const enqueueWithConflictCheck = useUploadStore((s) => s.enqueueWithConflictCheck);
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (viewMode !== "files") return;
+    if (viewMode !== "files" && viewMode !== "recent" && viewMode !== "favorites" && viewMode !== "search") return;
     dragCounter.current++;
     if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
       setIsDragOver(true);
@@ -29,20 +34,19 @@ export function DropZone({ children }: DropZoneProps) {
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (viewMode !== "files") return;
     dragCounter.current--;
     if (dragCounter.current <= 0) {
       setIsDragOver(false);
       dragCounter.current = 0;
     }
-  }, [viewMode]);
+  }, []);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
 
-  // Recursively read items from DataTransferItemList
+  // Recursively read items from DataTransferItemList (including empty directories)
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
@@ -50,12 +54,15 @@ export function DropZone({ children }: DropZoneProps) {
       setIsDragOver(false);
       dragCounter.current = 0;
 
-      if (viewMode !== "files") return;
-
       const items = e.dataTransfer.items;
       if (!items || items.length === 0) return;
 
+      if (viewMode !== "files") {
+        setViewMode("files");
+      }
+
       const filesToUpload: { file: File; subPath: string }[] = [];
+      const emptyDirsToCreate: string[] = [];
 
       const readEntry = async (entry: any, relativeDir: string) => {
         if (entry.isFile) {
@@ -67,19 +74,25 @@ export function DropZone({ children }: DropZoneProps) {
           });
         } else if (entry.isDirectory) {
           const dirReader = entry.createReader();
+          const allChildren: any[] = [];
           const readEntries = async () => {
             const entries: any[] = await new Promise((resolve) => {
               dirReader.readEntries((results: any[]) => resolve(results));
             });
             if (entries.length > 0) {
-              for (const child of entries) {
-                const nextDir = relativeDir ? `${relativeDir}/${entry.name}` : entry.name;
-                await readEntry(child, nextDir);
-              }
-              await readEntries(); // Read next batch until empty
+              allChildren.push(...entries);
+              await readEntries();
             }
           };
           await readEntries();
+          const thisDir = relativeDir ? `${relativeDir}/${entry.name}` : entry.name;
+          if (allChildren.length === 0) {
+            emptyDirsToCreate.push(thisDir);
+          } else {
+            for (const child of allChildren) {
+              await readEntry(child, thisDir);
+            }
+          }
         }
       };
 
@@ -99,17 +112,10 @@ export function DropZone({ children }: DropZoneProps) {
 
       await Promise.all(entryPromises);
 
-      // Add all discovered files to the upload queue
-      for (const item of filesToUpload) {
-        const targetDir = item.subPath
-          ? currentPath
-            ? `${currentPath}/${item.subPath}`
-            : item.subPath
-          : currentPath;
-        addFile(item.file, targetDir);
-      }
+      await enqueueWithConflictCheck(filesToUpload, emptyDirsToCreate, currentPath);
+      queryClient.invalidateQueries({ queryKey: ["files"] });
     },
-    [currentPath, addFile]
+    [currentPath, viewMode, setViewMode, enqueueWithConflictCheck, queryClient]
   );
 
   return (
@@ -133,7 +139,7 @@ export function DropZone({ children }: DropZoneProps) {
               /{currentPath || "根目录"}
             </span>
           </p>
-          <p className="text-white/60 text-xs mt-3">支持单文件、特大文件以及文件夹递归拖入上传</p>
+          <p className="text-white/60 text-xs mt-3">支持单文件、特大文件以及多级文件夹（含空目录）递归拖入上传</p>
         </div>
       )}
       {children}

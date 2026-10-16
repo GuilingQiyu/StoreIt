@@ -71,10 +71,11 @@ public class FileController {
     @PostMapping(value = "/api/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> upload(HttpServletRequest request,
                                     @RequestParam(value = "directory", required = false) String directory,
+                                    @RequestParam(value = "conflictStrategy", required = false, defaultValue = "rename") String conflictStrategy,
                                     @RequestParam("file") MultipartFile file) {
         try {
             User user = getCurrentUser(request);
-            String saved = fileService.saveFile(user, directory == null ? "" : directory, file);
+            String saved = fileService.saveFile(user, directory == null ? "" : directory, file, conflictStrategy);
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "文件上传成功",
@@ -119,8 +120,10 @@ public class FileController {
             String fileName = payload.get("fileName") != null ? String.valueOf(payload.get("fileName")) : "";
             long fileSize = Long.parseLong(String.valueOf(payload.get("fileSize")));
             String directory = payload.get("directory") != null ? String.valueOf(payload.get("directory")) : "";
+            String conflictStrategy = payload.get("conflictStrategy") != null
+                    ? String.valueOf(payload.get("conflictStrategy")) : "rename";
 
-            fileService.validateUploadInit(user, directory, fileName, fileSize);
+            fileService.validateUploadInit(user, directory, fileName, fileSize, conflictStrategy);
 
             String uploadId = java.util.UUID.randomUUID().toString();
             long chunkSize = 5L * 1024 * 1024;
@@ -134,6 +137,7 @@ public class FileController {
             meta.put("fileName", fileName);
             meta.put("fileSize", fileSize);
             meta.put("directory", directory);
+            meta.put("conflictStrategy", conflictStrategy);
             meta.put("chunkSize", chunkSize);
             meta.put("totalChunks", totalChunks);
 
@@ -196,10 +200,12 @@ public class FileController {
 
             String fileName = (String) meta.get("fileName");
             String directory = (String) meta.get("directory");
+            String conflictStrategy = meta.get("conflictStrategy") != null
+                    ? String.valueOf(meta.get("conflictStrategy")) : "rename";
             int totalChunks = (Integer) meta.get("totalChunks");
             long fileSize = Long.parseLong(meta.get("fileSize").toString());
 
-            String saved = fileService.saveChunkedFile(user, directory, fileName, userChunksDir, totalChunks, fileSize);
+            String saved = fileService.saveChunkedFile(user, directory, fileName, userChunksDir, totalChunks, fileSize, conflictStrategy);
 
             return ResponseEntity.ok(Map.of(
                     "success", true,
@@ -301,7 +307,12 @@ public class FileController {
             long length = r.contentLength();
             String filename = r.getFilename();
 
-            if (rangeHeader == null || length == 0) {
+            if (length == 0) {
+                return previewResponse(HttpStatus.OK, filename)
+                        .contentLength(0)
+                        .body(new byte[0]);
+            }
+            if (rangeHeader == null) {
                 return previewResponse(HttpStatus.OK, filename)
                         .contentLength(length)
                         .body(r);
@@ -411,6 +422,64 @@ public class FileController {
         }
     }
 
+    @PostMapping("/api/folder/resolve-conflict")
+    public ResponseEntity<?> resolveFolderConflict(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String parentPath = payload.getOrDefault("parentPath", "");
+            String folderName = payload.getOrDefault("folderName", "");
+            String strategy = payload.getOrDefault("strategy", "merge");
+            Map<String, String> resolved = fileService.resolveFolderConflict(user, parentPath, folderName, strategy);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "folderName", resolved.get("folderName"),
+                    "targetPath", resolved.get("targetPath")
+            ));
+        } catch (Exception e) {
+            log.warn("Resolve folder conflict failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "处理同名文件夹冲突失败"));
+        }
+    }
+
+    @GetMapping("/api/file/content")
+    public ResponseEntity<?> getFileContent(HttpServletRequest request, @RequestParam("path") String path) {
+        try {
+            User user = getCurrentUser(request);
+            return ResponseEntity.ok(fileService.readTextFile(user, path));
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "读取文本内容失败"));
+        } catch (Exception e) {
+            log.warn("Read text file failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "读取文本内容失败"));
+        }
+    }
+
+    @org.springframework.web.bind.annotation.RequestMapping(
+            value = "/api/file/content",
+            method = {org.springframework.web.bind.annotation.RequestMethod.PUT, org.springframework.web.bind.annotation.RequestMethod.POST}
+    )
+    public ResponseEntity<?> saveFileContent(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String path = payload.get("path");
+            String content = payload.getOrDefault("content", "");
+            Map<String, Object> saved = fileService.saveTextFile(user, path, content);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "文件已保存",
+                    "file", saved
+            ));
+        } catch (IOException e) {
+            if (FileService.QUOTA_EXCEEDED.equals(e.getMessage())) {
+                return ResponseEntity.badRequest().body(Map.of("error", FileService.QUOTA_EXCEEDED));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "保存文件失败"));
+        } catch (Exception e) {
+            log.warn("Save text file failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "保存文件失败"));
+        }
+    }
+
     @GetMapping("/api/storage/usage")
     public ResponseEntity<?> getStorageUsage(HttpServletRequest request) {
         try {
@@ -422,30 +491,113 @@ public class FileController {
         }
     }
 
-    @GetMapping("/d/{token}")
-    public ResponseEntity<?> downloadByToken(@PathVariable String token) {
+    @PostMapping("/api/file/batch-delete")
+    public ResponseEntity<?> batchDelete(HttpServletRequest request, @RequestBody Map<String, List<String>> payload) {
+        try {
+            User user = getCurrentUser(request);
+            List<String> paths = payload.getOrDefault("paths", List.of());
+            int deleted = 0;
+            for (String p : paths) {
+                if (p != null && !p.isBlank()) {
+                    fileService.delete(user, p);
+                    deleted++;
+                }
+            }
+            return ResponseEntity.ok(Map.of("success", true, "deleted", deleted));
+        } catch (Exception e) {
+            log.warn("Batch delete failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "批量删除失败"));
+        }
+    }
+
+    @PostMapping("/api/file/batch-move")
+    public ResponseEntity<?> batchMove(HttpServletRequest request, @RequestBody Map<String, Object> payload) {
+        try {
+            User user = getCurrentUser(request);
+            @SuppressWarnings("unchecked")
+            List<String> paths = (List<String>) payload.getOrDefault("paths", List.of());
+            String destination = payload.get("destination") != null ? String.valueOf(payload.get("destination")) : "";
+            int moved = 0;
+            for (String p : paths) {
+                if (p != null && !p.isBlank()) {
+                    fileService.move(user, p, destination);
+                    moved++;
+                }
+            }
+            return ResponseEntity.ok(Map.of("success", true, "moved", moved));
+        } catch (IOException e) {
+            String message = e.getMessage();
+            if (FileService.MOVE_INTO_SELF.equals(message) || FileService.MOVE_EXISTS.equals(message)
+                    || FileService.MOVE_DEST_MISSING.equals(message) || "无效路径".equals(message)) {
+                return ResponseEntity.badRequest().body(Map.of("error", message));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", "批量移动失败"));
+        } catch (Exception e) {
+            log.warn("Batch move failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "批量移动失败"));
+        }
+    }
+
+    @org.springframework.web.bind.annotation.RequestMapping(
+            value = "/d/{token}",
+            method = {org.springframework.web.bind.annotation.RequestMethod.GET, org.springframework.web.bind.annotation.RequestMethod.HEAD}
+    )
+    public ResponseEntity<?> downloadByToken(HttpServletRequest request, @PathVariable String token) {
         Optional<FileShare> s = shareService.validateToken(token);
-        if (s.isEmpty()) return ResponseEntity.status(404).body(Map.of("error", "分享链接无效或已过期"));
+        if (s.isEmpty()) return shareErrorResponse(request, "分享链接无效或已过期");
         FileShare share = s.get();
         Resource resource;
         try {
             User owner = authService.findUserById(share.getUserId()).orElseThrow(() -> new IOException("Owner not found"));
             resource = fileService.getResource(owner, share.getFilePath());
             if (!resource.exists() || !resource.isReadable()) {
-                return ResponseEntity.status(404).body(Map.of("error", "文件不存在"));
+                return shareErrorResponse(request, "文件不存在");
             }
         } catch (Exception e) {
             log.warn("Shared download failed for token: {}", e.toString());
-            return ResponseEntity.status(404).body(Map.of("error", "文件不存在"));
+            return shareErrorResponse(request, "文件不存在");
+        }
+        // 对 HEAD 请求或社交软件链接预览爬虫（Link Preview Bot）仅返回头部，不扣减下载次数
+        if ("HEAD".equalsIgnoreCase(request.getMethod()) || isLinkPreviewBot(request)) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, attachment(resource.getFilename()))
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .build();
         }
         // 文件确认可读后再原子扣减，避免文件已删除仍消耗次数
         if (!shareService.consumeDownload(share.getId())) {
-            return ResponseEntity.status(404).body(Map.of("error", "分享链接无效或已过期"));
+            return shareErrorResponse(request, "分享链接无效或已过期");
         }
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, attachment(resource.getFilename()))
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
+    }
+
+    private boolean isLinkPreviewBot(HttpServletRequest request) {
+        String ua = request.getHeader(HttpHeaders.USER_AGENT);
+        if (ua == null || ua.isBlank()) return false;
+        String lower = ua.toLowerCase();
+        return lower.contains("telegrambot") || lower.contains("discordbot") || lower.contains("twitterbot")
+                || lower.contains("slackbot") || lower.contains("whatsapp") || lower.contains("facebookexternalhit")
+                || lower.contains("linkedinbot") || lower.contains("skypeuripreview");
+    }
+
+    private ResponseEntity<?> shareErrorResponse(HttpServletRequest request, String message) {
+        String accept = request.getHeader(HttpHeaders.ACCEPT);
+        if (accept != null && accept.contains("text/html") && !accept.contains("application/json")) {
+            String html = "<!DOCTYPE html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\">"
+                    + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                    + "<title>分享链接失效 - 储之 StoreIt</title>"
+                    + "<style>*{margin:0;padding:0;box-sizing:border-box}body{min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#f2e9e4 0%,#e9dfe1 50%,#c9ada7 100%);color:#22223b}.card{text-align:center;background:rgba(255,255,255,0.92);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:48px 40px;max-width:420px;margin:16px;box-shadow:0 20px 50px -20px rgba(34,34,59,0.2)}.code{font-size:56px;font-weight:800;color:#4a4e69;line-height:1}h1{font-size:20px;margin:14px 0 8px}p{font-size:14px;color:#64748b;margin-bottom:26px}a{display:inline-block;padding:10px 24px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;background:#22223b;color:#fff}</style>"
+                    + "</head><body><div class=\"card\"><div class=\"code\">404</div><h1>" + message + "</h1>"
+                    + "<p>该分享可能已到期、达到最大下载次数或源文件已被移除。</p>"
+                    + "<a href=\"/\">返回储之首页</a></div></body></html>";
+            return ResponseEntity.status(404)
+                    .contentType(MediaType.parseMediaType("text/html; charset=UTF-8"))
+                    .body(html);
+        }
+        return ResponseEntity.status(404).body(Map.of("error", message));
     }
 
     // --- helpers ---

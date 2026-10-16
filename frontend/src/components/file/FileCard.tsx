@@ -15,12 +15,15 @@ import {
   Share2,
   Trash2,
   FolderInput,
+  FolderOpen,
   Edit2,
-  Eye
+  Eye,
+  Check
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { useFileStore } from "@/stores/useFileStore";
-import { formatBytes, getFileCategory, isPreviewable } from "@/lib/utils";
+import { formatBytes, getFileCategory, getParentDirectory, isEditableText, isPreviewable } from "@/lib/utils";
+import { Edit3 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,7 +60,16 @@ export function FileCard({
 }: FileCardProps) {
   const selectedFile = useFileStore((s) => s.selectedFile);
   const setSelectedFile = useFileStore((s) => s.setSelectedFile);
+  const selectedPaths = useFileStore((s) => s.selectedPaths);
+  const toggleSelectPath = useFileStore((s) => s.toggleSelectPath);
+  const viewMode = useFileStore((s) => s.viewMode);
+  const openContainingFolder = useFileStore((s) => s.openContainingFolder);
+  const openEditor = useFileStore((s) => s.openEditor);
+
   const isSelected = selectedFile?.path === item.path;
+  const isChecked = selectedPaths.includes(item.path);
+  const parentDir = getParentDirectory(item.path);
+  const showParentBadge = viewMode !== "files" && Boolean(parentDir);
 
   const renderIcon = () => {
     if (item.isDirectory) {
@@ -86,42 +98,72 @@ export function FileCard({
 
   return (
     <div
-      onClick={() => setSelectedFile(item)}
+      onClick={(e) => {
+        if (e.ctrlKey || e.metaKey) {
+          toggleSelectPath(item.path);
+        }
+        setSelectedFile(item);
+      }}
       onDoubleClick={() => onOpen(item)}
       onContextMenu={(e) => onContextMenu?.(e, item)}
       className={`group relative flex flex-col items-center justify-between p-4 rounded-2xl bg-white/80 hover:bg-white border transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md select-none ${
-        isSelected
+        isChecked || isSelected
           ? "ring-2 ring-brand-primary border-transparent bg-white shadow-md"
           : "hover:-translate-y-1"
       }`}
     >
       {/* Top action row */}
-      <div className="w-full flex items-center justify-between text-muted-foreground opacity-60 group-hover:opacity-100 transition-opacity">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleFavorite(item);
-          }}
-          className={`hover:text-amber-500 transition-colors ${
-            item.isFavorite ? "text-amber-500 fill-amber-500 opacity-100" : ""
-          }`}
-          title={item.isFavorite ? "取消收藏" : "加入收藏"}
-        >
-          <Star className={`w-4 h-4 ${item.isFavorite ? "fill-amber-500" : ""}`} />
-        </button>
+      <div className="w-full flex items-center justify-between text-muted-foreground">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleSelectPath(item.path);
+            }}
+            className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
+              isChecked
+                ? "bg-brand-primary border-brand-primary text-white opacity-100"
+                : "border-black/25 bg-white/80 opacity-0 group-hover:opacity-100"
+            }`}
+            title={isChecked ? "取消选择" : "多选此项"}
+          >
+            {isChecked && <Check className="w-3 h-3" />}
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite(item);
+            }}
+            className={`hover:text-amber-500 transition-colors ${
+              item.isFavorite
+                ? "text-amber-500 fill-amber-500 opacity-100"
+                : "opacity-60 group-hover:opacity-100"
+            }`}
+            title={item.isFavorite ? "取消收藏" : "加入收藏"}
+          >
+            <Star className={`w-4 h-4 ${item.isFavorite ? "fill-amber-500" : ""}`} />
+          </button>
+        </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-            <Button variant="ghost" size="icon" className="h-6 w-6">
+            <Button variant="ghost" size="icon" className="h-6 w-6 opacity-60 group-hover:opacity-100">
               <MoreVertical className="w-3.5 h-3.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="end" className="w-44">
             {!item.isDirectory && (
               <>
                 {isPreviewable(item.name) && (
                   <DropdownMenuItem onClick={() => onPreview(item)} className="gap-2">
                     <Eye className="w-4 h-4 text-brand-secondary" /> 预览
+                  </DropdownMenuItem>
+                )}
+                {isEditableText(item.name) && (
+                  <DropdownMenuItem onClick={() => openEditor(item)} className="gap-2">
+                    <Edit3 className="w-4 h-4 text-brand-secondary" /> 在线编辑
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
@@ -132,6 +174,11 @@ export function FileCard({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
+            )}
+            {viewMode !== "files" && (
+              <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">
+                <FolderOpen className="w-4 h-4 text-brand-secondary" /> 打开所在目录
+              </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={() => onRename(item)} className="gap-2">
               <Edit2 className="w-4 h-4 text-brand-secondary" /> 重命名
@@ -161,8 +208,9 @@ export function FileCard({
         >
           {item.name}
         </p>
-        <span className="text-[11px] text-muted-foreground block mt-0.5">
+        <span className="text-[11px] text-muted-foreground block mt-0.5 truncate">
           {item.isDirectory ? "文件夹" : formatBytes(item.size || 0)}
+          {showParentBadge ? ` · /${parentDir}` : ""}
         </span>
       </div>
     </div>
