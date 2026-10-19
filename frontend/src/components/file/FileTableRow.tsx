@@ -15,15 +15,16 @@ import {
   Share2,
   Trash2,
   FolderInput,
+  Copy,
   FolderOpen,
   Edit2,
+  Edit3,
   Eye,
   Check
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { useFileStore } from "@/stores/useFileStore";
 import { formatBytes, formatDate, getFileCategory, getParentDirectory, isEditableText, isPreviewable } from "@/lib/utils";
-import { Edit3 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,12 +36,14 @@ import { Button } from "@/components/ui/button";
 
 interface FileTableRowProps {
   item: FileItem;
+  index?: number;
   onOpen: (item: FileItem) => void;
   onDownload: (item: FileItem) => void;
   onDelete: (item: FileItem) => void;
   onToggleFavorite: (item: FileItem) => void;
   onShare: (item: FileItem) => void;
   onMove: (item: FileItem) => void;
+  onCopy?: (item: FileItem) => void;
   onRename: (item: FileItem) => void;
   onPreview: (item: FileItem) => void;
   onContextMenu?: (e: React.MouseEvent, item: FileItem) => void;
@@ -48,12 +51,14 @@ interface FileTableRowProps {
 
 export function FileTableRow({
   item,
+  index = 0,
   onOpen,
   onDownload,
   onDelete,
   onToggleFavorite,
   onShare,
   onMove,
+  onCopy,
   onRename,
   onPreview,
   onContextMenu,
@@ -65,6 +70,7 @@ export function FileTableRow({
   const viewMode = useFileStore((s) => s.viewMode);
   const openContainingFolder = useFileStore((s) => s.openContainingFolder);
   const openEditor = useFileStore((s) => s.openEditor);
+  const openCopyModal = useFileStore((s) => s.openCopyModal);
 
   const isSelected = selectedFile?.path === item.path;
   const isChecked = selectedPaths.includes(item.path);
@@ -96,6 +102,7 @@ export function FileTableRow({
 
   return (
     <tr
+      style={{ animationDelay: `${Math.min(index * 12, 150)}ms` }}
       onClick={(e) => {
         if (e.ctrlKey || e.metaKey) {
           toggleSelectPath(item.path);
@@ -104,7 +111,7 @@ export function FileTableRow({
       }}
       onDoubleClick={() => onOpen(item)}
       onContextMenu={(e) => onContextMenu?.(e, item)}
-      className={`border-b transition-colors cursor-pointer select-none group ${
+      className={`storeit-row-enter border-b transition-colors cursor-pointer select-none group ${
         isChecked || isSelected ? "bg-brand-primary/10" : "hover:bg-white/80"
       }`}
     >
@@ -118,7 +125,7 @@ export function FileTableRow({
             }}
             className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
               isChecked
-                ? "bg-brand-primary border-brand-primary text-white"
+                ? "bg-brand-primary border-brand-primary text-white scale-105"
                 : "border-black/25 bg-white hover:border-brand-primary"
             }`}
           >
@@ -130,7 +137,7 @@ export function FileTableRow({
               e.stopPropagation();
               onToggleFavorite(item);
             }}
-            className={`text-muted-foreground/40 hover:text-amber-500 transition-colors ${
+            className={`text-muted-foreground/40 hover:text-amber-500 transition-transform active:scale-125 ${
               item.isFavorite ? "text-amber-500 fill-amber-500 opacity-100" : ""
             }`}
           >
@@ -141,7 +148,7 @@ export function FileTableRow({
 
       <td className="py-2.5 px-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="shrink-0">{renderIcon()}</div>
+          <div className="shrink-0 transition-transform duration-150 group-hover:scale-105">{renderIcon()}</div>
           <div className="min-w-0">
             <span className="font-medium text-sm text-foreground truncate block max-w-md" title={item.name}>
               {item.name}
@@ -170,8 +177,8 @@ export function FileTableRow({
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44">
-            {!item.isDirectory && (
+          <DropdownMenuContent align="end" className="w-44 storeit-menu-pop">
+            {!item.isDirectory ? (
               <>
                 {isPreviewable(item.name) && (
                   <DropdownMenuItem onClick={() => onPreview(item)} className="gap-2">
@@ -191,6 +198,16 @@ export function FileTableRow({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
+            ) : (
+              <>
+                <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
+                  <Download className="w-4 h-4 text-brand-secondary" /> 打包下载 (.zip)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onShare(item)} className="gap-2">
+                  <Share2 className="w-4 h-4 text-brand-secondary" /> 共享文件夹 (R/RW)
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </>
             )}
             {viewMode !== "files" && (
               <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">
@@ -202,6 +219,12 @@ export function FileTableRow({
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onMove(item)} className="gap-2">
               <FolderInput className="w-4 h-4 text-brand-secondary" /> 移动到...
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => (onCopy ? onCopy(item) : openCopyModal(item))}
+              className="gap-2"
+            >
+              <Copy className="w-4 h-4 text-brand-secondary" /> 复制到...
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

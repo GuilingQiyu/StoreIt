@@ -9,6 +9,10 @@ public class FileShare {
     private Integer downloads;
     private Long userId;
     private Long createdAt;
+    private boolean directory;
+    private String permission; // READ or READ_WRITE
+    private String accessPassword;
+    private String title;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -33,4 +37,16 @@ public class FileShare {
 
     public Long getCreatedAt() { return createdAt; }
     public void setCreatedAt(Long createdAt) { this.createdAt = createdAt; }
+
+    public boolean isDirectory() { return directory; }
+    public void setDirectory(boolean directory) { this.directory = directory; }
+
+    public String getPermission() { return permission == null ? "READ" : permission; }
+    public void setPermission(String permission) { this.permission = permission; }
+
+    public String getAccessPassword() { return accessPassword; }
+    public void setAccessPassword(String accessPassword) { this.accessPassword = accessPassword; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 }

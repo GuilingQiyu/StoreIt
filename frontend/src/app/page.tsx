@@ -7,6 +7,33 @@ import { api } from "@/lib/api";
 import { FileConflictStrategy, FolderConflictStrategy } from "@/types";
 import { useUploadStore } from "@/stores/useUploadStore";
 import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useFileStore } from "@/stores/useFileStore";
+import { Navbar } from "@/components/layout/Navbar";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { DropZone } from "@/components/file/DropZone";
+import { Breadcrumb } from "@/components/file/Breadcrumb";
+import { FileList } from "@/components/file/FileList";
+import { SharesTab } from "@/components/file/SharesTab";
+import { UserManagementTab } from "@/components/admin/UserManagementTab";
+import { SettingsTab } from "@/components/settings/SettingsTab";
+import { AboutTab } from "@/components/file/AboutTab";
+import { UploadDrawer } from "@/components/upload/UploadDrawer";
+import { NewFolderModal } from "@/components/file/NewFolderModal";
+import { NewFileModal } from "@/components/file/NewFileModal";
+import { RenameModal } from "@/components/file/RenameModal";
+import { MoveModal } from "@/components/file/MoveModal";
+import { ShareModal } from "@/components/file/ShareModal";
+import { PreviewModal } from "@/components/preview/PreviewModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 function UploadConflictModal() {
   const conflict = useFileStore((s) => s.uploadConflict);
@@ -77,7 +104,7 @@ function UploadConflictModal() {
 
   return (
     <Dialog open={Boolean(conflict)} onOpenChange={(open) => !open && setUploadConflict(null)}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md storeit-modal-spring">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-amber-500" />
@@ -173,33 +200,6 @@ function UploadConflictModal() {
   );
 }
 
-import { useAuthStore } from "@/stores/useAuthStore";
-import { useFileStore } from "@/stores/useFileStore";
-import { Navbar } from "@/components/layout/Navbar";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { DropZone } from "@/components/file/DropZone";
-import { Breadcrumb } from "@/components/file/Breadcrumb";
-import { FileList } from "@/components/file/FileList";
-import { SharesTab } from "@/components/file/SharesTab";
-import { UserManagementTab } from "@/components/admin/UserManagementTab";
-import { SettingsTab } from "@/components/settings/SettingsTab";
-import { AboutTab } from "@/components/file/AboutTab";
-import { UploadDrawer } from "@/components/upload/UploadDrawer";
-import { NewFolderModal } from "@/components/file/NewFolderModal";
-import { RenameModal } from "@/components/file/RenameModal";
-import { MoveModal } from "@/components/file/MoveModal";
-import { ShareModal } from "@/components/file/ShareModal";
-import { PreviewModal } from "@/components/preview/PreviewModal";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
 function ChangePasswordModal() {
   const isOpen = useFileStore((s) => s.passwordModalOpen);
   const setOpen = useFileStore((s) => s.setPasswordModalOpen);
@@ -242,7 +242,7 @@ function ChangePasswordModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md storeit-modal-spring">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <KeyRound className="w-5 h-5 text-brand-secondary" />
@@ -310,7 +310,7 @@ function GlobalConfirmModal() {
 
   return (
     <Dialog open={Boolean(confirmDialog)} onOpenChange={(open) => !open && closeConfirm()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md storeit-modal-spring">
         <DialogHeader>
           <DialogTitle>{confirmDialog.title}</DialogTitle>
         </DialogHeader>
@@ -347,7 +347,7 @@ function GlobalToastList() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`pointer-events-auto flex items-center justify-between gap-2.5 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-md text-xs font-medium animate-in fade-in slide-in-from-top-2 duration-150 ${
+          className={`storeit-spring-bar pointer-events-auto flex items-center justify-between gap-2.5 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-md text-xs font-medium ${
             t.type === "success"
               ? "bg-emerald-50/95 text-emerald-800 border-emerald-200"
               : t.type === "error"
@@ -395,6 +395,19 @@ export default function MainPage() {
       if (!rawHash || rawHash === "files") {
         useFileStore.setState({ viewMode: "files", currentPath: "", selectedFile: null, selectedPaths: [] });
         return;
+      }
+      if (rawHash.startsWith("s/")) {
+        const shareTok = decodeURIComponent(rawHash.slice(2).split("/")[0] || "");
+        if (shareTok) {
+          useFileStore.setState({
+            viewMode: "shares",
+            activeShareToken: shareTok,
+            activeShareServerUrl: "",
+            selectedFile: null,
+            selectedPaths: [],
+          });
+          return;
+        }
       }
       if (rawHash.startsWith("files/")) {
         const encodedSub = rawHash.slice("files/".length);
@@ -463,7 +476,7 @@ export default function MainPage() {
               <Breadcrumb />
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div key={viewMode} className="storeit-view-enter flex-1 overflow-y-auto">
               {viewMode === "files" || viewMode === "recent" || viewMode === "favorites" || viewMode === "search" ? (
                 <FileList />
               ) : viewMode === "shares" ? (
@@ -489,6 +502,7 @@ export default function MainPage() {
 
       {/* All Dialogs & Modals */}
       <NewFolderModal />
+      <NewFileModal />
       <RenameModal />
       <MoveModal />
       <ShareModal />

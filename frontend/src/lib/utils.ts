@@ -1,8 +1,48 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { ThemeMode } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export const THEME_OPTIONS: {
+  key: ThemeMode;
+  label: string;
+  desc: string;
+  swatch: string;
+}[] = [
+  { key: "classic", label: "暮紫莫兰迪", desc: "默认温润雅致", swatch: "#4a4e69" },
+  { key: "ocean", label: "深海蔚蓝", desc: "清爽科技蓝调", swatch: "#1e40af" },
+  { key: "forest", label: "翡翠森绿", desc: "自然护眼青绿", swatch: "#065f46" },
+  { key: "sunset", label: "琥珀暖阳", desc: "活力温暖橙棕", swatch: "#9a3412" },
+  { key: "sakura", label: "樱花粉黛", desc: "柔和浪漫粉紫", swatch: "#9d174d" },
+  { key: "dark", label: "极夜暗黑", desc: "深色低光护眼", swatch: "#312e81" },
+];
+
+export function getSavedTheme(): ThemeMode {
+  if (typeof window === "undefined") return "classic";
+  try {
+    const saved = localStorage.getItem("storeit-theme") as ThemeMode | null;
+    if (saved && THEME_OPTIONS.some((t) => t.key === saved)) {
+      return saved;
+    }
+  } catch {}
+  return "classic";
+}
+
+export function applyThemeToDom(theme: ThemeMode) {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement;
+  root.setAttribute("data-theme", theme);
+  if (theme === "dark") {
+    root.classList.add("dark");
+  } else {
+    root.classList.remove("dark");
+  }
+  try {
+    localStorage.setItem("storeit-theme", theme);
+  } catch {}
 }
 
 export function formatBytes(bytes: number, decimals = 1): string {
@@ -95,12 +135,6 @@ export function isEditableText(filename: string): boolean {
 
 export type PreviewKind = "image" | "video" | "audio" | "pdf" | "text";
 
-/**
- * 预览方式判定：
- * - 媒体与 PDF 匹配后端内联白名单；
- * - 其余只要不属于已知二进制归档/可执行/Office/字体格式，统一归为 "text"，
- *   从而支持所有代码、配置、无扩展名文本（如 Dockerfile/Makefile/LICENSE/README）及自定义文本格式预览与在线编辑。
- */
 export function getPreviewKind(filename: string): PreviewKind | null {
   const ext = getFileExtension(filename);
   if (INLINE_IMAGE_EXTS.includes(ext)) return "image";
@@ -118,6 +152,13 @@ export function getDownloadUrl(path: string): string {
     .map((seg) => encodeURIComponent(seg))
     .join("/");
   return `/storage/${encoded}`;
+}
+
+export function getZipDownloadUrl(paths: string[]): string {
+  const valid = (paths || []).filter(Boolean);
+  if (valid.length === 0) return "/api/download/zip";
+  const query = valid.map((p) => `paths=${encodeURIComponent(p)}`).join("&");
+  return `/api/download/zip?${query}`;
 }
 
 export function getPreviewUrl(path: string): string {

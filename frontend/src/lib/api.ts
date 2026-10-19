@@ -4,16 +4,22 @@ import {
   FileItem,
   FileShare,
   FolderConflictStrategy,
+  InviteCodeItem,
+  ShareMountItem,
+  SharePermission,
+  SharedSpaceManifest,
   StorageQuota,
   User,
 } from "@/types";
 
 export class ApiError extends Error {
   status?: number;
-  constructor(message: string, status?: number) {
+  passwordRequired?: boolean;
+  constructor(message: string, status?: number, passwordRequired?: boolean) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.passwordRequired = passwordRequired;
   }
 }
 
@@ -27,26 +33,41 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    if (res.status === 401) {
+    if (res.status === 401 && !url.includes("/api/fed/shares/")) {
       if (typeof window !== "undefined" && window.location.pathname !== "/login") {
         window.location.href = "/login";
       }
     }
     let msg = `HTTP ${res.status}`;
+    let pwdReq = false;
     try {
       const errData = await res.json();
       msg = errData.message || errData.error || msg;
+      pwdReq = Boolean(errData.passwordRequired);
     } catch {
       // ignore
     }
-    throw new ApiError(msg, res.status);
+    throw new ApiError(msg, res.status, pwdReq);
   }
 
   return res.json() as Promise<T>;
 }
 
+function fedBaseUrl(remoteServerUrl?: string): string {
+  if (!remoteServerUrl || !remoteServerUrl.trim()) return "";
+  return remoteServerUrl.trim().replace(/\/+$/, "");
+}
+
+function fedHeaders(password?: string): Record<string, string> {
+  const h: Record<string, string> = {};
+  if (password && password.trim()) {
+    h["X-StoreIt-Share-Password"] = password.trim();
+  }
+  return h;
+}
+
 export const api = {
-  // Auth
+  // Auth & Invited Registration
   async getStatus() {
     return fetchJson<{
       logged_in: boolean;
@@ -70,6 +91,18 @@ export const api = {
       throw new ApiError(msg, res.status);
     }
     return res.json();
+  },
+
+  async register(username: string, password: string, inviteCode: string) {
+    return fetchJson<{
+      success: boolean;
+      message: string;
+      data: { username: string; role: string; storageQuota: number };
+    }>("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password, inviteCode }),
+    });
   },
 
   async logout() {
@@ -100,6 +133,12 @@ export const api = {
       items,
       currentPath: data.currentPath ?? data.current_path ?? "",
     };
+  },
+
+  async resyncFiles() {
+    return fetchJson<{ success: boolean; indexed: number; removed: number }>("/api/files/resync", {
+      method: "POST",
+    });
   },
 
   async getRecent() {
@@ -162,6 +201,23 @@ export const api = {
     });
   },
 
+  async createBlankFile(
+    parentPath: string,
+    fileName: string,
+    content = "",
+    conflictStrategy = "rename"
+  ) {
+    return fetchJson<{
+      success: boolean;
+      message: string;
+      file: { path: string; name: string; size: number; modifiedTime: number; isDirectory: boolean };
+    }>("/api/file/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ parentPath, fileName, content, conflictStrategy }),
+    });
+  },
+
   async resolveFolderConflict(
     parentPath: string,
     folderName: string,
@@ -183,19 +239,25 @@ export const api = {
       name: string;
       size: number;
       modifiedTime: number;
+      charset?: string;
       content: string;
     }>(`/api/file/content?path=${encodeURIComponent(path)}`);
   },
 
-  async saveFileContent(path: string, content: string) {
+  async saveFileContent(
+    path: string,
+    content: string,
+    expectedModifiedTime?: number,
+    charset?: string
+  ) {
     return fetchJson<{
       success: boolean;
       message: string;
-      file: { path: string; name: string; size: number; modifiedTime: number };
+      file: { path: string; name: string; size: number; modifiedTime: number; charset?: string };
     }>("/api/file/content", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ path, content }),
+      body: JSON.stringify({ path, content, expectedModifiedTime, charset }),
     });
   },
 
@@ -225,6 +287,22 @@ export const api = {
 
   async batchMoveFiles(paths: string[], destination: string) {
     return fetchJson<{ success: boolean; moved: number }>("/api/file/batch-move", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paths, destination }),
+    });
+  },
+
+  async copyFile(from: string, to: string) {
+    return fetchJson<{ success: boolean; path: string }>("/api/file/copy", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: from, destination: to }),
+    });
+  },
+
+  async batchCopyFiles(paths: string[], destination: string) {
+    return fetchJson<{ success: boolean; copied: number }>("/api/file/batch-copy", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ paths, destination }),
@@ -310,17 +388,40 @@ export const api = {
     });
   },
 
-  // Shares
+  // Shares & Cross-Server Federated Shares (SFSP/1.0)
   async getShares(): Promise<FileShare[]> {
     const data = await fetchJson<{ data: FileShare[] }>("/api/shares");
     return data.data || [];
   },
 
-  async createShare(filePath: string, expireHours: number, maxDownloads?: number) {
-    return fetchJson<{ data: { token: string; url: string } }>("/api/share", {
+  async createShare(
+    filePath: string,
+    expireHours: number,
+    maxDownloads?: number,
+    permission: SharePermission = "READ",
+    accessPassword?: string,
+    title?: string
+  ) {
+    return fetchJson<{
+      data: {
+        token: string;
+        url: string;
+        webUrl?: string;
+        federatedUri?: string;
+        isDirectory?: boolean;
+        permission?: SharePermission;
+      };
+    }>("/api/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filePath, expireHours, maxDownloads }),
+      body: JSON.stringify({
+        filePath,
+        expireHours,
+        maxDownloads,
+        permission,
+        accessPassword,
+        title,
+      }),
     });
   },
 
@@ -330,7 +431,215 @@ export const api = {
     });
   },
 
-  // Admin Users
+  async getShareMounts(): Promise<ShareMountItem[]> {
+    const data = await fetchJson<{ data: ShareMountItem[] }>("/api/shares/mounts");
+    return data.data || [];
+  },
+
+  async createShareMount(payload: {
+    shareLinkOrToken: string;
+    accessPassword?: string;
+    mountName?: string;
+    permission?: SharePermission;
+    ownerName?: string;
+    isDirectory?: boolean;
+  }) {
+    return fetchJson<{ data: ShareMountItem }>("/api/shares/mounts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  },
+
+  async deleteShareMount(id: number) {
+    return fetchJson(`/api/shares/mounts/${id}`, {
+      method: "DELETE",
+    });
+  },
+
+  // Federated Share Protocol (SFSP/1.0) Client Operations (supports local or remoteServerUrl)
+  async getFederatedManifest(
+    token: string,
+    password?: string,
+    remoteServerUrl?: string
+  ): Promise<SharedSpaceManifest> {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<SharedSpaceManifest>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/manifest`,
+      { headers: fedHeaders(password) }
+    );
+  },
+
+  async listFederatedShare(
+    token: string,
+    subPath = "",
+    password?: string,
+    remoteServerUrl?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<{
+      currentSubPath: string;
+      permission: SharePermission;
+      isDirectory: boolean;
+      items: FileItem[];
+    }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/list?subPath=${encodeURIComponent(subPath)}`,
+      { headers: fedHeaders(password) }
+    );
+  },
+
+  async getFederatedFileContent(
+    token: string,
+    subPath: string,
+    password?: string,
+    remoteServerUrl?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<{
+      path: string;
+      name: string;
+      size: number;
+      modifiedTime: number;
+      charset?: string;
+      content: string;
+      permission?: SharePermission;
+    }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/content?subPath=${encodeURIComponent(subPath)}`,
+      { headers: fedHeaders(password) }
+    );
+  },
+
+  async saveFederatedFileContent(
+    token: string,
+    subPath: string,
+    content: string,
+    password?: string,
+    remoteServerUrl?: string,
+    charset?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<{ success: boolean; message: string; file: any }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/content`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...fedHeaders(password),
+        },
+        body: JSON.stringify({ subPath, content, charset, password }),
+      }
+    );
+  },
+
+  async createFederatedSubfolder(
+    token: string,
+    subPath: string,
+    folderName: string,
+    password?: string,
+    remoteServerUrl?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<{ success: boolean; path: string }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/mkdir`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...fedHeaders(password),
+        },
+        body: JSON.stringify({ subPath, folderName, password }),
+      }
+    );
+  },
+
+  async createFederatedBlankFile(
+    token: string,
+    subPath: string,
+    fileName: string,
+    content: string,
+    password?: string,
+    remoteServerUrl?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<{ success: boolean; file: any }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/create-file`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...fedHeaders(password),
+        },
+        body: JSON.stringify({ subPath, fileName, content, password }),
+      }
+    );
+  },
+
+  async uploadToFederatedShare(
+    token: string,
+    subPath: string,
+    file: File,
+    conflictStrategy: FileConflictStrategy = "rename",
+    password?: string,
+    remoteServerUrl?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("subPath", subPath || "");
+    fd.append("conflictStrategy", conflictStrategy);
+    if (password) fd.append("password", password);
+    return fetchJson<{ success: boolean; file: any }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/upload`,
+      {
+        method: "POST",
+        headers: fedHeaders(password),
+        body: fd,
+      }
+    );
+  },
+
+  async deleteFederatedItem(
+    token: string,
+    subPath: string,
+    password?: string,
+    remoteServerUrl?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<{ success: boolean }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/delete`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...fedHeaders(password),
+        },
+        body: JSON.stringify({ subPath, password }),
+      }
+    );
+  },
+
+  async renameFederatedItem(
+    token: string,
+    subPath: string,
+    newName: string,
+    password?: string,
+    remoteServerUrl?: string
+  ) {
+    const base = fedBaseUrl(remoteServerUrl);
+    return fetchJson<{ success: boolean }>(
+      `${base}/api/fed/shares/${encodeURIComponent(token)}/rename`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...fedHeaders(password),
+        },
+        body: JSON.stringify({ subPath, newName, password }),
+      }
+    );
+  },
+
+  // Admin Users & Invite Codes
   async getAdminUsers(): Promise<User[]> {
     const data = await fetchJson<{ data: User[] }>("/api/admin/users");
     return data.data || [];
@@ -365,6 +674,31 @@ export const api = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password, mustChangePassword }),
+    });
+  },
+
+  async getAdminInvites(): Promise<InviteCodeItem[]> {
+    const data = await fetchJson<{ data: InviteCodeItem[] }>("/api/admin/invites");
+    return data.data || [];
+  },
+
+  async createAdminInvite(data: {
+    code?: string;
+    maxUses?: number;
+    defaultQuota?: number;
+    expireHours?: number;
+    note?: string;
+  }) {
+    return fetchJson<{ data: InviteCodeItem }>("/api/admin/invites", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+  },
+
+  async deleteAdminInvite(id: number) {
+    return fetchJson(`/api/admin/invites/${id}`, {
+      method: "DELETE",
     });
   },
 

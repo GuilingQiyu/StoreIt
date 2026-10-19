@@ -2,7 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FolderInput, Folder, FolderOpen, ChevronRight, ChevronDown, Home, RefreshCw } from "lucide-react";
+import {
+  FolderInput,
+  Copy,
+  Folder,
+  FolderOpen,
+  ChevronRight,
+  ChevronDown,
+  Home,
+  RefreshCw,
+} from "lucide-react";
 import { api } from "@/lib/api";
 import { useFileStore } from "@/stores/useFileStore";
 import {
@@ -28,6 +37,8 @@ export function MoveModal() {
   const setMoveModalFile = useFileStore((s) => s.setMoveModalFile);
   const batchPaths = useFileStore((s) => s.batchMovePaths);
   const setBatchMovePaths = useFileStore((s) => s.setBatchMovePaths);
+  const mode = useFileStore((s) => s.moveModalMode);
+  const setMode = useFileStore((s) => s.setMoveModalMode);
   const clearSelection = useFileStore((s) => s.clearSelection);
   const showToast = useFileStore((s) => s.showToast);
 
@@ -38,6 +49,7 @@ export function MoveModal() {
 
   const isOpen = Boolean(item) || Boolean(batchPaths && batchPaths.length > 0);
   const movingPaths = batchPaths && batchPaths.length > 0 ? batchPaths : item ? [item.path] : [];
+  const isCopy = mode === "copy";
 
   const isDisabledTarget = (folderPath: string) => {
     return movingPaths.some(
@@ -95,36 +107,51 @@ export function MoveModal() {
     setTargetDir("");
   };
 
-  const moveMutation = useMutation({
+  const actionMutation = useMutation({
     mutationFn: async (to: string) => {
-      if (batchPaths && batchPaths.length > 0) {
-        return api.batchMoveFiles(batchPaths, to);
+      if (isCopy) {
+        if (batchPaths && batchPaths.length > 0) {
+          return api.batchCopyFiles(batchPaths, to);
+        }
+        return api.copyFile(item!.path, to);
+      } else {
+        if (batchPaths && batchPaths.length > 0) {
+          return api.batchMoveFiles(batchPaths, to);
+        }
+        return api.moveFile(item!.path, to);
       }
-      return api.moveFile(item!.path, to);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
-      const selected = useFileStore.getState().selectedFile;
-      if (selected && movingPaths.includes(selected.path)) {
-        useFileStore.getState().setSelectedFile(null);
+      queryClient.invalidateQueries({ queryKey: ["quota"] });
+      if (!isCopy) {
+        const selected = useFileStore.getState().selectedFile;
+        if (selected && movingPaths.includes(selected.path)) {
+          useFileStore.getState().setSelectedFile(null);
+        }
       }
       if (batchPaths && batchPaths.length > 0) {
         clearSelection();
-        showToast(`已成功移动 ${batchPaths.length} 个项目`, "success");
+        showToast(
+          isCopy
+            ? `已成功复制 ${batchPaths.length} 个项目`
+            : `已成功移动 ${batchPaths.length} 个项目`,
+          "success"
+        );
       } else {
-        showToast("文件已移动", "success");
+        showToast(isCopy ? "文件已复制" : "文件已移动", "success");
       }
       handleClose();
     },
     onError: (err: any) => {
-      showToast(err.message || "移动失败", "error");
+      showToast(err.message || (isCopy ? "复制失败" : "移动失败"), "error");
     },
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    moveMutation.mutate(targetDir.trim());
+    actionMutation.mutate(targetDir.trim());
   };
 
   const renderTree = (nodes: TreeFolder[], depth = 0): React.ReactNode => {
@@ -174,13 +201,40 @@ export function MoveModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md storeit-modal-spring">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FolderInput className="w-5 h-5 text-brand-secondary" />
-            {batchPaths && batchPaths.length > 0
-              ? `批量移动 (${batchPaths.length} 项)`
-              : "移动文件 / 目录"}
+          <DialogTitle className="flex items-center justify-between pr-6">
+            <span className="flex items-center gap-2">
+              {isCopy ? (
+                <Copy className="w-5 h-5 text-brand-secondary" />
+              ) : (
+                <FolderInput className="w-5 h-5 text-brand-secondary" />
+              )}
+              {batchPaths && batchPaths.length > 0
+                ? `批量${isCopy ? "复制" : "移动"} (${batchPaths.length} 项)`
+                : `${isCopy ? "复制" : "移动"}文件 / 目录`}
+            </span>
+
+            <div className="inline-flex rounded-lg border bg-muted/40 p-0.5 text-xs font-normal">
+              <button
+                type="button"
+                onClick={() => setMode("move")}
+                className={`px-2.5 py-0.5 rounded-md transition-all ${
+                  !isCopy ? "bg-white text-brand-primary font-semibold shadow-sm" : "text-muted-foreground"
+                }`}
+              >
+                移动
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("copy")}
+                className={`px-2.5 py-0.5 rounded-md transition-all ${
+                  isCopy ? "bg-white text-brand-primary font-semibold shadow-sm" : "text-muted-foreground"
+                }`}
+              >
+                复制
+              </button>
+            </div>
           </DialogTitle>
         </DialogHeader>
 
@@ -227,8 +281,12 @@ export function MoveModal() {
             <Button type="button" variant="outline" onClick={handleClose}>
               取消
             </Button>
-            <Button type="submit" disabled={moveMutation.isPending}>
-              确定移动
+            <Button type="submit" disabled={actionMutation.isPending}>
+              {actionMutation.isPending
+                ? "处理中..."
+                : isCopy
+                ? "确定复制到此处"
+                : "确定移动到此处"}
             </Button>
           </DialogFooter>
         </form>

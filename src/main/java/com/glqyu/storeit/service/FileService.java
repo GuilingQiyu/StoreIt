@@ -32,6 +32,7 @@ public class FileService {
     public static final String MOVE_INTO_SELF = "不能移动到自身内部";
     public static final String MOVE_EXISTS = "目标已存在";
     public static final String MOVE_DEST_MISSING = "目标目录不存在";
+    public static final String EDIT_CONFLICT = "文件已被其他终端修改，请刷新或选择强制覆盖";
     public static final String PREVIEW_CSP = String.join("; ",
             "default-src 'none'",
             "script-src 'none'",
@@ -417,7 +418,7 @@ public class FileService {
     public static final long MAX_EDITABLE_TEXT_BYTES = 5L * 1024 * 1024; // 5 MB
 
     /**
-     * 探测文件是否为二进制文件（检查前 8KB 是否包含 NUL 0x00 字节）。
+     * 探测文件是否为二进制文件（检查前 8KB 是否包含 NUL 0x00 字节，排除 UTF-16 BOM 文本）。
      * 无 NUL 字节的任意扩展名或无扩展名文件均视为文本文件。
      */
     public boolean isBinaryFile(Path file) throws IOException {
@@ -428,11 +429,50 @@ public class FileService {
         byte[] buf = new byte[toRead];
         try (java.io.InputStream in = Files.newInputStream(file)) {
             int n = in.read(buf);
+            if (n >= 2) {
+                int b0 = buf[0] & 0xFF;
+                int b1 = buf[1] & 0xFF;
+                if ((b0 == 0xFF && b1 == 0xFE) || (b0 == 0xFE && b1 == 0xFF)) {
+                    return false;
+                }
+            }
             for (int i = 0; i < n; i++) {
                 if (buf[i] == 0) return true;
             }
         }
         return false;
+    }
+
+    /**
+     * 自动识别文本字节编码（支持 UTF-8 / UTF-8 BOM / UTF-16LE / UTF-16BE / GB18030 回退）。
+     */
+    public java.util.Map.Entry<String, String> decodeTextWithCharset(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            return java.util.Map.entry("UTF-8", "");
+        }
+        if (bytes.length >= 3 && (bytes[0] & 0xFF) == 0xEF && (bytes[1] & 0xFF) == 0xBB && (bytes[2] & 0xFF) == 0xBF) {
+            return java.util.Map.entry("UTF-8", new String(bytes, 3, bytes.length - 3, java.nio.charset.StandardCharsets.UTF_8));
+        }
+        if (bytes.length >= 2 && (bytes[0] & 0xFF) == 0xFF && (bytes[1] & 0xFF) == 0xFE) {
+            return java.util.Map.entry("UTF-16LE", new String(bytes, 2, bytes.length - 2, java.nio.charset.StandardCharsets.UTF_16LE));
+        }
+        if (bytes.length >= 2 && (bytes[0] & 0xFF) == 0xFE && (bytes[1] & 0xFF) == 0xFF) {
+            return java.util.Map.entry("UTF-16BE", new String(bytes, 2, bytes.length - 2, java.nio.charset.StandardCharsets.UTF_16BE));
+        }
+        try {
+            java.nio.charset.CharsetDecoder decoder = java.nio.charset.StandardCharsets.UTF_8.newDecoder()
+                    .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+                    .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT);
+            String decoded = decoder.decode(java.nio.ByteBuffer.wrap(bytes)).toString();
+            return java.util.Map.entry("UTF-8", decoded);
+        } catch (java.nio.charset.CharacterCodingException e) {
+            try {
+                java.nio.charset.Charset gb = java.nio.charset.Charset.forName("GB18030");
+                return java.util.Map.entry("GB18030", new String(bytes, gb));
+            } catch (Exception ex) {
+                return java.util.Map.entry("UTF-8", new String(bytes, java.nio.charset.StandardCharsets.UTF_8));
+            }
+        }
     }
 
     public java.util.Map<String, Object> readTextFile(User user, String relativePath) throws IOException {
@@ -452,17 +492,22 @@ public class FileService {
             throw new IOException("该文件为二进制格式，不支持作为文本在线编辑");
         }
         byte[] bytes = Files.readAllBytes(target);
-        String content = new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+        java.util.Map.Entry<String, String> decoded = decodeTextWithCharset(bytes);
         java.util.Map<String, Object> res = new java.util.HashMap<>();
         res.put("path", relativePath);
         res.put("name", target.getFileName().toString());
         res.put("size", size);
         res.put("modifiedTime", target.toFile().lastModified() / 1000);
-        res.put("content", content);
+        res.put("charset", decoded.getKey());
+        res.put("content", decoded.getValue());
         return res;
     }
 
     public java.util.Map<String, Object> saveTextFile(User user, String relativePath, String content) throws IOException {
+        return saveTextFile(user, relativePath, content, null, null);
+    }
+
+    public java.util.Map<String, Object> saveTextFile(User user, String relativePath, String content, Long expectedModifiedTime, String charsetName) throws IOException {
         if (relativePath == null || relativePath.isBlank() || !isSafePath(user, relativePath)) {
             throw new IOException("无效路径");
         }
@@ -471,7 +516,38 @@ public class FileService {
         if (!Files.exists(target) || Files.isDirectory(target)) {
             throw new IOException("文件不存在");
         }
-        byte[] newBytes = (content == null ? "" : content).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        long currentModified = target.toFile().lastModified() / 1000;
+        if (expectedModifiedTime != null && expectedModifiedTime > 0 && currentModified != expectedModifiedTime) {
+            throw new IOException(EDIT_CONFLICT);
+        }
+        java.nio.charset.Charset charset = java.nio.charset.StandardCharsets.UTF_8;
+        String resolvedCharset = "UTF-8";
+        if (charsetName != null && !charsetName.isBlank()) {
+            String upper = charsetName.trim().toUpperCase();
+            if ("GB18030".equals(upper) || "GBK".equals(upper)) {
+                charset = java.nio.charset.Charset.forName("GB18030");
+                resolvedCharset = "GB18030";
+            } else if ("UTF-16LE".equals(upper)) {
+                charset = java.nio.charset.StandardCharsets.UTF_16LE;
+                resolvedCharset = "UTF-16LE";
+            } else if ("UTF-16BE".equals(upper)) {
+                charset = java.nio.charset.StandardCharsets.UTF_16BE;
+                resolvedCharset = "UTF-16BE";
+            }
+        }
+        byte[] rawBytes = (content == null ? "" : content).getBytes(charset);
+        byte[] newBytes = rawBytes;
+        if ("UTF-16LE".equals(resolvedCharset)) {
+            newBytes = new byte[rawBytes.length + 2];
+            newBytes[0] = (byte) 0xFF;
+            newBytes[1] = (byte) 0xFE;
+            System.arraycopy(rawBytes, 0, newBytes, 2, rawBytes.length);
+        } else if ("UTF-16BE".equals(resolvedCharset)) {
+            newBytes = new byte[rawBytes.length + 2];
+            newBytes[0] = (byte) 0xFE;
+            newBytes[1] = (byte) 0xFF;
+            System.arraycopy(rawBytes, 0, newBytes, 2, rawBytes.length);
+        }
         if (newBytes.length > MAX_EDITABLE_TEXT_BYTES) {
             throw new IOException("文本内容超过 5 MB 上限");
         }
@@ -489,6 +565,72 @@ public class FileService {
         res.put("name", target.getFileName().toString());
         res.put("size", (long) newBytes.length);
         res.put("modifiedTime", target.toFile().lastModified() / 1000);
+        res.put("charset", resolvedCharset);
+        return res;
+    }
+
+    /**
+     * 新建空白或带初始模板内容的文本/Markdown文件。
+     */
+    public java.util.Map<String, Object> createBlankFile(User user, String parentPath, String fileName, String content, String conflictStrategy) throws IOException {
+        String rawName = fileName == null ? "" : fileName.trim();
+        String cleanName = FilenameUtils.getName(rawName);
+        if (cleanName.isEmpty() || ".".equals(cleanName) || "..".equals(cleanName)
+                || rawName.contains("/") || rawName.contains("\\") || ".chunks".equalsIgnoreCase(cleanName)) {
+            throw new IOException("无效文件名称");
+        }
+        String parent = parentPath == null ? "" : parentPath.trim();
+        if (!isSafePath(user, parent)) {
+            throw new IOException("无效路径");
+        }
+        Path base = getUserRoot(user);
+        Path dir = base.resolve(parent).normalize();
+        Files.createDirectories(dir);
+
+        String mode = conflictStrategy == null ? "fail" : conflictStrategy.trim().toLowerCase();
+        String finalName = cleanName;
+        Path dest = dir.resolve(finalName).normalize();
+
+        if (Files.exists(dest)) {
+            if ("rename".equals(mode)) {
+                String baseName = FilenameUtils.getBaseName(cleanName);
+                String ext = FilenameUtils.getExtension(cleanName);
+                String extWithDot = ext.isEmpty() ? "" : "." + ext;
+                int count = 1;
+                while (Files.exists(dest)) {
+                    finalName = baseName + " (" + count++ + ")" + extWithDot;
+                    dest = dir.resolve(finalName).normalize();
+                }
+            } else if ("overwrite".equals(mode)) {
+                if (Files.isDirectory(dest)) {
+                    throw new IOException("同名文件夹已存在，无法直接覆盖为文件");
+                }
+            } else {
+                throw new IOException("同名文件已存在");
+            }
+        }
+
+        byte[] bytes = (content == null ? "" : content).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        if (bytes.length > MAX_EDITABLE_TEXT_BYTES) {
+            throw new IOException("初始文件内容超过 5 MB 上限");
+        }
+        long existingSize = (Files.exists(dest) && Files.isRegularFile(dest)) ? Files.size(dest) : 0L;
+        long netDelta = Math.max(0L, (long) bytes.length - existingSize);
+        if (netDelta > 0) {
+            enforceQuota(user, netDelta);
+        }
+
+        Files.write(dest, bytes);
+        ensureParentDirectoriesMetadata(user, parent);
+        updateSingleFileMetadata(user, parent, dest.toFile());
+
+        String relPath = childPath(parent, finalName);
+        java.util.Map<String, Object> res = new java.util.HashMap<>();
+        res.put("path", relPath);
+        res.put("name", finalName);
+        res.put("size", (long) bytes.length);
+        res.put("modifiedTime", dest.toFile().lastModified() / 1000);
+        res.put("isDirectory", false);
         return res;
     }
 
@@ -550,10 +692,12 @@ public class FileService {
             metaMapper.deleteByPath(user.getId(), path);
             metaMapper.deleteByPathPattern(user.getId(), path + "/%");
             favoriteMapper.deleteTree(user.getId(), path, path + "/%");
+            shareMapper.deleteTree(user.getId(), path, path + "/%");
         } else {
             Files.delete(target);
             metaMapper.deleteByPath(user.getId(), path);
             favoriteMapper.deleteTree(user.getId(), path, path + "/%");
+            shareMapper.deleteTree(user.getId(), path, path + "/%");
         }
     }
 
@@ -634,6 +778,181 @@ public class FileService {
         }
         retargetReferences(user.getId(), path, newPath);
         return newPath;
+    }
+
+    /**
+     * 复制单个文件或递归复制整个目录到目标目录（若目标存在同名项则自动重命名为 " (1)"）。
+     */
+    public String copy(User user, String path, String destinationDir) throws IOException {
+        if (path == null || path.isBlank()) throw new IOException("无效路径");
+        String destDir = destinationDir == null ? "" : destinationDir.trim();
+        if (!isSafePath(user, path) || !isSafePath(user, destDir)) throw new IOException("无效路径");
+        Path base = getUserRoot(user);
+        Path source = base.resolve(path).normalize();
+        if (!Files.exists(source) || !source.startsWith(base)) throw new IOException("not found");
+        boolean directory = Files.isDirectory(source);
+        if (!destDir.isEmpty()) {
+            Path parent = base.resolve(destDir).normalize();
+            if (!parent.startsWith(base) || !Files.isDirectory(parent)) throw new IOException(MOVE_DEST_MISSING);
+        }
+        if (directory && (destDir.equals(path) || destDir.startsWith(path + "/"))) {
+            throw new IOException(MOVE_INTO_SELF);
+        }
+
+        long copyBytes = directory ? usedBytes(source) : Files.size(source);
+        enforceQuota(user, copyBytes);
+
+        String originalName = source.getFileName().toString();
+        String finalName = originalName;
+        String newPath = childPath(destDir, finalName);
+        Path dest = base.resolve(newPath).normalize();
+
+        if (Files.exists(dest)) {
+            if (directory) {
+                int count = 1;
+                while (Files.exists(dest)) {
+                    finalName = originalName + " (" + count++ + ")";
+                    newPath = childPath(destDir, finalName);
+                    dest = base.resolve(newPath).normalize();
+                }
+            } else {
+                String baseName = FilenameUtils.getBaseName(originalName);
+                String ext = FilenameUtils.getExtension(originalName);
+                String extWithDot = ext.isEmpty() ? "" : "." + ext;
+                int count = 1;
+                while (Files.exists(dest)) {
+                    finalName = baseName + " (" + count++ + ")" + extWithDot;
+                    newPath = childPath(destDir, finalName);
+                    dest = base.resolve(newPath).normalize();
+                }
+            }
+        }
+
+        if (directory) {
+            final Path srcRoot = source;
+            final Path dstRoot = dest;
+            try (java.util.stream.Stream<Path> stream = Files.walk(srcRoot)) {
+                java.util.List<Path> all = stream.collect(Collectors.toList());
+                for (Path p : all) {
+                    Path rel = srcRoot.relativize(p);
+                    Path target = dstRoot.resolve(rel).normalize();
+                    if (Files.isDirectory(p)) {
+                        Files.createDirectories(target);
+                    } else {
+                        Files.createDirectories(target.getParent());
+                        Files.copy(p, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    }
+                    String targetRel = base.relativize(target).toString().replace('\\', '/');
+                    String targetParent = targetRel.contains("/") ? targetRel.substring(0, targetRel.lastIndexOf('/')) : "";
+                    updateSingleFileMetadata(user, targetParent, target.toFile());
+                }
+            }
+        } else {
+            Files.copy(source, dest, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+            ensureParentDirectoriesMetadata(user, destDir);
+            updateSingleFileMetadata(user, destDir, dest.toFile());
+        }
+        return newPath;
+    }
+
+    /**
+     * 将一个或多个文件/文件夹流式打包为 ZIP 写入输出流（无需在磁盘生成临时压缩包）。
+     */
+    public void writeZipArchive(User user, List<String> paths, java.io.OutputStream out) throws IOException {
+        if (paths == null || paths.isEmpty()) {
+            throw new IOException("未指定要下载的文件路径");
+        }
+        Path base = getUserRoot(user);
+        List<Path> targets = new ArrayList<>();
+        for (String rel : paths) {
+            if (rel == null || rel.isBlank()) continue;
+            if (!isSafePath(user, rel)) throw new IOException("无效路径");
+            Path p = base.resolve(rel).normalize();
+            if (!Files.exists(p) || !p.startsWith(base)) throw new IOException("文件不存在: " + rel);
+            targets.add(p);
+        }
+        if (targets.isEmpty()) {
+            throw new IOException("未找到可打包的文件");
+        }
+
+        java.util.Set<String> usedNames = new java.util.HashSet<>();
+        try (java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(out, java.nio.charset.StandardCharsets.UTF_8)) {
+            for (Path target : targets) {
+                String rootName = target.getFileName().toString();
+                String uniqueRoot = rootName;
+                int dup = 1;
+                while (usedNames.contains(uniqueRoot)) {
+                    uniqueRoot = rootName + " (" + dup++ + ")";
+                }
+                usedNames.add(uniqueRoot);
+
+                if (Files.isDirectory(target)) {
+                    final String topPrefix = uniqueRoot;
+                    try (java.util.stream.Stream<Path> walk = Files.walk(target)) {
+                        List<Path> nodes = walk.collect(Collectors.toList());
+                        for (Path node : nodes) {
+                            String relName = target.relativize(node).toString().replace('\\', '/');
+                            if (relName.equals(".chunks") || relName.startsWith(".chunks/")) continue;
+                            String entryName = relName.isEmpty() ? topPrefix + "/" : topPrefix + "/" + relName + (Files.isDirectory(node) ? "/" : "");
+                            if (Files.isDirectory(node)) {
+                                java.util.zip.ZipEntry dirEntry = new java.util.zip.ZipEntry(entryName);
+                                dirEntry.setTime(node.toFile().lastModified());
+                                zos.putNextEntry(dirEntry);
+                                zos.closeEntry();
+                            } else if (Files.isRegularFile(node)) {
+                                java.util.zip.ZipEntry fileEntry = new java.util.zip.ZipEntry(entryName);
+                                fileEntry.setTime(node.toFile().lastModified());
+                                zos.putNextEntry(fileEntry);
+                                Files.copy(node, zos);
+                                zos.closeEntry();
+                            }
+                        }
+                    }
+                } else if (Files.isRegularFile(target)) {
+                    java.util.zip.ZipEntry fileEntry = new java.util.zip.ZipEntry(uniqueRoot);
+                    fileEntry.setTime(target.toFile().lastModified());
+                    zos.putNextEntry(fileEntry);
+                    Files.copy(target, zos);
+                    zos.closeEntry();
+                }
+            }
+            zos.finish();
+        }
+    }
+
+    /**
+     * 递归全量扫描用户物理存储目录并校准 file_metadata 索引（包含深层外部拷入文件发现与孤儿记录清理）。
+     */
+    public java.util.Map<String, Integer> resyncAllMetadata(User user) throws IOException {
+        Path base = getUserRoot(user);
+        Files.createDirectories(base);
+        Path chunksRoot = base.resolve(".chunks").normalize();
+
+        java.util.Set<String> seenRelPaths = new java.util.HashSet<>();
+        int indexed = 0;
+        try (java.util.stream.Stream<Path> walk = Files.walk(base)) {
+            List<Path> all = walk
+                    .filter(p -> !p.equals(base))
+                    .filter(p -> !p.normalize().startsWith(chunksRoot))
+                    .collect(Collectors.toList());
+            for (Path p : all) {
+                String rel = base.relativize(p).toString().replace('\\', '/');
+                if (rel.isEmpty() || ".chunks".equals(rel) || rel.startsWith(".chunks/")) continue;
+                String parent = rel.contains("/") ? rel.substring(0, rel.lastIndexOf('/')) : "";
+                updateSingleFileMetadata(user, parent, p.toFile());
+                seenRelPaths.add(rel);
+                indexed++;
+            }
+        }
+
+        int removed = 0;
+        for (FileMetadata existing : metaMapper.findAllByUserId(user.getId())) {
+            if (existing.getPath() != null && !seenRelPaths.contains(existing.getPath())) {
+                metaMapper.deleteByPath(user.getId(), existing.getPath());
+                removed++;
+            }
+        }
+        return java.util.Map.of("indexed", indexed, "removed", removed);
     }
 
     public FileListResponse recent(User user, int limit) {

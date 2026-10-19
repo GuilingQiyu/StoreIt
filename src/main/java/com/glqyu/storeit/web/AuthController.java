@@ -2,11 +2,14 @@ package com.glqyu.storeit.web;
 
 import com.glqyu.storeit.dto.ApiResponse;
 import com.glqyu.storeit.dto.LoginRequest;
+import com.glqyu.storeit.mapper.InviteCodeMapper;
 import com.glqyu.storeit.mapper.UserMapper;
+import com.glqyu.storeit.model.InviteCode;
 import com.glqyu.storeit.model.User;
 import com.glqyu.storeit.service.AdminUserService;
 import com.glqyu.storeit.service.AuthService;
 import com.glqyu.storeit.service.LoginThrottle;
+import com.glqyu.storeit.service.Usernames;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -26,13 +29,21 @@ public class AuthController {
     public static final String ACCOUNT_DISABLED = "该账号已被管理员禁用";
 
     private final AuthService authService;
+    private final AdminUserService adminUserService;
     private final LoginThrottle loginThrottle;
     private final UserMapper userMapper;
+    private final InviteCodeMapper inviteCodeMapper;
 
-    public AuthController(AuthService authService, LoginThrottle loginThrottle, UserMapper userMapper) {
+    public AuthController(AuthService authService,
+                          AdminUserService adminUserService,
+                          LoginThrottle loginThrottle,
+                          UserMapper userMapper,
+                          InviteCodeMapper inviteCodeMapper) {
         this.authService = authService;
+        this.adminUserService = adminUserService;
         this.loginThrottle = loginThrottle;
         this.userMapper = userMapper;
+        this.inviteCodeMapper = inviteCodeMapper;
     }
 
     @PostMapping("/login")
@@ -65,6 +76,76 @@ public class AuthController {
         }
         loginThrottle.recordFailure(key, now);
         return ResponseEntity.status(401).body(ApiResponse.fail("登录失败，无效的用户名或密码"));
+    }
+
+    /**
+     * 自主受邀注册接口：校验邀请码有效性并原子扣减可用次数，创建用户与个人存储目录并自动建立会话。
+     */
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> register(@RequestBody Map<String, String> payload,
+                                                                     HttpServletRequest request,
+                                                                     HttpServletResponse response) {
+        String username = payload.get("username") == null ? "" : payload.get("username").trim();
+        String password = payload.get("password") == null ? "" : payload.get("password");
+        String codeStr = payload.get("inviteCode") == null ? "" : payload.get("inviteCode").trim();
+
+        String throttleKey = clientKey(request, "register");
+        long now = Instant.now().getEpochSecond();
+        if (loginThrottle.isBlocked(throttleKey, now)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ApiResponse.fail(TOO_MANY_ATTEMPTS));
+        }
+
+        if (codeStr.isEmpty()) {
+            return ResponseEntity.badRequest().body(ApiResponse.fail("请输入管理员发放的邀请码"));
+        }
+
+        try {
+            Usernames.check(username);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
+        }
+
+        if (password.length() < AdminUserService.MIN_PASSWORD_LENGTH) {
+            return ResponseEntity.badRequest().body(ApiResponse.fail(AdminUserService.PASSWORD_TOO_SHORT));
+        }
+
+        if (authService.findUser(username).isPresent()) {
+            return ResponseEntity.badRequest().body(ApiResponse.fail("该用户名已被注册"));
+        }
+
+        Optional<InviteCode> inviteOpt = inviteCodeMapper.findByCode(codeStr);
+        if (inviteOpt.isEmpty()) {
+            loginThrottle.recordFailure(throttleKey, now);
+            return ResponseEntity.badRequest().body(ApiResponse.fail("邀请码无效或不存在"));
+        }
+
+        InviteCode invite = inviteOpt.get();
+        if (invite.isRevoked()
+                || (invite.getExpiresAt() != null && invite.getExpiresAt() < now)
+                || (invite.getMaxUses() != null && invite.getMaxUses() > 0 && invite.getUsedCount() >= invite.getMaxUses())) {
+            loginThrottle.recordFailure(throttleKey, now);
+            return ResponseEntity.badRequest().body(ApiResponse.fail("该邀请码已过期或已达使用次数上限"));
+        }
+
+        if (inviteCodeMapper.consumeInvite(invite.getId(), now) <= 0) {
+            return ResponseEntity.badRequest().body(ApiResponse.fail("该邀请码已失效"));
+        }
+
+        try {
+            long quota = invite.getDefaultQuota() == null ? 0L : Math.max(0L, invite.getDefaultQuota());
+            User created = adminUserService.create(username, password, quota, false);
+            loginThrottle.clear(throttleKey);
+            authService.createSession(created.getUsername(), response);
+            return ResponseEntity.ok(ApiResponse.ok("注册成功，欢迎使用储之 StoreIt！", Map.of(
+                    "username", created.getUsername(),
+                    "role", created.getRole(),
+                    "storageQuota", created.getStorageQuota()
+            )));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.fail(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(ApiResponse.fail("注册失败，请稍后重试"));
+        }
     }
 
     private static String clientKey(HttpServletRequest request, String username) {

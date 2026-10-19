@@ -18,6 +18,9 @@ public interface FileMetadataMapper {
     @Select("SELECT id, user_id as userId, path, name, is_directory as isDirectory, size, last_modified as lastModified, content_type as contentType, parent_path as parentPath FROM file_metadata WHERE user_id = #{userId} AND parent_path = #{parentPath}")
     List<FileMetadata> findByUserIdAndParentPath(long userId, String parentPath);
 
+    @Select("SELECT id, user_id as userId, path, name, is_directory as isDirectory, size, last_modified as lastModified, content_type as contentType, parent_path as parentPath FROM file_metadata WHERE user_id = #{userId}")
+    List<FileMetadata> findAllByUserId(long userId);
+
     @Select("SELECT id, user_id as userId, path, name, is_directory as isDirectory, size, last_modified as lastModified, content_type as contentType, parent_path as parentPath FROM file_metadata WHERE user_id = #{userId} AND path = #{path}")
     Optional<FileMetadata> findByUserIdAndPath(long userId, String path);
 

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { ConfirmDialogOptions, FileItem, SortField, SortOrder, ToastItem, UploadConflictState } from "@/types";
+import { ConfirmDialogOptions, FileItem, SortField, SortOrder, ThemeMode, ToastItem, UploadConflictState } from "@/types";
+import { applyThemeToDom, getSavedTheme } from "@/lib/utils";
 
 export type ViewMode = 
   | "files" 
@@ -15,6 +16,7 @@ interface FileState {
   currentPath: string;
   viewMode: ViewMode;
   layout: "grid" | "list";
+  theme: ThemeMode;
   sortBy: SortField;
   sortOrder: SortOrder;
   searchQuery: string;
@@ -24,10 +26,15 @@ interface FileState {
   previewAutoEdit: boolean;
   uploadConflict: UploadConflictState | null;
   shareModalFile: FileItem | null;
+  activeShareToken: string | null;
+  activeShareServerUrl: string;
+  activeSharePassword: string;
   moveModalFile: FileItem | null;
   batchMovePaths: string[] | null;
+  moveModalMode: "move" | "copy";
   renameModalFile: FileItem | null;
   newFolderModalOpen: boolean;
+  newFileModalOpen: boolean;
   passwordModalOpen: boolean;
   sidebarOpen: boolean;
   toasts: ToastItem[];
@@ -36,6 +43,7 @@ interface FileState {
   setCurrentPath: (path: string) => void;
   setViewMode: (mode: ViewMode) => void;
   setLayout: (layout: "grid" | "list") => void;
+  setTheme: (theme: ThemeMode) => void;
   setSort: (field: SortField) => void;
   setSearchQuery: (query: string) => void;
   setSelectedFile: (file: FileItem | null) => void;
@@ -46,10 +54,16 @@ interface FileState {
   openEditor: (file: FileItem) => void;
   setUploadConflict: (conflict: UploadConflictState | null) => void;
   setShareModalFile: (file: FileItem | null) => void;
+  openSharedSpace: (token: string, remoteServerUrl?: string, password?: string) => void;
+  closeSharedSpace: () => void;
   setMoveModalFile: (file: FileItem | null) => void;
   setBatchMovePaths: (paths: string[] | null) => void;
+  setMoveModalMode: (mode: "move" | "copy") => void;
+  openCopyModal: (file: FileItem) => void;
+  openBatchCopyModal: (paths: string[]) => void;
   setRenameModalFile: (file: FileItem | null) => void;
   setNewFolderModalOpen: (open: boolean) => void;
+  setNewFileModalOpen: (open: boolean) => void;
   setPasswordModalOpen: (open: boolean) => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
@@ -67,6 +81,7 @@ export const useFileStore = create<FileState>((set, get) => ({
   currentPath: "",
   viewMode: "files",
   layout: "grid",
+  theme: "classic",
   sortBy: "name",
   sortOrder: "asc",
   searchQuery: "",
@@ -76,10 +91,15 @@ export const useFileStore = create<FileState>((set, get) => ({
   previewAutoEdit: false,
   uploadConflict: null,
   shareModalFile: null,
+  activeShareToken: null,
+  activeShareServerUrl: "",
+  activeSharePassword: "",
   moveModalFile: null,
   batchMovePaths: null,
+  moveModalMode: "move",
   renameModalFile: null,
   newFolderModalOpen: false,
+  newFileModalOpen: false,
   passwordModalOpen: false,
   sidebarOpen: false,
   toasts: [],
@@ -96,6 +116,10 @@ export const useFileStore = create<FileState>((set, get) => ({
     syncHash(mode, mode === "files" ? get().currentPath : "");
   },
   setLayout: (layout: "grid" | "list") => set({ layout }),
+  setTheme: (theme: ThemeMode) => {
+    applyThemeToDom(theme);
+    set({ theme });
+  },
   setSort: (field: SortField) => {
     const { sortBy, sortOrder } = get();
     if (sortBy === field) {
@@ -120,10 +144,31 @@ export const useFileStore = create<FileState>((set, get) => ({
   openEditor: (file: FileItem) => set({ previewFile: file, previewAutoEdit: true }),
   setUploadConflict: (conflict: UploadConflictState | null) => set({ uploadConflict: conflict }),
   setShareModalFile: (file: FileItem | null) => set({ shareModalFile: file }),
-  setMoveModalFile: (file: FileItem | null) => set({ moveModalFile: file }),
-  setBatchMovePaths: (paths: string[] | null) => set({ batchMovePaths: paths }),
+  openSharedSpace: (token: string, remoteServerUrl = "", password = "") => {
+    set({
+      viewMode: "shares",
+      activeShareToken: token,
+      activeShareServerUrl: remoteServerUrl,
+      activeSharePassword: password,
+    });
+    if (typeof window !== "undefined" && !remoteServerUrl) {
+      window.history.pushState(null, "", `#/s/${encodeURIComponent(token)}`);
+    }
+  },
+  closeSharedSpace: () => {
+    set({ activeShareToken: null, activeShareServerUrl: "", activeSharePassword: "" });
+    if (typeof window !== "undefined" && window.location.hash.startsWith("#/s/")) {
+      window.history.pushState(null, "", "#/shares");
+    }
+  },
+  setMoveModalFile: (file: FileItem | null) => set({ moveModalFile: file, moveModalMode: "move" }),
+  setBatchMovePaths: (paths: string[] | null) => set({ batchMovePaths: paths, moveModalMode: "move" }),
+  setMoveModalMode: (mode: "move" | "copy") => set({ moveModalMode: mode }),
+  openCopyModal: (file: FileItem) => set({ moveModalFile: file, moveModalMode: "copy" }),
+  openBatchCopyModal: (paths: string[]) => set({ batchMovePaths: paths, moveModalMode: "copy" }),
   setRenameModalFile: (file: FileItem | null) => set({ renameModalFile: file }),
   setNewFolderModalOpen: (open: boolean) => set({ newFolderModalOpen: open }),
+  setNewFileModalOpen: (open: boolean) => set({ newFileModalOpen: open }),
   setPasswordModalOpen: (open: boolean) => set({ passwordModalOpen: open }),
   setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
   toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
@@ -175,7 +220,6 @@ export const useFileStore = create<FileState>((set, get) => ({
   closeConfirm: () => set({ confirmDialog: null }),
 }));
 
-/** 各视图模式及子目录路径对应的 URL hash（根目录用 "#/"，子目录用 "#/files/a/b"） */
 export function viewModeToHash(mode: ViewMode, currentPath = ""): string {
   if (mode === "files") {
     if (!currentPath) return "#/";

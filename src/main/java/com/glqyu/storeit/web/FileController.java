@@ -458,12 +458,19 @@ public class FileController {
             value = "/api/file/content",
             method = {org.springframework.web.bind.annotation.RequestMethod.PUT, org.springframework.web.bind.annotation.RequestMethod.POST}
     )
-    public ResponseEntity<?> saveFileContent(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> saveFileContent(HttpServletRequest request, @RequestBody Map<String, Object> payload) {
         try {
             User user = getCurrentUser(request);
-            String path = payload.get("path");
-            String content = payload.getOrDefault("content", "");
-            Map<String, Object> saved = fileService.saveTextFile(user, path, content);
+            String path = payload.get("path") != null ? String.valueOf(payload.get("path")) : null;
+            String content = payload.get("content") != null ? String.valueOf(payload.get("content")) : "";
+            String charset = payload.get("charset") != null ? String.valueOf(payload.get("charset")) : null;
+            Long expectedModifiedTime = null;
+            if (payload.get("expectedModifiedTime") != null) {
+                try {
+                    expectedModifiedTime = Long.parseLong(String.valueOf(payload.get("expectedModifiedTime")));
+                } catch (NumberFormatException ignored) {}
+            }
+            Map<String, Object> saved = fileService.saveTextFile(user, path, content, expectedModifiedTime, charset);
             return ResponseEntity.ok(Map.of(
                     "success", true,
                     "message", "文件已保存",
@@ -473,10 +480,141 @@ public class FileController {
             if (FileService.QUOTA_EXCEEDED.equals(e.getMessage())) {
                 return ResponseEntity.badRequest().body(Map.of("error", FileService.QUOTA_EXCEEDED));
             }
+            if (FileService.EDIT_CONFLICT.equals(e.getMessage())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                        "error", FileService.EDIT_CONFLICT,
+                        "conflict", true
+                ));
+            }
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "保存文件失败"));
         } catch (Exception e) {
             log.warn("Save text file failed: {}", e.toString());
             return ResponseEntity.badRequest().body(Map.of("error", "保存文件失败"));
+        }
+    }
+
+    @PostMapping("/api/file/create")
+    public ResponseEntity<?> createBlankFile(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String parentPath = payload.getOrDefault("parentPath", "");
+            String fileName = payload.getOrDefault("fileName", "");
+            String content = payload.getOrDefault("content", "");
+            String conflictStrategy = payload.getOrDefault("conflictStrategy", "fail");
+            Map<String, Object> created = fileService.createBlankFile(user, parentPath, fileName, content, conflictStrategy);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "message", "文件创建成功",
+                    "file", created
+            ));
+        } catch (IOException e) {
+            if (FileService.QUOTA_EXCEEDED.equals(e.getMessage())) {
+                return ResponseEntity.badRequest().body(Map.of("error", FileService.QUOTA_EXCEEDED));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage() != null ? e.getMessage() : "创建文件失败"));
+        } catch (Exception e) {
+            log.warn("Create file failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "创建文件失败"));
+        }
+    }
+
+    @PostMapping("/api/file/copy")
+    public ResponseEntity<?> copyFile(HttpServletRequest request, @RequestBody Map<String, String> payload) {
+        try {
+            User user = getCurrentUser(request);
+            String copied = fileService.copy(user, payload.get("path"), payload.get("destination"));
+            return ResponseEntity.ok(Map.of("success", true, "path", copied));
+        } catch (IOException e) {
+            String message = e.getMessage();
+            if (FileService.QUOTA_EXCEEDED.equals(message) || FileService.MOVE_INTO_SELF.equals(message)
+                    || FileService.MOVE_DEST_MISSING.equals(message) || "无效路径".equals(message)) {
+                return ResponseEntity.badRequest().body(Map.of("error", message));
+            }
+            log.warn("Copy failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "复制失败"));
+        } catch (Exception e) {
+            log.warn("Copy failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "复制失败"));
+        }
+    }
+
+    @PostMapping("/api/file/batch-copy")
+    public ResponseEntity<?> batchCopy(HttpServletRequest request, @RequestBody Map<String, Object> payload) {
+        try {
+            User user = getCurrentUser(request);
+            @SuppressWarnings("unchecked")
+            List<String> paths = (List<String>) payload.getOrDefault("paths", List.of());
+            String destination = payload.get("destination") != null ? String.valueOf(payload.get("destination")) : "";
+            int copied = 0;
+            for (String p : paths) {
+                if (p != null && !p.isBlank()) {
+                    fileService.copy(user, p, destination);
+                    copied++;
+                }
+            }
+            return ResponseEntity.ok(Map.of("success", true, "copied", copied));
+        } catch (IOException e) {
+            String message = e.getMessage();
+            if (FileService.QUOTA_EXCEEDED.equals(message) || FileService.MOVE_INTO_SELF.equals(message)
+                    || FileService.MOVE_DEST_MISSING.equals(message) || "无效路径".equals(message)) {
+                return ResponseEntity.badRequest().body(Map.of("error", message));
+            }
+            return ResponseEntity.badRequest().body(Map.of("error", "批量复制失败"));
+        } catch (Exception e) {
+            log.warn("Batch copy failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "批量复制失败"));
+        }
+    }
+
+    @GetMapping("/api/download/zip")
+    public ResponseEntity<?> downloadZip(
+            HttpServletRequest request,
+            jakarta.servlet.http.HttpServletResponse response,
+            @RequestParam(value = "paths", required = false) List<String> paths,
+            @RequestParam(value = "path", required = false) String singlePath) {
+        try {
+            User user = getCurrentUser(request);
+            java.util.List<String> targetPaths = new java.util.ArrayList<>();
+            if (paths != null) {
+                for (String p : paths) {
+                    if (p != null && !p.isBlank()) targetPaths.add(p.trim());
+                }
+            }
+            if (singlePath != null && !singlePath.isBlank()) {
+                targetPaths.add(singlePath.trim());
+            }
+            if (targetPaths.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "未指定要打包下载的路径"));
+            }
+            for (String rel : targetPaths) {
+                if (!fileService.isSafePath(user, rel)) {
+                    return ResponseEntity.badRequest().body(Map.of("error", "无效路径"));
+                }
+                Resource r = fileService.getResourceForUser(user, rel);
+                if (!r.exists()) {
+                    return ResponseEntity.status(404).body(Map.of("error", "文件或目录不存在: " + rel));
+                }
+            }
+            String zipName;
+            if (targetPaths.size() == 1) {
+                String p = targetPaths.get(0);
+                String lastSeg = p.contains("/") ? p.substring(p.lastIndexOf('/') + 1) : p;
+                zipName = (lastSeg.isBlank() ? "StoreIt-Archive" : lastSeg) + ".zip";
+            } else {
+                zipName = "StoreIt-打包下载-" + targetPaths.size() + "项.zip";
+            }
+            response.setStatus(HttpStatus.OK.value());
+            response.setContentType("application/zip");
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION, attachment(zipName));
+            fileService.writeZipArchive(user, targetPaths, response.getOutputStream());
+            response.flushBuffer();
+            return null;
+        } catch (Exception e) {
+            log.warn("ZIP download failed: {}", e.toString());
+            if (!response.isCommitted()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "打包下载失败"));
+            }
+            return null;
         }
     }
 
@@ -538,17 +676,61 @@ public class FileController {
         }
     }
 
+    @PostMapping("/api/files/resync")
+    public ResponseEntity<?> resyncFiles(HttpServletRequest request) {
+        try {
+            User user = getCurrentUser(request);
+            Map<String, Integer> stats = fileService.resyncAllMetadata(user);
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "indexed", stats.getOrDefault("indexed", 0),
+                    "removed", stats.getOrDefault("removed", 0)
+            ));
+        } catch (Exception e) {
+            log.warn("Resync metadata failed: {}", e.toString());
+            return ResponseEntity.badRequest().body(Map.of("error", "全量同步索引失败"));
+        }
+    }
+
     @org.springframework.web.bind.annotation.RequestMapping(
             value = "/d/{token}",
             method = {org.springframework.web.bind.annotation.RequestMethod.GET, org.springframework.web.bind.annotation.RequestMethod.HEAD}
     )
-    public ResponseEntity<?> downloadByToken(HttpServletRequest request, @PathVariable String token) {
+    public ResponseEntity<?> downloadByToken(
+            HttpServletRequest request,
+            jakarta.servlet.http.HttpServletResponse response,
+            @PathVariable String token,
+            @RequestParam(value = "password", required = false) String queryPwd,
+            @RequestHeader(value = "X-StoreIt-Share-Password", required = false) String headerPwd) {
         Optional<FileShare> s = shareService.validateToken(token);
         if (s.isEmpty()) return shareErrorResponse(request, "分享链接无效或已过期");
         FileShare share = s.get();
+        String providedPwd = queryPwd != null ? queryPwd : headerPwd;
+        if (!shareService.checkPassword(share, providedPwd)) {
+            String accept = request.getHeader(HttpHeaders.ACCEPT);
+            if (accept != null && accept.contains("text/html") && !accept.contains("application/json")) {
+                String html = "<!DOCTYPE html><html lang=\"zh-CN\"><head><meta charset=\"UTF-8\">"
+                        + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+                        + "<title>输入提取码 - 储之 StoreIt</title>"
+                        + "<style>*{margin:0;padding:0;box-sizing:border-box}body{min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;background:linear-gradient(135deg,#f2e9e4 0%,#e9dfe1 50%,#c9ada7 100%);color:#22223b}.card{text-align:center;background:rgba(255,255,255,0.94);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:40px 36px;max-width:400px;width:90%;box-shadow:0 20px 50px -20px rgba(34,34,59,0.2)}h1{font-size:19px;margin-bottom:8px}p{font-size:13px;color:#64748b;margin-bottom:20px}input{width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:12px;font-size:14px;margin-bottom:14px;outline:none}button,a.btn{display:inline-block;width:100%;padding:10px 20px;border-radius:12px;border:none;font-size:14px;font-weight:600;background:#4a4e69;color:#fff;cursor:pointer;text-decoration:none;margin-top:4px}a.sub{display:inline-block;margin-top:14px;font-size:12px;color:#4a4e69}</style>"
+                        + "</head><body><div class=\"card\"><h1>该分享受提取码保护</h1>"
+                        + "<p>请输入分享者提供的提取码以继续下载或访问。</p>"
+                        + "<form method=\"GET\" action=\"/d/" + token + "\">"
+                        + "<input type=\"password\" name=\"password\" placeholder=\"请输入访问提取码\" required autofocus />"
+                        + "<button type=\"submit\">验证并下载</button></form>"
+                        + "<a class=\"sub\" href=\"/#/s/" + token + "\">在储之 Web 共享空间中打开 →</a>"
+                        + "</div></body></html>";
+                return ResponseEntity.status(403)
+                        .contentType(MediaType.parseMediaType("text/html; charset=UTF-8"))
+                        .body(html);
+            }
+            return ResponseEntity.status(403).body(Map.of("error", "需要输入正确的访问提取码", "passwordRequired", true));
+        }
+
+        User owner;
         Resource resource;
         try {
-            User owner = authService.findUserById(share.getUserId()).orElseThrow(() -> new IOException("Owner not found"));
+            owner = authService.findUserById(share.getUserId()).orElseThrow(() -> new IOException("Owner not found"));
             resource = fileService.getResource(owner, share.getFilePath());
             if (!resource.exists() || !resource.isReadable()) {
                 return shareErrorResponse(request, "文件不存在");
@@ -557,16 +739,34 @@ public class FileController {
             log.warn("Shared download failed for token: {}", e.toString());
             return shareErrorResponse(request, "文件不存在");
         }
+        String downloadName = share.isDirectory()
+                ? ((resource.getFilename() == null ? "SharedFolder" : resource.getFilename()) + ".zip")
+                : resource.getFilename();
         // 对 HEAD 请求或社交软件链接预览爬虫（Link Preview Bot）仅返回头部，不扣减下载次数
         if ("HEAD".equalsIgnoreCase(request.getMethod()) || isLinkPreviewBot(request)) {
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, attachment(resource.getFilename()))
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, attachment(downloadName))
+                    .contentType(share.isDirectory() ? MediaType.parseMediaType("application/zip") : MediaType.APPLICATION_OCTET_STREAM)
                     .build();
         }
         // 文件确认可读后再原子扣减，避免文件已删除仍消耗次数
         if (!shareService.consumeDownload(share.getId())) {
             return shareErrorResponse(request, "分享链接无效或已过期");
+        }
+        if (share.isDirectory()) {
+            try {
+                response.setStatus(HttpStatus.OK.value());
+                response.setContentType("application/zip");
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION, attachment(downloadName));
+                fileService.writeZipArchive(owner, List.of(share.getFilePath()), response.getOutputStream());
+                response.flushBuffer();
+                return null;
+            } catch (Exception e) {
+                if (!response.isCommitted()) {
+                    return shareErrorResponse(request, "打包共享文件夹失败");
+                }
+                return null;
+            }
         }
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, attachment(resource.getFilename()))

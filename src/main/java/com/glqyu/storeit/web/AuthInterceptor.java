@@ -17,15 +17,17 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         String path = request.getRequestURI();
-        // permit static assets, Next.js assets, the public login/about pages, error pages, and share links
+        // permit static assets, Next.js assets, the public login/about pages, error pages, share links, and federated share endpoints
         if (path.startsWith("/static/") || path.startsWith("/_next/") || path.equals("/login") || path.equals("/login.html") || path.equals("/about")
                 || path.equals("/favicon.ico")
                 || path.equals("/403") || path.equals("/404") || path.equals("/error") || path.startsWith("/error/")
-                || path.equals("/actuator/health") || path.startsWith("/d/")) {
+                || path.equals("/actuator/health") || path.startsWith("/d/")
+                || path.startsWith("/api/fed/shares/")) {
             return true;
         }
-        // allow login/logout and user status queries
-        if (path.startsWith("/api/login") || path.startsWith("/api/logout") || path.startsWith("/api/user/status")) {
+        // allow login/logout, invited self-registration, and user status queries
+        if (path.startsWith("/api/login") || path.startsWith("/api/logout")
+                || path.startsWith("/api/register") || path.startsWith("/api/user/status")) {
             return true;
         }
         // require session for the cloud-disk pages ("/", "/list"), all other /api and /storage endpoints

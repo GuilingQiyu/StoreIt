@@ -11,7 +11,9 @@ import {
   Share2,
   Star,
   Edit2,
+  Edit3,
   FolderInput,
+  Copy,
   Trash2,
   Info,
   ArrowUpDown,
@@ -23,8 +25,7 @@ import {
 import { FileItem, SortField } from "@/types";
 import { api } from "@/lib/api";
 import { useFileStore } from "@/stores/useFileStore";
-import { getDownloadUrl, isEditableText, isPreviewable } from "@/lib/utils";
-import { Edit3 } from "lucide-react";
+import { getDownloadUrl, getZipDownloadUrl, isEditableText, isPreviewable } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FileCard } from "./FileCard";
 import { FileTableRow } from "./FileTableRow";
@@ -49,6 +50,8 @@ export function FileList() {
   const setShareModalFile = useFileStore((s) => s.setShareModalFile);
   const setMoveModalFile = useFileStore((s) => s.setMoveModalFile);
   const setBatchMovePaths = useFileStore((s) => s.setBatchMovePaths);
+  const openCopyModal = useFileStore((s) => s.openCopyModal);
+  const openBatchCopyModal = useFileStore((s) => s.openBatchCopyModal);
   const setRenameModalFile = useFileStore((s) => s.setRenameModalFile);
   const showToast = useFileStore((s) => s.showToast);
   const openConfirm = useFileStore((s) => s.openConfirm);
@@ -112,6 +115,7 @@ export function FileList() {
       refetch();
       queryClient.invalidateQueries({ queryKey: ["quota"] });
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
+      queryClient.invalidateQueries({ queryKey: ["shares"] });
       setSelectedFile(null);
       showToast("删除成功", "success");
     },
@@ -124,6 +128,7 @@ export function FileList() {
       refetch();
       queryClient.invalidateQueries({ queryKey: ["quota"] });
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
+      queryClient.invalidateQueries({ queryKey: ["shares"] });
       setSelectedFile(null);
       clearSelection();
       showToast(`已成功删除 ${paths.length} 个项目`, "success");
@@ -152,11 +157,28 @@ export function FileList() {
 
   const handleDownload = (item: FileItem) => {
     const link = document.createElement("a");
-    link.href = getDownloadUrl(item.path);
-    link.download = item.name;
+    if (item.isDirectory) {
+      link.href = getZipDownloadUrl([item.path]);
+      link.download = `${item.name}.zip`;
+      showToast(`正在打包下载文件夹 "${item.name}.zip"...`, "info");
+    } else {
+      link.href = getDownloadUrl(item.path);
+      link.download = item.name;
+    }
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleBatchDownload = () => {
+    if (selectedPaths.length === 0) return;
+    const link = document.createElement("a");
+    link.href = getZipDownloadUrl(selectedPaths);
+    link.download = `StoreIt-打包下载-${selectedPaths.length}项.zip`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(`正在打包下载已选的 ${selectedPaths.length} 个项目...`, "info");
   };
 
   const handleDelete = (item: FileItem) => {
@@ -201,8 +223,8 @@ export function FileList() {
     e.stopPropagation();
     setSelectedFile(item);
     setContextMenu({
-      x: Math.min(e.clientX, typeof window !== "undefined" ? window.innerWidth - 190 : e.clientX),
-      y: Math.min(e.clientY, typeof window !== "undefined" ? window.innerHeight - 280 : e.clientY),
+      x: Math.min(e.clientX, typeof window !== "undefined" ? window.innerWidth - 200 : e.clientX),
+      y: Math.min(e.clientY, typeof window !== "undefined" ? window.innerHeight - 310 : e.clientY),
       item,
     });
   };
@@ -264,7 +286,7 @@ export function FileList() {
 
   if (items.length === 0) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-12 text-muted-foreground select-none">
+      <div className="storeit-view-enter flex-1 flex flex-col items-center justify-center p-12 text-muted-foreground select-none">
         <div className="w-20 h-20 rounded-full bg-brand-secondary/10 flex items-center justify-center mb-4 text-brand-secondary">
           <FolderOpen className="w-10 h-10" />
         </div>
@@ -279,7 +301,7 @@ export function FileList() {
         </p>
         <p className="text-xs text-muted-foreground mt-1 max-w-sm text-center">
           {viewMode === "files"
-            ? "直接将文件或文件夹拖拽至此，或点击右上角“上传”按钮开始添加"
+            ? "直接将文件或文件夹拖拽至此，或点击右上角“上传 / 新建文件”开始添加"
             : "可在我的文件中右键或点击星标将重要文件添加至此"}
         </p>
       </div>
@@ -289,11 +311,11 @@ export function FileList() {
   const allSelected = items.length > 0 && selectedPaths.length === items.length;
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 relative min-h-full space-y-3">
+    <div className="storeit-view-enter flex-1 overflow-y-auto p-4 relative min-h-full space-y-3">
       {/* Top Toolbar: Sort controls & Multi-select Batch Action Bar */}
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         {selectedPaths.length > 0 ? (
-          <div className="flex flex-wrap items-center gap-2 bg-brand-primary text-white px-3.5 py-1.5 rounded-xl shadow-sm text-xs animate-in fade-in-50 duration-150">
+          <div className="storeit-spring-bar flex flex-wrap items-center gap-2 bg-brand-primary text-white px-3.5 py-1.5 rounded-xl shadow-sm text-xs">
             <span className="font-semibold">已选 {selectedPaths.length} 项</span>
             <button
               type="button"
@@ -308,10 +330,24 @@ export function FileList() {
             </button>
             <button
               type="button"
+              onClick={handleBatchDownload}
+              className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" /> 打包下载
+            </button>
+            <button
+              type="button"
               onClick={() => setBatchMovePaths(selectedPaths)}
               className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
             >
               <FolderInput className="w-3.5 h-3.5" /> 批量移动
+            </button>
+            <button
+              type="button"
+              onClick={() => openBatchCopyModal(selectedPaths)}
+              className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
+            >
+              <Copy className="w-3.5 h-3.5" /> 批量复制
             </button>
             <button
               type="button"
@@ -346,6 +382,23 @@ export function FileList() {
             >
               <CheckSquare className="w-3.5 h-3.5" /> 全选
             </button>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  const res = await api.resyncFiles();
+                  refetch();
+                  queryClient.invalidateQueries({ queryKey: ["quota"] });
+                  showToast(`磁盘索引同步完成 (共扫描 ${res.indexed} 项)`, "success");
+                } catch (err: any) {
+                  showToast(err.message || "同步索引失败", "error");
+                }
+              }}
+              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-black/5 text-muted-foreground hover:text-foreground transition-colors"
+              title="递归扫描物理存储目录并更新文件搜索索引"
+            >
+              <RefreshCw className="w-3 h-3" /> 同步索引
+            </button>
           </div>
         )}
 
@@ -362,7 +415,7 @@ export function FileList() {
               key={col.key}
               type="button"
               onClick={() => setSort(col.key)}
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg transition-colors ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all duration-150 ${
                 sortBy === col.key
                   ? "bg-white shadow-sm text-brand-primary font-semibold"
                   : "text-muted-foreground hover:bg-black/5 hover:text-foreground"
@@ -377,16 +430,18 @@ export function FileList() {
 
       {layout === "grid" ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5">
-          {items.map((item) => (
+          {items.map((item, idx) => (
             <FileCard
               key={item.path}
               item={item}
+              index={idx}
               onOpen={handleOpen}
               onDownload={handleDownload}
               onDelete={handleDelete}
               onToggleFavorite={handleToggleFavorite}
               onShare={(it) => setShareModalFile(it)}
               onMove={(it) => setMoveModalFile(it)}
+              onCopy={(it) => openCopyModal(it)}
               onRename={(it) => setRenameModalFile(it)}
               onPreview={(it) => setPreviewFile(it)}
               onContextMenu={handleContextMenu}
@@ -427,16 +482,18 @@ export function FileList() {
               </tr>
             </thead>
             <tbody>
-              {items.map((item) => (
+              {items.map((item, idx) => (
                 <FileTableRow
                   key={item.path}
                   item={item}
+                  index={idx}
                   onOpen={handleOpen}
                   onDownload={handleDownload}
                   onDelete={handleDelete}
                   onToggleFavorite={handleToggleFavorite}
                   onShare={(it) => setShareModalFile(it)}
                   onMove={(it) => setMoveModalFile(it)}
+                  onCopy={(it) => openCopyModal(it)}
                   onRename={(it) => setRenameModalFile(it)}
                   onPreview={(it) => setPreviewFile(it)}
                   onContextMenu={handleContextMenu}
@@ -451,7 +508,7 @@ export function FileList() {
       {contextMenu && (
         <div
           style={{ top: contextMenu.y, left: contextMenu.x }}
-          className="fixed z-50 w-48 bg-white/95 backdrop-blur-md rounded-2xl border shadow-xl p-1.5 text-xs animate-in fade-in-50 zoom-in-95 duration-100 select-none"
+          className="storeit-menu-pop fixed z-50 w-48 bg-white/95 backdrop-blur-md rounded-2xl border shadow-xl p-1.5 text-xs select-none"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="px-2.5 py-1.5 font-semibold text-foreground truncate border-b mb-1">
@@ -482,29 +539,27 @@ export function FileList() {
             </button>
           )}
 
-          {!contextMenu.item.isDirectory && (
-            <button
-              onClick={() => {
-                handleDownload(contextMenu.item);
-                setContextMenu(null);
-              }}
-              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
-            >
-              <Download className="w-3.5 h-3.5 text-brand-secondary" /> 下载
-            </button>
-          )}
+          <button
+            onClick={() => {
+              handleDownload(contextMenu.item);
+              setContextMenu(null);
+            }}
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+          >
+            <Download className="w-3.5 h-3.5 text-brand-secondary" />
+            {contextMenu.item.isDirectory ? "打包下载 (.zip)" : "下载"}
+          </button>
 
-          {!contextMenu.item.isDirectory && (
-            <button
-              onClick={() => {
-                setShareModalFile(contextMenu.item);
-                setContextMenu(null);
-              }}
-              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
-            >
-              <Share2 className="w-3.5 h-3.5 text-brand-secondary" /> 分享
-            </button>
-          )}
+          <button
+            onClick={() => {
+              setShareModalFile(contextMenu.item);
+              setContextMenu(null);
+            }}
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+          >
+            <Share2 className="w-3.5 h-3.5 text-brand-secondary" />
+            {contextMenu.item.isDirectory ? "共享文件夹 (R/RW)" : "分享"}
+          </button>
 
           {viewMode !== "files" && (
             <button
@@ -551,6 +606,16 @@ export function FileList() {
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
           >
             <FolderInput className="w-3.5 h-3.5 text-brand-secondary" /> 移动到...
+          </button>
+
+          <button
+            onClick={() => {
+              openCopyModal(contextMenu.item);
+              setContextMenu(null);
+            }}
+            className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+          >
+            <Copy className="w-3.5 h-3.5 text-brand-secondary" /> 复制到...
           </button>
 
           <button

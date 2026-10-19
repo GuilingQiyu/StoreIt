@@ -267,6 +267,149 @@ class Phase5V2BehaviorTest {
 		mockMvc.perform(get("/api/preview").param("path", "clip.mkv").cookie(admin))
 				.andExpect(status().isOk())
 				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, containsString("video/x-matroska")));
+
+		// 5. Create blank Markdown file, optimistic locking (409 on stale expectedModifiedTime), & GB18030 charset detection
+		mockMvc.perform(post("/api/file/create").cookie(admin).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"parentPath\":\"\",\"fileName\":\"guide.md\",\"content\":\"# Guide\\n\",\"conflictStrategy\":\"rename\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.file.path").value("guide.md"));
+
+		mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/api/file/content")
+						.cookie(admin)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{\"path\":\"guide.md\",\"content\":\"# Stale\",\"expectedModifiedTime\":12345}"))
+				.andExpect(status().isConflict())
+				.andExpect(jsonPath("$.conflict").value(true));
+
+		byte[] gbkBytes = "中文GBK编码测试".getBytes(java.nio.charset.Charset.forName("GB18030"));
+		MockMultipartFile gbkFile = new MockMultipartFile("file", "gbk.txt", "text/plain", gbkBytes);
+		mockMvc.perform(multipart("/api/upload").file(gbkFile).cookie(admin)).andExpect(status().isOk());
+		mockMvc.perform(get("/api/file/content").param("path", "gbk.txt").cookie(admin))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.charset").value("GB18030"))
+				.andExpect(jsonPath("$.content").value("中文GBK编码测试"));
+
+		// 6. File copy & streaming ZIP download
+		mockMvc.perform(post("/api/file/copy").cookie(admin).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"path\":\"guide.md\",\"destination\":\"\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.path").value("guide (1).md"));
+
+		MvcResult zipRes = mockMvc.perform(get("/api/download/zip")
+						.param("paths", "guide.md", "reports")
+						.cookie(admin))
+				.andExpect(status().isOk())
+				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, containsString("application/zip")))
+				.andReturn();
+		byte[] zipBytes = zipRes.getResponse().getContentAsByteArray();
+		org.junit.jupiter.api.Assertions.assertTrue(zipBytes.length > 0);
+	}
+
+	@Test
+	void invitedRegistrationSharedFolderRwFederationAndResyncWork() throws Exception {
+		Cookie admin = login("admin", "test-password");
+
+		// 1. Admin generates an invite code (maxUses = 1, defaultQuota = 102400)
+		mockMvc.perform(post("/api/admin/invites").cookie(admin).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"code\":\"ST-TEST-2026\",\"maxUses\":1,\"defaultQuota\":102400,\"expireHours\":24,\"note\":\"Team invite\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.code").value("ST-TEST-2026"));
+
+		// Self-registration with valid invite code succeeds and establishes session
+		MvcResult regRes = mockMvc.perform(post("/api/register").contentType(MediaType.APPLICATION_JSON)
+						.content("{\"username\":\"invited-user\",\"password\":\"invited123\",\"inviteCode\":\"ST-TEST-2026\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.username").value("invited-user"))
+				.andReturn();
+		Cookie invitedCookie = regRes.getResponse().getCookie("STOREIT_SESSION");
+		org.junit.jupiter.api.Assertions.assertNotNull(invitedCookie);
+
+		// Reusing the 1-time invite code is rejected
+		mockMvc.perform(post("/api/register").contentType(MediaType.APPLICATION_JSON)
+						.content("{\"username\":\"second-user\",\"password\":\"invited123\",\"inviteCode\":\"ST-TEST-2026\"}"))
+				.andExpect(status().isBadRequest());
+
+		// 2. Shared folder with READ vs READ_WRITE permissions & SFSP/1.0 federated endpoints
+		mockMvc.perform(post("/api/folder/create").cookie(admin).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"path\":\"shared-box\"}"))
+				.andExpect(status().isOk());
+		mockMvc.perform(post("/api/file/create").cookie(admin).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"parentPath\":\"shared-box\",\"fileName\":\"intro.md\",\"content\":\"# Hello\\n\"}"))
+				.andExpect(status().isOk());
+
+		// Create password-protected READ-only folder share
+		MvcResult roShareRes = mockMvc.perform(post("/api/share").cookie(admin).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"filePath\":\"shared-box\",\"expireHours\":24,\"permission\":\"READ\",\"accessPassword\":\"pass88\",\"title\":\"ReadOnlyBox\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.isDirectory").value(true))
+				.andExpect(jsonPath("$.data.permission").value("READ"))
+				.andReturn();
+		String roToken = JsonPath.read(roShareRes.getResponse().getContentAsString(), "$.data.token");
+
+		// Accessing manifest without password returns 403 passwordRequired
+		mockMvc.perform(get("/api/fed/shares/" + roToken + "/manifest"))
+				.andExpect(status().isForbidden())
+				.andExpect(jsonPath("$.passwordRequired").value(true));
+
+		// Accessing manifest and list with X-StoreIt-Share-Password succeeds
+		mockMvc.perform(get("/api/fed/shares/" + roToken + "/manifest")
+						.header("X-StoreIt-Share-Password", "pass88"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.protocol").value("SFSP/1.0"))
+				.andExpect(jsonPath("$.isDirectory").value(true))
+				.andExpect(jsonPath("$.permission").value("READ"));
+
+		mockMvc.perform(get("/api/fed/shares/" + roToken + "/list")
+						.header("X-StoreIt-Share-Password", "pass88"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.items[0].name").value("intro.md"));
+
+		// Write operation on READ-only share is forbidden (403)
+		mockMvc.perform(post("/api/fed/shares/" + roToken + "/mkdir")
+						.header("X-StoreIt-Share-Password", "pass88")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{\"subPath\":\"\",\"folderName\":\"illegal\"}"))
+				.andExpect(status().isForbidden());
+
+		// Create READ_WRITE folder share
+		MvcResult rwShareRes = mockMvc.perform(post("/api/share").cookie(admin).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"filePath\":\"shared-box\",\"expireHours\":24,\"permission\":\"READ_WRITE\"}"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.permission").value("READ_WRITE"))
+				.andReturn();
+		String rwToken = JsonPath.read(rwShareRes.getResponse().getContentAsString(), "$.data.token");
+
+		// Create subfolder, create file, and edit file inside READ_WRITE shared folder
+		mockMvc.perform(post("/api/fed/shares/" + rwToken + "/mkdir")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{\"subPath\":\"\",\"folderName\":\"collab\"}"))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(post("/api/fed/shares/" + rwToken + "/create-file")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{\"subPath\":\"collab\",\"fileName\":\"notes.md\",\"content\":\"v1\"}"))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/api/fed/shares/" + rwToken + "/content")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("{\"subPath\":\"collab/notes.md\",\"content\":\"v2-updated\"}"))
+				.andExpect(status().isOk());
+
+		mockMvc.perform(get("/api/fed/shares/" + rwToken + "/content").param("subPath", "collab/notes.md"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.content").value("v2-updated"));
+
+		// Mount share by invited user & resync metadata
+		mockMvc.perform(post("/api/shares/mounts").cookie(invitedCookie).contentType(MediaType.APPLICATION_JSON)
+						.content("{\"shareLinkOrToken\":\"storeit+fed://localhost:59898/api/fed/shares/" + rwToken + "\",\"mountName\":\"TeamCollab\"}"))
+				.andExpect(status().isOk());
+		mockMvc.perform(get("/api/shares/mounts").cookie(invitedCookie))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.length()").value(1));
+
+		mockMvc.perform(post("/api/files/resync").cookie(admin))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.success").value(true));
 	}
 
 	private Cookie login(String username, String password) throws Exception {

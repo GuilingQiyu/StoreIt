@@ -8,10 +8,10 @@ import java.util.Optional;
 
 @Mapper
 public interface FileShareMapper {
-    @Select("SELECT id, file_path as filePath, token, expiry, max_downloads as maxDownloads, downloads, user_id as userId, created_at as createdAt FROM file_shares WHERE token = #{token}")
+    @Select("SELECT id, file_path as filePath, token, expiry, max_downloads as maxDownloads, downloads, user_id as userId, created_at as createdAt, is_directory as directory, permission, access_password as accessPassword, title FROM file_shares WHERE token = #{token}")
     Optional<FileShare> findByToken(String token);
 
-    @Insert("INSERT INTO file_shares(file_path, token, expiry, max_downloads, downloads, user_id, created_at) VALUES(#{filePath}, #{token}, #{expiry}, #{maxDownloads}, #{downloads}, #{userId}, #{createdAt})")
+    @Insert("INSERT INTO file_shares(file_path, token, expiry, max_downloads, downloads, user_id, created_at, is_directory, permission, access_password, title) VALUES(#{filePath}, #{token}, #{expiry}, #{maxDownloads}, #{downloads}, #{userId}, #{createdAt}, #{directory}, #{permission}, #{accessPassword}, #{title})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(FileShare share);
 
@@ -25,11 +25,14 @@ public interface FileShareMapper {
     @Delete("DELETE FROM file_shares WHERE (expiry IS NOT NULL AND expiry < #{now}) OR (max_downloads IS NOT NULL AND downloads >= max_downloads)")
     int deleteExpiredOrMaxed(long now);
 
-    @Select("SELECT id, file_path as filePath, token, expiry, max_downloads as maxDownloads, downloads, user_id as userId, created_at as createdAt FROM file_shares WHERE user_id = #{userId} ORDER BY created_at DESC, id DESC")
+    @Select("SELECT id, file_path as filePath, token, expiry, max_downloads as maxDownloads, downloads, user_id as userId, created_at as createdAt, is_directory as directory, permission, access_password as accessPassword, title FROM file_shares WHERE user_id = #{userId} ORDER BY created_at DESC, id DESC")
     List<FileShare> findByUserId(long userId);
 
     @Delete("DELETE FROM file_shares WHERE id = #{id} AND user_id = #{userId}")
     int deleteByIdAndUser(@Param("id") long id, @Param("userId") long userId);
+
+    @Delete("DELETE FROM file_shares WHERE user_id = #{userId} AND (file_path = #{path} OR file_path LIKE #{pattern})")
+    int deleteTree(@Param("userId") long userId, @Param("path") String path, @Param("pattern") String pattern);
 
     @Update("UPDATE file_shares SET file_path = #{newPath} || SUBSTR(file_path, LENGTH(#{oldPath}) + 1) WHERE user_id = #{userId} AND (file_path = #{oldPath} OR file_path LIKE #{pattern})")
     int retarget(@Param("userId") long userId, @Param("oldPath") String oldPath, @Param("newPath") String newPath, @Param("pattern") String pattern);

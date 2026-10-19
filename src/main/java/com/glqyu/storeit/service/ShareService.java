@@ -24,23 +24,54 @@ public class ShareService {
     }
 
     public FileShare createShare(User user, String filePath, Integer expireHours, Integer maxDownloads) {
+        return createShare(user, filePath, expireHours, maxDownloads, false, "READ", null, null);
+    }
+
+    public FileShare createShare(User user, String filePath, Integer expireHours, Integer maxDownloads,
+                                 boolean isDirectory, String permission, String accessPassword, String title) {
         FileShare s = new FileShare();
         s.setUserId(user.getId());
         s.setFilePath(filePath);
         s.setToken(createToken(12));
         long now = Instant.now().getEpochSecond();
         s.setCreatedAt(now);
-        
+
         if (expireHours != null && expireHours == -1) {
             s.setExpiry(null);
         } else {
             s.setExpiry(now + (expireHours == null ? 30 * 24 : expireHours) * 3600L);
         }
-        
+
         s.setMaxDownloads(maxDownloads);
         s.setDownloads(0);
+        s.setDirectory(isDirectory);
+        s.setPermission(normalizePermission(permission));
+        String cleanPwd = accessPassword == null ? "" : accessPassword.trim();
+        s.setAccessPassword(cleanPwd.isEmpty() ? null : cleanPwd);
+        String cleanTitle = title == null ? "" : title.trim();
+        s.setTitle(cleanTitle.isEmpty() ? null : cleanTitle);
         mapper.insert(s);
         return s;
+    }
+
+    public static String normalizePermission(String perm) {
+        if (perm == null) return "READ";
+        String upper = perm.trim().toUpperCase();
+        if ("READ_WRITE".equals(upper) || "RW".equals(upper) || "WRITE".equals(upper)) {
+            return "READ_WRITE";
+        }
+        return "READ";
+    }
+
+    public boolean checkPassword(FileShare share, String providedPassword) {
+        String expected = share.getAccessPassword();
+        if (expected == null || expected.isBlank()) {
+            return true;
+        }
+        if (providedPassword == null) {
+            return false;
+        }
+        return expected.equals(providedPassword.trim());
     }
 
     public Optional<FileShare> validateToken(String token) {

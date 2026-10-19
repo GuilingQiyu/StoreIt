@@ -2,10 +2,22 @@
 
 import React, { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Users, UserPlus, Save, KeyRound, RefreshCw, AlertCircle, CheckCircle2 } from "lucide-react";
+import {
+  Users,
+  UserPlus,
+  Save,
+  KeyRound,
+  RefreshCw,
+  AlertCircle,
+  CheckCircle2,
+  Ticket,
+  Copy,
+  Check,
+  Trash2,
+} from "lucide-react";
 import { api } from "@/lib/api";
-import { User } from "@/types";
-import { formatBytes } from "@/lib/utils";
+import { InviteCodeItem, User } from "@/types";
+import { copyToClipboard, formatBytes, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -42,11 +54,25 @@ export function UserManagementTab() {
   const [newQuotaUnit, setNewQuotaUnit] = useState<QuotaUnit>("unlimited");
   const [newMustChange, setNewMustChange] = useState(false);
 
+  // Invite Code form states
+  const [customInviteCode, setCustomInviteCode] = useState("");
+  const [inviteMaxUses, setInviteMaxUses] = useState("1");
+  const [inviteExpireHours, setInviteExpireHours] = useState("168");
+  const [inviteQuotaVal, setInviteQuotaVal] = useState(10);
+  const [inviteQuotaUnit, setInviteQuotaUnit] = useState<QuotaUnit>("GB");
+  const [inviteNote, setInviteNote] = useState("");
+  const [copiedInviteId, setCopiedInviteId] = useState<string | null>(null);
+
   const [feedback, setFeedback] = useState<{ text: string; type: "success" | "error" } | null>(null);
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["adminUsers"],
     queryFn: () => api.getAdminUsers(),
+  });
+
+  const { data: invitesData, isLoading: loadingInvites, refetch: refetchInvites } = useQuery({
+    queryKey: ["adminInvites"],
+    queryFn: () => api.getAdminInvites(),
   });
 
   const createMutation = useMutation({
@@ -110,6 +136,39 @@ export function UserManagementTab() {
     },
   });
 
+  const createInviteMutation = useMutation({
+    mutationFn: () => {
+      const quotaBytes = unitValueToBytes(inviteQuotaVal, inviteQuotaUnit);
+      return api.createAdminInvite({
+        code: customInviteCode.trim() || undefined,
+        maxUses: parseInt(inviteMaxUses, 10) || 0,
+        expireHours: parseInt(inviteExpireHours, 10),
+        defaultQuota: quotaBytes,
+        note: inviteNote.trim(),
+      });
+    },
+    onSuccess: (res) => {
+      setFeedback({ text: `邀请码 ${res.data.code} 已生成`, type: "success" });
+      setCustomInviteCode("");
+      setInviteNote("");
+      queryClient.invalidateQueries({ queryKey: ["adminInvites"] });
+    },
+    onError: (err: any) => {
+      setFeedback({ text: err.message || "生成邀请码失败", type: "error" });
+    },
+  });
+
+  const deleteInviteMutation = useMutation({
+    mutationFn: (id: number) => api.deleteAdminInvite(id),
+    onSuccess: () => {
+      setFeedback({ text: "邀请码已删除", type: "success" });
+      queryClient.invalidateQueries({ queryKey: ["adminInvites"] });
+    },
+    onError: (err: any) => {
+      setFeedback({ text: err.message || "删除邀请码失败", type: "error" });
+    },
+  });
+
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newUsername.trim() || newPassword.length < 8) {
@@ -125,8 +184,17 @@ export function UserManagementTab() {
     });
   };
 
+  const handleCopyInvite = async (key: string, text: string) => {
+    if (await copyToClipboard(text)) {
+      setCopiedInviteId(key);
+      setTimeout(() => setCopiedInviteId(null), 1800);
+    }
+  };
+
   const users = data || [];
+  const invites: InviteCodeItem[] = invitesData || [];
   const computedNewBytes = unitValueToBytes(newQuotaVal, newQuotaUnit);
+  const computedInviteBytes = unitValueToBytes(inviteQuotaVal, inviteQuotaUnit);
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6 animate-in fade-in-50 duration-200">
@@ -134,14 +202,22 @@ export function UserManagementTab() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2">
             <Users className="w-6 h-6 text-brand-secondary" />
-            系统用户管理
+            系统用户与受邀注册管理
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            添加新用户、按 MB/GB/TB 单位设置存储配额、启用/禁用账号或重置登录口令
+            管理用户配额与状态、生成自助注册邀请码或重置用户口令
           </p>
         </div>
 
-        <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => {
+            refetch();
+            refetchInvites();
+          }}
+          className="gap-1.5"
+        >
           <RefreshCw className="w-4 h-4" /> 刷新
         </Button>
       </div>
@@ -163,11 +239,217 @@ export function UserManagementTab() {
         </div>
       )}
 
+      {/* Invite Codes Management Card */}
+      <div className="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b pb-3">
+          <div>
+            <h3 className="text-base font-semibold text-brand-primary flex items-center gap-2">
+              <Ticket className="w-4 h-4 text-brand-secondary" />
+              自主受邀注册 · 邀请码生成与管理
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              生成邀请码或专属注册直链，新用户可在登录页切换至“受邀注册”自助开户并自动分配预设配额
+            </p>
+          </div>
+        </div>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            createInviteMutation.mutate();
+          }}
+          className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end"
+        >
+          <div className="sm:col-span-3">
+            <label className="text-xs font-medium text-foreground block mb-1">
+              自定义邀请码 (留空随机生成)
+            </label>
+            <Input
+              value={customInviteCode}
+              onChange={(e) => setCustomInviteCode(e.target.value)}
+              placeholder="如 ST-TEAM-2026"
+              className="font-mono text-xs"
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="text-xs font-medium text-foreground block mb-1">可用次数</label>
+            <select
+              value={inviteMaxUses}
+              onChange={(e) => setInviteMaxUses(e.target.value)}
+              className="w-full h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+            >
+              <option value="1">1 次 (单人专属)</option>
+              <option value="5">5 次</option>
+              <option value="10">10 次</option>
+              <option value="50">50 次</option>
+              <option value="0">不限次数</option>
+            </select>
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className="text-xs font-medium text-foreground block mb-1">有效期</label>
+            <select
+              value={inviteExpireHours}
+              onChange={(e) => setInviteExpireHours(e.target.value)}
+              className="w-full h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+            >
+              <option value="24">1 天</option>
+              <option value="168">7 天</option>
+              <option value="720">30 天</option>
+              <option value="-1">永久有效</option>
+            </select>
+          </div>
+
+          <div className="sm:col-span-3">
+            <label className="text-xs font-medium text-foreground block mb-1">
+              注册初始配额 ({computedInviteBytes === 0 ? "不限额" : formatBytes(computedInviteBytes)})
+            </label>
+            <div className="flex gap-1">
+              {inviteQuotaUnit !== "unlimited" && (
+                <Input
+                  type="number"
+                  min="1"
+                  value={inviteQuotaVal}
+                  onChange={(e) => setInviteQuotaVal(Math.max(1, Number(e.target.value)))}
+                  className="w-16 text-xs"
+                />
+              )}
+              <select
+                value={inviteQuotaUnit}
+                onChange={(e) => setInviteQuotaUnit(e.target.value as QuotaUnit)}
+                className="flex-1 h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                <option value="unlimited">不限额</option>
+                <option value="MB">MB</option>
+                <option value="GB">GB</option>
+                <option value="TB">TB</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="sm:col-span-2">
+            <Button type="submit" disabled={createInviteMutation.isPending} className="w-full gap-1.5">
+              <Ticket className="w-4 h-4" /> 生成邀请码
+            </Button>
+          </div>
+
+          <div className="sm:col-span-12">
+            <Input
+              value={inviteNote}
+              onChange={(e) => setInviteNote(e.target.value)}
+              placeholder="可选备注说明（例如：研发组新成员邀请、活动临时账号等）"
+              className="h-8 text-xs"
+            />
+          </div>
+        </form>
+
+        {/* Invite Codes List */}
+        {loadingInvites ? (
+          <div className="py-4 text-center text-xs text-muted-foreground">正在加载邀请码...</div>
+        ) : invites.length === 0 ? (
+          <div className="py-6 text-center text-xs text-muted-foreground bg-muted/20 rounded-xl border border-dashed">
+            暂无邀请码，点击上方“生成邀请码”即可创建受邀注册凭证
+          </div>
+        ) : (
+          <div className="overflow-x-auto border rounded-xl">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b bg-muted/40 text-muted-foreground">
+                  <th className="py-2 px-3 font-semibold">邀请码</th>
+                  <th className="py-2 px-3 font-semibold">已用 / 上限</th>
+                  <th className="py-2 px-3 font-semibold">预设配额</th>
+                  <th className="py-2 px-3 font-semibold">有效期至</th>
+                  <th className="py-2 px-3 font-semibold">备注</th>
+                  <th className="py-2 px-3 font-semibold text-right">操作</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {invites.map((inv) => {
+                  const registerLink =
+                    typeof window !== "undefined"
+                      ? `${window.location.origin}/login?invite=${encodeURIComponent(inv.code)}`
+                      : `/login?invite=${encodeURIComponent(inv.code)}`;
+                  const maxedOut = inv.maxUses > 0 && inv.usedCount >= inv.maxUses;
+                  const expired = Boolean(inv.expiresAt && inv.expiresAt * 1000 < Date.now());
+                  return (
+                    <tr key={inv.id} className="hover:bg-muted/20">
+                      <td className="py-2.5 px-3 font-mono font-bold text-brand-primary">
+                        {inv.code}
+                        {(maxedOut || expired) && (
+                          <span className="ml-1.5 px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[10px] font-sans">
+                            {expired ? "已过期" : "已用尽"}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-2.5 px-3">
+                        {inv.usedCount} / {inv.maxUses <= 0 ? "不限" : inv.maxUses}
+                      </td>
+                      <td className="py-2.5 px-3">
+                        {inv.defaultQuota <= 0 ? "不限额" : formatBytes(inv.defaultQuota)}
+                      </td>
+                      <td className="py-2.5 px-3 text-muted-foreground">
+                        {inv.expiresAt ? formatDate(inv.expiresAt) : "永久有效"}
+                      </td>
+                      <td className="py-2.5 px-3 text-muted-foreground max-w-[160px] truncate">
+                        {inv.note || "--"}
+                      </td>
+                      <td className="py-2.5 px-3 text-right whitespace-nowrap space-x-1.5">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 px-2 text-xs gap-1"
+                          onClick={() => handleCopyInvite(`code_${inv.id}`, inv.code)}
+                        >
+                          {copiedInviteId === `code_${inv.id}` ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-600" /> 已复制
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" /> 复制码
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 px-2 text-xs gap-1"
+                          onClick={() => handleCopyInvite(`link_${inv.id}`, registerLink)}
+                        >
+                          {copiedInviteId === `link_${inv.id}` ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-600" /> 已复制直链
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" /> 注册直链
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="h-7 px-2 text-xs text-destructive hover:text-destructive"
+                          onClick={() => deleteInviteMutation.mutate(inv.id)}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
       {/* Create user form */}
       <div className="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
         <h3 className="text-base font-semibold text-brand-primary flex items-center gap-2">
           <UserPlus className="w-4 h-4 text-brand-secondary" />
-          新增系统用户
+          管理员手动新增用户
         </h3>
         <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end">
           <div className="sm:col-span-3">

@@ -8,14 +8,18 @@ import {
   List, 
   Upload, 
   FolderPlus, 
+  FilePlus2,
   LogOut, 
   Menu,
   ChevronDown,
-  KeyRound
+  KeyRound,
+  Palette,
+  Check
 } from "lucide-react";
 import { useFileStore } from "@/stores/useFileStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useUploadStore } from "@/stores/useUploadStore";
+import { THEME_OPTIONS, applyThemeToDom, getSavedTheme } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,11 +34,14 @@ export function Navbar() {
   const currentPath = useFileStore((s) => s.currentPath);
   const layout = useFileStore((s) => s.layout);
   const setLayout = useFileStore((s) => s.setLayout);
+  const theme = useFileStore((s) => s.theme);
+  const setTheme = useFileStore((s) => s.setTheme);
   const searchQuery = useFileStore((s) => s.searchQuery);
   const setSearchQuery = useFileStore((s) => s.setSearchQuery);
   const viewMode = useFileStore((s) => s.viewMode);
   const setViewMode = useFileStore((s) => s.setViewMode);
   const setNewFolderModalOpen = useFileStore((s) => s.setNewFolderModalOpen);
+  const setNewFileModalOpen = useFileStore((s) => s.setNewFileModalOpen);
   const setPasswordModalOpen = useFileStore((s) => s.setPasswordModalOpen);
   const toggleSidebar = useFileStore((s) => s.toggleSidebar);
 
@@ -47,6 +54,12 @@ export function Navbar() {
   const searchDebounceRef = useRef<any>(null);
 
   const [localSearch, setLocalSearch] = useState(searchQuery);
+
+  useEffect(() => {
+    const saved = getSavedTheme();
+    applyThemeToDom(saved);
+    useFileStore.setState({ theme: saved });
+  }, []);
 
   useEffect(() => {
     setLocalSearch(searchQuery);
@@ -118,6 +131,8 @@ export function Navbar() {
     }
   };
 
+  const activeThemeMeta = THEME_OPTIONS.find((t) => t.key === theme) || THEME_OPTIONS[0];
+
   return (
     <header className="h-16 px-4 sm:px-6 bg-white/80 backdrop-blur-md border-b flex items-center justify-between gap-3 sticky top-0 z-30 select-none">
       {/* Brand logo & Mobile hamburger */}
@@ -137,9 +152,9 @@ export function Navbar() {
             useFileStore.getState().setCurrentPath("");
             setViewMode("files");
           }}
-          className="flex items-center gap-2.5 cursor-pointer"
+          className="flex items-center gap-2.5 cursor-pointer group"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white flex items-center justify-center shadow-md">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white flex items-center justify-center shadow-md transition-transform duration-200 group-hover:scale-105">
             <HardDrive className="w-5 h-5" />
           </div>
           <span className="font-extrabold text-lg text-brand-primary tracking-tight hidden sm:inline-block">
@@ -156,12 +171,12 @@ export function Navbar() {
           placeholder="输入关键词实时搜索文件..."
           value={localSearch}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-9 h-9 bg-muted/40 border-0 focus-visible:bg-white focus-visible:ring-1 rounded-xl text-xs"
+          className="pl-9 h-9 bg-muted/40 border-0 focus-visible:bg-white focus-visible:ring-1 rounded-xl text-xs transition-all duration-150"
         />
       </form>
 
       {/* Action controls */}
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         <input
           ref={fileInputRef}
           type="file"
@@ -187,19 +202,32 @@ export function Navbar() {
               <ChevronDown className="w-3.5 h-3.5 opacity-60" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align="end" className="w-48 storeit-menu-pop">
             <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="gap-2">
               <Upload className="w-4 h-4 text-brand-secondary" /> 上传单个 / 多文件
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => folderInputRef.current?.click()} className="gap-2">
               <FolderPlus className="w-4 h-4 text-brand-secondary" /> 上传整个文件夹
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="sm:hidden" />
-            <DropdownMenuItem onClick={() => setNewFolderModalOpen(true)} className="gap-2 sm:hidden">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setNewFileModalOpen(true)} className="gap-2">
+              <FilePlus2 className="w-4 h-4 text-brand-secondary" /> 新建文本 / Markdown
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setNewFolderModalOpen(true)} className="gap-2">
               <FolderPlus className="w-4 h-4 text-amber-500" /> 新建文件夹
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setNewFileModalOpen(true)}
+          className="gap-1.5 rounded-xl hidden lg:flex"
+          title="新建空白文本或 Markdown 文档"
+        >
+          <FilePlus2 className="w-4 h-4 text-brand-secondary" /> 新建文件
+        </Button>
 
         <Button
           variant="outline"
@@ -214,7 +242,7 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className={`h-7 w-7 rounded-lg ${layout === "grid" ? "bg-white shadow-sm text-brand-primary" : "text-muted-foreground"}`}
+            className={`h-7 w-7 rounded-lg transition-all duration-150 ${layout === "grid" ? "bg-white shadow-sm text-brand-primary" : "text-muted-foreground"}`}
             onClick={() => setLayout("grid")}
             title="网格视图"
           >
@@ -223,13 +251,64 @@ export function Navbar() {
           <Button
             variant="ghost"
             size="icon"
-            className={`h-7 w-7 rounded-lg ${layout === "list" ? "bg-white shadow-sm text-brand-primary" : "text-muted-foreground"}`}
+            className={`h-7 w-7 rounded-lg transition-all duration-150 ${layout === "list" ? "bg-white shadow-sm text-brand-primary" : "text-muted-foreground"}`}
             onClick={() => setLayout("list")}
             title="列表视图"
           >
             <List className="w-3.5 h-3.5" />
           </Button>
         </div>
+
+        {/* 主题色切换按钮（位于右上角用户菜单旁） */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 px-2.5 h-9 rounded-xl border border-transparent hover:border-border"
+              title={`切换界面主题 (${activeThemeMeta.label})`}
+            >
+              <Palette className="w-4 h-4 text-brand-primary" />
+              <span
+                className="w-2.5 h-2.5 rounded-full border border-white shadow-sm shrink-0"
+                style={{ backgroundColor: activeThemeMeta.swatch }}
+              />
+              <span className="text-xs font-medium text-foreground hidden xl:inline">
+                {activeThemeMeta.label}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56 storeit-menu-pop p-1.5">
+            <div className="px-2.5 py-1.5 border-b mb-1">
+              <p className="text-xs font-semibold text-brand-primary">界面主题色切换</p>
+              <p className="text-[11px] text-muted-foreground">选择配色方案（自动记忆）</p>
+            </div>
+            {THEME_OPTIONS.map((opt) => {
+              const active = theme === opt.key;
+              return (
+                <DropdownMenuItem
+                  key={opt.key}
+                  onClick={() => setTheme(opt.key)}
+                  className="flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span
+                      className="w-4 h-4 rounded-full border border-black/10 shadow-sm shrink-0"
+                      style={{ backgroundColor: opt.swatch }}
+                    />
+                    <div className="min-w-0">
+                      <p className={`text-xs ${active ? "font-bold text-brand-primary" : "font-medium text-foreground"}`}>
+                        {opt.label}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground truncate">{opt.desc}</p>
+                    </div>
+                  </div>
+                  {active && <Check className="w-3.5 h-3.5 text-brand-primary shrink-0" />}
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* User menu */}
         <DropdownMenu>
@@ -243,7 +322,7 @@ export function Navbar() {
               </span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
+          <DropdownMenuContent align="end" className="w-48 storeit-menu-pop">
             <div className="px-3 py-2 border-b">
               <p className="text-sm font-semibold truncate">{user?.username}</p>
               <p className="text-xs text-muted-foreground">角色: {user?.role || "USER"}</p>

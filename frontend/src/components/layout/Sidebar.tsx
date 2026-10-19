@@ -283,16 +283,15 @@ export function Sidebar() {
                 </Button>
               )}
 
-              {!selectedFile.isDirectory && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-xs gap-1"
-                  onClick={() => setShareModalFile(selectedFile)}
-                >
-                  <Share2 className="w-3 h-3 text-brand-secondary" /> 分享
-                </Button>
-              )}
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-xs gap-1"
+                onClick={() => setShareModalFile(selectedFile)}
+              >
+                <Share2 className="w-3 h-3 text-brand-secondary" />
+                {selectedFile.isDirectory ? "共享" : "分享"}
+              </Button>
 
               {viewMode !== "files" && (
                 <Button
