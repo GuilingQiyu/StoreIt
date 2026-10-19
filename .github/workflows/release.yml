@@ -1,7 +1,11 @@
 name: Release
 
-# 推送形如 v1.3.3 的标签时构建，并把 Version.md 中对应版本写入 Release 页。
+# 推送形如 v2.0.0 的标签时构建，并把 Version.md 中对应版本写入 Release 页。
 # 也可在 Actions 页面手动运行（版本取自 pom.xml）。
+# 自动产出：
+#   1. storeit-<version>.jar（标准可执行 JAR）
+#   2. StoreIt-<version>-windows-x64.zip（内置精简 JRE 的 Windows 原生启动包，含 StoreIt.exe）
+#   3. StoreIt-<version>-linux-x64.tar.gz（内置精简 JRE 的 Linux 原生启动包，含 bin/StoreIt 与根目录 storeit 启动器）
 on:
   push:
     tags:
@@ -12,8 +16,13 @@ permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  build-jar:
+    name: Build Frontend & Fat JAR
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.ver.outputs.tag }}
+      version: ${{ steps.ver.outputs.version }}
+      app_version: ${{ steps.ver.outputs.app_version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,9 +41,12 @@ jobs:
             TAG="v${POM_VER}"
           fi
           VERSION="${TAG#[vV]}"
+          # jpackage --app-version 仅支持纯数字 X.Y.Z 且首位不能为 0
+          APP_VERSION=$(python3 -c 'import re, sys; v=sys.argv[1]; m=re.match(r"^(\d+)(?:\.(\d+))?(?:\.(\d+))?", v); parts=[m.group(i) for i in (1,2,3) if m and m.group(i) is not None] if m else ["1","0","0"]; parts[0]="1" if parts[0]=="0" else parts[0]; print(".".join(parts))' "$VERSION")
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "Resolved tag=${TAG} version=${VERSION}"
+          echo "app_version=${APP_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Resolved tag=${TAG} version=${VERSION} app_version=${APP_VERSION}"
 
       - name: Build changelog from Version.md
         run: |
@@ -67,24 +79,165 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Build
+      - name: Build with Maven
         run: ./mvnw -B -ntp clean package
 
-      - name: Collect artifacts
+      - name: Stage JAR
+        run: |
+          mkdir -p staged-jar
+          cp target/storeit-*.jar staged-jar/
+          find staged-jar -name '*.original' -delete
+          ls -la staged-jar
+
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: storeit-jar
+          path: staged-jar/*.jar
+          if-no-files-found: error
+
+      - name: Upload Release Notes artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release-notes.md
+          if-no-files-found: error
+
+  package-binaries:
+    name: Package Binary (${{ matrix.platform }})
+    needs: build-jar
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x64
+          - os: windows-latest
+            platform: windows-x64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Download built JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: storeit-jar
+          path: jpackage-input
+
+      - name: Build custom JRE and native app-image via jlink & jpackage
+        shell: bash
+        env:
+          VERSION: ${{ needs.build-jar.outputs.version }}
+          APP_VERSION: ${{ needs.build-jar.outputs.app_version }}
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          set -euo pipefail
+          JAR_FILE=$(cd jpackage-input && ls storeit-*.jar | head -n 1)
+          if [[ -z "$JAR_FILE" ]]; then
+            echo "未找到构建好的 JAR 文件" >&2
+            exit 1
+          fi
+          echo "Using JAR: ${JAR_FILE}"
+
+          # 1. 使用 jlink 生成裁剪后的精简 JRE（包含完整 Java SE、TLS/EC 加密、SQLite/MyBatis/Actuator 所需模块）
+          jlink \
+            --add-modules java.se,jdk.crypto.ec,jdk.crypto.cryptoki,jdk.unsupported,jdk.management,jdk.zipfs,jdk.charsets,jdk.localedata,jdk.naming.dns,jdk.httpserver \
+            --include-locales=en,zh \
+            --strip-debug \
+            --no-man-pages \
+            --no-header-files \
+            --compress=zip-6 \
+            --output custom-jre
+
+          # 2. 使用 jpackage 生成免安装原生启动目录包 (app-image)
+          mkdir -p build-dist dist
+          EXTRA_ARGS=()
+          if [[ "${RUNNER_OS}" == "Windows" ]]; then
+            # Windows 下保留控制台输出，方便查看 Spring Boot 启动日志与端口提示
+            EXTRA_ARGS+=(--win-console)
+          fi
+
+          jpackage \
+            --type app-image \
+            --name StoreIt \
+            --input jpackage-input \
+            --main-jar "${JAR_FILE}" \
+            --runtime-image custom-jre \
+            --app-version "${APP_VERSION}" \
+            --dest build-dist \
+            "${EXTRA_ARGS[@]}"
+
+          # 3. 附带外部配置示例、说明文档与便捷启动脚本（确保相对路径 ./config、./data、./storage 始终在根目录）
+          mkdir -p build-dist/StoreIt/config build-dist/StoreIt/data build-dist/StoreIt/storage
+          cp config/application.yml.example build-dist/StoreIt/config/
+          cp config/admin.yml.example build-dist/StoreIt/config/
+          cp README.md README-EN.md LICENSE build-dist/StoreIt/
+
+          if [[ "${RUNNER_OS}" == "Linux" ]]; then
+            printf '%s\n' \
+              '#!/usr/bin/env sh' \
+              'DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"' \
+              'cd "$DIR" || exit 1' \
+              'exec "$DIR/bin/StoreIt" "$@"' \
+              > build-dist/StoreIt/storeit
+            chmod +x build-dist/StoreIt/storeit build-dist/StoreIt/bin/StoreIt
+            (cd build-dist && tar -czf "../dist/StoreIt-${VERSION}-${PLATFORM}.tar.gz" StoreIt)
+          else
+            printf '%s\r\n' \
+              '@echo off' \
+              'cd /d "%~dp0"' \
+              '"%~dp0StoreIt.exe" %*' \
+              > build-dist/StoreIt/start.bat
+            (cd build-dist && 7z a -tzip "../dist/StoreIt-${VERSION}-${PLATFORM}.zip" StoreIt)
+          fi
+
+          ls -lh dist/
+
+      - name: Upload binary package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: storeit-${{ matrix.platform }}
+          path: dist/*
+          if-no-files-found: error
+
+  publish-release:
+    name: Publish GitHub Release
+    needs:
+      - build-jar
+      - package-binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: downloaded-artifacts
+
+      - name: Collect release assets
         run: |
           mkdir -p dist
-          cp target/storeit-*.jar dist/
-          find dist -name '*.original' -delete
-          ls -la dist
+          find downloaded-artifacts/storeit-jar -type f -name '*.jar' -exec cp {} dist/ \;
+          find downloaded-artifacts/storeit-linux-x64 -type f -exec cp {} dist/ \;
+          find downloaded-artifacts/storeit-windows-x64 -type f -exec cp {} dist/ \;
+          ls -lh dist/
 
       - name: Publish GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ steps.ver.outputs.tag }}
-          VERSION: ${{ steps.ver.outputs.version }}
+          TAG: ${{ needs.build-jar.outputs.tag }}
+          VERSION: ${{ needs.build-jar.outputs.version }}
         run: |
           TITLE="StoreIt ${VERSION}"
-          NOTES="${GITHUB_WORKSPACE}/release-notes.md"
+          NOTES="downloaded-artifacts/release-notes/release-notes.md"
           REPO="${{ github.repository }}"
           if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
             gh release edit "$TAG" \
@@ -94,7 +247,7 @@ jobs:
               --latest \
               --draft=false \
               --prerelease=false
-            gh release upload "$TAG" --repo "$REPO" dist/*.jar --clobber
+            gh release upload "$TAG" --repo "$REPO" dist/* --clobber
           else
             gh release create "$TAG" \
               --repo "$REPO" \
@@ -102,5 +255,5 @@ jobs:
               --notes-file "$NOTES" \
               --latest \
               --target "${{ github.sha }}" \
-              dist/*.jar
+              dist/*
           fi
