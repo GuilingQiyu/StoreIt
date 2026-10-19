@@ -1,8 +1,10 @@
 package com.glqyu.storeit;
 
-import com.glqyu.storeit.service.FileService;
-import com.jayway.jsonpath.JsonPath;
-import jakarta.servlet.http.Cookie;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import static org.hamcrest.Matchers.containsString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,12 +16,6 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.head;
@@ -29,6 +25,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.glqyu.storeit.service.FileService;
+import com.jayway.jsonpath.JsonPath;
+
+import jakarta.servlet.http.Cookie;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -200,7 +201,7 @@ class Phase5V2BehaviorTest {
 		mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/api/file/content")
 						.cookie(admin)
 						.contentType(MediaType.APPLICATION_JSON)
-						.content("{\"path\":\"Dockerfile\",\"content\":\"FROM eclipse-temurin:21-jre\nEXPOSE 59898\n\"}"))
+						.content("{\"path\":\"Dockerfile\",\"content\":\"FROM eclipse-temurin:21-jre\\nEXPOSE 59898\\n\"}"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.success").value(true));
 
