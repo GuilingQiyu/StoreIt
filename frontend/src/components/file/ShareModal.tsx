@@ -51,16 +51,6 @@ export function ShareModal() {
     }
   }, [item]);
 
-  useEffect(() => {
-    if (item) {
-      setExpireHours("24");
-      setCustomHours("");
-      setMaxDownloads("");
-      setGeneratedLink(null);
-      setCopied(false);
-    }
-  }, [item]);
-
   const shareMutation = useMutation({
     mutationFn: (data: {
       filePath: string;

@@ -199,51 +199,6 @@ export function MoveModal() {
     });
   };
 
-  const renderTree = (nodes: TreeFolder[], depth = 0): React.ReactNode => {
-    return nodes.map((node) => {
-      const disabled = isDisabledTarget(node.path);
-      const selected = targetDir === node.path;
-      return (
-        <div key={node.path}>
-          <div
-            onClick={() => !disabled && setTargetDir(node.path)}
-            style={{ paddingLeft: `${depth * 16 + 8}px` }}
-            className={`flex items-center gap-1.5 py-1.5 pr-2 rounded-lg text-xs cursor-pointer transition-colors ${
-              disabled
-                ? "opacity-40 cursor-not-allowed"
-                : selected
-                ? "bg-brand-primary text-white font-semibold"
-                : "hover:bg-black/5 text-foreground"
-            }`}
-          >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!disabled) toggleExpandFolder(node.path);
-              }}
-              className="p-0.5 rounded hover:bg-black/10 shrink-0"
-              title={node.expanded ? "折叠子目录" : "展开子目录"}
-            >
-              {node.expanded ? (
-                <ChevronDown className="w-3.5 h-3.5" />
-              ) : (
-                <ChevronRight className="w-3.5 h-3.5" />
-              )}
-            </button>
-            {node.expanded ? (
-              <FolderOpen className={`w-4 h-4 shrink-0 ${selected ? "text-amber-300" : "text-amber-500"}`} />
-            ) : (
-              <Folder className={`w-4 h-4 shrink-0 ${selected ? "text-amber-300" : "text-amber-500"}`} />
-            )}
-            <span className="truncate">{node.name}</span>
-          </div>
-          {node.expanded && node.children && node.children.length > 0 && renderTree(node.children, depth + 1)}
-        </div>
-      );
-    });
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
       <DialogContent className="sm:max-w-md storeit-modal-spring">

@@ -304,17 +304,6 @@ export function Sidebar() {
                 </Button>
               )}
 
-              {viewMode !== "files" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-7 text-xs gap-1"
-                  onClick={() => openContainingFolder(selectedFile)}
-                >
-                  <FolderOpen className="w-3 h-3 text-brand-secondary" /> 所在目录
-                </Button>
-              )}
-
               <Button
                 size="sm"
                 variant="outline"

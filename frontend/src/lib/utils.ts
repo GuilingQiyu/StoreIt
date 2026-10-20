@@ -135,12 +135,6 @@ export function isEditableText(filename: string): boolean {
 
 export type PreviewKind = "image" | "video" | "audio" | "pdf" | "text";
 
-/**
- * 预览方式判定：
- * - 媒体与 PDF 匹配后端内联白名单；
- * - 其余只要不属于已知二进制归档/可执行/Office/字体格式，统一归为 "text"，
- *   从而支持所有代码、配置、无扩展名文本（如 Dockerfile/Makefile/LICENSE/README）及自定义文本格式预览与在线编辑。
- */
 export function getPreviewKind(filename: string): PreviewKind | null {
   const ext = getFileExtension(filename);
   if (INLINE_IMAGE_EXTS.includes(ext)) return "image";

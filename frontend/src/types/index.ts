@@ -19,6 +19,19 @@ export interface User {
   enabled?: boolean;
 }
 
+export interface InviteCodeItem {
+  id: number;
+  code: string;
+  createdBy: string;
+  maxUses: number;
+  usedCount: number;
+  defaultQuota: number;
+  expiresAt?: number;
+  revoked: boolean;
+  note?: string;
+  createdAt: number;
+}
+
 export interface StorageQuota {
   used: number;
   total: number;
