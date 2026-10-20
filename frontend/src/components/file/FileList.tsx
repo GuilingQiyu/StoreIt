@@ -573,6 +573,18 @@ export function FileList() {
             </button>
           )}
 
+          {viewMode !== "files" && (
+            <button
+              onClick={() => {
+                openContainingFolder(contextMenu.item);
+                setContextMenu(null);
+              }}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+            >
+              <FolderOpen className="w-3.5 h-3.5 text-brand-secondary" /> 打开所在目录
+            </button>
+          )}
+
           <button
             onClick={() => {
               handleToggleFavorite(contextMenu.item);

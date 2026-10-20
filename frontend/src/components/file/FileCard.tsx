@@ -25,6 +25,7 @@ import {
 import { FileItem } from "@/types";
 import { useFileStore } from "@/stores/useFileStore";
 import { formatBytes, getFileCategory, getParentDirectory, isEditableText, isPreviewable } from "@/lib/utils";
+import { Edit3 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -192,6 +193,11 @@ export function FileCard({
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
+            )}
+            {viewMode !== "files" && (
+              <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">
+                <FolderOpen className="w-4 h-4 text-brand-secondary" /> 打开所在目录
+              </DropdownMenuItem>
             )}
             {viewMode !== "files" && (
               <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">

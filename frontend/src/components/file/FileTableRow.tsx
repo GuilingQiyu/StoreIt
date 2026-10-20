@@ -214,6 +214,11 @@ export function FileTableRow({
                 <FolderOpen className="w-4 h-4 text-brand-secondary" /> 打开所在目录
               </DropdownMenuItem>
             )}
+            {viewMode !== "files" && (
+              <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">
+                <FolderOpen className="w-4 h-4 text-brand-secondary" /> 打开所在目录
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem onClick={() => onRename(item)} className="gap-2">
               <Edit2 className="w-4 h-4 text-brand-secondary" /> 重命名
             </DropdownMenuItem>

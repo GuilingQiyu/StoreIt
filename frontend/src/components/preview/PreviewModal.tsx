@@ -253,6 +253,73 @@ export function PreviewModal() {
     [item, editContent, savingText, loadedModifiedTime, detectedCharset, queryClient, showToast, openConfirm]
   );
 
+  const previewableSiblings = useMemo(() => {
+    const key = ["files", viewMode, viewMode === "search" ? searchQuery : currentPath];
+    const cached = (queryClient.getQueryData(key) as FileItem[]) || [];
+    return cached.filter((f) => !f.isDirectory && isPreviewable(f.name));
+  }, [queryClient, viewMode, currentPath, searchQuery, item]);
+
+  const currentIndex = useMemo(() => {
+    if (!item) return -1;
+    return previewableSiblings.findIndex((f) => f.path === item.path);
+  }, [item, previewableSiblings]);
+
+  const hasPrev = !isEditing && currentIndex > 0;
+  const hasNext = !isEditing && currentIndex >= 0 && currentIndex < previewableSiblings.length - 1;
+
+  const goPrev = useCallback(() => {
+    if (hasPrev) setPreviewFile(previewableSiblings[currentIndex - 1]);
+  }, [hasPrev, previewableSiblings, currentIndex, setPreviewFile]);
+
+  const goNext = useCallback(() => {
+    if (hasNext) setPreviewFile(previewableSiblings[currentIndex + 1]);
+  }, [hasNext, previewableSiblings, currentIndex, setPreviewFile]);
+
+  const startEditing = useCallback(async () => {
+    if (!item) return;
+    if ((item.size || 0) > MAX_EDITABLE_BYTES) {
+      showToast("文件超过 5 MB，不支持在线编辑，请下载后修改", "error");
+      return;
+    }
+    setLoadingText(true);
+    try {
+      const res = await api.getFileContent(item.path);
+      setTextContent(res.content);
+      setEditContent(res.content);
+      setIsTruncated(false);
+      setIsEditing(true);
+    } catch (err: any) {
+      showToast(err.message || "无法进入在线编辑模式", "error");
+    } finally {
+      setLoadingText(false);
+    }
+  }, [item, showToast]);
+
+  const handleSaveEdit = useCallback(async () => {
+    if (!item || savingText) return;
+    setSavingText(true);
+    try {
+      const res = await api.saveFileContent(item.path, editContent);
+      setTextContent(editContent);
+      setIsEditing(false);
+      queryClient.invalidateQueries({ queryKey: ["files"] });
+      queryClient.invalidateQueries({ queryKey: ["quota"] });
+      const selected = useFileStore.getState().selectedFile;
+      if (selected && selected.path === item.path) {
+        useFileStore.getState().setSelectedFile({
+          ...selected,
+          size: res.file.size,
+          modifiedTime: res.file.modifiedTime,
+        });
+      }
+      showToast("文本内容已成功保存", "success");
+    } catch (err: any) {
+      showToast(err.message || "保存文件失败", "error");
+    } finally {
+      setSavingText(false);
+    }
+  }, [item, editContent, savingText, queryClient, showToast]);
+
   useEffect(() => {
     setPreviewFailed(false);
     setIsBinaryDetected(false);
