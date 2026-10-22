@@ -3,9 +3,8 @@
 import React, { useState, useCallback, useRef } from "react";
 import { UploadCloud, FolderPlus } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { api } from "@/lib/api";
 import { useUploadStore } from "@/stores/useUploadStore";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 
 interface DropZoneProps {
   children: React.ReactNode;
@@ -18,8 +17,8 @@ export function DropZone({ children }: DropZoneProps) {
   const currentPath = useFileStore((s) => s.currentPath);
   const viewMode = useFileStore((s) => s.viewMode);
   const setViewMode = useFileStore((s) => s.setViewMode);
-  const showToast = useFileStore((s) => s.showToast);
   const enqueueWithConflictCheck = useUploadStore((s) => s.enqueueWithConflictCheck);
+  const { t } = useI18n();
 
   const handleDragEnter = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -46,7 +45,6 @@ export function DropZone({ children }: DropZoneProps) {
     e.stopPropagation();
   }, []);
 
-  // Recursively read items from DataTransferItemList (including empty directories)
   const handleDrop = useCallback(
     async (e: React.DragEvent) => {
       e.preventDefault();
@@ -131,15 +129,22 @@ export function DropZone({ children }: DropZoneProps) {
           <div className="w-24 h-24 rounded-3xl bg-white/20 flex items-center justify-center mb-6 shadow-2xl animate-bounce">
             <UploadCloud className="w-12 h-12 text-white" />
           </div>
-          <h3 className="text-2xl font-bold mb-2">释放鼠标立即上传</h3>
+          <h3 className="text-2xl font-bold mb-2">
+            {t("释放鼠标立即上传", "Drop files or folders to upload")}
+          </h3>
           <p className="text-white/80 text-sm max-w-md text-center flex items-center gap-1.5">
             <FolderPlus className="w-4 h-4" />
-            目标目录：
+            {t("目标目录：", "Destination: ")}
             <span className="font-mono bg-white/20 px-2 py-0.5 rounded text-white font-medium">
-              /{currentPath || "根目录"}
+              /{currentPath || t("根目录", "root")}
             </span>
           </p>
-          <p className="text-white/60 text-xs mt-3">支持单文件、特大文件以及多级文件夹（含空目录）递归拖入上传</p>
+          <p className="text-white/60 text-xs mt-3">
+            {t(
+              "支持单文件、特大文件以及多级文件夹（含空目录）递归拖入上传",
+              "Supports single files, ultra-large files, and recursive multi-level folder uploads"
+            )}
+          </p>
         </div>
       )}
       {children}

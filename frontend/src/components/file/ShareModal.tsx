@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Share2, Copy, Check, Folder, FileText, ShieldCheck, Globe, Lock } from "lucide-react";
 import { api } from "@/lib/api";
 import { SharePermission } from "@/types";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import { copyToClipboard } from "@/lib/utils";
 import {
   Dialog,
@@ -23,6 +23,7 @@ export function ShareModal() {
   const openSharedSpace = useFileStore((s) => s.openSharedSpace);
   const showToast = useFileStore((s) => s.showToast);
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   const [permission, setPermission] = useState<SharePermission>("READ");
   const [accessPassword, setAccessPassword] = useState("");
@@ -83,12 +84,14 @@ export function ShareModal() {
       });
       queryClient.invalidateQueries({ queryKey: ["shares"] });
       showToast(
-        item?.isDirectory ? "共享文件夹与跨服协议链接已生成" : "分享链接已生成",
+        item?.isDirectory
+          ? t("共享文件夹与跨服协议链接已生成", "Shared folder & SFSP federation links created")
+          : t("分享链接已生成", "Share link created"),
         "success"
       );
     },
     onError: (err: any) => {
-      showToast(err.message || "生成分享链接失败", "error");
+      showToast(err.message || t("生成分享链接失败", "Failed to create share link"), "error");
     },
   });
 
@@ -106,7 +109,7 @@ export function ShareModal() {
     if (expireHours === "custom") {
       hours = parseInt(customHours, 10);
       if (!Number.isInteger(hours) || hours < 1) {
-        showToast("自定义有效小时数必须为正整数", "error");
+        showToast(t("自定义有效小时数必须为正整数", "Custom expiration hours must be a positive integer"), "error");
         return;
       }
     }
@@ -115,7 +118,7 @@ export function ShareModal() {
     if (maxDownloads.trim()) {
       max = parseInt(maxDownloads, 10);
       if (!Number.isInteger(max) || max < 1) {
-        showToast("最大下载次数必须为正整数", "error");
+        showToast(t("最大下载次数必须为正整数", "Max downloads must be a positive integer"), "error");
         return;
       }
     }
@@ -133,10 +136,10 @@ export function ShareModal() {
   const handleCopy = async (key: string, text: string) => {
     if (await copyToClipboard(text)) {
       setCopiedKey(key);
-      showToast("已复制到剪贴板", "success");
+      showToast(t("已复制到剪贴板", "Copied to clipboard"), "success");
       setTimeout(() => setCopiedKey(null), 1800);
     } else {
-      showToast("复制失败，请手动选取复制", "error");
+      showToast(t("复制失败，请手动选取复制", "Copy failed, please copy manually"), "error");
     }
   };
 
@@ -146,7 +149,9 @@ export function ShareModal() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Share2 className="w-5 h-5 text-brand-secondary" />
-            {item?.isDirectory ? "创建共享文件夹 / 跨服共享链接" : "创建文件分享 / 协同链接"}
+            {item?.isDirectory
+              ? t("创建共享文件夹 / 跨服共享链接", "Create Shared Folder & Federation Link")
+              : t("创建文件分享 / 协同链接", "Create File Share & Collaboration Link")}
           </DialogTitle>
         </DialogHeader>
 
@@ -154,17 +159,29 @@ export function ShareModal() {
           <div className="space-y-4 py-1 text-xs">
             <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 space-y-1">
               <p className="font-semibold">
-                共享已生成（权限：{permission === "READ_WRITE" ? "可读写协同 RW" : "只读访问 R"}
-                {accessPassword.trim() ? ` · 提取码: ${accessPassword.trim()}` : ""}）
+                {t("共享已生成（权限：", "Share created (Permission: ")}
+                {permission === "READ_WRITE"
+                  ? t("可读写协同 RW", "Read/Write RW")
+                  : t("只读访问 R", "Read-Only R")}
+                {accessPassword.trim()
+                  ? ` · ${t("提取码", "Access Code")}: ${accessPassword.trim()}`
+                  : ""}
+                {t("）", ")")}
               </p>
               <p className="text-[11px]">
-                对方可通过 Web 互动链接在线浏览/编辑，或在任意 StoreIt 服务器通过 SFSP 跨服协议挂载。
+                {t(
+                  "对方可通过 Web 互动链接在线浏览/编辑，或在任意 StoreIt 服务器通过 SFSP 跨服协议挂载。",
+                  "Recipients can browse/edit via the interactive web link or mount it on any StoreIt node via SFSP/1.0."
+                )}
               </p>
             </div>
 
             <div>
               <label className="font-semibold text-foreground block mb-1">
-                1. Web 共享空间互动链接（推荐：支持在线浏览目录、预览与 RW 读写协同）
+                {t(
+                  "1. Web 共享空间互动链接（推荐：支持在线浏览目录、预览与 RW 读写协同）",
+                  "1. Interactive Web Space Link (Recommended: browse, preview & RW collaborate)"
+                )}
               </label>
               <div className="flex gap-2">
                 <Input readOnly value={generatedData.webSpaceUrl} className="text-xs font-mono" />
@@ -175,11 +192,11 @@ export function ShareModal() {
                 >
                   {copiedKey === "web" ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-300" /> 已复制
+                      <Check className="w-3.5 h-3.5 text-emerald-300" /> {t("已复制", "Copied")}
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5" /> 复制
+                      <Copy className="w-3.5 h-3.5" /> {t("复制", "Copy")}
                     </>
                   )}
                 </Button>
@@ -188,7 +205,10 @@ export function ShareModal() {
 
             <div>
               <label className="font-semibold text-foreground block mb-1">
-                2. 直接下载 / 文件夹 ZIP 打包直链（防聊天软件爬虫误扣次数）
+                {t(
+                  "2. 直接下载 / 文件夹 ZIP 打包直链（防聊天软件爬虫误扣次数）",
+                  "2. Direct File / Folder ZIP Download Link"
+                )}
               </label>
               <div className="flex gap-2">
                 <Input readOnly value={generatedData.directUrl} className="text-xs font-mono" />
@@ -200,11 +220,11 @@ export function ShareModal() {
                 >
                   {copiedKey === "direct" ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" /> 已复制
+                      <Check className="w-3.5 h-3.5 text-emerald-600" /> {t("已复制", "Copied")}
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5" /> 复制
+                      <Copy className="w-3.5 h-3.5" /> {t("复制", "Copy")}
                     </>
                   )}
                 </Button>
@@ -214,7 +234,10 @@ export function ShareModal() {
             <div>
               <label className="font-semibold text-foreground flex items-center gap-1.5 mb-1">
                 <Globe className="w-3.5 h-3.5 text-brand-secondary" />
-                3. 跨服联邦挂载协议地址 (SFSP/1.0 · 可在其他 StoreIt 实例一键挂载)
+                {t(
+                  "3. 跨服联邦挂载协议地址 (SFSP/1.0 · 可在其他 StoreIt 实例一键挂载)",
+                  "3. Cross-Server Federation URI (SFSP/1.0 · mount on any StoreIt instance)"
+                )}
               </label>
               <div className="flex gap-2">
                 <Input readOnly value={generatedData.federatedUri} className="text-xs font-mono" />
@@ -226,11 +249,11 @@ export function ShareModal() {
                 >
                   {copiedKey === "fed" ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-600" /> 已复制
+                      <Check className="w-3.5 h-3.5 text-emerald-600" /> {t("已复制", "Copied")}
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5" /> 复制协议串
+                      <Copy className="w-3.5 h-3.5" /> {t("复制协议串", "Copy URI")}
                     </>
                   )}
                 </Button>
@@ -248,10 +271,10 @@ export function ShareModal() {
                   openSharedSpace(tok, "", pwd);
                 }}
               >
-                立即在共享空间中打开
+                {t("立即在共享空间中打开", "Open in Shared Space")}
               </Button>
               <Button type="button" onClick={handleClose}>
-                完成
+                {t("完成", "Done")}
               </Button>
             </DialogFooter>
           </div>
@@ -266,7 +289,8 @@ export function ShareModal() {
               <div className="min-w-0 flex-1">
                 <p className="font-semibold text-brand-primary truncate">{item?.name}</p>
                 <p className="text-[11px] text-muted-foreground truncate">
-                  路径: /{item?.path} ({item?.isDirectory ? "文件夹共享" : "单文件分享"})
+                  {t("路径", "Path")}: /{item?.path} (
+                  {item?.isDirectory ? t("文件夹共享", "Folder Share") : t("单文件分享", "File Share")})
                 </p>
               </div>
             </div>
@@ -274,7 +298,7 @@ export function ShareModal() {
             <div>
               <label className="font-semibold text-foreground flex items-center gap-1.5 mb-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-brand-secondary" />
-                共享读写权限管控 (R / RW)
+                {t("共享读写权限管控 (R / RW)", "Access Permission (R / RW)")}
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
@@ -286,9 +310,9 @@ export function ShareModal() {
                       : "bg-white hover:bg-black/5 text-foreground"
                   }`}
                 >
-                  <div>只读权限 (R)</div>
+                  <div>{t("只读权限 (R)", "Read-Only (R)")}</div>
                   <div className="text-[10px] text-muted-foreground font-normal mt-0.5">
-                    仅允许浏览子目录、在线预览与下载
+                    {t("仅允许浏览子目录、在线预览与下载", "Browse folders, preview & download only")}
                   </div>
                 </button>
                 <button
@@ -300,9 +324,9 @@ export function ShareModal() {
                       : "bg-white hover:bg-black/5 text-foreground"
                   }`}
                 >
-                  <div>可读写协同 (RW)</div>
+                  <div>{t("可读写协同 (RW)", "Read & Write (RW)")}</div>
                   <div className="text-[10px] text-muted-foreground font-normal mt-0.5">
-                    允许上传、新建、在线编辑与删除子项
+                    {t("允许上传、新建、在线编辑与删除子项", "Allow upload, create, online edit & delete")}
                   </div>
                 </button>
               </div>
@@ -311,11 +335,12 @@ export function ShareModal() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="font-medium text-foreground flex items-center gap-1 mb-1">
-                  <Lock className="w-3 h-3 text-brand-secondary" /> 访问提取码 (留空则公开)
+                  <Lock className="w-3 h-3 text-brand-secondary" />
+                  {t("访问提取码 (留空则公开)", "Access Code (optional)")}
                 </label>
                 <Input
                   type="text"
-                  placeholder="可选，如 8888 或 team2026"
+                  placeholder={t("可选，如 8888 或 team2026", "Optional, e.g. 8888 or team2026")}
                   value={accessPassword}
                   onChange={(e) => setAccessPassword(e.target.value)}
                   className="font-mono text-xs h-9"
@@ -323,10 +348,12 @@ export function ShareModal() {
               </div>
 
               <div>
-                <label className="font-medium text-foreground block mb-1">共享显示名称</label>
+                <label className="font-medium text-foreground block mb-1">
+                  {t("共享显示名称", "Display Title")}
+                </label>
                 <Input
                   type="text"
-                  placeholder="共享标题"
+                  placeholder={t("共享标题", "Share title")}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   className="text-xs h-9"
@@ -336,23 +363,25 @@ export function ShareModal() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="font-medium text-foreground block mb-1">链接有效期</label>
+                <label className="font-medium text-foreground block mb-1">
+                  {t("链接有效期", "Expiration")}
+                </label>
                 <select
                   value={expireHours}
                   onChange={(e) => setExpireHours(e.target.value)}
                   className="w-full h-9 rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
                 >
-                  <option value="24">1 天</option>
-                  <option value="168">7 天</option>
-                  <option value="720">30 天</option>
-                  <option value="-1">永久有效</option>
-                  <option value="custom">自定义小时数</option>
+                  <option value="24">{t("1 天", "1 Day")}</option>
+                  <option value="168">{t("7 天", "7 Days")}</option>
+                  <option value="720">{t("30 天", "30 Days")}</option>
+                  <option value="-1">{t("永久有效", "Never Expire")}</option>
+                  <option value="custom">{t("自定义小时数", "Custom Hours")}</option>
                 </select>
                 {expireHours === "custom" && (
                   <Input
                     type="number"
                     min="1"
-                    placeholder="有效小时数 (如 48)"
+                    placeholder={t("有效小时数 (如 48)", "Hours (e.g. 48)")}
                     value={customHours}
                     onChange={(e) => setCustomHours(e.target.value)}
                     className="mt-1.5 text-xs h-8"
@@ -363,12 +392,12 @@ export function ShareModal() {
 
               <div>
                 <label className="font-medium text-foreground block mb-1">
-                  最大下载次数 (留空不限)
+                  {t("最大下载次数 (留空不限)", "Max Downloads (blank = unlimited)")}
                 </label>
                 <Input
                   type="number"
                   min="1"
-                  placeholder="例如: 50"
+                  placeholder={t("例如: 50", "e.g. 50")}
                   value={maxDownloads}
                   onChange={(e) => setMaxDownloads(e.target.value)}
                   className="text-xs h-9"
@@ -378,10 +407,12 @@ export function ShareModal() {
 
             <DialogFooter className="pt-1">
               <Button type="button" variant="outline" onClick={handleClose}>
-                取消
+                {t("取消", "Cancel")}
               </Button>
               <Button type="submit" disabled={shareMutation.isPending}>
-                {shareMutation.isPending ? "生成中..." : "生成共享与跨服协议链接"}
+                {shareMutation.isPending
+                  ? t("生成中...", "Generating...")
+                  : t("生成共享与跨服协议链接", "Generate Share & SFSP Link")}
               </Button>
             </DialogFooter>
           </form>

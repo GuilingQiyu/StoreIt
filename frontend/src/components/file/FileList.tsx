@@ -24,7 +24,7 @@ import {
 } from "lucide-react";
 import { FileItem, SortField } from "@/types";
 import { api } from "@/lib/api";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import { getDownloadUrl, getZipDownloadUrl, isEditableText, isPreviewable } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { FileCard } from "./FileCard";
@@ -55,6 +55,7 @@ export function FileList() {
   const setRenameModalFile = useFileStore((s) => s.setRenameModalFile);
   const showToast = useFileStore((s) => s.showToast);
   const openConfirm = useFileStore((s) => s.openConfirm);
+  const { locale, t } = useI18n();
 
   const [contextMenu, setContextMenu] = useState<{
     x: number;
@@ -92,7 +93,6 @@ export function FileList() {
     return new Set((favoritesData || []).map((f) => f.path));
   }, [favoritesData]);
 
-  // 300ms 防抖处理上传完成刷新事件，避免多文件文件夹上传引发请求风暴
   const uploadTimerRef = useRef<any>(null);
   useEffect(() => {
     const handleUploaded = () => {
@@ -117,9 +117,10 @@ export function FileList() {
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       queryClient.invalidateQueries({ queryKey: ["shares"] });
       setSelectedFile(null);
-      showToast("删除成功", "success");
+      showToast(t("删除成功", "Deleted successfully"), "success");
     },
-    onError: (err: any) => showToast(err.message || "删除文件失败", "error"),
+    onError: (err: any) =>
+      showToast(err.message || t("删除文件失败", "Failed to delete file"), "error"),
   });
 
   const batchDeleteMutation = useMutation({
@@ -131,9 +132,13 @@ export function FileList() {
       queryClient.invalidateQueries({ queryKey: ["shares"] });
       setSelectedFile(null);
       clearSelection();
-      showToast(`已成功删除 ${paths.length} 个项目`, "success");
+      showToast(
+        t(`已成功删除 ${paths.length} 个项目`, `Deleted ${paths.length} items`),
+        "success"
+      );
     },
-    onError: (err: any) => showToast(err.message || "批量删除失败", "error"),
+    onError: (err: any) =>
+      showToast(err.message || t("批量删除失败", "Batch delete failed"), "error"),
   });
 
   const favoriteMutation = useMutation({
@@ -142,9 +147,15 @@ export function FileList() {
     onSuccess: (_res, vars) => {
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       refetch();
-      showToast(vars.favorite ? "已加入收藏夹" : "已取消收藏", "success");
+      showToast(
+        vars.favorite
+          ? t("已加入收藏夹", "Added to favorites")
+          : t("已取消收藏", "Removed from favorites"),
+        "success"
+      );
     },
-    onError: (err: any) => showToast(err.message || "更新收藏失败", "error"),
+    onError: (err: any) =>
+      showToast(err.message || t("更新收藏失败", "Failed to update favorite"), "error"),
   });
 
   const handleOpen = (item: FileItem) => {
@@ -160,7 +171,10 @@ export function FileList() {
     if (item.isDirectory) {
       link.href = getZipDownloadUrl([item.path]);
       link.download = `${item.name}.zip`;
-      showToast(`正在打包下载文件夹 "${item.name}.zip"...`, "info");
+      showToast(
+        t(`正在打包下载文件夹 "${item.name}.zip"...`, `Downloading folder "${item.name}.zip"...`),
+        "info"
+      );
     } else {
       link.href = getDownloadUrl(item.path);
       link.download = item.name;
@@ -174,18 +188,33 @@ export function FileList() {
     if (selectedPaths.length === 0) return;
     const link = document.createElement("a");
     link.href = getZipDownloadUrl(selectedPaths);
-    link.download = `StoreIt-打包下载-${selectedPaths.length}项.zip`;
+    link.download = t(
+      `StoreIt-打包下载-${selectedPaths.length}项.zip`,
+      `StoreIt-Archive-${selectedPaths.length}-items.zip`
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast(`正在打包下载已选的 ${selectedPaths.length} 个项目...`, "info");
+    showToast(
+      t(
+        `正在打包下载已选的 ${selectedPaths.length} 个项目...`,
+        `Downloading ${selectedPaths.length} selected items as ZIP...`
+      ),
+      "info"
+    );
   };
 
   const handleDelete = (item: FileItem) => {
     openConfirm({
-      title: `确认删除${item.isDirectory ? "文件夹" : "文件"}`,
-      description: `确定要彻底删除 "${item.name}" 吗？此操作不可撤销！`,
-      confirmText: "彻底删除",
+      title: t(
+        `确认删除${item.isDirectory ? "文件夹" : "文件"}`,
+        `Confirm Delete ${item.isDirectory ? "Folder" : "File"}`
+      ),
+      description: t(
+        `确定要彻底删除 "${item.name}" 吗？此操作不可撤销！`,
+        `Are you sure you want to permanently delete "${item.name}"? This action cannot be undone.`
+      ),
+      confirmText: t("彻底删除", "Delete"),
       destructive: true,
       onConfirm: () => deleteMutation.mutate(item.path),
     });
@@ -194,9 +223,15 @@ export function FileList() {
   const handleBatchDelete = () => {
     if (selectedPaths.length === 0) return;
     openConfirm({
-      title: `确认批量删除 (${selectedPaths.length} 项)`,
-      description: `确定要彻底删除选中的 ${selectedPaths.length} 个文件或文件夹吗？此操作不可撤销！`,
-      confirmText: "确认批量删除",
+      title: t(
+        `确认批量删除 (${selectedPaths.length} 项)`,
+        `Confirm Batch Delete (${selectedPaths.length} items)`
+      ),
+      description: t(
+        `确定要彻底删除选中的 ${selectedPaths.length} 个文件或文件夹吗？此操作不可撤销！`,
+        `Are you sure you want to permanently delete the ${selectedPaths.length} selected items? This action cannot be undone.`
+      ),
+      confirmText: t("确认批量删除", "Delete All"),
       destructive: true,
       onConfirm: () => batchDeleteMutation.mutate(selectedPaths),
     });
@@ -210,7 +245,13 @@ export function FileList() {
     }
     queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
     refetch();
-    showToast(`已将 ${selectedPaths.length} 个项目加入收藏夹`, "success");
+    showToast(
+      t(
+        `已将 ${selectedPaths.length} 个项目加入收藏夹`,
+        `Added ${selectedPaths.length} items to favorites`
+      ),
+      "success"
+    );
     clearSelection();
   };
 
@@ -229,7 +270,6 @@ export function FileList() {
     });
   };
 
-  // Map items with true favorite state and apply client-side sorting (folders always first)
   const rawItems = (data as FileItem[]) || [];
   const items: FileItem[] = useMemo(() => {
     const mapped = rawItems.map((it) => ({
@@ -247,9 +287,13 @@ export function FileList() {
       if (sortBy === "modifiedTime") {
         return (Number(a.modifiedTime || 0) - Number(b.modifiedTime || 0)) * dirFactor;
       }
-      return a.name.localeCompare(b.name, "zh-CN", { numeric: true }) * dirFactor;
+      return (
+        a.name.localeCompare(b.name, locale === "en" ? "en-US" : "zh-CN", {
+          numeric: true,
+        }) * dirFactor
+      );
     });
-  }, [rawItems, favoritesSet, viewMode, sortBy, sortOrder]);
+  }, [rawItems, favoritesSet, viewMode, sortBy, sortOrder, locale]);
 
   const renderSortIcon = (field: SortField) => {
     if (sortBy !== field) return <ArrowUpDown className="w-3 h-3 opacity-40" />;
@@ -264,7 +308,7 @@ export function FileList() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-12 text-muted-foreground gap-3">
         <RefreshCw className="w-8 h-8 animate-spin text-brand-secondary" />
-        <p className="text-sm">正在加载文件列表...</p>
+        <p className="text-sm">{t("正在加载文件列表...", "Loading files...")}</p>
       </div>
     );
   }
@@ -273,12 +317,15 @@ export function FileList() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-12 text-destructive select-none gap-3">
         <AlertCircle className="w-10 h-10 text-destructive" />
-        <p className="text-base font-semibold">读取文件列表失败</p>
+        <p className="text-base font-semibold">
+          {t("读取文件列表失败", "Failed to load file list")}
+        </p>
         <p className="text-xs text-muted-foreground">
-          {(error as any)?.message || "可能登录会话已过期或网络断开"}
+          {(error as any)?.message ||
+            t("可能登录会话已过期或网络断开", "Your session may have expired or network is disconnected")}
         </p>
         <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5 mt-2">
-          <RefreshCw className="w-3.5 h-3.5" /> 重新加载
+          <RefreshCw className="w-3.5 h-3.5" /> {t("重新加载", "Reload")}
         </Button>
       </div>
     );
@@ -292,17 +339,23 @@ export function FileList() {
         </div>
         <p className="text-base font-semibold text-brand-primary">
           {viewMode === "search"
-            ? "未找到匹配的文件"
+            ? t("未找到匹配的文件", "No matching files found")
             : viewMode === "favorites"
-            ? "收藏夹暂无文件"
+            ? t("收藏夹暂无文件", "No favorite items yet")
             : viewMode === "recent"
-            ? "暂无最近访问记录"
-            : "此目录下暂无文件"}
+            ? t("暂无最近访问记录", "No recently accessed files")
+            : t("此目录下暂无文件", "This folder is empty")}
         </p>
         <p className="text-xs text-muted-foreground mt-1 max-w-sm text-center">
           {viewMode === "files"
-            ? "直接将文件或文件夹拖拽至此，或点击右上角“上传 / 新建文件”开始添加"
-            : "可在我的文件中右键或点击星标将重要文件添加至此"}
+            ? t(
+                "直接将文件或文件夹拖拽至此，或点击右上角“上传 / 新建文件”开始添加",
+                "Drag and drop files or folders here, or click 'Upload / New File' in the top bar"
+              )
+            : t(
+                "可在我的文件中右键或点击星标将重要文件添加至此",
+                "Right-click or star files in 'My Files' to add them here"
+              )}
         </p>
       </div>
     );
@@ -316,7 +369,9 @@ export function FileList() {
       <div className="flex flex-wrap items-center justify-between gap-2 px-1">
         {selectedPaths.length > 0 ? (
           <div className="storeit-spring-bar flex flex-wrap items-center gap-2 bg-brand-primary text-white px-3.5 py-1.5 rounded-xl shadow-sm text-xs">
-            <span className="font-semibold">已选 {selectedPaths.length} 项</span>
+            <span className="font-semibold">
+              {t(`已选 ${selectedPaths.length} 项`, `${selectedPaths.length} selected`)}
+            </span>
             <button
               type="button"
               onClick={() =>
@@ -326,61 +381,61 @@ export function FileList() {
               }
               className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 transition-colors"
             >
-              {allSelected ? "取消全选" : "全选当前页"}
+              {allSelected ? t("取消全选", "Deselect All") : t("全选当前页", "Select All")}
             </button>
             <button
               type="button"
               onClick={handleBatchDownload}
               className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
             >
-              <Download className="w-3.5 h-3.5" /> 打包下载
+              <Download className="w-3.5 h-3.5" /> {t("打包下载", "Download ZIP")}
             </button>
             <button
               type="button"
               onClick={() => setBatchMovePaths(selectedPaths)}
               className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
             >
-              <FolderInput className="w-3.5 h-3.5" /> 批量移动
+              <FolderInput className="w-3.5 h-3.5" /> {t("批量移动", "Move")}
             </button>
             <button
               type="button"
               onClick={() => openBatchCopyModal(selectedPaths)}
               className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
             >
-              <Copy className="w-3.5 h-3.5" /> 批量复制
+              <Copy className="w-3.5 h-3.5" /> {t("批量复制", "Copy")}
             </button>
             <button
               type="button"
               onClick={handleBatchFavorite}
               className="px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
             >
-              <Star className="w-3.5 h-3.5" /> 批量收藏
+              <Star className="w-3.5 h-3.5" /> {t("批量收藏", "Favorite")}
             </button>
             <button
               type="button"
               onClick={handleBatchDelete}
               className="px-2 py-0.5 rounded bg-rose-500/80 hover:bg-rose-500 flex items-center gap-1 transition-colors"
             >
-              <Trash2 className="w-3.5 h-3.5" /> 批量删除
+              <Trash2 className="w-3.5 h-3.5" /> {t("批量删除", "Delete")}
             </button>
             <button
               type="button"
               onClick={clearSelection}
               className="p-0.5 rounded hover:bg-white/20 ml-1"
-              title="退出多选"
+              title={t("退出多选", "Clear selection")}
             >
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-xs text-muted-foreground select-none">
-            <span>共 {items.length} 项</span>
+            <span>{t(`共 ${items.length} 项`, `${items.length} items`)}</span>
             <button
               type="button"
               onClick={() => setSelectedPaths(items.map((it) => it.path))}
               className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-black/5 text-muted-foreground hover:text-foreground transition-colors"
             >
-              <CheckSquare className="w-3.5 h-3.5" /> 全选
+              <CheckSquare className="w-3.5 h-3.5" /> {t("全选", "Select All")}
             </button>
             <button
               type="button"
@@ -389,26 +444,35 @@ export function FileList() {
                   const res = await api.resyncFiles();
                   refetch();
                   queryClient.invalidateQueries({ queryKey: ["quota"] });
-                  showToast(`磁盘索引同步完成 (共扫描 ${res.indexed} 项)`, "success");
+                  showToast(
+                    t(
+                      `磁盘索引同步完成 (共扫描 ${res.indexed} 项)`,
+                      `Disk index synced (${res.indexed} items scanned)`
+                    ),
+                    "success"
+                  );
                 } catch (err: any) {
-                  showToast(err.message || "同步索引失败", "error");
+                  showToast(err.message || t("同步索引失败", "Failed to resync index"), "error");
                 }
               }}
               className="inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-black/5 text-muted-foreground hover:text-foreground transition-colors"
-              title="递归扫描物理存储目录并更新文件搜索索引"
+              title={t(
+                "递归扫描物理存储目录并更新文件搜索索引",
+                "Recursively scan physical storage directory and refresh search index"
+              )}
             >
-              <RefreshCw className="w-3 h-3" /> 同步索引
+              <RefreshCw className="w-3 h-3" /> {t("同步索引", "Sync Index")}
             </button>
           </div>
         )}
 
         <div className="flex items-center gap-1 text-xs select-none">
-          <span className="text-muted-foreground mr-1">排序:</span>
+          <span className="text-muted-foreground mr-1">{t("排序:", "Sort:")}</span>
           {(
             [
-              { key: "name", label: "名称" },
-              { key: "size", label: "大小" },
-              { key: "modifiedTime", label: "时间" },
+              { key: "name", label: t("名称", "Name") },
+              { key: "size", label: t("大小", "Size") },
+              { key: "modifiedTime", label: t("时间", "Modified") },
             ] as { key: SortField; label: string }[]
           ).map((col) => (
             <button
@@ -459,7 +523,7 @@ export function FileList() {
                   className="py-2.5 px-3 cursor-pointer hover:text-brand-primary"
                 >
                   <span className="inline-flex items-center gap-1">
-                    名称 {renderSortIcon("name")}
+                    {t("名称", "Name")} {renderSortIcon("name")}
                   </span>
                 </th>
                 <th
@@ -467,7 +531,7 @@ export function FileList() {
                   className="py-2.5 px-3 w-28 cursor-pointer hover:text-brand-primary"
                 >
                   <span className="inline-flex items-center gap-1">
-                    大小 {renderSortIcon("size")}
+                    {t("大小", "Size")} {renderSortIcon("size")}
                   </span>
                 </th>
                 <th
@@ -475,10 +539,10 @@ export function FileList() {
                   className="py-2.5 px-3 w-44 hidden sm:table-cell cursor-pointer hover:text-brand-primary"
                 >
                   <span className="inline-flex items-center gap-1">
-                    修改时间 {renderSortIcon("modifiedTime")}
+                    {t("修改时间", "Modified")} {renderSortIcon("modifiedTime")}
                   </span>
                 </th>
-                <th className="py-2.5 px-3 w-16 text-right">操作</th>
+                <th className="py-2.5 px-3 w-16 text-right">{t("操作", "Actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -508,7 +572,7 @@ export function FileList() {
       {contextMenu && (
         <div
           style={{ top: contextMenu.y, left: contextMenu.x }}
-          className="storeit-menu-pop fixed z-50 w-48 bg-white/95 backdrop-blur-md rounded-2xl border shadow-xl p-1.5 text-xs select-none"
+          className="storeit-menu-pop fixed z-50 w-52 bg-white/95 backdrop-blur-md rounded-2xl border shadow-xl p-1.5 text-xs select-none"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="px-2.5 py-1.5 font-semibold text-foreground truncate border-b mb-1">
@@ -523,7 +587,8 @@ export function FileList() {
               }}
               className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
             >
-              <Eye className="w-3.5 h-3.5 text-brand-secondary" /> 预览
+              <Eye className="w-3.5 h-3.5 text-brand-secondary" />
+              {t("预览", "Preview")}
             </button>
           )}
 
@@ -535,7 +600,8 @@ export function FileList() {
               }}
               className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
             >
-              <Edit3 className="w-3.5 h-3.5 text-brand-secondary" /> 在线编辑
+              <Edit3 className="w-3.5 h-3.5 text-brand-secondary" />
+              {t("在线编辑", "Online Edit")}
             </button>
           )}
 
@@ -547,7 +613,9 @@ export function FileList() {
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
           >
             <Download className="w-3.5 h-3.5 text-brand-secondary" />
-            {contextMenu.item.isDirectory ? "打包下载 (.zip)" : "下载"}
+            {contextMenu.item.isDirectory
+              ? t("打包下载 (.zip)", "Download ZIP (.zip)")
+              : t("下载", "Download")}
           </button>
 
           <button
@@ -558,7 +626,9 @@ export function FileList() {
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
           >
             <Share2 className="w-3.5 h-3.5 text-brand-secondary" />
-            {contextMenu.item.isDirectory ? "共享文件夹 (R/RW)" : "分享"}
+            {contextMenu.item.isDirectory
+              ? t("共享文件夹 (R/RW)", "Share Folder (R/RW)")
+              : t("分享", "Share")}
           </button>
 
           {viewMode !== "files" && (
@@ -569,7 +639,8 @@ export function FileList() {
               }}
               className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
             >
-              <FolderOpen className="w-3.5 h-3.5 text-brand-secondary" /> 打开所在目录
+              <FolderOpen className="w-3.5 h-3.5 text-brand-secondary" />
+              {t("打开所在目录", "Open Containing Folder")}
             </button>
           )}
 
@@ -585,7 +656,9 @@ export function FileList() {
                 contextMenu.item.isFavorite ? "fill-amber-500 text-amber-500" : ""
               }`}
             />
-            {contextMenu.item.isFavorite ? "取消收藏" : "加入收藏"}
+            {contextMenu.item.isFavorite
+              ? t("取消收藏", "Remove Favorite")
+              : t("加入收藏", "Add to Favorites")}
           </button>
 
           <button
@@ -595,7 +668,8 @@ export function FileList() {
             }}
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
           >
-            <Edit2 className="w-3.5 h-3.5 text-brand-secondary" /> 重命名
+            <Edit2 className="w-3.5 h-3.5 text-brand-secondary" />
+            {t("重命名", "Rename")}
           </button>
 
           <button
@@ -605,7 +679,8 @@ export function FileList() {
             }}
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
           >
-            <FolderInput className="w-3.5 h-3.5 text-brand-secondary" /> 移动到...
+            <FolderInput className="w-3.5 h-3.5 text-brand-secondary" />
+            {t("移动到...", "Move to...")}
           </button>
 
           <button
@@ -615,7 +690,8 @@ export function FileList() {
             }}
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
           >
-            <Copy className="w-3.5 h-3.5 text-brand-secondary" /> 复制到...
+            <Copy className="w-3.5 h-3.5 text-brand-secondary" />
+            {t("复制到...", "Copy to...")}
           </button>
 
           <button
@@ -625,7 +701,8 @@ export function FileList() {
             }}
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
           >
-            <Info className="w-3.5 h-3.5 text-brand-secondary" /> 属性与详情
+            <Info className="w-3.5 h-3.5 text-brand-secondary" />
+            {t("属性与详情", "Properties")}
           </button>
 
           <div className="h-px bg-black/5 my-1" />
@@ -637,7 +714,8 @@ export function FileList() {
             }}
             className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-destructive/10 text-left text-destructive"
           >
-            <Trash2 className="w-3.5 h-3.5" /> 删除
+            <Trash2 className="w-3.5 h-3.5" />
+            {t("删除", "Delete")}
           </button>
         </div>
       )}

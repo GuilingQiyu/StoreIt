@@ -13,7 +13,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { api } from "@/lib/api";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +41,7 @@ export function MoveModal() {
   const setMode = useFileStore((s) => s.setMoveModalMode);
   const clearSelection = useFileStore((s) => s.clearSelection);
   const showToast = useFileStore((s) => s.showToast);
+  const { t } = useI18n();
 
   const [targetDir, setTargetDir] = useState("");
   const [rootFolders, setRootFolders] = useState<TreeFolder[]>([]);
@@ -135,17 +136,23 @@ export function MoveModal() {
         clearSelection();
         showToast(
           isCopy
-            ? `已成功复制 ${batchPaths.length} 个项目`
-            : `已成功移动 ${batchPaths.length} 个项目`,
+            ? t(`已成功复制 ${batchPaths.length} 个项目`, `Copied ${batchPaths.length} items`)
+            : t(`已成功移动 ${batchPaths.length} 个项目`, `Moved ${batchPaths.length} items`),
           "success"
         );
       } else {
-        showToast(isCopy ? "文件已复制" : "文件已移动", "success");
+        showToast(
+          isCopy ? t("文件已复制", "Item copied") : t("文件已移动", "Item moved"),
+          "success"
+        );
       }
       handleClose();
     },
     onError: (err: any) => {
-      showToast(err.message || (isCopy ? "复制失败" : "移动失败"), "error");
+      showToast(
+        err.message || (isCopy ? t("复制失败", "Copy failed") : t("移动失败", "Move failed")),
+        "error"
+      );
     },
   });
 
@@ -178,7 +185,7 @@ export function MoveModal() {
                 if (!disabled) toggleExpandFolder(node.path);
               }}
               className="p-0.5 rounded hover:bg-black/10 shrink-0"
-              title={node.expanded ? "折叠子目录" : "展开子目录"}
+              title={node.expanded ? t("折叠子目录", "Collapse") : t("展开子目录", "Expand")}
             >
               {node.expanded ? (
                 <ChevronDown className="w-3.5 h-3.5" />
@@ -211,8 +218,14 @@ export function MoveModal() {
                 <FolderInput className="w-5 h-5 text-brand-secondary" />
               )}
               {batchPaths && batchPaths.length > 0
-                ? `批量${isCopy ? "复制" : "移动"} (${batchPaths.length} 项)`
-                : `${isCopy ? "复制" : "移动"}文件 / 目录`}
+                ? t(
+                    `批量${isCopy ? "复制" : "移动"} (${batchPaths.length} 项)`,
+                    `Batch ${isCopy ? "Copy" : "Move"} (${batchPaths.length} items)`
+                  )
+                : t(
+                    `${isCopy ? "复制" : "移动"}文件 / 目录`,
+                    `${isCopy ? "Copy" : "Move"} Item`
+                  )}
             </span>
 
             <div className="inline-flex rounded-lg border bg-muted/40 p-0.5 text-xs font-normal">
@@ -223,7 +236,7 @@ export function MoveModal() {
                   !isCopy ? "bg-white text-brand-primary font-semibold shadow-sm" : "text-muted-foreground"
                 }`}
               >
-                移动
+                {t("移动", "Move")}
               </button>
               <button
                 type="button"
@@ -232,7 +245,7 @@ export function MoveModal() {
                   isCopy ? "bg-white text-brand-primary font-semibold shadow-sm" : "text-muted-foreground"
                 }`}
               >
-                复制
+                {t("复制", "Copy")}
               </button>
             </div>
           </DialogTitle>
@@ -241,7 +254,7 @@ export function MoveModal() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-xs font-medium text-foreground block mb-1.5">
-              点击选择目标文件夹
+              {t("点击选择目标文件夹", "Select Destination Folder")}
             </label>
             <div className="border rounded-xl p-2 max-h-56 overflow-y-auto bg-muted/20 space-y-0.5 select-none">
               <div
@@ -253,12 +266,13 @@ export function MoveModal() {
                 }`}
               >
                 <Home className="w-4 h-4 shrink-0" />
-                <span>根目录 (/)</span>
+                <span>{t("根目录 (/)", "Root (/)")}</span>
               </div>
 
               {loadingTree ? (
                 <div className="py-6 text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" /> 正在加载目录树...
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  {t("正在加载目录树...", "Loading folder tree...")}
                 </div>
               ) : (
                 renderTree(rootFolders, 0)
@@ -268,25 +282,28 @@ export function MoveModal() {
 
           <div>
             <label className="text-xs font-medium text-foreground block mb-1">
-              目标目录路径 (可直接点选上方目录或手动输入，留空为根目录)
+              {t(
+                "目标目录路径 (可直接点选上方目录或手动输入，留空为根目录)",
+                "Target path (select above or type manually; leave blank for root)"
+              )}
             </label>
             <Input
               value={targetDir}
               onChange={(e) => setTargetDir(e.target.value)}
-              placeholder="例如: documents 或 photos/2026"
+              placeholder={t("例如: documents 或 photos/2026", "e.g. documents or photos/2026")}
             />
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleClose}>
-              取消
+              {t("取消", "Cancel")}
             </Button>
             <Button type="submit" disabled={actionMutation.isPending}>
               {actionMutation.isPending
-                ? "处理中..."
+                ? t("处理中...", "Processing...")
                 : isCopy
-                ? "确定复制到此处"
-                : "确定移动到此处"}
+                ? t("确定复制到此处", "Copy Here")
+                : t("确定移动到此处", "Move Here")}
             </Button>
           </DialogFooter>
         </form>

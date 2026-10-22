@@ -8,7 +8,8 @@ import { FileConflictStrategy, FolderConflictStrategy } from "@/types";
 import { useUploadStore } from "@/stores/useUploadStore";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
+import { isLocaleFollowingBrowser } from "@/lib/utils";
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { DropZone } from "@/components/file/DropZone";
@@ -41,6 +42,7 @@ function UploadConflictModal() {
   const showToast = useFileStore((s) => s.showToast);
   const addFile = useUploadStore((s) => s.addFile);
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   const [folderStrategy, setFolderStrategy] = useState<FolderConflictStrategy>("merge");
   const [fileStrategy, setFileStrategy] = useState<FileConflictStrategy>("rename");
@@ -96,7 +98,7 @@ function UploadConflictModal() {
       queryClient.invalidateQueries({ queryKey: ["files"] });
       setUploadConflict(null);
     } catch (err: any) {
-      showToast(err.message || "处理上传冲突失败", "error");
+      showToast(err.message || t("处理上传冲突失败", "Failed to resolve upload conflicts"), "error");
     } finally {
       setProcessing(false);
     }
@@ -108,26 +110,42 @@ function UploadConflictModal() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-amber-500" />
-            检测到同名文件或文件夹冲突
+            {t("检测到同名文件或文件夹冲突", "Name Conflict Detected")}
           </DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 text-xs">
           <p className="text-muted-foreground">
-            目标目录 <code className="bg-muted px-1.5 py-0.5 rounded font-mono">/{conflict.targetDir || "根目录"}</code> 中已存在同名项目，请选择处理方式：
+            {t("目标目录 ", "Target directory ")}
+            <code className="bg-muted px-1.5 py-0.5 rounded font-mono">
+              /{conflict.targetDir || t("根目录", "root")}
+            </code>
+            {t(" 中已存在同名项目，请选择处理方式：", " already contains items with the same name. Choose how to proceed:")}
           </p>
 
           {hasFolderConflicts && (
             <div className="p-3 rounded-xl border bg-muted/20 space-y-2">
               <p className="font-semibold text-foreground">
-                同名文件夹 ({conflict.conflictingFolders.join(", ")})：
+                {t("同名文件夹", "Conflicting Folders")} ({conflict.conflictingFolders.join(", ")}):
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {(
                   [
-                    { key: "merge", label: "合并目录", desc: "保留现有目录并传入内部" },
-                    { key: "rename", label: "自动重命名", desc: "新建 文件夹 (1)" },
-                    { key: "overwrite", label: "覆盖原目录", desc: "清空旧目录后写入" },
+                    {
+                      key: "merge",
+                      label: t("合并目录", "Merge"),
+                      desc: t("保留现有目录并传入内部", "Keep folder & upload inside"),
+                    },
+                    {
+                      key: "rename",
+                      label: t("自动重命名", "Auto Rename"),
+                      desc: t("新建 文件夹 (1)", "Create Folder (1)"),
+                    },
+                    {
+                      key: "overwrite",
+                      label: t("覆盖原目录", "Overwrite"),
+                      desc: t("清空旧目录后写入", "Replace existing folder"),
+                    },
                   ] as { key: FolderConflictStrategy; label: string; desc: string }[]
                 ).map((opt) => (
                   <button
@@ -154,16 +172,26 @@ function UploadConflictModal() {
             <div className="p-3 rounded-xl border bg-muted/20 space-y-2">
               <p className="font-semibold text-foreground">
                 {conflict.conflictingFiles.length > 0
-                  ? `同名文件 (${conflict.conflictingFiles.slice(0, 3).join(", ")}${
-                      conflict.conflictingFiles.length > 3 ? " 等" : ""
-                    })：`
-                  : "合并目录内的同名文件处理方式："}
+                  ? `${t("同名文件", "Conflicting Files")} (${conflict.conflictingFiles
+                      .slice(0, 3)
+                      .join(", ")}${
+                      conflict.conflictingFiles.length > 3 ? t(" 等", ", etc.") : ""
+                    }):`
+                  : t("合并目录内的同名文件处理方式：", "For conflicting files inside merged folders:")}
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {(
                   [
-                    { key: "rename", label: "自动重命名", desc: "保留两者，如 file (1).ext" },
-                    { key: "overwrite", label: "覆盖同名文件", desc: "直接替换已有同名文件" },
+                    {
+                      key: "rename",
+                      label: t("自动重命名", "Auto Rename"),
+                      desc: t("保留两者，如 file (1).ext", "Keep both, e.g. file (1).ext"),
+                    },
+                    {
+                      key: "overwrite",
+                      label: t("覆盖同名文件", "Overwrite"),
+                      desc: t("直接替换已有同名文件", "Replace existing file"),
+                    },
                   ] as { key: FileConflictStrategy; label: string; desc: string }[]
                 ).map((opt) => (
                   <button
@@ -189,10 +217,10 @@ function UploadConflictModal() {
 
         <DialogFooter className="gap-2">
           <Button type="button" variant="outline" onClick={() => setUploadConflict(null)}>
-            取消上传
+            {t("取消上传", "Cancel")}
           </Button>
           <Button type="button" disabled={processing} onClick={handleConfirm}>
-            {processing ? "处理中..." : "按所选策略开始上传"}
+            {processing ? t("处理中...", "Processing...") : t("按所选策略开始上传", "Start Upload")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -206,6 +234,7 @@ function ChangePasswordModal() {
   const showToast = useFileStore((s) => s.showToast);
   const user = useAuthStore((s) => s.user);
   const setUser = useAuthStore((s) => s.setUser);
+  const { t } = useI18n();
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -215,11 +244,11 @@ function ChangePasswordModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword.length < 8) {
-      showToast("新口令至少需要 8 位字符", "error");
+      showToast(t("新口令至少需要 8 位字符", "New password must be at least 8 characters"), "error");
       return;
     }
     if (newPassword !== confirmPassword) {
-      showToast("两次输入的新口令不一致", "error");
+      showToast(t("两次输入的新口令不一致", "New passwords do not match"), "error");
       return;
     }
     setSubmitting(true);
@@ -228,13 +257,13 @@ function ChangePasswordModal() {
       if (user) {
         setUser({ ...user, mustChangePassword: false });
       }
-      showToast("登录口令已成功修改", "success");
+      showToast(t("登录口令已成功修改", "Password updated successfully"), "success");
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
       setOpen(false);
     } catch (err: any) {
-      showToast(err.message || "修改口令失败", "error");
+      showToast(err.message || t("修改口令失败", "Failed to update password"), "error");
     } finally {
       setSubmitting(false);
     }
@@ -246,54 +275,63 @@ function ChangePasswordModal() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <KeyRound className="w-5 h-5 text-brand-secondary" />
-            修改登录口令
+            {t("修改登录口令", "Change Password")}
           </DialogTitle>
         </DialogHeader>
 
         {user?.mustChangePassword && (
           <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs">
-            系统检测到您的账号处于待修改初始口令状态，请设置新的个人登录口令。
+            {t(
+              "系统检测到您的账号处于待修改初始口令状态，请设置新的个人登录口令。",
+              "Your account requires an initial password change. Please set a new personal password."
+            )}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="text-xs font-medium text-foreground block mb-1">当前原口令</label>
+            <label className="text-xs font-medium text-foreground block mb-1">
+              {t("当前原口令", "Current Password")}
+            </label>
             <Input
               type="password"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              placeholder="请输入当前口令"
+              placeholder={t("请输入当前口令", "Enter current password")}
               required
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-foreground block mb-1">新口令 (≥8位)</label>
+            <label className="text-xs font-medium text-foreground block mb-1">
+              {t("新口令 (≥8位)", "New Password (≥ 8 chars)")}
+            </label>
             <Input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="至少 8 位字符"
+              placeholder={t("至少 8 位字符", "At least 8 characters")}
               required
             />
           </div>
           <div>
-            <label className="text-xs font-medium text-foreground block mb-1">确认新口令</label>
+            <label className="text-xs font-medium text-foreground block mb-1">
+              {t("确认新口令", "Confirm New Password")}
+            </label>
             <Input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="再次输入新口令"
+              placeholder={t("再次输入新口令", "Re-enter new password")}
               required
             />
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              取消
+              {t("取消", "Cancel")}
             </Button>
             <Button type="submit" disabled={submitting}>
-              {submitting ? "保存中..." : "确认修改"}
+              {submitting ? t("保存中...", "Saving...") : t("确认修改", "Update Password")}
             </Button>
           </DialogFooter>
         </form>
@@ -305,6 +343,7 @@ function ChangePasswordModal() {
 function GlobalConfirmModal() {
   const confirmDialog = useFileStore((s) => s.confirmDialog);
   const closeConfirm = useFileStore((s) => s.closeConfirm);
+  const { t } = useI18n();
 
   if (!confirmDialog) return null;
 
@@ -317,7 +356,7 @@ function GlobalConfirmModal() {
         <p className="text-sm text-muted-foreground leading-relaxed">{confirmDialog.description}</p>
         <DialogFooter className="gap-2">
           <Button type="button" variant="outline" onClick={closeConfirm}>
-            取消
+            {t("取消", "Cancel")}
           </Button>
           <Button
             type="button"
@@ -328,7 +367,7 @@ function GlobalConfirmModal() {
               fn();
             }}
           >
-            {confirmDialog.confirmText || "确定"}
+            {confirmDialog.confirmText || t("确定", "Confirm")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -382,8 +421,21 @@ export default function MainPage() {
   const router = useRouter();
   const { checkAuth, isAuthenticated, isLoading, user } = useAuthStore();
   const viewMode = useFileStore((s) => s.viewMode);
+  const { t } = useI18n();
 
-  // URL ↔ 视图模式及子文件夹路径同步：支持 #/files/<subPath> 刷新保留位置与浏览器前进/后退
+  // Initialize locale (auto-switch to English when browser language is not Chinese)
+  useEffect(() => {
+    useFileStore.getState().syncLocaleFromBrowser();
+    const onLanguageChange = () => {
+      if (isLocaleFollowingBrowser()) {
+        useFileStore.getState().syncLocaleFromBrowser();
+      }
+    };
+    window.addEventListener("languagechange", onLanguageChange);
+    return () => window.removeEventListener("languagechange", onLanguageChange);
+  }, []);
+
+  // URL ↔ ViewMode & Subfolder path sync
   useEffect(() => {
     const VALID_MODES = ["files", "recent", "favorites", "shares", "admin", "settings", "about", "search"];
     if (window.location.pathname === "/about" && !window.location.hash) {
@@ -458,7 +510,9 @@ export default function MainPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-brand-bg text-muted-foreground gap-3">
         <RefreshCw className="w-8 h-8 animate-spin text-brand-secondary" />
-        <span className="text-sm">正在加载 StoreIt 存储服务...</span>
+        <span className="text-sm">
+          {t("正在加载 StoreIt 存储服务...", "Loading StoreIt storage service...")}
+        </span>
       </div>
     );
   }

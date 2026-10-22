@@ -1,1 +1,7846 @@
-(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[931],{5334:function(e,t,a){Promise.resolve().then(a.bind(a,5719))},5719:function(e,t,a){"use strict";a.r(t),a.d(t,{default:function(){return za}});var r=a(2265),n=r.useState,l=r.useEffect,s=r.useMemo,o=r.useCallback,c=r.useRef,m=a(9376).useRouter,i=a(3011).U,d=a(6885),u=d.tJ,p=d.FL,x=a(1713).a,h=a(1770).D,f=a(9827).NL,g=a(3864).t,b=a(1837),y=b.h,E=(b.ApiError,a(3448)),v=E.cn,w=E.formatBytes,N=E.formatDate,k=E.getFileExtension,C=E.getParentDirectory,M=E.getFileCategory,S=E.isPreviewable,F=E.isEditableText,z=E.getPreviewKind,T=E.getDownloadUrl,$=E.getZipDownloadUrl,P=E.getPreviewUrl,D=E.copyToClipboard,R=E.THEME_OPTIONS,q=E.getSavedTheme,O=E.applyThemeToDom,U=a(2381).z,j=a(279).I,A=a(1418),Z={Root:A.fC,Trigger:A.xz,Group:A.ZA,Portal:A.Uv,Sub:A.Tr,RadioGroup:A.Ee,SubTrigger:A.fF,SubContent:A.tu,Content:A.VY,Item:A.ck,Separator:A.Z0},I=a(9027),W={Root:I.fC,Trigger:I.xz,Portal:I.h_,Close:I.x8,Overlay:I.aV,Content:I.VY,Title:I.Dx,Description:I.dk},_=a(610),L={Root:_.fC,Indicator:_.z$},B=a(721),K={Root:B.fC,Thumb:B.bU},H=a(9205);const Q=(0,H.Z)("Globe",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20",key:"13o17"}],["path",{d:"M2 12h20",key:"9i4pu4"}]]),G=(0,H.Z)("Palette",[["circle",{cx:"13.5",cy:"6.5",r:".5",fill:"currentColor",key:"1okk4w"}],["circle",{cx:"17.5",cy:"10.5",r:".5",fill:"currentColor",key:"f64h9f"}],["circle",{cx:"8.5",cy:"7.5",r:".5",fill:"currentColor",key:"45f9"}],["circle",{cx:"6.5",cy:"12.5",r:".5",fill:"currentColor",key:"121g"}],["path",{d:"M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z",key:"123f"}]]),V=(0,H.Z)("Ticket",[["path",{d:"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z",key:"134"}],["path",{d:"M13 5v2",key:"1"}],["path",{d:"M13 17v2",key:"2"}],["path",{d:"M13 11v2",key:"3"}]]),Y=(0,H.Z)("AlertCircle",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["line",{x1:"12",x2:"12",y1:"8",y2:"12",key:"1pkeuh"}],["line",{x1:"12",x2:"12.01",y1:"16",y2:"16",key:"4dfq90"}]]),X=(0,H.Z)("AlertTriangle",[["path",{d:"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",key:"wmoenq"}],["path",{d:"M12 9v4",key:"juzpu7"}],["path",{d:"M12 17h.01",key:"p32p05"}]]),J=(0,H.Z)("AlertOctagon",[["polygon",{points:"7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2",key:"h34r1"}],["line",{x1:"12",x2:"12",y1:"8",y2:"12",key:"1pkeuh"}],["line",{x1:"12",x2:"12.01",y1:"16",y2:"16",key:"4dfq90"}]]),ee=(0,H.Z)("ArrowDown",[["path",{d:"M12 5v14",key:"s699le"}],["path",{d:"m19 12-7 7-7-7",key:"1idqje"}]]),te=((0,H.Z)("ArrowRight",[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"m12 5 7 7-7 7",key:"xquz4c"}]]),(0,H.Z)("ArrowUp",[["path",{d:"m5 12 7-7 7 7",key:"hav0vg"}],["path",{d:"M12 19V5",key:"x0mq9r"}]])),ae=(0,H.Z)("ArrowUpDown",[["path",{d:"m21 16-4 4-4-4",key:"f6ql7i"}],["path",{d:"M17 20V4",key:"1ejh1v"}],["path",{d:"m3 8 4-4 4 4",key:"11wl7u"}],["path",{d:"M7 4v16",key:"1glfcx"}]]),re=(0,H.Z)("BookOpen",[["path",{d:"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z",key:"vv98re"}],["path",{d:"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z",key:"1cyq3y"}]]),ne=(0,H.Z)("Calendar",[["path",{d:"M8 2v4",key:"1cmpym"}],["path",{d:"M16 2v4",key:"4m81vk"}],["rect",{width:"18",height:"18",x:"3",y:"4",rx:"2",key:"1hopcy"}],["path",{d:"M3 10h18",key:"8toen8"}]]),le=(0,H.Z)("Check",[["path",{d:"M20 6 9 17l-5-5",key:"1gmf2c"}]]),se=((0,H.Z)("CheckCheck",[["path",{d:"M18 6 7 17l-5-5",key:"116fxf"}],["path",{d:"m22 10-7.5 7.5L13 16",key:"ke71qq"}]]),(0,H.Z)("CheckCircle2",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]])),oe=(0,H.Z)("CheckSquare",[["polyline",{points:"9 11 12 14 22 4",key:"1K3w9a"}],["path",{d:"M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11",key:"1jnkn4"}]]),ce=(0,H.Z)("ChevronDown",[["path",{d:"m6 9 6 6 6-6",key:"qrunsl"}]]),me=(0,H.Z)("ChevronLeft",[["path",{d:"m15 18-6-6 6-6",key:"1wnfg3"}]]),ie=(0,H.Z)("ChevronRight",[["path",{d:"m9 18 6-6-6-6",key:"mthhwq"}]]),de=(0,H.Z)("ChevronUp",[["path",{d:"m18 15-6-6-6 6",key:"153udz"}]]),ue=((0,H.Z)("Circle",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]]),(0,H.Z)("Clock",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["polyline",{points:"12 6 12 12 16 14",key:"68esgv"}]])),pe=(0,H.Z)("CloudUpload",[["path",{d:"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242",key:"1pljnt"}],["path",{d:"M12 12v9",key:"192myk"}],["path",{d:"m16 16-4-4-4 4",key:"119cdb"}]]),xe=(0,H.Z)("Code",[["polyline",{points:"16 18 22 12 16 6",key:"z7tu5w"}],["polyline",{points:"8 6 2 12 8 18",key:"1eg1df"}]]),he=(0,H.Z)("Columns",[["rect",{width:"18",height:"18",x:"3",y:"3",rx:"2",key:"afitv7"}],["path",{d:"M12 3v18",key:"108xh3"}]]),fe=(0,H.Z)("Copy",[["rect",{width:"14",height:"14",x:"8",y:"8",rx:"2",ry:"2",key:"17jyea"}],["path",{d:"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2",key:"zix9uf"}]]),ge=(0,H.Z)("Database",[["ellipse",{cx:"12",cy:"5",rx:"9",ry:"3",key:"msslwz"}],["path",{d:"M3 5V19A9 3 0 0 0 21 19V5",key:"1wlel7"}],["path",{d:"M3 12A9 3 0 0 0 21 12",key:"mv7ke4"}]]),be=(0,H.Z)("Download",[["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",key:"ih7n3h"}],["polyline",{points:"7 10 12 15 17 10",key:"2ggqvy"}],["line",{x1:"12",x2:"12",y1:"15",y2:"3",key:"1vk2je"}]]),ye=(0,H.Z)("Edit2",[["path",{d:"M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z",key:"5qss01"}]]),Ee=(0,H.Z)("Edit3",[["path",{d:"M12 20h9",key:"t2du7b"}],["path",{d:"M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z",key:"13n1m3"}]]),ve=(0,H.Z)("ExternalLink",[["path",{d:"M15 3h6v6",key:"1q9fwt"}],["path",{d:"M10 14 21 3",key:"gplh6r"}],["path",{d:"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",key:"a6xqqp"}]]),we=(0,H.Z)("Eye",[["path",{d:"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",key:"1nclc0"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]]),Ne=(0,H.Z)("FileArchive",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M10 9H8",key:"b1mrlr"}],["path",{d:"M10 13H8",key:"142P08"}],["path",{d:"M10 17H8",key:"1n5v10"}]]),ke=(0,H.Z)("FileAudio",[["path",{d:"M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3",key:"12329p"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M2 19a2 2 0 1 1 4 0v1a2 2 0 1 1-4 0v-4a6 6 0 0 1 12 0v4a2 2 0 1 1-4 0v-1a2 2 0 1 1 4 0",key:"1et2d5"}]]),Ce=(0,H.Z)("FileCode",[["path",{d:"M10 12.5 8 15l2 2.5",key:"1tg20x"}],["path",{d:"m14 12.5 2 2.5-2 2.5",key:"1bir2l"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z",key:"1mlx3k"}]]),Me=(0,H.Z)("FileImage",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["circle",{cx:"10",cy:"12",r:"2",key:"17b9bb"}],["path",{d:"m20 17-1.296-1.296a2.41 2.41 0 0 0-3.408 0L9 22",key:"12w7p7"}]]),Se=(0,H.Z)("FilePlus2",[["path",{d:"M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4",key:"1pf5j1"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M3 15h6",key:"4232k"}],["path",{d:"M6 12v6",key:"15v8r6"}]]),Fe=(0,H.Z)("FileText",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M10 9H8",key:"b1mrlr"}],["path",{d:"M16 13H8",key:"t4e002"}],["path",{d:"M16 17H8",key:"z1uh3a"}]]),ze=(0,H.Z)("FileVideo",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"m10 11 5 3-5 3v-6Z",key:"1ntvm4"}]]),Te=(0,H.Z)("Folder",[["path",{d:"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z",key:"1kt360"}]]),$e=(0,H.Z)("FolderInput",[["path",{d:"M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1",key:"14dc1k"}],["path",{d:"M2 13h10",key:"12fb38"}],["path",{d:"m9 16 3-3-3-3",key:"1d2p4n"}]]),Pe=(0,H.Z)("FolderOpen",[["path",{d:"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2",key:"12r28w"}]]),De=(0,H.Z)("FolderPlus",[["path",{d:"M12 10v6",key:"1bos4e"}],["path",{d:"M9 13h6",key:"1u5f0p"}],["path",{d:"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z",key:"1kt360"}]]),Re=(0,H.Z)("Github",[["path",{d:"M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4",key:"tonef"}],["path",{d:"M9 18c-4.51 2-5-2-7-2",key:"9comsn"}]]),qe=(0,H.Z)("HardDrive",[["line",{x1:"22",x2:"2",y1:"12",y2:"12",key:"1y58io"}],["path",{d:"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z",key:"oot6mr"}],["line",{x1:"6",x2:"6.01",y1:"16",y2:"16",key:"sgf278"}],["line",{x1:"10",x2:"10.01",y1:"16",y2:"16",key:"1l4acy"}]]),Oe=((0,H.Z)("Heart",[["path",{d:"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z",key:"c30ky"}]]),(0,H.Z)("Home",[["path",{d:"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8",key:"5wwlr5"}],["path",{d:"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",key:"1d0kgt"}]])),Ue=(0,H.Z)("Info",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M12 16v-4",key:"1dtifu"}],["path",{d:"M12 8h.01",key:"e9boi3"}]]),je=(0,H.Z)("KeyRound",[["path",{d:"M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z",key:"1fxcex"}],["circle",{cx:"16.5",cy:"7.5",r:".5",fill:"currentColor",key:"w0ekpg"}]]),Ae=(0,H.Z)("LayoutGrid",[["rect",{width:"7",height:"7",x:"3",y:"3",rx:"1",key:"1g98yp"}],["rect",{width:"7",height:"7",x:"14",y:"3",rx:"1",key:"6d4xhi"}],["rect",{width:"7",height:"7",x:"14",y:"14",rx:"1",key:"1v5o0"}],["rect",{width:"7",height:"7",x:"3",y:"14",rx:"1",key:"1bb6yr"}]]),Ze=(0,H.Z)("Lightbulb",[["path",{d:"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5",key:"1gvzjb"}],["path",{d:"M9 18h6",key:"x1upvd"}],["path",{d:"M10 22h4",key:"ceow96"}]]),Ie=(0,H.Z)("List",[["line",{x1:"8",x2:"21",y1:"6",y2:"6",key:"7ey8pc"}],["line",{x1:"8",x2:"21",y1:"12",y2:"12",key:"rjfblc"}],["line",{x1:"8",x2:"21",y1:"18",y2:"18",key:"c3b1m8"}],["line",{x1:"3",x2:"3.01",y1:"6",y2:"6",key:"1g7gq3"}],["line",{x1:"3",x2:"3.01",y1:"12",y2:"12",key:"1p63bc"}],["line",{x1:"3",x2:"3.01",y1:"18",y2:"18",key:"28t2mc"}]]),We=(0,H.Z)("ListTree",[["path",{d:"M21 12h-8",key:"1bmf0i"}],["path",{d:"M21 6H8",key:"1pqb7v"}],["path",{d:"M21 18h-8",key:"1c4r2k"}],["path",{d:"M3 6v4c0 1.1.9 2 2 2h3",key:"1y83k1"}],["path",{d:"M3 10v6c0 1.1.9 2 2 2h3",key:"1v493a"}]]),_e=(0,H.Z)("Lock",[["rect",{width:"18",height:"11",x:"3",y:"11",rx:"2",ry:"2",key:"1w4ew1"}],["path",{d:"M7 11V7a5 5 0 0 1 10 0v4",key:"fwvmzm"}]]),Le=(0,H.Z)("LogOut",[["path",{d:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4",key:"1uf3rs"}],["polyline",{points:"16 17 21 12 16 7",key:"1gabdz"}],["line",{x1:"21",x2:"9",y1:"12",y2:"12",key:"1uyos4"}]]),Be=(0,H.Z)("Maximize2",[["polyline",{points:"15 3 21 3 21 9",key:"mznyad"}],["polyline",{points:"9 21 3 21 3 15",key:"1avn1i"}],["line",{x1:"21",x2:"14",y1:"3",y2:"10",key:"17b57r"}],["line",{x1:"3",x2:"10",y1:"21",y2:"14",key:"1intq8"}]]),Ke=(0,H.Z)("Menu",[["line",{x1:"4",x2:"20",y1:"12",y2:"12",key:"1e0a9i"}],["line",{x1:"4",x2:"20",y1:"6",y2:"6",key:"1owob3"}],["line",{x1:"4",x2:"20",y1:"18",y2:"18",key:"yk5zj1"}]]),He=(0,H.Z)("Minimize2",[["polyline",{points:"4 14 10 14 10 20",key:"11kfnr"}],["polyline",{points:"20 10 14 10 14 4",key:"97r2m"}],["line",{x1:"14",x2:"21",y1:"10",y2:"3",key:"o5lafz"}],["line",{x1:"3",x2:"10",y1:"21",y2:"14",key:"1intq8"}]]),Qe=(0,H.Z)("MoreHorizontal",[["circle",{cx:"12",cy:"12",r:"1",key:"41hilf"}],["circle",{cx:"19",cy:"12",r:"1",key:"1wjl8i"}],["circle",{cx:"5",cy:"12",r:"1",key:"1pcz8c"}]]),Ge=(0,H.Z)("MoreVertical",[["circle",{cx:"12",cy:"12",r:"1",key:"41hilf"}],["circle",{cx:"12",cy:"5",r:"1",key:"gxeob9"}],["circle",{cx:"12",cy:"19",r:"1",key:"lyex9k"}]]),Ve=(0,H.Z)("Pause",[["rect",{x:"14",y:"4",width:"4",height:"16",rx:"1",key:"zuxfzm"}],["rect",{x:"6",y:"4",width:"4",height:"16",rx:"1",key:"1okwgv"}]]),Ye=(0,H.Z)("Play",[["polygon",{points:"6 3 20 12 6 21 6 3",key:"1oa8hb"}]]),Xe=(0,H.Z)("RefreshCw",[["path",{d:"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",key:"v9h5vc"}],["path",{d:"M21 3v5h-5",key:"1q7to0"}],["path",{d:"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16",key:"3uifl3"}],["path",{d:"M8 16H3v5",key:"1cv678"}]]),Je=(0,H.Z)("RotateCw",[["path",{d:"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8",key:"1p45f6"}],["path",{d:"M21 3v5h-5",key:"1q7to0"}]]),et=(0,H.Z)("Save",[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z",key:"1c8476"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7",key:"1ydtos"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7",key:"t51u73"}]]),tt=(0,H.Z)("Search",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["path",{d:"m21 21-4.3-4.3",key:"1qie3q"}]]),at=(0,H.Z)("Server",[["rect",{width:"20",height:"8",x:"2",y:"2",rx:"2",ry:"2",key:"ngkwjq"}],["rect",{width:"20",height:"8",x:"2",y:"14",rx:"2",ry:"2",key:"iecqi9"}],["line",{x1:"6",x2:"6.01",y1:"6",y2:"6",key:"16zg32"}],["line",{x1:"6",x2:"6.01",y1:"18",y2:"18",key:"nzw8ys"}]]),rt=(0,H.Z)("Settings",[["path",{d:"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",key:"1qme2f"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]]),nt=(0,H.Z)("Share2",[["circle",{cx:"18",cy:"5",r:"3",key:"gq8acd"}],["circle",{cx:"6",cy:"12",r:"3",key:"w7nqdw"}],["circle",{cx:"18",cy:"19",r:"3",key:"1xt0gg"}],["line",{x1:"8.59",x2:"15.42",y1:"13.51",y2:"17.49",key:"47mynk"}],["line",{x1:"15.41",x2:"8.59",y1:"6.51",y2:"10.49",key:"1n3mei"}]]),lt=(0,H.Z)("ShieldAlert",[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",key:"oel41y"}],["path",{d:"M12 8v4",key:"1got3b"}],["path",{d:"M12 16h.01",key:"1drbdi"}]]),st=(0,H.Z)("ShieldCheck",[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",key:"oel41y"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]]),ot=(0,H.Z)("Sliders",[["line",{x1:"4",x2:"4",y1:"21",y2:"14",key:"1s142t"}],["line",{x1:"4",x2:"4",y1:"10",y2:"3",key:"1i929v"}],["line",{x1:"12",x2:"12",y1:"21",y2:"12",key:"hf22a"}],["line",{x1:"12",x2:"12",y1:"8",y2:"3",key:"1j0mnr"}],["line",{x1:"20",x2:"20",y1:"21",y2:"16",key:"12d42w"}],["line",{x1:"20",x2:"20",y1:"12",y2:"3",key:"1c12rk"}],["line",{x1:"2",x2:"6",y1:"14",y2:"14",key:"1j59d8"}],["line",{x1:"10",x2:"14",y1:"8",y2:"8",key:"1fa5r6"}],["line",{x1:"18",x2:"22",y1:"16",y2:"16",key:"1dc27r"}]]),ct=(0,H.Z)("Sparkles",[["path",{d:"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",key:"4124o"}]]),mt=(0,H.Z)("Star",[["polygon",{points:"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2",key:"126Qv8"}]]),it=(0,H.Z)("Trash2",[["path",{d:"M3 6h18",key:"d0wm0j"}],["path",{d:"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6",key:"4alrt4"}],["path",{d:"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2",key:"v07s0e"}],["line",{x1:"10",x2:"10",y1:"11",y2:"17",key:"1uufr5"}],["line",{x1:"14",x2:"14",y1:"11",y2:"17",key:"limitq"}]]),dt=(0,H.Z)("Upload",[["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",key:"ih7n3h"}],["polyline",{points:"17 8 12 3 7 8",key:"t8dd8p"}],["line",{x1:"12",x2:"12",y1:"3",y2:"15",key:"widbto"}]]),ut=(0,H.Z)("UploadCloud",[["path",{d:"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242",key:"1pljnt"}],["path",{d:"M12 12v9",key:"192myk"}],["path",{d:"m16 16-4-4-4 4",key:"119cdb"}]]),pt=((0,H.Z)("User",[["path",{d:"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2",key:"975kel"}],["circle",{cx:"12",cy:"7",r:"4",key:"17ys0d"}]]),(0,H.Z)("UserPlus",[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",key:"1Lc7a"}],["circle",{cx:"9",cy:"7",r:"4",key:"nufk8"}],["line",{x1:"19",x2:"19",y1:"8",y2:"14",key:"1bvy3"}],["line",{x1:"22",x2:"16",y1:"11",y2:"11",key:"13g4k"}]])),xt=(0,H.Z)("Users",[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",key:"1Lc7a"}],["circle",{cx:"9",cy:"7",r:"4",key:"nufk8"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87",key:"kshe6"}],["path",{d:"M16 3.13a4 4 0 0 1 0 7.75",key:"1da9ce"}]]),ht=(0,H.Z)("WrapText",[["line",{x1:"3",x2:"21",y1:"6",y2:"6",key:"4m8b9"}],["path",{d:"M3 12h15a3 3 0 1 1 0 6h-4",key:"1cl27"}],["polyline",{points:"16 16 14 18 16 20",key:"12v2r"}],["line",{x1:"3",x2:"10",y1:"18",y2:"18",key:"12k3p"}]]),ft=(0,H.Z)("X",[["path",{d:"M18 6 6 18",key:"1bl5f8"}],["path",{d:"m6 6 12 12",key:"d8bk6v"}]]),gt=(0,H.Z)("ZoomIn",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["line",{x1:"21",x2:"16.65",y1:"21",y2:"16.65",key:"13gj7c"}],["line",{x1:"11",x2:"11",y1:"8",y2:"14",key:"1vmskp"}],["line",{x1:"8",x2:"14",y1:"11",y2:"11",key:"durymu"}]]),bt=(0,H.Z)("ZoomOut",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["line",{x1:"21",x2:"16.65",y1:"21",y2:"16.65",key:"13gj7c"}],["line",{x1:"8",x2:"14",y1:"11",y2:"11",key:"durymu"}]]);function yt(){return yt=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var a=arguments[t];for(var r in a)Object.prototype.hasOwnProperty.call(a,r)&&(e[r]=a[r])}return e},yt.apply(this,arguments)}const Et=i(((e,t)=>({currentPath:"",viewMode:"files",layout:"grid",theme:"classic",sortBy:"name",sortOrder:"asc",searchQuery:"",selectedFile:null,selectedPaths:[],previewFile:null,previewAutoEdit:!1,uploadConflict:null,shareModalFile:null,activeShareToken:null,activeShareServerUrl:"",activeSharePassword:"",moveModalFile:null,batchMovePaths:null,moveModalMode:"move",renameModalFile:null,newFolderModalOpen:!1,newFileModalOpen:!1,passwordModalOpen:!1,sidebarOpen:!1,toasts:[],confirmDialog:null,setCurrentPath:a=>{e({currentPath:a,selectedFile:null,selectedPaths:[]}),"files"===t().viewMode&&vt("files",a)},setViewMode:a=>{e({viewMode:a,selectedFile:null,selectedPaths:[]}),vt(a,"files"===a?t().currentPath:"")},setLayout:t=>e({layout:t}),setTheme:t=>{O(t),e({theme:t})},setSort:a=>{const{sortBy:r,sortOrder:n}=t();e(r===a?{sortOrder:"asc"===n?"desc":"asc"}:{sortBy:a,sortOrder:"name"===a?"asc":"desc"})},setSearchQuery:t=>e({searchQuery:t}),setSelectedFile:t=>e({selectedFile:t}),toggleSelectPath:a=>{const{selectedPaths:r}=t();r.includes(a)?e({selectedPaths:r.filter((e=>e!==a))}):e({selectedPaths:[...r,a]})},setSelectedPaths:t=>e({selectedPaths:t}),clearSelection:()=>e({selectedPaths:[]}),setPreviewFile:t=>e({previewFile:t,previewAutoEdit:!1}),openEditor:t=>e({previewFile:t,previewAutoEdit:!0}),setUploadConflict:t=>e({uploadConflict:t}),setShareModalFile:t=>e({shareModalFile:t}),openSharedSpace:(t,a="",r="")=>{e({viewMode:"shares",activeShareToken:t,activeShareServerUrl:a,activeSharePassword:r}),"undefined"==typeof window||a||window.history.pushState(null,"",`#/s/${encodeURIComponent(t)}`)},closeSharedSpace:()=>{e({activeShareToken:null,activeShareServerUrl:"",activeSharePassword:""}),"undefined"!=typeof window&&window.location.hash.startsWith("#/s/")&&window.history.pushState(null,"","#/shares")},setMoveModalFile:t=>e({moveModalFile:t,moveModalMode:"move"}),setBatchMovePaths:t=>e({batchMovePaths:t,moveModalMode:"move"}),setMoveModalMode:t=>e({moveModalMode:t}),openCopyModal:t=>e({moveModalFile:t,moveModalMode:"copy"}),openBatchCopyModal:t=>e({batchMovePaths:t,moveModalMode:"copy"}),setRenameModalFile:t=>e({renameModalFile:t}),setNewFolderModalOpen:t=>e({newFolderModalOpen:t}),setNewFileModalOpen:t=>e({newFileModalOpen:t}),setPasswordModalOpen:t=>e({passwordModalOpen:t}),setSidebarOpen:t=>e({sidebarOpen:t}),toggleSidebar:()=>e((e=>({sidebarOpen:!e.sidebarOpen}))),navigateToFolder:a=>{const{currentPath:r,viewMode:n}=t();let l=a;"files"!==n||a.includes("/")||(l=r?`${r}/${a}`:a),e({currentPath:l,viewMode:"files",selectedFile:null,selectedPaths:[]}),vt("files",l)},openFolder:t=>{e({currentPath:t,viewMode:"files",selectedFile:null,selectedPaths:[]}),vt("files",t)},openContainingFolder:t=>{const a=t.path.includes("/")?t.path.slice(0,t.path.lastIndexOf("/")):"";e({currentPath:a,viewMode:"files",selectedFile:t,selectedPaths:[]}),vt("files",a)},navigateUp:()=>{const{currentPath:a}=t();if(!a)return;const r=a.split("/");r.pop();const n=r.join("/");e({currentPath:n,selectedFile:null,selectedPaths:[],viewMode:"files"}),vt("files",n)},showToast:(t,a="info")=>{const r="t_"+Date.now()+"_"+Math.random().toString(36).slice(2,6);e((e=>({toasts:[...e.toasts,{id:r,text:t,type:a}]}))),setTimeout((()=>{e((e=>({toasts:e.toasts.filter((e=>e.id!==r))})))}),3200)},dismissToast:t=>{e((e=>({toasts:e.toasts.filter((e=>e.id!==t))})))},openConfirm:t=>e({confirmDialog:t}),closeConfirm:()=>e({confirmDialog:null})})));function vt(e,t=""){if("undefined"==typeof window)return;const a=function(e,t=""){if("files"===e){if(!t)return"#/";const e=t.split("/").filter(Boolean).map(encodeURIComponent).join("/");return e?`#/files/${e}`:"#/"}return`#/${e}`}(e,t);window.location.hash!==a&&window.history.pushState(null,"",a)}const wt=5242880,Nt=52428800,kt=3,Ct=2,Mt=new Map,St=new Map,Ft=new Map;const zt=i()(u(((e,t)=>({tasks:[],isDrawerOpen:!0,concurrencyLimit:kt,toggleDrawer:()=>e((e=>({isDrawerOpen:!e.isDrawerOpen}))),setDrawerOpen:t=>e({isDrawerOpen:t}),addFile:async(a,r,n="rename")=>{const l=function(e,t){return`${e.name}_${e.size}_${e.lastModified}_${t||"root"}`}(a,r),{tasks:s}=t(),o=s.find((e=>e.fingerprint===l&&"completed"!==e.status));if(o){Mt.set(o.id,a);return"pending"===o.status||"uploading"===o.status||"initializing"===o.status||"merging"===o.status?(e((e=>({isDrawerOpen:!0}))),o.id):(e((e=>({isDrawerOpen:!0,tasks:e.tasks.map((e=>e.id===o.id?{...e,status:"pending",errorMessage:void 0}:e))}))),Tt(t,e),o.id)}const c="task_"+Date.now()+"_"+Math.random().toString(36).substring(2,7),m=Math.max(1,Math.ceil(a.size/wt)),i={id:c,fingerprint:l,name:a.name,size:a.size,directory:r,conflictStrategy:n,chunkSize:wt,totalChunks:m,uploadedChunks:[],status:"pending",progress:0,speed:0,createdAt:Date.now(),lastUpdated:Date.now()};return Mt.set(c,a),e((e=>({isDrawerOpen:!0,tasks:[i,...e.tasks]}))),Tt(t,e),c},pauseTask:a=>{const r=Ft.get(a);r&&(r.abort(),Ft.delete(a));const n=St.get(a);n&&(n.forEach((e=>e.abort())),n.clear()),e((e=>({tasks:e.tasks.map((e=>e.id===a?{...e,status:"paused",speed:0}:e))}))),Tt(t,e)},resumeTask:async a=>{const r=t().tasks.find((e=>e.id===a));if(!r)return;Mt.get(a)?(e((e=>({tasks:e.tasks.map((e=>e.id===a?{...e,status:"pending",errorMessage:void 0}:e))}))),Tt(t,e)):e((e=>({tasks:e.tasks.map((e=>e.id===a?{...e,status:"interrupted",errorMessage:"刷新后文件句柄已失效，请重新选择文件继续"}:e))})))},rebindFileAndResume:async(a,r)=>{const n=t().tasks.find((e=>e.id===a));if(n){if(r.name!==n.name||r.size!==n.size){const t=`所选文件不匹配！期望: ${n.name} (${w(n.size)})，实际: ${r.name} (${w(r.size)})`;throw e((e=>({tasks:e.tasks.map((e=>e.id===a?{...e,errorMessage:t}:e))}))),new Error(t)}Mt.set(a,r),e((e=>({tasks:e.tasks.map((e=>e.id===a?{...e,status:"pending",errorMessage:void 0}:e))}))),Tt(t,e)}},cancelTask:async a=>{const r=Ft.get(a);r&&(r.abort(),Ft.delete(a));const n=St.get(a);n&&(n.forEach((e=>e.abort())),n.clear()),St.delete(a),Mt.delete(a);try{a.startsWith("task_")||await y.cancelChunkedUpload(a)}catch{}e((e=>({tasks:e.tasks.filter((e=>e.id!==a))}))),Tt(t,e)},retryTask:async a=>{const r=t().tasks.find((e=>e.id===a));if(!r)return;Mt.get(a)?(e((e=>({tasks:e.tasks.map((e=>e.id===a?{...e,status:"pending",errorMessage:void 0}:e))}))),Tt(t,e)):e((e=>({tasks:e.tasks.map((e=>e.id===a?{...e,status:"interrupted",errorMessage:"请重新选择文件重试"}:e))})))},clearCompleted:()=>{e((e=>({tasks:e.tasks.filter((e=>"completed"!==e.status&&"error"!==e.status))})))},enqueueWithConflictCheck:async(e,a,r)=>{let n=[];try{n=(await y.getFiles(r)).items}catch{}const l=new Set(n.filter((e=>e.isDirectory)).map((e=>e.name))),s=new Set(n.filter((e=>!e.isDirectory)).map((e=>e.name))),o=new Set,c=new Set;for(const t of e)if(t.subPath){const e=t.subPath.split("/")[0];e&&o.add(e)}else c.add(t.file.name);for(const e of a){const t=e.split("/")[0];t&&o.add(t)}const m=Array.from(o).filter((e=>l.has(e))),i=Array.from(c).filter((e=>s.has(e)));if(m.length>0||i.length>0)Et.getState().setUploadConflict({targetDir:r,entries:e,emptyDirs:a,conflictingFolders:m,conflictingFiles:i});else{for(const e of a)try{await y.createDirectory(r,e)}catch{}for(const a of e){const e=a.subPath?r?`${r}/${a.subPath}`:a.subPath:r;await t().addFile(a.file,e,"rename")}}}})),{name:"storeit-upload-tasks",storage:p((()=>localStorage)),onRehydrateStorage:()=>e=>{e&&(e.tasks=e.tasks.map((e=>"uploading"===e.status||"initializing"===e.status||"pending"===e.status||"merging"===e.status?{...e,status:"interrupted",speed:0,errorMessage:"页面刷新中断，请重新添加或绑定原文件继续断点续传"}:e)))},partialize:e=>({tasks:e.tasks.map((e=>({id:e.id,fingerprint:e.fingerprint,name:e.name,size:e.size,directory:e.directory,conflictStrategy:e.conflictStrategy,chunkSize:e.chunkSize,totalChunks:e.totalChunks,uploadedChunks:[],status:"completed"===e.status?"completed":"interrupted",progress:e.progress,speed:0,errorMessage:e.errorMessage,createdAt:e.createdAt,lastUpdated:e.lastUpdated}))),isDrawerOpen:e.isDrawerOpen})}));function Tt(e,t){const{tasks:a}=e(),r=a.filter((e=>"uploading"===e.status||"initializing"===e.status||"merging"===e.status)).length;if(r>=Ct)return;const n=a.find((e=>"pending"===e.status));if(!n)return;const l=Mt.get(n.id);l?l.size<=Nt?async function(e,t,a,r){const n=a().tasks.find((t=>t.id===e));if(!n)return;const l=new AbortController;Ft.set(e,l),r((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,status:"uploading",speed:0,errorMessage:void 0}:t))})));let s=0,o=Date.now();try{await y.uploadSingleFile(t,n.directory,(a=>{const n=Date.now(),l=a/100*t.size,c=(n-o)/1e3;let m=0;c>.4&&(m=Math.max(0,(l-s)/c),s=l,o=n),r((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,progress:a,speed:m||t.speed,lastUpdated:n}:t))})))}),l.signal,n.conflictStrategy||"rename"),Ft.delete(e),Mt.delete(e),r((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,status:"completed",progress:100,speed:0,lastUpdated:Date.now()}:t))}))),"undefined"!=typeof window&&window.dispatchEvent(new CustomEvent("storeit:file-uploaded"))}catch(t){if(Ft.delete(e),l.signal.aborted)return;r((a=>({tasks:a.tasks.map((a=>a.id===e?{...a,status:"error",speed:0,errorMessage:t.message||"上传失败"}:a))})))}finally{Tt(a,r)}}(n.id,l,e,t):async function(e,t,a,r){const n=a().tasks.find((t=>t.id===e));if(!n)return;r((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,status:"initializing",errorMessage:void 0}:t))})));let l=e,s=[],o=n.totalChunks,c=n.chunkSize;try{if(e.startsWith("task_")){const s=await y.initChunkedUpload(t.name,t.size,n.directory,n.conflictStrategy||"rename");l=s.uploadId,o=s.totalChunks,c=s.chunkSize,Mt.delete(e),Mt.set(l,t);const m="paused"===a().tasks.find((t=>t.id===e))?.status;r((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,id:l,totalChunks:o,chunkSize:c,uploadedChunks:[],status:m?"paused":"uploading"}:t))})))}else try{const t=await y.getUploadStatus(e);s=t.uploadedChunks||[],o=t.totalChunks,c=t.chunkSize;const n="paused"===a().tasks.find((t=>t.id===e))?.status;r((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,uploadedChunks:s,totalChunks:o,chunkSize:c,progress:Math.min(99,Math.floor(s.length/o*100)),status:n?"paused":"uploading"}:t))})))}catch(m){if(400!==m?.status)throw m;const i=await y.initChunkedUpload(t.name,t.size,n.directory,n.conflictStrategy||"rename"),d=e;l=i.uploadId,o=i.totalChunks,c=i.chunkSize,s=[],Mt.delete(d),Mt.set(l,t),St.delete(d);const u="paused"===a().tasks.find((e=>e.id===d))?.status;r((e=>({tasks:e.tasks.map((e=>e.id===d?{...e,id:l,uploadedChunks:[],progress:0,totalChunks:o,chunkSize:c,errorMessage:void 0,status:u?"paused":"uploading"}:e))})))}}catch(t){return r((a=>({tasks:a.tasks.map((a=>a.id===e?{...a,status:"error",errorMessage:`初始化上传失败: ${t.message}`}:a))}))),void Tt(a,r)}if(!a().tasks.some((e=>e.id===l))){try{await y.cancelChunkedUpload(l)}catch{}return}if("uploading"!==a().tasks.find((e=>e.id===l))?.status)return;let m=St.get(l);m||(m=new Map,St.set(l,m));const i=new Map,d=new Map,u=new Set(s),p=[];for(let e=0;e<o;e++)u.has(e)||p.push(e);if(0===p.length)return void await $t(l,a,r);const x=a().concurrencyLimit||kt;let h=0,f=!1,g=u.size*c,b=Date.now();const E=setInterval((()=>{const e=a().tasks.find((e=>e.id===l));if(!e||"uploading"!==e.status)return void clearInterval(E);let n=0;i.forEach((e=>n+=e));const s=Math.min(t.size,e.uploadedChunks.length*c+n),o=Date.now(),m=(o-b)/1e3;let d=e.speed;m>.5&&(d=Math.max(0,(s-g)/m),g=s,b=o);const u=Math.min(99,Math.floor(s/t.size*100));r((e=>({tasks:e.tasks.map((e=>e.id===l?{...e,progress:Math.max(e.progress,u),speed:d,lastUpdated:o}:e))})))}),300),v=async()=>{if(f)return;const e=a().tasks.find((e=>e.id===l));if(!e||"uploading"!==e.status)return f=!0,void clearInterval(E);if(0===p.length)return void(0===h&&(clearInterval(E),await $t(l,a,r)));const n=p.shift();h++;const s=n*c,o=Math.min(t.size,s+c),u=t.slice(s,o),x=new AbortController;m.set(n,x);try{await y.uploadChunk(l,n,u,x.signal,(e=>{i.set(n,e)})),m.delete(n),i.delete(n),r((e=>({tasks:e.tasks.map((e=>{if(e.id!==l)return e;const t=Array.from(new Set([...e.uploadedChunks,n])).sort(((e,t)=>e-t));return{...e,uploadedChunks:t,progress:Math.max(e.progress,Math.min(99,Math.floor(t.length/e.totalChunks*100))),lastUpdated:Date.now()}}))})))}catch(e){if(m.delete(n),i.delete(n),"AbortError"===e.name||x.signal.aborted)return;const t=d.get(n)||0;return t<2?(d.set(n,t+1),p.push(n),void setTimeout((()=>v()),500*Math.pow(2,t))):(f=!0,clearInterval(E),r((t=>({tasks:t.tasks.map((t=>t.id===l?{...t,status:"error",speed:0,errorMessage:`分片 ${n+1} 上传失败: ${e.message}`}:t))}))),void Tt(a,r))}finally{h--}v()};for(let e=0;e<x;e++)v()}(n.id,l,e,t):t((e=>({tasks:e.tasks.map((e=>e.id===n.id?{...e,status:"interrupted",errorMessage:"文件句柄丢失，请重新选择文件"}:e))})))}async function $t(e,t,a){a((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,status:"merging",progress:99,speed:0}:t))})));try{await y.completeChunkedUpload(e),Mt.delete(e),St.delete(e),a((t=>({tasks:t.tasks.map((t=>t.id===e?{...t,status:"completed",progress:100,speed:0,lastUpdated:Date.now()}:t))}))),"undefined"!=typeof window&&window.dispatchEvent(new CustomEvent("storeit:file-uploaded"))}catch(t){a((a=>({tasks:a.tasks.map((a=>a.id===e?{...a,status:"error",speed:0,errorMessage:`合并分片失败: ${t.message}`}:a))})))}finally{Tt(t,a)}}const Pt=Z.Root,Dt=Z.Trigger;r.forwardRef((({className:e,inset:t,children:a,...n},l)=>r.createElement(Z.SubTrigger,yt({ref:l,className:v("flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent",t&&"pl-8",e)},n),a,r.createElement(ie,{className:"ml-auto h-4 w-4"})))).displayName=Z.SubTrigger.displayName;r.forwardRef((({className:e,...t},a)=>r.createElement(Z.SubContent,yt({ref:a,className:v("z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",e)},t)))).displayName=Z.SubContent.displayName;const Rt=r.forwardRef((({className:e,sideOffset:t=4,...a},n)=>r.createElement(Z.Portal,null,r.createElement(Z.Content,yt({ref:n,sideOffset:t,className:v("z-50 min-w-[10rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",e)},a)))));Rt.displayName=Z.Content.displayName;const qt=r.forwardRef((({className:e,inset:t,...a},n)=>r.createElement(Z.Item,yt({ref:n,className:v("relative flex cursor-pointer select-none items-center rounded-lg px-2.5 py-1.5 text-sm outline-none transition-colors focus:bg-secondary/15 focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",t&&"pl-8",e)},a))));qt.displayName=Z.Item.displayName;const Ot=r.forwardRef((({className:e,...t},a)=>r.createElement(Z.Separator,yt({ref:a,className:v("-mx-1 my-1 h-px bg-muted",e)},t))));Ot.displayName=Z.Separator.displayName;const Ut=W.Root,jt=W.Portal,At=r.forwardRef((({className:e,...t},a)=>r.createElement(W.Overlay,yt({ref:a,className:v("fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",e)},t))));At.displayName=W.Overlay.displayName;const Zt=r.forwardRef((({className:e,children:t,...a},n)=>r.createElement(jt,null,r.createElement(At,null),r.createElement(W.Content,yt({ref:n,className:v("fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-2xl",e)},a),t,r.createElement(W.Close,{className:"absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"},r.createElement(ft,{className:"h-4 w-4"}),r.createElement("span",{className:"sr-only"},"Close"))))));Zt.displayName=W.Content.displayName;const It=({className:e,...t})=>r.createElement("div",yt({className:v("flex flex-col space-y-1.5 text-center sm:text-left",e)},t));It.displayName="DialogHeader";const Wt=({className:e,...t})=>r.createElement("div",yt({className:v("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",e)},t));Wt.displayName="DialogFooter";const _t=r.forwardRef((({className:e,...t},a)=>r.createElement(W.Title,yt({ref:a,className:v("text-lg font-semibold leading-none tracking-tight text-brand-primary",e)},t))));_t.displayName=W.Title.displayName;r.forwardRef((({className:e,...t},a)=>r.createElement(W.Description,yt({ref:a,className:v("text-sm text-muted-foreground",e)},t)))).displayName=W.Description.displayName;const Lt=r.forwardRef((({className:e,value:t,indicatorColor:a,...n},l)=>r.createElement(L.Root,yt({ref:l,className:v("relative h-2 w-full overflow-hidden rounded-full bg-secondary/20",e)},n),r.createElement(L.Indicator,{className:v("h-full w-full flex-1 transition-all",a||"bg-primary"),style:{transform:`translateX(-${100-(t||0)}%)`}}))));Lt.displayName=L.Root.displayName;const Bt=r.forwardRef((({className:e,...t},a)=>r.createElement(K.Root,yt({className:v("peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",e)},t,{ref:a}),r.createElement(K.Thumb,{className:v("pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0")}))));function Kt(){const e=Et((e=>e.currentPath)),t=Et((e=>e.layout)),a=Et((e=>e.setLayout)),s=Et((e=>e.theme)),o=Et((e=>e.setTheme)),m=Et((e=>e.searchQuery)),i=Et((e=>e.setSearchQuery)),d=Et((e=>e.viewMode)),u=Et((e=>e.setViewMode)),p=Et((e=>e.setNewFolderModalOpen)),x=Et((e=>e.setNewFileModalOpen)),h=Et((e=>e.setPasswordModalOpen)),f=Et((e=>e.toggleSidebar)),b=g((e=>e.user)),y=g((e=>e.logout)),E=zt((e=>e.enqueueWithConflictCheck)),v=c(null),w=c(null),N=c(null),[k,C]=n(m);l((()=>{const e=q();O(e),Et.setState({theme:e})}),[]),l((()=>{C(m)}),[m]);const M=e=>{const t=e.trim();t?(i(t),"search"!==Et.getState().viewMode&&u("search")):(i(""),"search"===Et.getState().viewMode&&u("files"))},S=R.find((e=>e.key===s))||R[0];return r.createElement("header",{className:"h-16 px-4 sm:px-6 bg-white/80 backdrop-blur-md border-b flex items-center justify-between gap-3 sticky top-0 z-30 select-none"},r.createElement("div",{className:"flex items-center gap-2 shrink-0"},r.createElement(U,{variant:"ghost",size:"icon",className:"md:hidden h-9 w-9 text-brand-primary",onClick:()=>f(),title:"打开侧边菜单"},r.createElement(Ke,{className:"w-5 h-5"})),r.createElement("div",{onClick:()=>{Et.getState().setCurrentPath(""),u("files")},className:"flex items-center gap-2.5 cursor-pointer group"},r.createElement("div",{className:"w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white flex items-center justify-center shadow-md transition-transform duration-200 group-hover:scale-105"},r.createElement(qe,{className:"w-5 h-5"})),r.createElement("span",{className:"font-extrabold text-lg text-brand-primary tracking-tight hidden sm:inline-block"},"储之 ",r.createElement("span",{className:"text-xs font-normal text-brand-secondary ml-0.5"},"StoreIt")))),r.createElement("form",{onSubmit:e=>{e.preventDefault(),N.current&&clearTimeout(N.current),M(k)},className:"relative flex-1 max-w-xs sm:max-w-md"},r.createElement(tt,{className:"w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"}),r.createElement(j,{type:"search",placeholder:"输入关键词实时搜索文件...",value:k,onChange:e=>{return t=e.target.value,C(t),N.current&&clearTimeout(N.current),void(N.current=setTimeout((()=>{M(t)}),300));var t},className:"pl-9 h-9 bg-muted/40 border-0 focus-visible:bg-white focus-visible:ring-1 rounded-xl text-xs transition-all duration-150"})),r.createElement("div",{className:"flex items-center gap-1.5 sm:gap-2 shrink-0"},r.createElement("input",{ref:v,type:"file",multiple:!0,className:"hidden",onChange:t=>{const a=t.target.files;if(!a||0===a.length)return;"files"!==d&&u("files");const r=[];for(let e=0;e<a.length;e++)r.push({file:a[e],subPath:""});E(r,[],e),t.target.value=""}}),r.createElement("input",{ref:w,type:"file",webkitdirectory:"",multiple:!0,className:"hidden",onChange:t=>{const a=t.target.files;if(!a||0===a.length)return;"files"!==d&&u("files");const r=[];for(let e=0;e<a.length;e++){const t=a[e],n=(t.webkitRelativePath||"").split("/");n.pop();const l=n.join("/");r.push({file:t,subPath:l})}E(r,[],e),t.target.value=""}}),r.createElement(Pt,null,r.createElement(Dt,{asChild:!0},r.createElement(U,{size:"sm",className:"gap-1.5 rounded-xl shadow-sm px-2.5 sm:px-3"},r.createElement(dt,{className:"w-4 h-4"}),r.createElement("span",{className:"hidden sm:inline"},"上传"),r.createElement(ce,{className:"w-3.5 h-3.5 opacity-60"}))),r.createElement(Rt,{align:"end",className:"w-48 storeit-menu-pop"},r.createElement(qt,{onClick:()=>v.current?.click(),className:"gap-2"},r.createElement(dt,{className:"w-4 h-4 text-brand-secondary"})," 上传单个 / 多文件"),r.createElement(qt,{onClick:()=>w.current?.click(),className:"gap-2"},r.createElement(De,{className:"w-4 h-4 text-brand-secondary"})," 上传整个文件夹"),r.createElement(Ot,null),r.createElement(qt,{onClick:()=>x(!0),className:"gap-2"},r.createElement(Se,{className:"w-4 h-4 text-brand-secondary"})," 新建文本 / Markdown"),r.createElement(qt,{onClick:()=>p(!0),className:"gap-2"},r.createElement(De,{className:"w-4 h-4 text-amber-500"})," 新建文件夹"))),r.createElement(U,{variant:"outline",size:"sm",onClick:()=>x(!0),className:"gap-1.5 rounded-xl hidden lg:flex",title:"新建空白文本或 Markdown 文档"},r.createElement(Se,{className:"w-4 h-4 text-brand-secondary"})," 新建文件"),r.createElement(U,{variant:"outline",size:"sm",onClick:()=>p(!0),className:"gap-1.5 rounded-xl hidden sm:flex"},r.createElement(De,{className:"w-4 h-4 text-amber-500"})," 新建文件夹"),r.createElement("div",{className:"flex items-center border rounded-xl p-0.5 bg-muted/40"},r.createElement(U,{variant:"ghost",size:"icon",className:"h-7 w-7 rounded-lg transition-all duration-150 "+("grid"===t?"bg-white shadow-sm text-brand-primary":"text-muted-foreground"),onClick:()=>a("grid"),title:"网格视图"},r.createElement(Ae,{className:"w-3.5 h-3.5"})),r.createElement(U,{variant:"ghost",size:"icon",className:"h-7 w-7 rounded-lg transition-all duration-150 "+("list"===t?"bg-white shadow-sm text-brand-primary":"text-muted-foreground"),onClick:()=>a("list"),title:"列表视图"},r.createElement(Ie,{className:"w-3.5 h-3.5"}))),r.createElement(Pt,null,r.createElement(Dt,{asChild:!0},r.createElement(U,{variant:"ghost",size:"sm",className:"gap-1.5 px-2.5 h-9 rounded-xl border border-transparent hover:border-border",title:`切换界面主题 (${S.label})`},r.createElement(G,{className:"w-4 h-4 text-brand-primary"}),r.createElement("span",{className:"w-2.5 h-2.5 rounded-full border border-white shadow-sm shrink-0",style:{backgroundColor:S.swatch}}),r.createElement("span",{className:"text-xs font-medium text-foreground hidden xl:inline"},S.label))),r.createElement(Rt,{align:"end",className:"w-56 storeit-menu-pop p-1.5"},r.createElement("div",{className:"px-2.5 py-1.5 border-b mb-1"},r.createElement("p",{className:"text-xs font-semibold text-brand-primary"},"界面主题色切换"),r.createElement("p",{className:"text-[11px] text-muted-foreground"},"选择配色方案（自动记忆）")),R.map((e=>{const t=s===e.key;return r.createElement(qt,{key:e.key,onClick:()=>o(e.key),className:"flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg cursor-pointer"},r.createElement("div",{className:"flex items-center gap-2.5 min-w-0"},r.createElement("span",{className:"w-4 h-4 rounded-full border border-black/10 shadow-sm shrink-0",style:{backgroundColor:e.swatch}}),r.createElement("div",{className:"min-w-0"},r.createElement("p",{className:"text-xs "+(t?"font-bold text-brand-primary":"font-medium text-foreground")},e.label),r.createElement("p",{className:"text-[10px] text-muted-foreground truncate"},e.desc))),t&&r.createElement(le,{className:"w-3.5 h-3.5 text-brand-primary shrink-0"}))})))),r.createElement(Pt,null,r.createElement(Dt,{asChild:!0},r.createElement(U,{variant:"ghost",size:"sm",className:"gap-2 pl-2 pr-2 sm:pr-3 rounded-xl"},r.createElement("div",{className:"w-7 h-7 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold text-xs"},b?.username?.charAt(0).toUpperCase()||"U"),r.createElement("span",{className:"text-xs font-semibold text-foreground hidden sm:inline"},b?.username))),r.createElement(Rt,{align:"end",className:"w-48 storeit-menu-pop"},r.createElement("div",{className:"px-3 py-2 border-b"},r.createElement("p",{className:"text-sm font-semibold truncate"},b?.username),r.createElement("p",{className:"text-xs text-muted-foreground"},"角色: ",b?.role||"USER")),r.createElement(qt,{onClick:()=>h(!0),className:"gap-2 cursor-pointer"},r.createElement(je,{className:"w-4 h-4 text-brand-secondary"})," 修改登录口令"),r.createElement(Ot,null),r.createElement(qt,{onClick:async()=>{try{await y()}finally{window.location.href="/login"}},className:"gap-2 text-destructive focus:text-destructive cursor-pointer"},r.createElement(Le,{className:"w-4 h-4"})," 退出登录")))))}function Ht(){const e=f(),t=Et((e=>e.viewMode)),a=Et((e=>e.setViewMode)),n=Et((e=>e.setCurrentPath)),l=Et((e=>e.selectedFile)),s=Et((e=>e.setSelectedFile)),o=Et((e=>e.openContainingFolder)),c=Et((e=>e.setPreviewFile)),m=Et((e=>e.openEditor)),i=Et((e=>e.setShareModalFile)),d=Et((e=>e.setMoveModalFile)),u=Et((e=>e.setRenameModalFile)),p=Et((e=>e.sidebarOpen)),b=Et((e=>e.setSidebarOpen)),E=Et((e=>e.showToast)),v=Et((e=>e.openConfirm)),k=g((e=>e.user)),C="ADMIN"===k?.role?.toUpperCase(),{data:z}=x({queryKey:["quota"],queryFn:()=>y.getQuota()}),{data:$}=x({queryKey:["favoritesList"],queryFn:()=>y.getFavorites()}),P=Boolean(l&&($||[]).some((e=>e.path===l.path))),D=h({mutationFn:e=>y.deleteFile(e),onSuccess:()=>{s(null),e.invalidateQueries({queryKey:["files"]}),e.invalidateQueries({queryKey:["quota"]}),e.invalidateQueries({queryKey:["favoritesList"]}),E("删除成功","success")},onError:e=>E(e.message||"删除失败","error")}),R=h({mutationFn:({path:e,favorite:t})=>y.setFavorite(e,t),onSuccess:(t,a)=>{e.invalidateQueries({queryKey:["favoritesList"]}),e.invalidateQueries({queryKey:["files"]}),E(a.favorite?"已加入收藏夹":"已取消收藏","success")},onError:e=>E(e.message||"收藏操作失败","error")}),q=[{mode:"files",label:"我的文件",icon:r.createElement(Te,{className:"w-4 h-4"})},{mode:"recent",label:"最近访问",icon:r.createElement(ue,{className:"w-4 h-4"})},{mode:"favorites",label:"收藏夹",icon:r.createElement(mt,{className:"w-4 h-4"})},{mode:"shares",label:"我的分享",icon:r.createElement(nt,{className:"w-4 h-4"})},{mode:"admin",label:"用户管理",icon:r.createElement(xt,{className:"w-4 h-4"}),adminOnly:!0},{mode:"settings",label:"系统设置",icon:r.createElement(rt,{className:"w-4 h-4"}),adminOnly:!0},{mode:"about",label:"关于 储之",icon:r.createElement(Ue,{className:"w-4 h-4"})}],O=z&&z.total>0?z.used/z.total*100:0,j=O>90?"bg-rose-500":O>70?"bg-amber-500":"bg-brand-primary",A=r.createElement("div",{className:"flex flex-col h-full overflow-hidden select-none"},r.createElement("div",{className:"md:hidden flex items-center justify-between p-4 border-b"},r.createElement("span",{className:"font-semibold text-brand-primary text-sm"},"导航与详情"),r.createElement(U,{variant:"ghost",size:"icon",onClick:()=>b(!1),className:"h-8 w-8"},r.createElement(ft,{className:"w-4 h-4"}))),r.createElement("div",{className:"p-3 space-y-1 overflow-y-auto"},q.map((e=>{if(e.adminOnly&&!C)return null;const l=t===e.mode;return r.createElement("button",{key:e.mode,onClick:()=>{return"files"===(t=e.mode)&&n(""),a(t),void b(!1);var t},className:"w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all "+(l?"bg-brand-primary text-white shadow-sm":"text-muted-foreground hover:bg-black/5 hover:text-foreground")},e.icon,r.createElement("span",null,e.label))}))),z&&r.createElement("div",{className:"px-4 py-3 mx-3 my-2 bg-black/[0.03] rounded-2xl border border-black/5"},r.createElement("div",{className:"flex items-center justify-between text-xs text-muted-foreground mb-1.5 font-medium"},r.createElement("span",{className:"flex items-center gap-1.5"},r.createElement(qe,{className:"w-3.5 h-3.5 text-brand-secondary"}),"存储空间"),r.createElement("span",null,z.unlimited&&"user"===z.scope?`${w(z.used)} / 无限制`:`${w(z.used)} / ${w(z.total)}`)),r.createElement("div",{className:"w-full h-1.5 bg-black/10 rounded-full overflow-hidden"},r.createElement("div",{className:`h-full rounded-full transition-all duration-300 ${j}`,style:{width:`${Math.min(100,Math.max(0,O))}%`}}))),r.createElement("div",{className:"mt-auto border-t p-4 bg-white/40"},r.createElement("div",{className:"flex items-center justify-between mb-2"},r.createElement("h4",{className:"text-xs font-semibold text-muted-foreground uppercase tracking-wider"},"文件属性与详情"),l&&r.createElement(U,{variant:"ghost",size:"icon",className:"h-5 w-5 text-muted-foreground hover:text-foreground",onClick:()=>s(null),title:"关闭详情"},r.createElement(ft,{className:"w-3 h-3"}))),l?r.createElement("div",{className:"space-y-3 animate-in fade-in-50 duration-150 text-xs"},r.createElement("div",{className:"flex items-start gap-2.5"},r.createElement("div",{className:"mt-0.5 shrink-0"},((e,t)=>{if(t)return r.createElement(Te,{className:"w-5 h-5 text-amber-500"});switch(M(e)){case"image":return r.createElement(Me,{className:"w-5 h-5 text-purple-500"});case"video":return r.createElement(ze,{className:"w-5 h-5 text-rose-500"});case"audio":return r.createElement(ke,{className:"w-5 h-5 text-emerald-500"});case"pdf":return r.createElement(Fe,{className:"w-5 h-5 text-red-500"});case"code":return r.createElement(Ce,{className:"w-5 h-5 text-blue-500"});case"archive":return r.createElement(Ne,{className:"w-5 h-5 text-amber-600"});default:return r.createElement(Fe,{className:"w-5 h-5 text-muted-foreground"})}})(l.name,l.isDirectory)),r.createElement("div",{className:"min-w-0 flex-1"},r.createElement("p",{className:"font-semibold text-foreground truncate",title:l.name},l.name),r.createElement("div",{className:"flex items-center gap-2 text-muted-foreground text-[11px] mt-0.5"},r.createElement("span",null,((e,t)=>{if(t)return"文件夹";switch(M(e)){case"image":return"图片";case"video":return"视频";case"audio":return"音频";case"pdf":return"PDF 文档";case"code":return"文本/代码";case"archive":return"压缩包";case"document":return"Office 文档";default:return"文件"}})(l.name,l.isDirectory)),r.createElement("span",null,"·"),r.createElement("span",null,l.isDirectory?"目录":w(l.size||0))))),l.modifiedTime&&r.createElement("div",{className:"flex items-center gap-1.5 text-[11px] text-muted-foreground"},r.createElement(ne,{className:"w-3.5 h-3.5 shrink-0"}),r.createElement("span",null,N(l.modifiedTime))),r.createElement("div",{className:"text-[11px] text-muted-foreground break-all bg-black/[0.03] p-1.5 rounded font-mono"},"/",l.path),r.createElement("div",{className:"grid grid-cols-2 gap-1.5 pt-1"},!l.isDirectory&&S(l.name)&&r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>c(l)},r.createElement(we,{className:"w-3 h-3 text-brand-secondary"})," 预览"),!l.isDirectory&&F(l.name)&&r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>m(l)},r.createElement(Ee,{className:"w-3 h-3 text-brand-secondary"})," 编辑"),!l.isDirectory&&r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",asChild:!0},r.createElement("a",{href:T(l.path),download:l.name},r.createElement(be,{className:"w-3 h-3 text-brand-secondary"})," 下载")),r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>i(l)},r.createElement(nt,{className:"w-3 h-3 text-brand-secondary"}),l.isDirectory?"共享":"分享"),"files"!==t&&r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>o(l)},r.createElement(Pe,{className:"w-3 h-3 text-brand-secondary"})," 所在目录"),r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1 "+(P?"text-amber-600 border-amber-300":""),onClick:()=>R.mutate({path:l.path,favorite:!P})},r.createElement(mt,{className:"w-3 h-3 "+(P?"fill-amber-500 text-amber-500":"")}),P?"取消收藏":"加入收藏"),r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>u(l)},r.createElement(ye,{className:"w-3 h-3 text-brand-secondary"})," 重命名"),r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>d(l)},r.createElement($e,{className:"w-3 h-3 text-brand-secondary"})," 移动"),r.createElement(U,{size:"sm",variant:"outline",className:"col-span-2 h-7 text-xs gap-1 text-destructive hover:bg-destructive/10 border-destructive/20",onClick:()=>{v({title:"确认彻底删除",description:`确定要彻底删除 "${l.name}" 吗？此操作不可撤销！`,confirmText:"彻底删除",destructive:!0,onConfirm:()=>D.mutate(l.path)})}},r.createElement(it,{className:"w-3 h-3"})," 删除"))):r.createElement("div",{className:"text-center py-6 text-muted-foreground/60 text-xs"},"选择文件以查看详细属性与操作")));return r.createElement(r.Fragment,null,r.createElement("aside",{className:"hidden md:flex w-64 border-r bg-white/50 backdrop-blur-sm flex-col shrink-0"},A),p&&r.createElement("div",{className:"md:hidden fixed inset-0 z-50 flex"},r.createElement("div",{className:"fixed inset-0 bg-black/40 backdrop-blur-sm",onClick:()=>b(!1)}),r.createElement("div",{className:"relative w-72 max-w-[80vw] h-full bg-white shadow-2xl z-10 flex flex-col"},A)))}function Qt({children:e}){const[t,a]=n(!1),l=c(0),s=f(),m=Et((e=>e.currentPath)),i=Et((e=>e.viewMode)),d=Et((e=>e.setViewMode)),u=(Et((e=>e.showToast)),zt((e=>e.enqueueWithConflictCheck))),p=o((e=>{e.preventDefault(),e.stopPropagation(),"files"!==i&&"recent"!==i&&"favorites"!==i&&"search"!==i||(l.current++,e.dataTransfer.items&&e.dataTransfer.items.length>0&&a(!0))}),[i]),x=o((e=>{e.preventDefault(),e.stopPropagation(),l.current--,l.current<=0&&(a(!1),l.current=0)}),[]),h=o((e=>{e.preventDefault(),e.stopPropagation()}),[]),g=o((async e=>{e.preventDefault(),e.stopPropagation(),a(!1),l.current=0;const t=e.dataTransfer.items;if(!t||0===t.length)return;"files"!==i&&d("files");const r=[],n=[],o=async(e,t)=>{if(e.isFile)await new Promise((a=>{e.file((e=>{r.push({file:e,subPath:t}),a()}))}));else if(e.isDirectory){const a=e.createReader(),r=[],l=async()=>{const e=await new Promise((e=>{a.readEntries((t=>e(t)))}));e.length>0&&(r.push(...e),await l())};await l();const s=t?`${t}/${e.name}`:e.name;if(0===r.length)n.push(s);else for(const e of r)await o(e,s)}},c=[];for(let e=0;e<t.length;e++){const a=t[e];if("function"==typeof a.webkitGetAsEntry){const e=a.webkitGetAsEntry();e&&c.push(o(e,""))}else if("file"===a.kind){const e=a.getAsFile();e&&r.push({file:e,subPath:""})}}await Promise.all(c),await u(r,n,m),s.invalidateQueries({queryKey:["files"]})}),[m,i,d,u,s]);return r.createElement("div",{onDragEnter:p,onDragLeave:x,onDragOver:h,onDrop:g,className:"relative flex-1 flex flex-col h-full overflow-hidden"},t&&r.createElement("div",{className:"absolute inset-0 z-50 flex flex-col items-center justify-center bg-brand-primary/80 backdrop-blur-sm text-white animate-in fade-in-0 duration-150 p-6 pointer-events-none"},r.createElement("div",{className:"w-24 h-24 rounded-3xl bg-white/20 flex items-center justify-center mb-6 shadow-2xl animate-bounce"},r.createElement(ut,{className:"w-12 h-12 text-white"})),r.createElement("h3",{className:"text-2xl font-bold mb-2"},"释放鼠标立即上传"),r.createElement("p",{className:"text-white/80 text-sm max-w-md text-center flex items-center gap-1.5"},r.createElement(De,{className:"w-4 h-4"}),"目标目录：",r.createElement("span",{className:"font-mono bg-white/20 px-2 py-0.5 rounded text-white font-medium"},"/",m||"根目录")),r.createElement("p",{className:"text-white/60 text-xs mt-3"},"支持单文件、特大文件以及多级文件夹（含空目录）递归拖入上传")),e)}function Gt(){const e=Et((e=>e.currentPath)),t=Et((e=>e.setCurrentPath)),a=Et((e=>e.viewMode)),n=Et((e=>e.setViewMode));if("files"!==a&&"search"!==a){const e={recent:"最近访问",favorites:"收藏夹",shares:"我的分享",admin:"用户管理",settings:"系统设置",about:"关于"};return r.createElement("div",{className:"flex items-center gap-1.5 text-sm text-muted-foreground py-2 select-none"},r.createElement("button",{onClick:()=>{n("files"),t("")},className:"hover:text-brand-primary flex items-center gap-1 transition-colors"},r.createElement(Oe,{className:"w-4 h-4"}),r.createElement("span",null,"首页")),r.createElement(ie,{className:"w-3.5 h-3.5 text-black/30"}),r.createElement("span",{className:"font-semibold text-brand-primary"},e[a]||a))}const l=e?e.split("/").filter(Boolean):[];return r.createElement("nav",{className:"flex items-center gap-1.5 text-sm text-muted-foreground py-2 select-none overflow-x-auto"},r.createElement("button",{onClick:()=>{n("files"),t("")},className:"hover:text-brand-primary flex items-center gap-1 transition-colors shrink-0"},r.createElement(Oe,{className:"w-4 h-4"}),r.createElement("span",null,"首页")),l.map(((e,a)=>{const n=l.slice(0,a+1).join("/"),s=a===l.length-1;return r.createElement(r.Fragment,{key:n},r.createElement(ie,{className:"w-3.5 h-3.5 text-black/30 shrink-0"}),s?r.createElement("span",{className:"font-semibold text-brand-primary shrink-0 truncate max-w-[200px]"},e):r.createElement("button",{onClick:()=>t(n),className:"hover:text-brand-primary transition-colors shrink-0 truncate max-w-[150px]"},e))})))}function Vt({item:e,index:t=0,onOpen:a,onDownload:n,onDelete:l,onToggleFavorite:s,onShare:o,onMove:c,onCopy:m,onRename:i,onPreview:d,onContextMenu:u}){const p=Et((e=>e.selectedFile)),x=Et((e=>e.setSelectedFile)),h=Et((e=>e.selectedPaths)),f=Et((e=>e.toggleSelectPath)),g=Et((e=>e.viewMode)),b=Et((e=>e.openContainingFolder)),y=Et((e=>e.openEditor)),E=Et((e=>e.openCopyModal)),v=p?.path===e.path,N=h.includes(e.path),k=C(e.path),z="files"!==g&&Boolean(k);return r.createElement("div",{style:{animationDelay:`${Math.min(15*t,180)}ms`},onClick:t=>{(t.ctrlKey||t.metaKey)&&f(e.path),x(e)},onDoubleClick:()=>a(e),onContextMenu:t=>u?.(t,e),className:"storeit-card-enter group relative flex flex-col items-center justify-between p-4 rounded-2xl bg-white/80 hover:bg-white border cursor-pointer shadow-sm hover:shadow-md select-none "+(N||v?"ring-2 ring-brand-primary border-transparent bg-white shadow-md":"hover:-translate-y-1")},r.createElement("div",{className:"w-full flex items-center justify-between text-muted-foreground"},r.createElement("div",{className:"flex items-center gap-1.5"},r.createElement("button",{type:"button",onClick:t=>{t.stopPropagation(),f(e.path)},className:"w-4 h-4 rounded border flex items-center justify-center transition-all "+(N?"bg-brand-primary border-brand-primary text-white opacity-100 scale-105":"border-black/25 bg-white/80 opacity-0 group-hover:opacity-100"),title:N?"取消选择":"多选此项"},N&&r.createElement(le,{className:"w-3 h-3"})),r.createElement("button",{onClick:t=>{t.stopPropagation(),s(e)},className:"hover:text-amber-500 transition-transform active:scale-125 "+(e.isFavorite?"text-amber-500 fill-amber-500 opacity-100":"opacity-60 group-hover:opacity-100"),title:e.isFavorite?"取消收藏":"加入收藏"},r.createElement(mt,{className:"w-4 h-4 "+(e.isFavorite?"fill-amber-500":"")}))),r.createElement(Pt,null,r.createElement(Dt,{asChild:!0,onClick:e=>e.stopPropagation()},r.createElement(U,{variant:"ghost",size:"icon",className:"h-6 w-6 opacity-60 group-hover:opacity-100"},r.createElement(Ge,{className:"w-3.5 h-3.5"}))),r.createElement(Rt,{align:"end",className:"w-44 storeit-menu-pop"},e.isDirectory?r.createElement(r.Fragment,null,r.createElement(qt,{onClick:()=>n(e),className:"gap-2"},r.createElement(be,{className:"w-4 h-4 text-brand-secondary"})," 打包下载 (.zip)"),r.createElement(qt,{onClick:()=>o(e),className:"gap-2"},r.createElement(nt,{className:"w-4 h-4 text-brand-secondary"})," 共享文件夹 (R/RW)"),r.createElement(Ot,null)):r.createElement(r.Fragment,null,S(e.name)&&r.createElement(qt,{onClick:()=>d(e),className:"gap-2"},r.createElement(we,{className:"w-4 h-4 text-brand-secondary"})," 预览"),F(e.name)&&r.createElement(qt,{onClick:()=>y(e),className:"gap-2"},r.createElement(Ee,{className:"w-4 h-4 text-brand-secondary"})," 在线编辑"),r.createElement(qt,{onClick:()=>n(e),className:"gap-2"},r.createElement(be,{className:"w-4 h-4 text-brand-secondary"})," 下载"),r.createElement(qt,{onClick:()=>o(e),className:"gap-2"},r.createElement(nt,{className:"w-4 h-4 text-brand-secondary"})," 分享"),r.createElement(Ot,null)),"files"!==g&&r.createElement(qt,{onClick:()=>b(e),className:"gap-2"},r.createElement(Pe,{className:"w-4 h-4 text-brand-secondary"})," 打开所在目录"),r.createElement(qt,{onClick:()=>i(e),className:"gap-2"},r.createElement(ye,{className:"w-4 h-4 text-brand-secondary"})," 重命名"),r.createElement(qt,{onClick:()=>c(e),className:"gap-2"},r.createElement($e,{className:"w-4 h-4 text-brand-secondary"})," 移动到..."),r.createElement(qt,{onClick:()=>m?m(e):E(e),className:"gap-2"},r.createElement(fe,{className:"w-4 h-4 text-brand-secondary"})," 复制到..."),r.createElement(Ot,null),r.createElement(qt,{onClick:()=>l(e),className:"gap-2 text-destructive focus:text-destructive"},r.createElement(it,{className:"w-4 h-4"})," 删除")))),r.createElement("div",{className:"my-2"},(()=>{if(e.isDirectory)return r.createElement(Te,{className:"w-12 h-12 text-amber-500 fill-amber-500/20 transition-transform duration-200 group-hover:scale-105"});const t="w-12 h-12 transition-transform duration-200 group-hover:scale-105";switch(M(e.name)){case"image":return r.createElement(Me,{className:`${t} text-purple-500`});case"video":return r.createElement(ze,{className:`${t} text-rose-500`});case"audio":return r.createElement(ke,{className:`${t} text-emerald-500`});case"code":return r.createElement(Ce,{className:`${t} text-blue-500`});case"archive":return r.createElement(Ne,{className:`${t} text-amber-600`});case"pdf":return r.createElement(Fe,{className:`${t} text-red-500`});case"document":return r.createElement(Fe,{className:`${t} text-sky-500`});default:return r.createElement(Fe,{className:`${t} text-muted-foreground`})}})()),r.createElement("div",{className:"w-full text-center"},r.createElement("p",{className:"text-xs font-medium text-foreground truncate px-1",title:e.name},e.name),r.createElement("span",{className:"text-[11px] text-muted-foreground block mt-0.5 truncate"},e.isDirectory?"文件夹":w(e.size||0),z?` · /${k}`:"")))}function Yt({item:e,index:t=0,onOpen:a,onDownload:n,onDelete:l,onToggleFavorite:s,onShare:o,onMove:c,onCopy:m,onRename:i,onPreview:d,onContextMenu:u}){const p=Et((e=>e.selectedFile)),x=Et((e=>e.setSelectedFile)),h=Et((e=>e.selectedPaths)),f=Et((e=>e.toggleSelectPath)),g=Et((e=>e.viewMode)),b=Et((e=>e.openContainingFolder)),y=Et((e=>e.openEditor)),E=Et((e=>e.openCopyModal)),v=p?.path===e.path,k=h.includes(e.path),z=C(e.path),T="files"!==g&&Boolean(z);return r.createElement("tr",{style:{animationDelay:`${Math.min(12*t,150)}ms`},onClick:t=>{(t.ctrlKey||t.metaKey)&&f(e.path),x(e)},onDoubleClick:()=>a(e),onContextMenu:t=>u?.(t,e),className:"storeit-row-enter border-b transition-colors cursor-pointer select-none group "+(k||v?"bg-brand-primary/10":"hover:bg-white/80")},r.createElement("td",{className:"py-2.5 px-3 w-16"},r.createElement("div",{className:"flex items-center gap-2"},r.createElement("button",{type:"button",onClick:t=>{t.stopPropagation(),f(e.path)},className:"w-4 h-4 rounded border flex items-center justify-center transition-all "+(k?"bg-brand-primary border-brand-primary text-white scale-105":"border-black/25 bg-white hover:border-brand-primary")},k&&r.createElement(le,{className:"w-3 h-3"})),r.createElement("button",{onClick:t=>{t.stopPropagation(),s(e)},className:"text-muted-foreground/40 hover:text-amber-500 transition-transform active:scale-125 "+(e.isFavorite?"text-amber-500 fill-amber-500 opacity-100":"")},r.createElement(mt,{className:"w-4 h-4 "+(e.isFavorite?"fill-amber-500":"")})))),r.createElement("td",{className:"py-2.5 px-3"},r.createElement("div",{className:"flex items-center gap-3 min-w-0"},r.createElement("div",{className:"shrink-0 transition-transform duration-150 group-hover:scale-105"},(()=>{if(e.isDirectory)return r.createElement(Te,{className:"w-5 h-5 text-amber-500 fill-amber-500/20"});switch(M(e.name)){case"image":return r.createElement(Me,{className:"w-5 h-5 text-purple-500"});case"video":return r.createElement(ze,{className:"w-5 h-5 text-rose-500"});case"audio":return r.createElement(ke,{className:"w-5 h-5 text-emerald-500"});case"code":return r.createElement(Ce,{className:"w-5 h-5 text-blue-500"});case"archive":return r.createElement(Ne,{className:"w-5 h-5 text-amber-600"});case"pdf":return r.createElement(Fe,{className:"w-5 h-5 text-red-500"});default:return r.createElement(Fe,{className:"w-5 h-5 text-muted-foreground"})}})()),r.createElement("div",{className:"min-w-0"},r.createElement("span",{className:"font-medium text-sm text-foreground truncate block max-w-md",title:e.name},e.name),T&&r.createElement("span",{className:"text-[11px] text-muted-foreground font-mono block truncate"},"所在目录: /",z)))),r.createElement("td",{className:"py-2.5 px-3 text-xs text-muted-foreground whitespace-nowrap"},e.isDirectory?"--":w(e.size||0)),r.createElement("td",{className:"py-2.5 px-3 text-xs text-muted-foreground whitespace-nowrap hidden sm:table-cell"},N(e.modifiedTime)),r.createElement("td",{className:"py-2.5 px-3 text-right"},r.createElement(Pt,null,r.createElement(Dt,{asChild:!0,onClick:e=>e.stopPropagation()},r.createElement(U,{variant:"ghost",size:"icon",className:"h-7 w-7 opacity-0 group-hover:opacity-100"},r.createElement(Qe,{className:"w-4 h-4"}))),r.createElement(Rt,{align:"end",className:"w-44 storeit-menu-pop"},e.isDirectory?r.createElement(r.Fragment,null,r.createElement(qt,{onClick:()=>n(e),className:"gap-2"},r.createElement(be,{className:"w-4 h-4 text-brand-secondary"})," 打包下载 (.zip)"),r.createElement(qt,{onClick:()=>o(e),className:"gap-2"},r.createElement(nt,{className:"w-4 h-4 text-brand-secondary"})," 共享文件夹 (R/RW)"),r.createElement(Ot,null)):r.createElement(r.Fragment,null,S(e.name)&&r.createElement(qt,{onClick:()=>d(e),className:"gap-2"},r.createElement(we,{className:"w-4 h-4 text-brand-secondary"})," 预览"),F(e.name)&&r.createElement(qt,{onClick:()=>y(e),className:"gap-2"},r.createElement(Ee,{className:"w-4 h-4 text-brand-secondary"})," 在线编辑"),r.createElement(qt,{onClick:()=>n(e),className:"gap-2"},r.createElement(be,{className:"w-4 h-4 text-brand-secondary"})," 下载"),r.createElement(qt,{onClick:()=>o(e),className:"gap-2"},r.createElement(nt,{className:"w-4 h-4 text-brand-secondary"})," 分享"),r.createElement(Ot,null)),"files"!==g&&r.createElement(qt,{onClick:()=>b(e),className:"gap-2"},r.createElement(Pe,{className:"w-4 h-4 text-brand-secondary"})," 打开所在目录"),r.createElement(qt,{onClick:()=>i(e),className:"gap-2"},r.createElement(ye,{className:"w-4 h-4 text-brand-secondary"})," 重命名"),r.createElement(qt,{onClick:()=>c(e),className:"gap-2"},r.createElement($e,{className:"w-4 h-4 text-brand-secondary"})," 移动到..."),r.createElement(qt,{onClick:()=>m?m(e):E(e),className:"gap-2"},r.createElement(fe,{className:"w-4 h-4 text-brand-secondary"})," 复制到..."),r.createElement(Ot,null),r.createElement(qt,{onClick:()=>l(e),className:"gap-2 text-destructive focus:text-destructive"},r.createElement(it,{className:"w-4 h-4"})," 删除")))))}function Xt(){const e=f(),t=Et((e=>e.currentPath)),a=Et((e=>e.viewMode)),o=Et((e=>e.layout)),m=Et((e=>e.sortBy)),i=Et((e=>e.sortOrder)),d=Et((e=>e.setSort)),u=Et((e=>e.searchQuery)),p=Et((e=>e.selectedPaths)),g=Et((e=>e.setSelectedPaths)),b=Et((e=>e.clearSelection)),E=Et((e=>e.openFolder)),v=Et((e=>e.openContainingFolder)),w=Et((e=>e.setSelectedFile)),N=Et((e=>e.setPreviewFile)),k=Et((e=>e.openEditor)),C=Et((e=>e.setShareModalFile)),M=Et((e=>e.setMoveModalFile)),z=Et((e=>e.setBatchMovePaths)),P=Et((e=>e.openCopyModal)),D=Et((e=>e.openBatchCopyModal)),R=Et((e=>e.setRenameModalFile)),q=Et((e=>e.showToast)),O=Et((e=>e.openConfirm)),[j,A]=n(null);l((()=>{const e=()=>A(null);return window.addEventListener("click",e),window.addEventListener("scroll",e,!0),()=>{window.removeEventListener("click",e),window.removeEventListener("scroll",e,!0)}}),[]);const{data:Z,isLoading:I,isError:W,error:_,refetch:L}=x({queryKey:["files",a,"search"===a?u:t],queryFn:async()=>{if("recent"===a)return y.getRecent();if("favorites"===a)return y.getFavorites();if("search"===a)return y.searchFiles(u);return(await y.getFiles(t)).items}}),{data:B}=x({queryKey:["favoritesList"],queryFn:()=>y.getFavorites()}),K=s((()=>new Set((B||[]).map((e=>e.path)))),[B]),H=c(null);l((()=>{const t=()=>{H.current&&clearTimeout(H.current),H.current=setTimeout((()=>{L(),e.invalidateQueries({queryKey:["quota"]})}),300)};return window.addEventListener("storeit:file-uploaded",t),()=>{window.removeEventListener("storeit:file-uploaded",t),H.current&&clearTimeout(H.current)}}),[L,e]);const Q=h({mutationFn:e=>y.deleteFile(e),onSuccess:()=>{L(),e.invalidateQueries({queryKey:["quota"]}),e.invalidateQueries({queryKey:["favoritesList"]}),e.invalidateQueries({queryKey:["shares"]}),w(null),q("删除成功","success")},onError:e=>q(e.message||"删除文件失败","error")}),G=h({mutationFn:e=>y.batchDeleteFiles(e),onSuccess:(t,a)=>{L(),e.invalidateQueries({queryKey:["quota"]}),e.invalidateQueries({queryKey:["favoritesList"]}),e.invalidateQueries({queryKey:["shares"]}),w(null),b(),q(`已成功删除 ${a.length} 个项目`,"success")},onError:e=>q(e.message||"批量删除失败","error")}),V=h({mutationFn:({path:e,favorite:t})=>y.setFavorite(e,t),onSuccess:(t,a)=>{e.invalidateQueries({queryKey:["favoritesList"]}),L(),q(a.favorite?"已加入收藏夹":"已取消收藏","success")},onError:e=>q(e.message||"更新收藏失败","error")}),X=e=>{e.isDirectory?E(e.path):N(e)},J=e=>{const t=document.createElement("a");e.isDirectory?(t.href=$([e.path]),t.download=`${e.name}.zip`,q(`正在打包下载文件夹 "${e.name}.zip"...`,"info")):(t.href=T(e.path),t.download=e.name),document.body.appendChild(t),t.click(),document.body.removeChild(t)},re=e=>{O({title:"确认删除"+(e.isDirectory?"文件夹":"文件"),description:`确定要彻底删除 "${e.name}" 吗？此操作不可撤销！`,confirmText:"彻底删除",destructive:!0,onConfirm:()=>Q.mutate(e.path)})},ne=e=>{V.mutate({path:e.path,favorite:!e.isFavorite})},le=(e,t)=>{e.preventDefault(),e.stopPropagation(),w(t),A({x:Math.min(e.clientX,"undefined"!=typeof window?window.innerWidth-200:e.clientX),y:Math.min(e.clientY,"undefined"!=typeof window?window.innerHeight-310:e.clientY),item:t})},se=Z||[],ce=s((()=>{const e=se.map((e=>({...e,isFavorite:"favorites"===a||K.has(e.path)}))),t="asc"===i?1:-1;return e.sort(((e,a)=>e.isDirectory!==a.isDirectory?e.isDirectory?-1:1:"size"===m?((e.size||0)-(a.size||0))*t:"modifiedTime"===m?(Number(e.modifiedTime||0)-Number(a.modifiedTime||0))*t:e.name.localeCompare(a.name,"zh-CN",{numeric:!0})*t))}),[se,K,a,m,i]),me=e=>m!==e?r.createElement(ae,{className:"w-3 h-3 opacity-40"}):"asc"===i?r.createElement(te,{className:"w-3 h-3 text-brand-primary"}):r.createElement(ee,{className:"w-3 h-3 text-brand-primary"});if(I)return r.createElement("div",{className:"flex-1 flex flex-col items-center justify-center p-12 text-muted-foreground gap-3"},r.createElement(Xe,{className:"w-8 h-8 animate-spin text-brand-secondary"}),r.createElement("p",{className:"text-sm"},"正在加载文件列表..."));if(W)return r.createElement("div",{className:"flex-1 flex flex-col items-center justify-center p-12 text-destructive select-none gap-3"},r.createElement(Y,{className:"w-10 h-10 text-destructive"}),r.createElement("p",{className:"text-base font-semibold"},"读取文件列表失败"),r.createElement("p",{className:"text-xs text-muted-foreground"},_?.message||"可能登录会话已过期或网络断开"),r.createElement(U,{variant:"outline",size:"sm",onClick:()=>L(),className:"gap-1.5 mt-2"},r.createElement(Xe,{className:"w-3.5 h-3.5"})," 重新加载"));if(0===ce.length)return r.createElement("div",{className:"storeit-view-enter flex-1 flex flex-col items-center justify-center p-12 text-muted-foreground select-none"},r.createElement("div",{className:"w-20 h-20 rounded-full bg-brand-secondary/10 flex items-center justify-center mb-4 text-brand-secondary"},r.createElement(Pe,{className:"w-10 h-10"})),r.createElement("p",{className:"text-base font-semibold text-brand-primary"},"search"===a?"未找到匹配的文件":"favorites"===a?"收藏夹暂无文件":"recent"===a?"暂无最近访问记录":"此目录下暂无文件"),r.createElement("p",{className:"text-xs text-muted-foreground mt-1 max-w-sm text-center"},"files"===a?"直接将文件或文件夹拖拽至此，或点击右上角“上传 / 新建文件”开始添加":"可在我的文件中右键或点击星标将重要文件添加至此"));const ie=ce.length>0&&p.length===ce.length;return r.createElement("div",{className:"storeit-view-enter flex-1 overflow-y-auto p-4 relative min-h-full space-y-3"},r.createElement("div",{className:"flex flex-wrap items-center justify-between gap-2 px-1"},p.length>0?r.createElement("div",{className:"storeit-spring-bar flex flex-wrap items-center gap-2 bg-brand-primary text-white px-3.5 py-1.5 rounded-xl shadow-sm text-xs"},r.createElement("span",{className:"font-semibold"},"已选 ",p.length," 项"),r.createElement("button",{type:"button",onClick:()=>ie?b():g(ce.map((e=>e.path))),className:"px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 transition-colors"},ie?"取消全选":"全选当前页"),r.createElement("button",{type:"button",onClick:()=>{if(0===p.length)return;const e=document.createElement("a");e.href=$(p),e.download=`StoreIt-打包下载-${p.length}项.zip`,document.body.appendChild(e),e.click(),document.body.removeChild(e),q(`正在打包下载已选的 ${p.length} 个项目...`,"info")},className:"px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"},r.createElement(be,{className:"w-3.5 h-3.5"})," 打包下载"),r.createElement("button",{type:"button",onClick:()=>z(p),className:"px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"},r.createElement($e,{className:"w-3.5 h-3.5"})," 批量移动"),r.createElement("button",{type:"button",onClick:()=>D(p),className:"px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"},r.createElement(fe,{className:"w-3.5 h-3.5"})," 批量复制"),r.createElement("button",{type:"button",onClick:async()=>{for(const e of p)try{await y.setFavorite(e,!0)}catch{}e.invalidateQueries({queryKey:["favoritesList"]}),L(),q(`已将 ${p.length} 个项目加入收藏夹`,"success"),b()},className:"px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"},r.createElement(mt,{className:"w-3.5 h-3.5"})," 批量收藏"),r.createElement("button",{type:"button",onClick:()=>{0!==p.length&&O({title:`确认批量删除 (${p.length} 项)`,description:`确定要彻底删除选中的 ${p.length} 个文件或文件夹吗？此操作不可撤销！`,confirmText:"确认批量删除",destructive:!0,onConfirm:()=>G.mutate(p)})},className:"px-2 py-0.5 rounded bg-rose-500/80 hover:bg-rose-500 flex items-center gap-1 transition-colors"},r.createElement(it,{className:"w-3.5 h-3.5"})," 批量删除"),r.createElement("button",{type:"button",onClick:b,className:"p-0.5 rounded hover:bg-white/20 ml-1",title:"退出多选"},r.createElement(ft,{className:"w-3.5 h-3.5"}))):r.createElement("div",{className:"flex items-center gap-2 text-xs text-muted-foreground select-none"},r.createElement("span",null,"共 ",ce.length," 项"),r.createElement("button",{type:"button",onClick:()=>g(ce.map((e=>e.path))),className:"inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-black/5 text-muted-foreground hover:text-foreground transition-colors"},r.createElement(oe,{className:"w-3.5 h-3.5"})," 全选"),r.createElement("button",{type:"button",onClick:async()=>{try{const t=await y.resyncFiles();L(),e.invalidateQueries({queryKey:["quota"]}),q(`磁盘索引同步完成 (共扫描 ${t.indexed} 项)`,"success")}catch(e){q(e.message||"同步索引失败","error")}},className:"inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-black/5 text-muted-foreground hover:text-foreground transition-colors",title:"递归扫描物理存储目录并更新文件搜索索引"},r.createElement(Xe,{className:"w-3 h-3"})," 同步索引")),r.createElement("div",{className:"flex items-center gap-1 text-xs select-none"},r.createElement("span",{className:"text-muted-foreground mr-1"},"排序:"),[{key:"name",label:"名称"},{key:"size",label:"大小"},{key:"modifiedTime",label:"时间"}].map((e=>r.createElement("button",{key:e.key,type:"button",onClick:()=>d(e.key),className:"inline-flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all duration-150 "+(m===e.key?"bg-white shadow-sm text-brand-primary font-semibold":"text-muted-foreground hover:bg-black/5 hover:text-foreground")},r.createElement("span",null,e.label),me(e.key)))))),"grid"===o?r.createElement("div",{className:"grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5"},ce.map(((e,t)=>r.createElement(Vt,{key:e.path,item:e,index:t,onOpen:X,onDownload:J,onDelete:re,onToggleFavorite:ne,onShare:e=>C(e),onMove:e=>M(e),onCopy:e=>P(e),onRename:e=>R(e),onPreview:e=>N(e),onContextMenu:le})))):r.createElement("div",{className:"bg-white/80 rounded-2xl border shadow-sm overflow-hidden"},r.createElement("table",{className:"w-full text-left border-collapse"},r.createElement("thead",null,r.createElement("tr",{className:"border-b bg-muted/40 text-xs font-semibold text-muted-foreground select-none"},r.createElement("th",{className:"py-2.5 px-3 w-16"}),r.createElement("th",{onClick:()=>d("name"),className:"py-2.5 px-3 cursor-pointer hover:text-brand-primary"},r.createElement("span",{className:"inline-flex items-center gap-1"},"名称 ",me("name"))),r.createElement("th",{onClick:()=>d("size"),className:"py-2.5 px-3 w-28 cursor-pointer hover:text-brand-primary"},r.createElement("span",{className:"inline-flex items-center gap-1"},"大小 ",me("size"))),r.createElement("th",{onClick:()=>d("modifiedTime"),className:"py-2.5 px-3 w-44 hidden sm:table-cell cursor-pointer hover:text-brand-primary"},r.createElement("span",{className:"inline-flex items-center gap-1"},"修改时间 ",me("modifiedTime"))),r.createElement("th",{className:"py-2.5 px-3 w-16 text-right"},"操作"))),r.createElement("tbody",null,ce.map(((e,t)=>r.createElement(Yt,{key:e.path,item:e,index:t,onOpen:X,onDownload:J,onDelete:re,onToggleFavorite:ne,onShare:e=>C(e),onMove:e=>M(e),onCopy:e=>P(e),onRename:e=>R(e),onPreview:e=>N(e),onContextMenu:le})))))),j&&r.createElement("div",{style:{top:j.y,left:j.x},className:"storeit-menu-pop fixed z-50 w-48 bg-white/95 backdrop-blur-md rounded-2xl border shadow-xl p-1.5 text-xs select-none",onClick:e=>e.stopPropagation()},r.createElement("div",{className:"px-2.5 py-1.5 font-semibold text-foreground truncate border-b mb-1"},j.item.name),!j.item.isDirectory&&S(j.item.name)&&r.createElement("button",{onClick:()=>{N(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(we,{className:"w-3.5 h-3.5 text-brand-secondary"})," 预览"),!j.item.isDirectory&&F(j.item.name)&&r.createElement("button",{onClick:()=>{k(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(Ee,{className:"w-3.5 h-3.5 text-brand-secondary"})," 在线编辑"),r.createElement("button",{onClick:()=>{J(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(be,{className:"w-3.5 h-3.5 text-brand-secondary"}),j.item.isDirectory?"打包下载 (.zip)":"下载"),r.createElement("button",{onClick:()=>{C(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(nt,{className:"w-3.5 h-3.5 text-brand-secondary"}),j.item.isDirectory?"共享文件夹 (R/RW)":"分享"),"files"!==a&&r.createElement("button",{onClick:()=>{v(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(Pe,{className:"w-3.5 h-3.5 text-brand-secondary"})," 打开所在目录"),r.createElement("button",{onClick:()=>{ne(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(mt,{className:"w-3.5 h-3.5 "+(j.item.isFavorite?"fill-amber-500 text-amber-500":"")}),j.item.isFavorite?"取消收藏":"加入收藏"),r.createElement("button",{onClick:()=>{R(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(ye,{className:"w-3.5 h-3.5 text-brand-secondary"})," 重命名"),r.createElement("button",{onClick:()=>{M(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement($e,{className:"w-3.5 h-3.5 text-brand-secondary"})," 移动到..."),r.createElement("button",{onClick:()=>{P(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(fe,{className:"w-3.5 h-3.5 text-brand-secondary"})," 复制到..."),r.createElement("button",{onClick:()=>{w(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"},r.createElement(Ue,{className:"w-3.5 h-3.5 text-brand-secondary"})," 属性与详情"),r.createElement("div",{className:"h-px bg-black/5 my-1"}),r.createElement("button",{onClick:()=>{re(j.item),A(null)},className:"w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-destructive/10 text-left text-destructive"},r.createElement(it,{className:"w-3.5 h-3.5"})," 删除")))}function Jt(){const e=f(),t=Et((e=>e.showToast)),a=Et((e=>e.openConfirm)),s=Et((e=>e.activeShareToken)),o=Et((e=>e.activeShareServerUrl)),m=Et((e=>e.activeSharePassword)),i=Et((e=>e.openSharedSpace)),d=Et((e=>e.closeSharedSpace)),[u,p]=n(null),[g,b]=n(""),[E,v]=n(""),[C,M]=n(""),[S,F]=n(null),[T,$]=n(""),[P,R]=n([]),[q,O]=n(!1),[A,Z]=n(null),[I,W]=n(!1),[_,L]=n(null),[B,K]=n(""),[H,G]=n(!1),[V,Y]=n(!1),[X,J]=n(!0),[ee,te]=n(""),[ae,re]=n(!1),[ne,se]=n(""),[oe,ce]=n(!1),me=c(null),{data:de,isLoading:ue,refetch:pe}=x({queryKey:["shares"],queryFn:()=>y.getShares()}),{data:xe,refetch:ge}=x({queryKey:["shareMounts"],queryFn:()=>y.getShareMounts()}),ye=async(e,t,a,r="")=>{if(e){O(!0),Z(null),W(!1);try{const n=await y.getFederatedManifest(e,a,t);F(n);const l=await y.listFederatedShare(e,r,a,t);R(l.items||[]),$(l.currentSubPath||"")}catch(e){(e?.passwordRequired||403===e?.status)&&W(!0),Z(e.message||"无法加载共享空间")}finally{O(!1)}}};l((()=>{s?(L(null),ye(s,o,m,"")):(F(null),R([]),$(""))}),[s,o,m]);const ve=async e=>{const a=function(e){let t=(e||"").trim(),a="";const r=t.indexOf("?");if(r>=0){const e=new URLSearchParams(t.slice(r+1));a=e.get("key")||e.get("password")||e.get("pwd")||"",t=t.slice(0,r)}if(t.startsWith("storeit+fed://")){const e=t.slice("storeit+fed://".length);t=(e.startsWith("localhost")||e.startsWith("127.0.0.1")?"http://":"https://")+e}let n="",l=t;if(t.startsWith("http://")||t.startsWith("https://"))try{const e=new URL(t);"undefined"!=typeof window&&e.origin!==window.location.origin&&(n=e.origin),l=e.pathname+e.hash}catch{}let s=l;return s.includes("/api/fed/shares/")?s=s.slice(s.indexOf("/api/fed/shares/")+"/api/fed/shares/".length):s.includes("#/s/")?s=s.slice(s.indexOf("#/s/")+"#/s/".length):s.includes("/d/")&&(s=s.slice(s.indexOf("/d/")+"/d/".length)),s.includes("/")&&(s=s.slice(0,s.indexOf("/"))),s=s.replace(/[^A-Za-z0-9_-]/g,""),{token:s,remoteServerUrl:n,extractedPassword:a}}(g);if(!a.token)return void t("请输入有效的分享链接、Token 或 storeit+fed:// 跨服协议地址","error");const r=E.trim()||a.extractedPassword;if(i(a.token,a.remoteServerUrl,r),e)try{let e=null;try{e=await y.getFederatedManifest(a.token,r,a.remoteServerUrl)}catch{}await y.createShareMount({shareLinkOrToken:g.trim(),accessPassword:r||void 0,mountName:C.trim()||e?.name||void 0,permission:e?.permission||"READ_WRITE",ownerName:e?.ownerUsername||a.remoteServerUrl||"local",isDirectory:!e||e.isDirectory}),ge(),t("已保存到我的共享挂载列表","success"),b(""),M("")}catch(e){t(e.message||"保存挂载失败","error")}},Ne=h({mutationFn:e=>y.revokeShare(e),onSuccess:()=>{e.invalidateQueries({queryKey:["shares"]}),t("分享链接已撤销","success")},onError:e=>t(e.message||"撤销分享失败","error")}),ke=h({mutationFn:e=>y.deleteShareMount(e),onSuccess:()=>{ge(),t("已移除挂载项","success")}}),Ce=async(e,a)=>{await D(a)&&(p(e),t("已复制到剪贴板","success"),setTimeout((()=>p(null)),1800))},Me=o?o.replace(/\/+$/,""):"",ze=m?`&password=${encodeURIComponent(m)}`:"",$e=e=>`${Me}/api/fed/shares/${encodeURIComponent(s||"")}/preview?subPath=${encodeURIComponent(e)}${ze}`,Re=async e=>{if(s){if(e.isDirectory)return L(null),void await ye(s,o,m,e.path);if(L(e),G(!1),"text"===z(e.name))try{const t=await y.getFederatedFileContent(s,e.path,m,o);K(t.content||"")}catch(e){t(e.message||"读取共享文件内容失败","error")}}},qe=de||[],Ue=xe||[],je="READ_WRITE"===S?.permission,Ae=T?T.split("/").filter(Boolean):[];return r.createElement("div",{className:"p-6 max-w-5xl mx-auto space-y-6 storeit-view-enter"},r.createElement("div",{className:"flex flex-wrap items-center justify-between gap-3 pb-4 border-b"},r.createElement("div",null,r.createElement("h2",{className:"text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2"},r.createElement(nt,{className:"w-6 h-6 text-brand-secondary"}),"共享文件夹 · 跨服联邦挂载与分享中心"),r.createElement("p",{className:"text-sm text-muted-foreground mt-1"},"管理单文件与文件夹共享（支持 R 只读 / RW 读写权限管控），或通过 SFSP/1.0 协议加载本机及跨服务器共享空间")),r.createElement(U,{variant:"outline",size:"sm",onClick:()=>{pe(),ge(),s&&ye(s,o,m,T)},className:"gap-1.5"},r.createElement(Xe,{className:"w-4 h-4"})," 刷新全部")),r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("div",{className:"flex items-center justify-between"},r.createElement("div",null,r.createElement("h3",{className:"text-base font-semibold text-brand-primary flex items-center gap-2"},r.createElement(Q,{className:"w-4 h-4 text-brand-secondary"}),"加载共享链接 / 跨服联邦挂载 (SFSP/1.0)"),r.createElement("p",{className:"text-xs text-muted-foreground mt-0.5"},"支持粘贴本机分享 Token、Web 链接（",r.createElement("code",{className:"bg-muted px-1 rounded"},"/#/s/TOKEN"),"）或任意远程 StoreIt 节点协议地址（",r.createElement("code",{className:"bg-muted px-1 rounded"},"storeit+fed://host/api/fed/shares/TOKEN"),"）"))),r.createElement("div",{className:"grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end"},r.createElement("div",{className:"sm:col-span-5"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"分享链接 / Token / 跨服协议 URI"),r.createElement(j,{value:g,onChange:e=>b(e.target.value),placeholder:"粘贴 #/s/... 或 storeit+fed://...",className:"text-xs font-mono"})),r.createElement("div",{className:"sm:col-span-2"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"提取码 (若设置)"),r.createElement(j,{type:"password",value:E,onChange:e=>v(e.target.value),placeholder:"可选提取码",className:"text-xs"})),r.createElement("div",{className:"sm:col-span-2"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"挂载备注名 (可选)"),r.createElement(j,{value:C,onChange:e=>M(e.target.value),placeholder:"如：团队设计库",className:"text-xs"})),r.createElement("div",{className:"sm:col-span-3 flex gap-1.5"},r.createElement(U,{type:"button",onClick:()=>ve(!1),className:"flex-1 text-xs"},"立即打开"),r.createElement(U,{type:"button",variant:"outline",onClick:()=>ve(!0),className:"flex-1 text-xs"},"保存并挂载"))),Ue.length>0&&r.createElement("div",{className:"pt-2 border-t space-y-2"},r.createElement("p",{className:"text-xs font-semibold text-muted-foreground"},"已保存的共享挂载 (",Ue.length,")："),r.createElement("div",{className:"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5"},Ue.map((e=>{const t=s===e.shareToken&&(o||"")===(e.remoteServerUrl||"");return r.createElement("div",{key:e.id,onClick:()=>i(e.shareToken,e.remoteServerUrl||"",e.accessPassword||""),className:"p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between gap-2 "+(t?"border-brand-primary bg-brand-primary/10 shadow-sm":"bg-muted/20 hover:bg-white")},r.createElement("div",{className:"flex items-center gap-2.5 min-w-0"},r.createElement(Pe,{className:"w-5 h-5 text-amber-500 shrink-0"}),r.createElement("div",{className:"min-w-0"},r.createElement("p",{className:"text-xs font-semibold text-brand-primary truncate"},e.mountName),r.createElement("div",{className:"flex items-center gap-1.5 text-[10px] text-muted-foreground"},r.createElement("span",{className:"px-1.5 py-0.2 rounded font-semibold "+("READ_WRITE"===e.permission?"bg-emerald-100 text-emerald-700":"bg-blue-100 text-blue-700")},"READ_WRITE"===e.permission?"RW 读写":"R 只读"),r.createElement("span",{className:"truncate"},e.remoteServerUrl?`跨服: ${e.remoteServerUrl}`:`来自: ${e.ownerName||"本机"}`)))),r.createElement("button",{type:"button",onClick:t=>{t.stopPropagation(),ke.mutate(e.id)},className:"p-1 text-muted-foreground hover:text-destructive rounded",title:"移除挂载"},r.createElement(it,{className:"w-3.5 h-3.5"})))}))))),s&&r.createElement("div",{className:"bg-white rounded-2xl border-2 border-brand-primary/30 shadow-md overflow-hidden storeit-modal-spring"},r.createElement("div",{className:"p-4 bg-brand-primary/5 border-b flex flex-wrap items-center justify-between gap-3"},r.createElement("div",{className:"flex items-center gap-2.5 min-w-0"},r.createElement(Pe,{className:"w-5 h-5 text-amber-500 shrink-0"}),r.createElement("div",{className:"min-w-0"},r.createElement("div",{className:"flex items-center gap-2 flex-wrap"},r.createElement("span",{className:"font-bold text-sm text-brand-primary truncate"},S?.name||`共享空间 (${s})`),S&&r.createElement("span",{className:"text-[10px] px-2 py-0.5 rounded-full font-semibold "+(je?"bg-emerald-100 text-emerald-800 border border-emerald-300":"bg-blue-100 text-blue-800 border border-blue-300")},je?"RW 可读写协同":"R 只读访问"),r.createElement("span",{className:"text-[10px] font-mono bg-muted px-2 py-0.5 rounded text-muted-foreground"},o?`SFSP 跨服节点: ${o}`:"SFSP/1.0 本机节点")),S&&r.createElement("p",{className:"text-[11px] text-muted-foreground mt-0.5"},"所有者: ",S.ownerUsername," · 已下载 ",S.downloads," 次"))),r.createElement("div",{className:"flex flex-wrap items-center gap-1.5"},S&&je&&S.isDirectory&&r.createElement(r.Fragment,null,r.createElement("input",{ref:me,type:"file",multiple:!0,className:"hidden",onChange:async e=>{const a=e.target.files;if(a&&0!==a.length&&s){for(let e=0;e<a.length;e++)try{await y.uploadToFederatedShare(s,T,a[e],"rename",m,o)}catch(r){t(r.message||`上传 ${a[e].name} 失败`,"error")}e.target.value="",t("文件已上传至共享目录","success"),ye(s,o,m,T)}}}),r.createElement(U,{size:"sm",variant:"default",className:"h-8 text-xs gap-1",onClick:()=>me.current?.click()},r.createElement(dt,{className:"w-3.5 h-3.5"})," 上传文件"),r.createElement(U,{size:"sm",variant:"outline",className:"h-8 text-xs gap-1",onClick:()=>{ce((e=>!e)),re(!1)}},r.createElement(Se,{className:"w-3.5 h-3.5"})," 新建文件"),r.createElement(U,{size:"sm",variant:"outline",className:"h-8 text-xs gap-1",onClick:()=>{re((e=>!e)),ce(!1)}},r.createElement(De,{className:"w-3.5 h-3.5 text-amber-500"})," 新建子目录")),S&&r.createElement(U,{size:"sm",variant:"outline",className:"h-8 text-xs gap-1",onClick:()=>{const e=document.createElement("a");var t;e.href=(t=T,`${Me}/api/fed/shares/${encodeURIComponent(s||"")}/zip?subPath=${encodeURIComponent(t)}${ze}`),e.download=`${S.name||"Shared"}.zip`,document.body.appendChild(e),e.click(),document.body.removeChild(e)}},r.createElement(be,{className:"w-3.5 h-3.5"})," 打包下载 (.zip)"),r.createElement(U,{size:"sm",variant:"ghost",className:"h-8 text-xs gap-1",onClick:d},r.createElement(ft,{className:"w-3.5 h-3.5"})," 关闭共享视图"))),S?.isDirectory&&r.createElement("div",{className:"px-4 py-2 bg-muted/20 border-b flex items-center gap-1.5 text-xs text-muted-foreground overflow-x-auto"},r.createElement("button",{type:"button",onClick:()=>{L(null),ye(s,o,m,"")},className:"inline-flex items-center gap-1 hover:text-brand-primary font-medium"},r.createElement(Oe,{className:"w-3.5 h-3.5"})," 共享根目录"),Ae.map(((e,t)=>{const a=Ae.slice(0,t+1).join("/");return r.createElement(r.Fragment,{key:a},r.createElement(ie,{className:"w-3 h-3 opacity-40"}),r.createElement("button",{type:"button",onClick:()=>{L(null),ye(s,o,m,a)},className:"hover:text-brand-primary font-medium"},e))}))),ae&&r.createElement("form",{onSubmit:async e=>{if(e.preventDefault(),s&&ee.trim())try{await y.createFederatedSubfolder(s,T,ee.trim(),m,o),te(""),re(!1),t("共享子文件夹已创建","success"),ye(s,o,m,T)}catch(e){t(e.message||"创建子文件夹失败","error")}},className:"px-4 py-2.5 bg-amber-50/60 border-b flex items-center gap-2"},r.createElement(De,{className:"w-4 h-4 text-amber-500 shrink-0"}),r.createElement(j,{autoFocus:!0,value:ee,onChange:e=>te(e.target.value),placeholder:"输入新子文件夹名称...",className:"h-8 text-xs max-w-xs"}),r.createElement(U,{type:"submit",size:"sm",className:"h-8 text-xs"},"创建"),r.createElement(U,{type:"button",size:"sm",variant:"ghost",className:"h-8 text-xs",onClick:()=>re(!1)},"取消")),oe&&r.createElement("form",{onSubmit:async e=>{if(e.preventDefault(),s&&ne.trim())try{const e=ne.trim(),a=e.endsWith(".md")?`# ${e}\n\n`:"",r=await y.createFederatedBlankFile(s,T,e,a,m,o);se(""),ce(!1),t("共享文件已创建","success"),await ye(s,o,m,T),r.file&&(L({name:r.file.name,path:r.file.path,isDirectory:!1,size:r.file.size}),K(a),G(!0))}catch(e){t(e.message||"创建共享文件失败","error")}},className:"px-4 py-2.5 bg-blue-50/60 border-b flex items-center gap-2"},r.createElement(Se,{className:"w-4 h-4 text-brand-secondary shrink-0"}),r.createElement(j,{autoFocus:!0,value:ne,onChange:e=>se(e.target.value),placeholder:"输入新文件名称 (如 README.md 或 notes.txt)...",className:"h-8 text-xs max-w-xs"}),r.createElement(U,{type:"submit",size:"sm",className:"h-8 text-xs"},"创建并编辑"),r.createElement(U,{type:"button",size:"sm",variant:"ghost",className:"h-8 text-xs",onClick:()=>ce(!1)},"取消")),r.createElement("div",{className:"p-4"},q?r.createElement("div",{className:"py-12 text-center text-muted-foreground flex items-center justify-center gap-2 text-xs"},r.createElement(Xe,{className:"w-4 h-4 animate-spin text-brand-secondary"}),"正在通过 SFSP 协议同步共享目录..."):A?r.createElement("div",{className:"py-8 max-w-md mx-auto text-center space-y-3"},r.createElement(_e,{className:"w-8 h-8 text-amber-500 mx-auto"}),r.createElement("p",{className:"text-sm font-semibold text-foreground"},A),I&&r.createElement("div",{className:"flex gap-2 justify-center"},r.createElement(j,{type:"password",value:E,onChange:e=>v(e.target.value),placeholder:"请输入该共享的访问提取码",className:"max-w-[200px] h-8 text-xs"}),r.createElement(U,{size:"sm",className:"h-8 text-xs",onClick:()=>i(s,o,E.trim())},"验证提取码"))):r.createElement("div",{className:"space-y-4"},0===P.length?r.createElement("div",{className:"py-10 text-center text-xs text-muted-foreground"},"此共享目录下暂无文件",je&&"（可点击右上角“上传文件”或“新建文件”添加内容）"):r.createElement("div",{className:"overflow-x-auto border rounded-xl"},r.createElement("table",{className:"w-full text-left border-collapse text-xs"},r.createElement("thead",null,r.createElement("tr",{className:"border-b bg-muted/40 text-muted-foreground"},r.createElement("th",{className:"py-2 px-3 font-semibold"},"名称"),r.createElement("th",{className:"py-2 px-3 font-semibold w-28"},"大小"),r.createElement("th",{className:"py-2 px-3 font-semibold w-40 hidden sm:table-cell"},"修改时间"),r.createElement("th",{className:"py-2 px-3 font-semibold text-right"},"操作"))),r.createElement("tbody",{className:"divide-y"},P.map((e=>{return r.createElement("tr",{key:e.path||e.name,onDoubleClick:()=>Re(e),className:"hover:bg-muted/20 cursor-pointer"},r.createElement("td",{className:"py-2.5 px-3"},r.createElement("div",{className:"flex items-center gap-2"},e.isDirectory?r.createElement(Te,{className:"w-4 h-4 text-amber-500 shrink-0"}):r.createElement(Fe,{className:"w-4 h-4 text-brand-secondary shrink-0"}),r.createElement("span",{onClick:()=>Re(e),className:"font-medium text-foreground hover:text-brand-primary"},e.name))),r.createElement("td",{className:"py-2.5 px-3 text-muted-foreground"},e.isDirectory?"文件夹":w(e.size||0)),r.createElement("td",{className:"py-2.5 px-3 text-muted-foreground hidden sm:table-cell"},N(e.modifiedTime)),r.createElement("td",{className:"py-2.5 px-3 text-right whitespace-nowrap space-x-1"},r.createElement(U,{size:"sm",variant:"ghost",className:"h-7 px-2 text-xs gap-1",onClick:()=>Re(e)},r.createElement(we,{className:"w-3.5 h-3.5 text-brand-secondary"}),e.isDirectory?"进入":"查看"),!e.isDirectory&&r.createElement(U,{size:"sm",variant:"ghost",className:"h-7 px-2 text-xs gap-1",asChild:!0},r.createElement("a",{href:(a=e.path,`${Me}/api/fed/shares/${encodeURIComponent(s||"")}/download?subPath=${encodeURIComponent(a)}${ze}`),download:e.name},r.createElement(be,{className:"w-3.5 h-3.5 text-brand-secondary"})," 下载")),je&&S?.isDirectory&&r.createElement(U,{size:"sm",variant:"ghost",className:"h-7 px-2 text-xs text-destructive hover:text-destructive",onClick:()=>(async e=>{if(s)try{await y.deleteFederatedItem(s,e.path,m,o),_?.path===e.path&&L(null),t(`已从共享目录删除 "${e.name}"`,"success"),ye(s,o,m,T)}catch(e){t(e.message||"删除失败","error")}})(e)},r.createElement(it,{className:"w-3.5 h-3.5"}))));var a}))))),_&&!_.isDirectory&&r.createElement("div",{className:"p-4 rounded-2xl border bg-muted/10 space-y-3"},r.createElement("div",{className:"flex flex-wrap items-center justify-between gap-2 border-b pb-2"},r.createElement("div",{className:"flex items-center gap-2"},r.createElement(Fe,{className:"w-4 h-4 text-brand-secondary"}),r.createElement("span",{className:"font-semibold text-sm text-brand-primary"},_.name),r.createElement("span",{className:"text-xs text-muted-foreground"},"(",w(_.size||0),")")),r.createElement("div",{className:"flex items-center gap-1.5"},"text"===z(_.name)&&je&&r.createElement(r.Fragment,null,H?r.createElement(r.Fragment,null,["md","markdown"].includes(k(_.name))&&r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>J((e=>!e))},r.createElement(he,{className:"w-3 h-3"}),X?"分栏预览":"纯源码"),r.createElement(U,{size:"sm",className:"h-7 text-xs gap-1",disabled:V,onClick:async()=>{if(s&&_){Y(!0);try{await y.saveFederatedFileContent(s,_.path,B,m,o),G(!1),t("共享文件内容已保存","success"),ye(s,o,m,T)}catch(e){t(e.message||"保存共享文件失败","error")}finally{Y(!1)}}}},r.createElement(et,{className:"w-3 h-3"}),V?"保存中...":"保存修改"),r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs",onClick:()=>G(!1)},"取消")):r.createElement(U,{size:"sm",variant:"outline",className:"h-7 text-xs gap-1",onClick:()=>G(!0)},r.createElement(Ee,{className:"w-3 h-3 text-brand-secondary"})," 在线协同编辑")),r.createElement(U,{size:"sm",variant:"ghost",className:"h-7 text-xs",onClick:()=>L(null)},r.createElement(ft,{className:"w-3.5 h-3.5"})))),"image"===z(_.name)?r.createElement("div",{className:"flex justify-center p-2"},r.createElement("img",{src:$e(_.path),alt:_.name,className:"max-h-96 rounded-xl shadow-sm object-contain"})):"video"===z(_.name)?r.createElement("video",{src:$e(_.path),controls:!0,className:"max-h-96 w-full rounded-xl bg-black"}):"audio"===z(_.name)?r.createElement("audio",{src:$e(_.path),controls:!0,className:"w-full"}):"pdf"===z(_.name)?r.createElement("iframe",{src:$e(_.path),className:"w-full h-96 rounded-xl border bg-white",title:_.name}):H?["md","markdown"].includes(k(_.name))&&X?r.createElement("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-3 h-80"},r.createElement("textarea",{value:B,onChange:e=>K(e.target.value),className:"w-full h-full p-3 rounded-xl bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs outline-none resize-none"}),r.createElement("div",{className:"w-full h-full p-3 rounded-xl bg-white border overflow-auto"},r.createElement(Ea,{content:B,showToc:!1}))):r.createElement("textarea",{value:B,onChange:e=>K(e.target.value),className:"w-full h-72 p-3 rounded-xl bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs outline-none resize-none"}):["md","markdown"].includes(k(_.name))?r.createElement("div",{className:"p-4 rounded-xl bg-white border max-h-96 overflow-auto"},r.createElement(Ea,{content:B})):r.createElement("pre",{className:"p-3 rounded-xl bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs max-h-80 overflow-auto whitespace-pre-wrap"},B))))),r.createElement("div",{className:"space-y-3"},r.createElement("h3",{className:"text-base font-semibold text-brand-primary flex items-center gap-2"},r.createElement(st,{className:"w-4 h-4 text-brand-secondary"}),"我发起的共享与外链 (",qe.length,")"),ue?r.createElement("div",{className:"text-center py-12 text-muted-foreground flex flex-col items-center gap-3"},r.createElement(Xe,{className:"w-6 h-6 animate-spin text-brand-secondary"}),r.createElement("p",{className:"text-xs"},"正在读取分享列表...")):0===qe.length?r.createElement("div",{className:"text-center py-12 bg-white/60 rounded-2xl border border-dashed text-muted-foreground"},r.createElement(nt,{className:"w-10 h-10 mx-auto mb-2 opacity-30 text-brand-secondary"}),r.createElement("p",{className:"font-semibold text-brand-primary text-sm"},"还没有发起过共享"),r.createElement("p",{className:"text-xs text-muted-foreground mt-1"},"在“我的文件”中右键任意文件夹或文件并点击“分享”，即可创建只读或 RW 读写协同共享")):r.createElement("div",{className:"space-y-3"},qe.map((e=>{const t="undefined"!=typeof window?window.location.origin:"",n="undefined"!=typeof window?window.location.host:"localhost:59898",l=`${t}/#/s/${e.token}`,s=`${t}${e.url}`,o=`storeit+fed://${n}/api/fed/shares/${e.token}`;return r.createElement("div",{key:e.id,className:"p-4 bg-white/80 hover:bg-white rounded-2xl border shadow-sm transition-all flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"},r.createElement("div",{className:"space-y-2 min-w-0 flex-1 w-full"},r.createElement("div",{className:"flex flex-wrap items-center gap-2"},e.isDirectory?r.createElement(Te,{className:"w-4 h-4 text-amber-500 shrink-0"}):r.createElement(Fe,{className:"w-4 h-4 text-brand-secondary shrink-0"}),r.createElement("span",{className:"font-semibold text-sm text-foreground truncate max-w-md",title:e.filePath},e.title||e.filePath),r.createElement("span",{className:"text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground"},e.isDirectory?"共享文件夹":"单文件"),r.createElement("span",{className:"text-[10px] px-2 py-0.5 rounded-full font-semibold "+("READ_WRITE"===e.permission?"bg-emerald-100 text-emerald-800":"bg-blue-100 text-blue-800")},"READ_WRITE"===e.permission?"RW 可读写":"R 只读"),e.passwordProtected&&r.createElement("span",{className:"text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 flex items-center gap-0.5"},r.createElement(_e,{className:"w-2.5 h-2.5"})," 含提取码")),r.createElement("div",{className:"flex flex-wrap items-center gap-2"},r.createElement("input",{readOnly:!0,value:l,className:"w-full sm:w-80 text-xs font-mono bg-muted/50 border rounded-lg px-2.5 py-1 text-muted-foreground outline-none select-all",onClick:e=>e.target.select()}),r.createElement(U,{variant:"outline",size:"sm",className:"h-7 px-2.5 text-xs gap-1",onClick:()=>Ce(`web_${e.id}`,l)},u===`web_${e.id}`?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3 h-3 text-emerald-600"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3 h-3"})," 互动链接")),r.createElement(U,{variant:"outline",size:"sm",className:"h-7 px-2.5 text-xs gap-1",onClick:()=>Ce(`dl_${e.id}`,s)},u===`dl_${e.id}`?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3 h-3 text-emerald-600"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3 h-3"})," 下载直链")),r.createElement(U,{variant:"outline",size:"sm",className:"h-7 px-2.5 text-xs gap-1",onClick:()=>Ce(`fed_${e.id}`,o)},u===`fed_${e.id}`?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3 h-3 text-emerald-600"})," 已复制协议"):r.createElement(r.Fragment,null,r.createElement(Q,{className:"w-3 h-3 text-brand-secondary"})," 跨服 URI"))),r.createElement("div",{className:"flex flex-wrap items-center gap-4 text-xs text-muted-foreground"},r.createElement("span",null,"路径: /",e.filePath),r.createElement("span",null,"下载次数:"," ",r.createElement("strong",{className:"text-foreground"},e.downloads||0," / ",e.maxDownloads?e.maxDownloads:"不限")),r.createElement("span",null,"有效期至:"," ",r.createElement("strong",{className:"text-foreground"},e.expiry?N(e.expiry):"永久有效")))),r.createElement("div",{className:"flex items-center gap-2 shrink-0"},r.createElement(U,{variant:"outline",size:"sm",className:"text-xs h-8",onClick:()=>i(e.token,"","")},"打开共享空间"),r.createElement(U,{variant:"destructive",size:"sm",className:"gap-1 h-8 bg-destructive/10 text-destructive hover:bg-destructive hover:text-white border-0 shadow-none",onClick:()=>{return t=e.id,r=e.filePath,void a({title:"确认撤销共享",description:`确定要撤销对 "${r}" 的共享链接吗？撤销后所有访问与跨服挂载将立即失效。`,confirmText:"确认撤销",destructive:!0,onConfirm:()=>Ne.mutate(t)});var t,r}},r.createElement(it,{className:"w-3.5 h-3.5"})," 撤销")))})))))}Bt.displayName=K.Root.displayName;const ea={MB:1048576,GB:1073741824,TB:1099511627776};function ta(e){return!e||e<=0?{value:10,unit:"unlimited"}:e%ea.TB==0?{value:e/ea.TB,unit:"TB"}:e%ea.GB==0?{value:e/ea.GB,unit:"GB"}:{value:Math.max(1,Math.round(e/ea.MB)),unit:"MB"}}function aa(e,t){if("unlimited"===t)return 0;const a=Math.max(1,Number(e)||1);return Math.round(a*ea[t])}function ra(){const e=f(),t=g((e=>e.user)),[a,l]=n(""),[s,o]=n(""),[c,m]=n(10),[i,d]=n("unlimited"),[u,p]=n(!1),[b,E]=n(""),[v,k]=n("1"),[C,M]=n("168"),[S,F]=n(10),[z,T]=n("GB"),[$,P]=n(""),[R,q]=n(null),[O,A]=n(null),{data:Z,isLoading:I,refetch:W}=x({queryKey:["adminUsers"],queryFn:()=>y.getAdminUsers()}),{data:_,isLoading:L,refetch:B}=x({queryKey:["adminInvites"],queryFn:()=>y.getAdminInvites()}),K=h({mutationFn:e=>y.createAdminUser(e),onSuccess:()=>{A({text:"用户创建成功",type:"success"}),l(""),o(""),m(10),d("unlimited"),p(!1),e.invalidateQueries({queryKey:["adminUsers"]})},onError:e=>{A({text:e.message||"创建用户失败",type:"error"})}}),H=h({mutationFn:({username:e,quota:t,role:a,enabled:r})=>y.updateAdminUser(e,{storageQuota:t,role:a,enabled:r}),onSuccess:()=>{A({text:"用户属性已保存",type:"success"}),e.invalidateQueries({queryKey:["adminUsers"]})},onError:e=>{A({text:e.message||"保存失败",type:"error"})}}),Q=h({mutationFn:({username:e,password:t,mustChangePassword:a})=>y.resetAdminUserPassword(e,t,a),onSuccess:()=>{A({text:"用户口令已重置",type:"success"}),e.invalidateQueries({queryKey:["adminUsers"]})},onError:e=>{A({text:e.message||"口令重置失败",type:"error"})}}),G=h({mutationFn:()=>{const e=aa(S,z);return y.createAdminInvite({code:b.trim()||void 0,maxUses:parseInt(v,10)||0,expireHours:parseInt(C,10),defaultQuota:e,note:$.trim()})},onSuccess:t=>{A({text:`邀请码 ${t.data.code} 已生成`,type:"success"}),E(""),P(""),e.invalidateQueries({queryKey:["adminInvites"]})},onError:e=>{A({text:e.message||"生成邀请码失败",type:"error"})}}),X=h({mutationFn:e=>y.deleteAdminInvite(e),onSuccess:()=>{A({text:"邀请码已删除",type:"success"}),e.invalidateQueries({queryKey:["adminInvites"]})},onError:e=>{A({text:e.message||"删除邀请码失败",type:"error"})}}),J=async(e,t)=>{await D(t)&&(q(e),setTimeout((()=>q(null)),1800))},ee=Z||[],te=_||[],ae=aa(c,i),re=aa(S,z);return r.createElement("div",{className:"p-6 max-w-5xl mx-auto space-y-6 animate-in fade-in-50 duration-200"},r.createElement("div",{className:"flex items-center justify-between pb-4 border-b"},r.createElement("div",null,r.createElement("h2",{className:"text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2"},r.createElement(xt,{className:"w-6 h-6 text-brand-secondary"}),"系统用户与受邀注册管理"),r.createElement("p",{className:"text-sm text-muted-foreground mt-1"},"管理用户配额与状态、生成自助注册邀请码或重置用户口令")),r.createElement(U,{variant:"outline",size:"sm",onClick:()=>{W(),B()},className:"gap-1.5"},r.createElement(Xe,{className:"w-4 h-4"})," 刷新")),O&&r.createElement("div",{className:"p-3.5 rounded-xl flex items-center gap-2.5 text-sm "+("success"===O.type?"bg-emerald-50 text-emerald-800 border border-emerald-200":"bg-destructive/10 text-destructive border border-destructive/20")},"success"===O.type?r.createElement(se,{className:"w-4 h-4 text-emerald-600 shrink-0"}):r.createElement(Y,{className:"w-4 h-4 text-destructive shrink-0"}),r.createElement("span",null,O.text)),r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("div",{className:"flex items-center justify-between border-b pb-3"},r.createElement("div",null,r.createElement("h3",{className:"text-base font-semibold text-brand-primary flex items-center gap-2"},r.createElement(V,{className:"w-4 h-4 text-brand-secondary"}),"自主受邀注册 · 邀请码生成与管理"),r.createElement("p",{className:"text-xs text-muted-foreground mt-0.5"},"生成邀请码或专属注册直链，新用户可在登录页切换至“受邀注册”自助开户并自动分配预设配额"))),r.createElement("form",{onSubmit:e=>{e.preventDefault(),G.mutate()},className:"grid grid-cols-1 sm:grid-cols-12 gap-3 items-end"},r.createElement("div",{className:"sm:col-span-3"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"自定义邀请码 (留空随机生成)"),r.createElement(j,{value:b,onChange:e=>E(e.target.value),placeholder:"如 ST-TEAM-2026",className:"font-mono text-xs"})),r.createElement("div",{className:"sm:col-span-2"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"可用次数"),r.createElement("select",{value:v,onChange:e=>k(e.target.value),className:"w-full h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"},r.createElement("option",{value:"1"},"1 次 (单人专属)"),r.createElement("option",{value:"5"},"5 次"),r.createElement("option",{value:"10"},"10 次"),r.createElement("option",{value:"50"},"50 次"),r.createElement("option",{value:"0"},"不限次数"))),r.createElement("div",{className:"sm:col-span-2"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"有效期"),r.createElement("select",{value:C,onChange:e=>M(e.target.value),className:"w-full h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"},r.createElement("option",{value:"24"},"1 天"),r.createElement("option",{value:"168"},"7 天"),r.createElement("option",{value:"720"},"30 天"),r.createElement("option",{value:"-1"},"永久有效"))),r.createElement("div",{className:"sm:col-span-3"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"注册初始配额 (",0===re?"不限额":w(re),")"),r.createElement("div",{className:"flex gap-1"},"unlimited"!==z&&r.createElement(j,{type:"number",min:"1",value:S,onChange:e=>F(Math.max(1,Number(e.target.value))),className:"w-16 text-xs"}),r.createElement("select",{value:z,onChange:e=>T(e.target.value),className:"flex-1 h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"},r.createElement("option",{value:"unlimited"},"不限额"),r.createElement("option",{value:"MB"},"MB"),r.createElement("option",{value:"GB"},"GB"),r.createElement("option",{value:"TB"},"TB")))),r.createElement("div",{className:"sm:col-span-2"},r.createElement(U,{type:"submit",disabled:G.isPending,className:"w-full gap-1.5"},r.createElement(V,{className:"w-4 h-4"})," 生成邀请码")),r.createElement("div",{className:"sm:col-span-12"},r.createElement(j,{value:$,onChange:e=>P(e.target.value),placeholder:"可选备注说明（例如：研发组新成员邀请、活动临时账号等）",className:"h-8 text-xs"}))),L?r.createElement("div",{className:"py-4 text-center text-xs text-muted-foreground"},"正在加载邀请码..."):0===te.length?r.createElement("div",{className:"py-6 text-center text-xs text-muted-foreground bg-muted/20 rounded-xl border border-dashed"},"暂无邀请码，点击上方“生成邀请码”即可创建受邀注册凭证"):r.createElement("div",{className:"overflow-x-auto border rounded-xl"},r.createElement("table",{className:"w-full text-left border-collapse text-xs"},r.createElement("thead",null,r.createElement("tr",{className:"border-b bg-muted/40 text-muted-foreground"},r.createElement("th",{className:"py-2 px-3 font-semibold"},"邀请码"),r.createElement("th",{className:"py-2 px-3 font-semibold"},"已用 / 上限"),r.createElement("th",{className:"py-2 px-3 font-semibold"},"预设配额"),r.createElement("th",{className:"py-2 px-3 font-semibold"},"有效期至"),r.createElement("th",{className:"py-2 px-3 font-semibold"},"备注"),r.createElement("th",{className:"py-2 px-3 font-semibold text-right"},"操作"))),r.createElement("tbody",{className:"divide-y"},te.map((e=>{const t="undefined"!=typeof window?`${window.location.origin}/login?invite=${encodeURIComponent(e.code)}`:`/login?invite=${encodeURIComponent(e.code)}`,a=e.maxUses>0&&e.usedCount>=e.maxUses,n=Boolean(e.expiresAt&&1e3*e.expiresAt<Date.now());return r.createElement("tr",{key:e.id,className:"hover:bg-muted/20"},r.createElement("td",{className:"py-2.5 px-3 font-mono font-bold text-brand-primary"},e.code,(a||n)&&r.createElement("span",{className:"ml-1.5 px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[10px] font-sans"},n?"已过期":"已用尽")),r.createElement("td",{className:"py-2.5 px-3"},e.usedCount," / ",e.maxUses<=0?"不限":e.maxUses),r.createElement("td",{className:"py-2.5 px-3"},e.defaultQuota<=0?"不限额":w(e.defaultQuota)),r.createElement("td",{className:"py-2.5 px-3 text-muted-foreground"},e.expiresAt?N(e.expiresAt):"永久有效"),r.createElement("td",{className:"py-2.5 px-3 text-muted-foreground max-w-[160px] truncate"},e.note||"--"),r.createElement("td",{className:"py-2.5 px-3 text-right whitespace-nowrap space-x-1.5"},r.createElement(U,{size:"sm",variant:"outline",className:"h-7 px-2 text-xs gap-1",onClick:()=>J(`code_${e.id}`,e.code)},R===`code_${e.id}`?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3 h-3 text-emerald-600"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3 h-3"})," 复制码")),r.createElement(U,{size:"sm",variant:"outline",className:"h-7 px-2 text-xs gap-1",onClick:()=>J(`link_${e.id}`,t)},R===`link_${e.id}`?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3 h-3 text-emerald-600"})," 已复制直链"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3 h-3"})," 注册直链")),r.createElement(U,{size:"sm",variant:"ghost",className:"h-7 px-2 text-xs text-destructive hover:text-destructive",onClick:()=>X.mutate(e.id)},r.createElement(it,{className:"w-3.5 h-3.5"}))))})))))),r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("h3",{className:"text-base font-semibold text-brand-primary flex items-center gap-2"},r.createElement(pt,{className:"w-4 h-4 text-brand-secondary"}),"管理员手动新增用户"),r.createElement("form",{onSubmit:e=>{if(e.preventDefault(),!a.trim()||s.length<8)return void A({text:"用户名不能为空，口令至少 8 位",type:"error"});const t=aa(c,i);K.mutate({username:a.trim(),password:s,storageQuota:t,mustChangePassword:u})},className:"grid grid-cols-1 sm:grid-cols-12 gap-3 items-end"},r.createElement("div",{className:"sm:col-span-3"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"用户名"),r.createElement(j,{value:a,onChange:e=>l(e.target.value),placeholder:"字母/数字/下划线",required:!0})),r.createElement("div",{className:"sm:col-span-3"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"初始口令 (≥8位)"),r.createElement(j,{type:"password",value:s,onChange:e=>o(e.target.value),placeholder:"至少 8 位字符",required:!0})),r.createElement("div",{className:"sm:col-span-4"},r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"存储配额 (",0===ae?"不限额":w(ae),")"),r.createElement("div",{className:"flex gap-1.5"},"unlimited"!==i&&r.createElement(j,{type:"number",min:"1",value:c,onChange:e=>m(Math.max(1,Number(e.target.value))),className:"w-24"}),r.createElement("select",{value:i,onChange:e=>d(e.target.value),className:"flex-1 h-9 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring"},r.createElement("option",{value:"unlimited"},"不限额 (Unlimited)"),r.createElement("option",{value:"MB"},"MB (兆字节)"),r.createElement("option",{value:"GB"},"GB (吉字节)"),r.createElement("option",{value:"TB"},"TB (太字节)")))),r.createElement("div",{className:"sm:col-span-2"},r.createElement(U,{type:"submit",disabled:K.isPending,className:"w-full gap-1.5"},r.createElement(pt,{className:"w-4 h-4"})," 开户")),r.createElement("div",{className:"sm:col-span-12 flex items-center gap-2 pt-1 text-xs text-muted-foreground"},r.createElement("input",{id:"new-must-change",type:"checkbox",checked:u,onChange:e=>p(e.target.checked),className:"rounded border-input"}),r.createElement("label",{htmlFor:"new-must-change",className:"cursor-pointer select-none"},"要求该用户首次登录后立即修改初始口令")))),r.createElement("div",{className:"bg-white rounded-2xl border shadow-sm overflow-hidden"},r.createElement("div",{className:"p-4 border-b"},r.createElement("h3",{className:"text-base font-semibold text-brand-primary"},"用户列表 (",ee.length,")")),I?r.createElement("div",{className:"text-center py-12 text-muted-foreground flex items-center justify-center gap-2"},r.createElement(Xe,{className:"w-5 h-5 animate-spin text-brand-secondary"})," 加载中..."):r.createElement("div",{className:"overflow-x-auto"},r.createElement("table",{className:"w-full text-left border-collapse text-sm"},r.createElement("thead",null,r.createElement("tr",{className:"border-b bg-muted/40 text-xs text-muted-foreground"},r.createElement("th",{className:"py-2.5 px-4 font-semibold"},"用户名"),r.createElement("th",{className:"py-2.5 px-4 font-semibold"},"存储配额"),r.createElement("th",{className:"py-2.5 px-4 font-semibold"},"角色"),r.createElement("th",{className:"py-2.5 px-4 font-semibold"},"账号状态"),r.createElement("th",{className:"py-2.5 px-4 font-semibold text-center"},"保存属性"),r.createElement("th",{className:"py-2.5 px-4 font-semibold"},"重置口令"))),r.createElement("tbody",{className:"divide-y"},ee.map((e=>r.createElement(na,{key:e.username,user:e,isCurrent:e.username===t?.username,onSave:(t,a,r)=>H.mutate({username:e.username,quota:t,role:a,enabled:r}),onResetPassword:(t,a)=>Q.mutate({username:e.username,password:t,mustChangePassword:a}),onError:e=>A({text:e,type:"error"})}))))))))}function na({user:e,isCurrent:t,onSave:a,onResetPassword:s,onError:o}){const c=ta(e.storageQuota),[m,i]=n(c.value),[d,u]=n(c.unit),[p,x]=n(e.role||"USER"),[h,f]=n(!1!==e.enabled),[g,b]=n(""),[y,E]=n(!1);l((()=>{const t=ta(e.storageQuota);i(t.value),u(t.unit),x(e.role||"USER"),f(!1!==e.enabled)}),[e.storageQuota,e.role,e.enabled]);const v=aa(m,d);return r.createElement("tr",{className:"hover:bg-muted/20 transition-colors"},r.createElement("td",{className:"py-3 px-4 font-semibold text-brand-primary whitespace-nowrap"},r.createElement("div",null,e.username,t&&r.createElement("span",{className:"ml-1.5 text-xs text-brand-secondary"},"(当前登录)")),e.mustChangePassword&&r.createElement("span",{className:"text-[10px] text-amber-600 font-normal block"},"待改初始密码")),r.createElement("td",{className:"py-3 px-4"},r.createElement("div",{className:"flex items-center gap-1.5"},"unlimited"!==d&&r.createElement(j,{type:"number",min:"1",value:m,onChange:e=>i(Math.max(1,Number(e.target.value))),className:"w-20 h-8 text-xs font-mono"}),r.createElement("select",{value:d,onChange:e=>u(e.target.value),className:"h-8 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"},r.createElement("option",{value:"unlimited"},"不限额"),r.createElement("option",{value:"MB"},"MB"),r.createElement("option",{value:"GB"},"GB"),r.createElement("option",{value:"TB"},"TB")))),r.createElement("td",{className:"py-3 px-4"},r.createElement("select",{value:p,disabled:t,onChange:e=>x(e.target.value),className:"h-8 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"},r.createElement("option",{value:"USER"},"USER"),r.createElement("option",{value:"ADMIN"},"ADMIN"))),r.createElement("td",{className:"py-3 px-4 whitespace-nowrap"},r.createElement("div",{className:"flex items-center gap-2"},r.createElement(Bt,{checked:h,disabled:t,onCheckedChange:f}),r.createElement("span",{className:"text-xs "+(h?"text-emerald-600 font-medium":"text-destructive")},h?"正常":"已禁用"))),r.createElement("td",{className:"py-3 px-4 text-center"},r.createElement(U,{size:"sm",variant:"outline",className:"h-8 px-2.5 text-xs gap-1",onClick:()=>a(v,p,h)},r.createElement(et,{className:"w-3.5 h-3.5"})," 保存")),r.createElement("td",{className:"py-3 px-4"},r.createElement("div",{className:"flex items-center gap-2"},r.createElement(j,{type:"password",placeholder:"新口令 (≥8位)",value:g,onChange:e=>b(e.target.value),className:"w-28 h-8 text-xs"}),r.createElement("label",{className:"flex items-center gap-1 text-[11px] text-muted-foreground whitespace-nowrap cursor-pointer select-none"},r.createElement("input",{type:"checkbox",checked:y,onChange:e=>E(e.target.checked),className:"rounded border-input"}),"需改密"),r.createElement(U,{size:"sm",variant:"outline",className:"h-8 px-2.5 text-xs gap-1 shrink-0",onClick:()=>{g.length<8?o("口令至少 8 位"):(s(g,y),b(""),E(!1))}},r.createElement(je,{className:"w-3.5 h-3.5"})," 重置"))))}function la(){const e=f(),[t,a]=n("visual"),[s,o]=n("app"),[c,m]=n(""),[i,d]=n(""),[u,p]=n(59898),[g,b]=n("30d"),[E,v]=n(30),[w,N]=n("STOREIT_SESSION"),[k,C]=n(!1),[M,S]=n("./keystore.p12"),[F,z]=n("changeit"),[T,$]=n("PKCS12"),[P,D]=n("storage"),[R,q]=n("jdbc:sqlite:./data/storeit.db"),[O,A]=n("100GB"),[Z,I]=n("100GB"),[W,_]=n(!1),[L,B]=n(!1),[K,H]=n("admin"),[Q,G]=n(""),[V,Y]=n(5),[J,ee]=n(15),[te,ae]=n("info"),[re,ne]=n(null),{data:le,isLoading:oe}=x({queryKey:["adminConfig"],queryFn:()=>y.getAdminConfig()});l((()=>{if(le){m(le.applicationYaml||""),d(le.adminYaml||"");const e=le.applicationConfig||{},t=e.server||{},a=(t.servlet||{}).session||{},r=t.ssl||{},n=e.spring||{},l=n.datasource||{},s=(n.servlet||{}).multipart||{},o=e.app||{},c=o.login||{},i=o.session||{},u=(e.logging||{}).level||{};void 0!==t.port&&p(Number(t.port)),void 0!==a.timeout&&b(String(a.timeout)),void 0!==i["max-age-days"]&&v(Number(i["max-age-days"])),void 0!==i["cookie-name"]&&N(String(i["cookie-name"])),void 0!==r.enabled&&C(Boolean(r.enabled)),void 0!==r["key-store"]&&S(String(r["key-store"])),void 0!==r["key-store-password"]&&z(String(r["key-store-password"])),void 0!==r["key-store-type"]&&$(String(r["key-store-type"])),void 0!==o["storage-root"]&&D(String(o["storage-root"])),void 0!==l.url&&q(String(l.url)),void 0!==s["max-file-size"]&&A(String(s["max-file-size"])),void 0!==s["max-request-size"]&&I(String(s["max-request-size"])),void 0!==o["ssl-enabled"]&&_(Boolean(o["ssl-enabled"])),void 0!==o["require-custom-admin"]&&B(Boolean(o["require-custom-admin"])),void 0!==c["max-failures"]&&Y(Number(c["max-failures"])),void 0!==c["window-minutes"]&&ee(Number(c["window-minutes"])),void 0!==u.root&&ae(String(u.root).toLowerCase());const x=((le.adminConfig||{}).app||{})["default-admin"]||{};x.username&&H(String(x.username))}}),[le]);const ce=h({mutationFn:e=>y.updateAdminConfig(e),onSuccess:t=>{ne({text:t.message||"配置保存成功！",type:"success"}),G(""),e.invalidateQueries({queryKey:["adminConfig"]})},onError:e=>{ne({text:e.message||"保存配置失败",type:"error"})}});return r.createElement("div",{className:"p-6 max-w-4xl mx-auto space-y-6 animate-in fade-in-50 duration-200"},r.createElement("div",{className:"flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b"},r.createElement("div",null,r.createElement("h2",{className:"text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2"},r.createElement(rt,{className:"w-6 h-6 text-brand-secondary"}),"系统配置管理"),r.createElement("p",{className:"text-sm text-muted-foreground mt-1"},"安全维护 StoreIt 核心运行参数与外部配置文件（./config/*.yml），自动创建 .bak 备份。 注意：可视化保存会重写 YAML 且不保留注释，如需保留注释请使用「YAML 原文编辑」模式。")),r.createElement("div",{className:"flex items-center gap-2"},r.createElement(U,{variant:"visual"===t?"default":"outline",size:"sm",onClick:()=>a("visual"),className:"gap-1.5"},r.createElement(ot,{className:"w-4 h-4"}),"可视化配置"),r.createElement(U,{variant:"raw"===t?"default":"outline",size:"sm",onClick:()=>a("raw"),className:"gap-1.5"},r.createElement(Ce,{className:"w-4 h-4"}),"YAML 原文编辑"))),re&&r.createElement("div",{className:"p-4 rounded-xl flex items-start gap-3 "+("success"===re.type?"bg-emerald-50 text-emerald-800 border border-emerald-200":"bg-destructive/10 text-destructive border border-destructive/20")},"success"===re.type?r.createElement(se,{className:"w-5 h-5 shrink-0 mt-0.5 text-emerald-600"}):r.createElement(X,{className:"w-5 h-5 shrink-0 mt-0.5 text-destructive"}),r.createElement("div",{className:"text-sm"},r.createElement("p",{className:"font-semibold"},re.text),"success"===re.type&&r.createElement("p",{className:"text-xs text-emerald-700 mt-1"},"注意：端口、数据源、上传体积限制与 SSL 证书等核心参数修改后，需重启 StoreIt 进程生效。"))),oe?r.createElement("div",{className:"text-center py-16 text-muted-foreground flex flex-col items-center gap-3"},r.createElement(Xe,{className:"w-8 h-8 animate-spin text-brand-secondary"}),r.createElement("p",null,"正在读取服务器配置...")):"visual"===t?r.createElement("div",{className:"space-y-6"},r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("div",{className:"flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"},r.createElement(at,{className:"w-5 h-5 text-brand-secondary"}),"服务、会话与日志 (Server & Session)"),r.createElement("div",{className:"grid grid-cols-1 md:grid-cols-3 gap-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"服务监听端口 (server.port)"),r.createElement(j,{type:"number",min:1,max:65535,value:u,onChange:e=>p(Number(e.target.value)),placeholder:"59898"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"HTTP/HTTPS 监听端口 (1–65535)")),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"会话保持天数 (app.session.max-age-days)"),r.createElement(j,{type:"number",min:1,max:365,value:E,onChange:e=>v(Number(e.target.value)),placeholder:"30"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"登录会话有效时长（单位：天，1–365）")),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"容器会话超时 (server.servlet.session.timeout)"),r.createElement(j,{type:"text",value:g,onChange:e=>b(e.target.value),placeholder:"30d"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"Spring 容器超时时长 (如 30d、12h、60m)")),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"会话 Cookie 名称 (app.session.cookie-name)"),r.createElement(j,{type:"text",value:w,onChange:e=>N(e.target.value),placeholder:"STOREIT_SESSION"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"多实例同域名部署时可自定义区分")),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"系统日志级别 (logging.level.root)"),r.createElement("select",{value:te,onChange:e=>ae(e.target.value),className:"w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"},r.createElement("option",{value:"info"},"INFO (默认推荐)"),r.createElement("option",{value:"warn"},"WARN (仅警告与错误)"),r.createElement("option",{value:"error"},"ERROR (仅错误)"),r.createElement("option",{value:"debug"},"DEBUG (调试详情)"),r.createElement("option",{value:"trace"},"TRACE (全量追踪)")),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"全局日志输出粒度")))),r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("div",{className:"flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"},r.createElement(ge,{className:"w-5 h-5 text-brand-secondary"}),"存储目录、数据库与上传限制 (Storage & Multipart)"),r.createElement("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"物理存储根目录 (app.storage-root)"),r.createElement(j,{type:"text",value:P,onChange:e=>D(e.target.value),placeholder:"storage"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"用户上传文件在磁盘上的根文件夹路径")),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"SQLite 数据库连接 URL (spring.datasource.url)"),r.createElement(j,{type:"text",value:R,onChange:e=>q(e.target.value),placeholder:"jdbc:sqlite:./data/storeit.db"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"元数据库文件路径（需以 jdbc:sqlite: 开头）")),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"单文件最大上传限制 (spring.servlet.multipart.max-file-size)"),r.createElement(j,{type:"text",value:O,onChange:e=>A(e.target.value),placeholder:"100GB"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"支持 MB / GB / TB 单位（如 100GB、10GB）")),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"单次请求最大体积 (spring.servlet.multipart.max-request-size)"),r.createElement(j,{type:"text",value:Z,onChange:e=>I(e.target.value),placeholder:"100GB"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"建议与 max-file-size 保持一致（如 100GB）")))),r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("div",{className:"flex items-center justify-between border-b pb-2"},r.createElement("div",{className:"flex items-center gap-2 text-brand-primary font-semibold text-base"},r.createElement(st,{className:"w-5 h-5 text-brand-secondary"}),"HTTPS 与 SSL 安全设置"),r.createElement("div",{className:"flex items-center gap-2"},r.createElement("span",{className:"text-xs text-muted-foreground"},k?"已启用直连 SSL":"未启用 (HTTP 模式)"),r.createElement(Bt,{checked:k,onCheckedChange:e=>{C(e),_(e)}}))),k&&r.createElement("div",{className:"space-y-4 pt-1"},!1===le?.keystoreExists&&r.createElement("div",{className:"p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs flex items-center gap-2"},r.createElement(lt,{className:"w-4 h-4 text-amber-600 shrink-0"}),r.createElement("span",null,"警告：未在服务端路径 ",r.createElement("code",{className:"bg-amber-100 px-1 py-0.5 rounded font-mono font-semibold"},M)," 找到 Keystore 文件。若未准备证书直接开启，重启后服务器可能无法启动。")),r.createElement("div",{className:"grid grid-cols-1 md:grid-cols-3 gap-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"KeyStore 证书文件路径 (server.ssl.key-store)"),r.createElement(j,{type:"text",value:M,onChange:e=>S(e.target.value),placeholder:"./keystore.p12"})),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"KeyStore 访问口令 (server.ssl.key-store-password)"),r.createElement(j,{type:"password",value:F,onChange:e=>z(e.target.value),placeholder:"changeit"})),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"KeyStore 类型 (server.ssl.key-store-type)"),r.createElement(j,{type:"text",value:T,onChange:e=>$(e.target.value),placeholder:"PKCS12"})))),r.createElement("div",{className:"flex items-center justify-between pt-3 border-t text-xs"},r.createElement("div",null,r.createElement("p",{className:"font-medium text-foreground"},"Cookie Secure 强制安全标记与 HSTS (app.ssl-enabled)"),r.createElement("p",{className:"text-muted-foreground text-[11px] max-w-lg"},"开启后 Session Cookie 仅允许在 HTTPS 加密通道下发送。直连 SSL 或由 Nginx / Caddy 等反向代理终结 HTTPS 时均应开启；纯 HTTP 部署必须关闭。")),r.createElement(Bt,{checked:W,onCheckedChange:_}))),r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("div",{className:"flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"},r.createElement(qe,{className:"w-5 h-5 text-brand-secondary"}),"登录防暴力破解规则 (app.login.*)"),r.createElement("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"连续错误锁定次数 (app.login.max-failures)"),r.createElement(j,{type:"number",min:1,max:1e3,value:V,onChange:e=>Y(Number(e.target.value))})),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"统计时间窗口分钟数 (app.login.window-minutes)"),r.createElement(j,{type:"number",min:1,max:1440,value:J,onChange:e=>ee(Number(e.target.value))})))),r.createElement("div",{className:"bg-white p-5 rounded-2xl border shadow-sm space-y-4"},r.createElement("div",{className:"flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"},r.createElement(je,{className:"w-5 h-5 text-brand-secondary"}),"初始外部管理员配置 (admin.yml)"),r.createElement("div",{className:"grid grid-cols-1 md:grid-cols-2 gap-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"默认管理员账号 (app.default-admin.username)"),r.createElement(j,{type:"text",value:K,onChange:e=>H(e.target.value)})),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"修改默认管理员口令 (app.default-admin.password)"),r.createElement(j,{type:"password",value:Q,onChange:e=>G(e.target.value),placeholder:"留空保持原口令不变"}),r.createElement("span",{className:"text-[11px] text-muted-foreground mt-0.5 block"},"若留空则不会改动 admin.yml 中的已有口令"))),r.createElement("div",{className:"flex items-center justify-between pt-2 border-t text-xs"},r.createElement("div",null,r.createElement("p",{className:"font-medium text-foreground"},"拒绝默认内置口令启动 (app.require-custom-admin)"),r.createElement("p",{className:"text-muted-foreground text-[11px]"},"若开启，当系统仍在使用初始口令 admin / authorized_users 时将直接拒绝启动以保障安全")),r.createElement(Bt,{checked:L,onCheckedChange:B}))),r.createElement("div",{className:"flex justify-end pt-2"},r.createElement(U,{onClick:()=>{!Number.isInteger(u)||u<1||u>65535?ne({text:"保存失败：服务端口必须是 1–65535 之间的整数",type:"error"}):!Number.isInteger(E)||E<1||E>365?ne({text:"保存失败：会话保持天数必须是 1–365 之间的整数",type:"error"}):!Number.isInteger(V)||V<1||V>1e3?ne({text:"保存失败：连续错误锁定次数必须是不小于 1 的整数",type:"error"}):!Number.isInteger(J)||J<1||J>1440?ne({text:"保存失败：统计时间窗口分钟数必须是不小于 1 的整数",type:"error"}):R.trim().startsWith("jdbc:sqlite:")?ce.mutate({visualConfig:{port:u,servletSessionTimeout:g.trim()||"30d",sessionMaxAgeDays:E,cookieName:w.trim()||"STOREIT_SESSION",sslEnabled:k,keyStorePath:M.trim()||"./keystore.p12",keyStorePass:F,keyStoreType:T.trim()||"PKCS12",storageRoot:P.trim()||"storage",datasourceUrl:R.trim(),maxFileSize:O.trim()||"100GB",maxRequestSize:Z.trim()||"100GB",appSslEnabled:W,requireCustomAdmin:L,maxFailures:V,windowMinutes:J,logLevel:te,adminUsername:K.trim()||"admin",adminPassword:Q.trim()||void 0}}):ne({text:"保存失败：SQLite 数据源 URL 必须以 jdbc:sqlite: 开头",type:"error"})},disabled:ce.isPending,className:"gap-2 px-6 h-10 shadow-md"},ce.isPending?r.createElement(Xe,{className:"w-4 h-4 animate-spin"}):r.createElement(et,{className:"w-4 h-4"}),"保存全部配置"))):r.createElement("div",{className:"space-y-4"},r.createElement("div",{className:"flex items-center justify-between"},r.createElement("div",{className:"flex gap-2"},r.createElement(U,{variant:"app"===s?"default":"outline",size:"sm",onClick:()=>o("app")},"application.yml"),r.createElement(U,{variant:"admin"===s?"default":"outline",size:"sm",onClick:()=>o("admin")},"admin.yml")),r.createElement(U,{onClick:()=>{ce.mutate({applicationYaml:c,adminYaml:i})},disabled:ce.isPending,size:"sm",className:"gap-1.5 shadow-sm"},r.createElement(et,{className:"w-4 h-4"}),"保存 YAML 文件")),r.createElement("div",{className:"relative border rounded-2xl bg-[#1e1e2e] text-[#cdd6f4] p-4 font-mono text-sm shadow-inner"},r.createElement("textarea",{className:"w-full h-[450px] bg-transparent outline-none resize-none font-mono text-xs leading-relaxed selection:bg-brand-secondary/40",value:"app"===s?c:i,onChange:e=>"app"===s?m(e.target.value):d(e.target.value),spellCheck:!1}))))}function sa(){return r.createElement("div",{className:"p-6 max-w-2xl mx-auto space-y-6 animate-in fade-in-50 duration-200"},r.createElement("div",{className:"bg-white/90 backdrop-blur-md rounded-3xl p-8 border shadow-lg text-center space-y-6"},r.createElement("div",{className:"w-20 h-20 rounded-3xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white mx-auto flex items-center justify-center shadow-xl"},r.createElement(qe,{className:"w-10 h-10"})),r.createElement("div",null,r.createElement("h1",{className:"text-3xl font-extrabold tracking-tight text-brand-primary"},"关于 储之 (StoreIt)"),r.createElement("p",{className:"text-sm font-medium text-brand-secondary mt-1"},"轻量级、高性能、现代化的大文件存储与分享服务")),r.createElement("div",{className:"inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200"},r.createElement("span",{className:"w-2 h-2 rounded-full bg-emerald-500 animate-pulse"}),"系统运行正常 · 版本 v2.0.1"),r.createElement("p",{className:"text-sm text-foreground/80 leading-relaxed max-w-lg mx-auto"},"储之是一个基于 Spring Boot 3 与现代 React / Next.js 构建的文件服务器。默认支持 100GB 级特大文件多分片并行断点续传、文件拖拽极速归档、细粒度分享链接控制以及可视化系统配置维护。"),r.createElement("div",{className:"flex items-center justify-center gap-3 pt-2"},r.createElement("a",{href:"https://github.com/GuilingQiyu/StoreIt",target:"_blank",rel:"noreferrer",className:"inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white text-sm font-medium hover:bg-brand-primary/90 transition-all shadow-md"},r.createElement(Re,{className:"w-4 h-4"}),"GitHub 仓库",r.createElement(ve,{className:"w-3.5 h-3.5 opacity-60"}))),r.createElement("div",{className:"border-t pt-6 text-xs text-muted-foreground space-y-2"},r.createElement("p",null,"© 2025–2026 归灵祈昱. All rights reserved."),r.createElement("p",{className:"flex items-center justify-center gap-1"},"本程序基于"," ",r.createElement("a",{href:"https://www.gnu.org/licenses/agpl-3.0.html",target:"_blank",rel:"noreferrer",className:"text-brand-primary font-medium hover:underline inline-flex items-center gap-0.5"},"GNU AGPL-3.0 或更高版本")," ","开源授权。"))))}function oa({task:e}){const t=zt((e=>e.pauseTask)),a=zt((e=>e.resumeTask)),n=zt((e=>e.cancelTask)),l=zt((e=>e.retryTask)),s=zt((e=>e.rebindFileAndResume)),o=c(null);return r.createElement("div",{className:"p-3 bg-white/70 hover:bg-white rounded-xl border border-black/5 transition-all shadow-sm"},r.createElement("div",{className:"flex items-center justify-between mb-1.5"},r.createElement("div",{className:"flex items-center gap-2 min-w-0 flex-1 mr-2"},r.createElement(Fe,{className:"w-4 h-4 text-brand-secondary shrink-0"}),r.createElement("span",{className:"text-sm font-medium truncate",title:e.name},e.name)),r.createElement("div",{className:"shrink-0"},(()=>{switch(e.status){case"uploading":return r.createElement("span",{className:"text-xs text-brand-primary font-medium flex items-center gap-1"},r.createElement("span",{className:"w-2 h-2 rounded-full bg-brand-primary animate-pulse"}),"上传中 (",w(e.speed),"/s)");case"paused":return r.createElement("span",{className:"text-xs text-amber-600 font-medium flex items-center gap-1"},r.createElement(Ve,{className:"w-3 h-3"})," 已暂停");case"merging":return r.createElement("span",{className:"text-xs text-indigo-600 font-medium flex items-center gap-1"},r.createElement(Xe,{className:"w-3 h-3 animate-spin"})," 合并文件中...");case"completed":return r.createElement("span",{className:"text-xs text-emerald-600 font-medium flex items-center gap-1"},r.createElement(se,{className:"w-3 h-3"})," 上传完成");case"interrupted":return r.createElement("span",{className:"text-xs text-orange-600 font-medium flex items-center gap-1",title:e.errorMessage},r.createElement(ue,{className:"w-3 h-3"})," 已中断 (点击重新选择文件)");case"error":return r.createElement("span",{className:"text-xs text-destructive font-medium flex items-center gap-1",title:e.errorMessage},r.createElement(Y,{className:"w-3 h-3"})," 上传失败");default:return r.createElement("span",{className:"text-xs text-muted-foreground"},"准备中...")}})())),r.createElement("div",{className:"my-1.5"},r.createElement(Lt,{value:e.progress,className:"h-1.5 bg-black/5",indicatorColor:"completed"===e.status?"bg-emerald-500":"paused"===e.status?"bg-amber-500":"error"===e.status||"interrupted"===e.status?"bg-orange-500":"bg-brand-primary"})),r.createElement("div",{className:"flex items-center justify-between text-xs text-muted-foreground mt-1"},r.createElement("div",null,r.createElement("span",null,w(e.size*e.progress/100)),r.createElement("span",{className:"mx-1"},"/"),r.createElement("span",null,w(e.size)),e.totalChunks>1&&r.createElement("span",{className:"ml-2 text-black/40"},"(",e.uploadedChunks.length,"/",e.totalChunks," 分片)")),r.createElement("div",{className:"flex items-center gap-1"},"uploading"===e.status&&r.createElement(U,{variant:"ghost",size:"icon",className:"h-6 w-6 text-muted-foreground hover:text-foreground",onClick:()=>t(e.id),title:"暂停上传"},r.createElement(Ve,{className:"w-3.5 h-3.5"})),"paused"===e.status&&r.createElement(U,{variant:"ghost",size:"icon",className:"h-6 w-6 text-muted-foreground hover:text-foreground",onClick:()=>a(e.id),title:"继续上传"},r.createElement(Ye,{className:"w-3.5 h-3.5"})),"error"===e.status&&r.createElement(U,{variant:"outline",size:"sm",className:"h-6 px-2 text-xs gap-1 border-rose-200 text-rose-700 hover:bg-rose-50",onClick:()=>l(e.id),title:"重试上传"},r.createElement(Xe,{className:"w-3 h-3"})," 重试"),("interrupted"===e.status||"error"===e.status)&&r.createElement(r.Fragment,null,r.createElement("input",{ref:o,type:"file",className:"hidden",onChange:async t=>{const a=t.target.files?.[0];if(a)try{await s(e.id,a)}catch(e){Et.getState().showToast(e.message||"文件匹配失败","error")}}}),r.createElement(U,{variant:"outline",size:"sm",className:"h-6 px-2 text-xs gap-1 border-orange-200 text-orange-700 hover:bg-orange-50",onClick:()=>o.current?.click(),title:"重新选取同名文件以恢复断点续传"},r.createElement(dt,{className:"w-3 h-3"})," 绑定续传")),"completed"!==e.status&&r.createElement(U,{variant:"ghost",size:"icon",className:"h-6 w-6 text-muted-foreground hover:text-destructive",onClick:()=>n(e.id),title:"取消上传"},r.createElement(ft,{className:"w-3.5 h-3.5"})))),e.errorMessage&&r.createElement("p",{className:"text-[11px] text-destructive mt-1 truncate",title:e.errorMessage},e.errorMessage))}function ca(){const e=zt((e=>e.tasks)),t=zt((e=>e.isDrawerOpen)),a=zt((e=>e.toggleDrawer)),n=zt((e=>e.clearCompleted));if(0===e.length)return null;const l=e.filter((e=>"uploading"===e.status||"merging"===e.status)).length,s=e.filter((e=>"completed"===e.status)).length,o=e.reduce(((e,t)=>e+(t.speed||0)),0);return r.createElement("div",{className:"fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-black/10 overflow-hidden transition-all duration-300"},r.createElement("div",{onClick:a,className:"flex items-center justify-between p-3.5 bg-gradient-to-r from-brand-primary to-brand-secondary text-white cursor-pointer select-none"},r.createElement("div",{className:"flex items-center gap-2.5"},r.createElement(pe,{className:"w-5 h-5"}),r.createElement("span",{className:"font-semibold text-sm"},"上传任务"),r.createElement("span",{className:"bg-white/20 text-white text-xs px-2 py-0.5 rounded-full font-mono"},s,"/",e.length),l>0&&o>0&&r.createElement("span",{className:"text-xs text-white/80 font-mono"},"· ",w(o),"/s")),r.createElement("div",{className:"flex items-center gap-1",onClick:e=>e.stopPropagation()},s>0&&r.createElement(U,{variant:"ghost",size:"icon",className:"h-7 w-7 text-white/80 hover:text-white hover:bg-white/10",onClick:n,title:"清除已完成任务"},r.createElement(it,{className:"w-3.5 h-3.5"})),r.createElement(U,{variant:"ghost",size:"icon",className:"h-7 w-7 text-white/80 hover:text-white hover:bg-white/10",onClick:a,title:t?"收起面板":"展开面板"},t?r.createElement(ce,{className:"w-4 h-4"}):r.createElement(de,{className:"w-4 h-4"})))),t&&r.createElement("div",{className:"max-h-80 overflow-y-auto p-3 space-y-2 divide-y divide-transparent"},e.map((e=>r.createElement(oa,{key:e.id,task:e})))))}function ma(){const e=Et((e=>e.newFolderModalOpen)),t=Et((e=>e.setNewFolderModalOpen)),a=Et((e=>e.currentPath)),l=Et((e=>e.showToast)),[s,o]=n(""),c=f(),m=h({mutationFn:e=>y.createDirectory(a,e),onSuccess:()=>{c.invalidateQueries({queryKey:["files"]}),l("文件夹创建成功","success"),o(""),t(!1)},onError:e=>{l(e.message||"创建文件夹失败","error")}});return r.createElement(Ut,{open:e,onOpenChange:t},r.createElement(Zt,{className:"sm:max-w-md"},r.createElement(It,null,r.createElement(_t,{className:"flex items-center gap-2"},r.createElement(De,{className:"w-5 h-5 text-amber-500"}),"新建文件夹")),r.createElement("form",{onSubmit:e=>{e.preventDefault(),s.trim()&&m.mutate(s.trim())},className:"space-y-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"文件夹名称"),r.createElement(j,{autoFocus:!0,value:s,onChange:e=>o(e.target.value),placeholder:"请输入文件夹名称",required:!0})),r.createElement(Wt,null,r.createElement(U,{type:"button",variant:"outline",onClick:()=>t(!1)},"取消"),r.createElement(U,{type:"submit",disabled:m.isPending},"创建")))))}const ia=[{label:"Markdown 文档 (.md)",ext:".md",defaultName:"未命名笔记.md",template:"# 标题\n\n> [!NOTE]\n> 在此记录想法、文档或待办事项。\n\n- [ ] 待办事项 1\n- [x] 已完成事项\n"},{label:"纯文本 (.txt)",ext:".txt",defaultName:"新建文本.txt",template:""},{label:"YAML 配置 (.yml)",ext:".yml",defaultName:"config.yml",template:"# 配置文件\napp:\n  name: demo\n  enabled: true\n"},{label:"JSON 数据 (.json)",ext:".json",defaultName:"data.json",template:'{\n  "name": "example",\n  "version": "1.0.0"\n}\n'}];function da(){const e=Et((e=>e.newFileModalOpen)),t=Et((e=>e.setNewFileModalOpen)),a=Et((e=>e.currentPath)),l=Et((e=>e.openEditor)),s=Et((e=>e.showToast)),[o,c]=n("未命名笔记.md"),[m,i]=n(!0),[d,u]=n(!0),p=f(),x=h({mutationFn:async()=>{const e=o.trim(),t=ia.find((t=>e.toLowerCase().endsWith(t.ext))),r=m&&t?t.template:"";return y.createBlankFile(a,e,r,"rename")},onSuccess:e=>{p.invalidateQueries({queryKey:["files"]}),p.invalidateQueries({queryKey:["quota"]}),s(`文件 "${e.file.name}" 创建成功`,"success"),t(!1),d&&e.file&&l({name:e.file.name,path:e.file.path,isDirectory:!1,size:e.file.size,modifiedTime:e.file.modifiedTime})},onError:e=>{s(e.message||"创建文件失败","error")}});return r.createElement(Ut,{open:e,onOpenChange:t},r.createElement(Zt,{className:"sm:max-w-md storeit-modal-spring"},r.createElement(It,null,r.createElement(_t,{className:"flex items-center gap-2"},r.createElement(Se,{className:"w-5 h-5 text-brand-secondary"}),"新建文本 / Markdown 文件")),r.createElement("form",{onSubmit:e=>{e.preventDefault(),o.trim()&&x.mutate()},className:"space-y-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-muted-foreground block mb-1.5"},"快速选择文件类型"),r.createElement("div",{className:"grid grid-cols-2 gap-2"},ia.map((e=>{const t=o.trim().toLowerCase().endsWith(e.ext);return r.createElement("button",{key:e.ext,type:"button",onClick:()=>c(e.defaultName),className:"px-3 py-2 rounded-xl border text-left text-xs transition-all "+(t?"border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold":"bg-white hover:bg-black/5 text-foreground")},e.label)})))),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"文件名称 (支持任意文本扩展名或无扩展名，如 Dockerfile)"),r.createElement(j,{autoFocus:!0,value:o,onChange:e=>c(e.target.value),placeholder:"例如: README.md 或 notes.txt",required:!0})),r.createElement("div",{className:"space-y-2 pt-1 text-xs"},r.createElement("label",{className:"flex items-center gap-2 cursor-pointer select-none"},r.createElement("input",{type:"checkbox",checked:m,onChange:e=>i(e.target.checked),className:"rounded border-input text-brand-primary focus:ring-brand-primary"}),r.createElement("span",null,"写入默认文件模板内容（如 Markdown 标题与大纲示例）")),r.createElement("label",{className:"flex items-center gap-2 cursor-pointer select-none"},r.createElement("input",{type:"checkbox",checked:d,onChange:e=>u(e.target.checked),className:"rounded border-input text-brand-primary focus:ring-brand-primary"}),r.createElement("span",null,"创建后立即打开在线编辑器"))),r.createElement(Wt,null,r.createElement(U,{type:"button",variant:"outline",onClick:()=>t(!1)},"取消"),r.createElement(U,{type:"submit",disabled:x.isPending},x.isPending?"创建中...":"立即创建")))))}function ua(){const e=Et((e=>e.renameModalFile)),t=Et((e=>e.setRenameModalFile)),a=Et((e=>e.showToast)),[s,o]=n(""),c=f();l((()=>{e&&o(e.name)}),[e]);const m=h({mutationFn:t=>y.renameFile(e.path,t),onSuccess:(r,n)=>{c.invalidateQueries({queryKey:["files"]}),c.invalidateQueries({queryKey:["favoritesList"]});const l=Et.getState().selectedFile;if(e&&l&&l.path===e.path){const t=e.path.includes("/")?e.path.slice(0,e.path.lastIndexOf("/")):"",a=t?`${t}/${n}`:n;Et.getState().setSelectedFile({...l,name:n,path:a})}a("重命名成功","success"),t(null)},onError:e=>{a(e.message||"重命名失败","error")}});return r.createElement(Ut,{open:Boolean(e),onOpenChange:e=>!e&&t(null)},r.createElement(Zt,{className:"sm:max-w-md"},r.createElement(It,null,r.createElement(_t,{className:"flex items-center gap-2"},r.createElement(ye,{className:"w-5 h-5 text-brand-secondary"}),"重命名")),r.createElement("form",{onSubmit:t=>{t.preventDefault(),s.trim()&&s!==e?.name&&m.mutate(s.trim())},className:"space-y-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"新名称"),r.createElement(j,{autoFocus:!0,value:s,onChange:e=>o(e.target.value),placeholder:"请输入新名称",required:!0})),r.createElement(Wt,null,r.createElement(U,{type:"button",variant:"outline",onClick:()=>t(null)},"取消"),r.createElement(U,{type:"submit",disabled:m.isPending},"确定")))))}function pa(){const e=Et((e=>e.moveModalFile)),t=Et((e=>e.setMoveModalFile)),a=Et((e=>e.batchMovePaths)),s=Et((e=>e.setBatchMovePaths)),o=Et((e=>e.moveModalMode)),c=Et((e=>e.setMoveModalMode)),m=Et((e=>e.clearSelection)),i=Et((e=>e.showToast)),[d,u]=n(""),[p,x]=n([]),[g,b]=n(!1),E=f(),v=Boolean(e)||Boolean(a&&a.length>0),w=a&&a.length>0?a:e?[e.path]:[],N="copy"===o;l((()=>{v&&(b(!0),y.getFiles("").then((e=>{const t=e.items.filter((e=>e.isDirectory)).map((e=>({name:e.name,path:e.path,loaded:!1,expanded:!1})));x(t)})).catch((()=>x([]))).finally((()=>b(!1))))}),[v]);const k=()=>{t(null),s(null),u("")},C=h({mutationFn:async t=>N?a&&a.length>0?y.batchCopyFiles(a,t):y.copyFile(e.path,t):a&&a.length>0?y.batchMoveFiles(a,t):y.moveFile(e.path,t),onSuccess:()=>{if(E.invalidateQueries({queryKey:["files"]}),E.invalidateQueries({queryKey:["favoritesList"]}),E.invalidateQueries({queryKey:["quota"]}),!N){const e=Et.getState().selectedFile;e&&w.includes(e.path)&&Et.getState().setSelectedFile(null)}a&&a.length>0?(m(),i(N?`已成功复制 ${a.length} 个项目`:`已成功移动 ${a.length} 个项目`,"success")):i(N?"文件已复制":"文件已移动","success"),k()},onError:e=>{i(e.message||(N?"复制失败":"移动失败"),"error")}}),M=(e,t=0)=>e.map((e=>{const a=(n=e.path,w.some((e=>n===e||n.startsWith(e+"/"))));var n;const l=d===e.path;return r.createElement("div",{key:e.path},r.createElement("div",{onClick:()=>!a&&u(e.path),style:{paddingLeft:16*t+8+"px"},className:"flex items-center gap-1.5 py-1.5 pr-2 rounded-lg text-xs cursor-pointer transition-colors "+(a?"opacity-40 cursor-not-allowed":l?"bg-brand-primary text-white font-semibold":"hover:bg-black/5 text-foreground")},r.createElement("button",{type:"button",onClick:t=>{t.stopPropagation(),a||(async e=>{const t=async a=>{const r=[];for(const n of a)if(n.path===e)if(n.loaded)r.push({...n,expanded:!n.expanded});else try{const e=(await y.getFiles(n.path)).items.filter((e=>e.isDirectory)).map((e=>({name:e.name,path:e.path,loaded:!1,expanded:!1})));r.push({...n,loaded:!0,expanded:!0,children:e})}catch{r.push({...n,loaded:!0,expanded:!n.expanded,children:[]})}else n.children&&n.children.length>0?r.push({...n,children:await t(n.children)}):r.push(n);return r};x(await t(p))})(e.path)},className:"p-0.5 rounded hover:bg-black/10 shrink-0",title:e.expanded?"折叠子目录":"展开子目录"},e.expanded?r.createElement(ce,{className:"w-3.5 h-3.5"}):r.createElement(ie,{className:"w-3.5 h-3.5"})),e.expanded?r.createElement(Pe,{className:"w-4 h-4 shrink-0 "+(l?"text-amber-300":"text-amber-500")}):r.createElement(Te,{className:"w-4 h-4 shrink-0 "+(l?"text-amber-300":"text-amber-500")}),r.createElement("span",{className:"truncate"},e.name)),e.expanded&&e.children&&e.children.length>0&&M(e.children,t+1))}));return r.createElement(Ut,{open:v,onOpenChange:e=>!e&&k()},r.createElement(Zt,{className:"sm:max-w-md storeit-modal-spring"},r.createElement(It,null,r.createElement(_t,{className:"flex items-center justify-between pr-6"},r.createElement("span",{className:"flex items-center gap-2"},N?r.createElement(fe,{className:"w-5 h-5 text-brand-secondary"}):r.createElement($e,{className:"w-5 h-5 text-brand-secondary"}),a&&a.length>0?`批量${N?"复制":"移动"} (${a.length} 项)`:(N?"复制":"移动")+"文件 / 目录"),r.createElement("div",{className:"inline-flex rounded-lg border bg-muted/40 p-0.5 text-xs font-normal"},r.createElement("button",{type:"button",onClick:()=>c("move"),className:"px-2.5 py-0.5 rounded-md transition-all "+(N?"text-muted-foreground":"bg-white text-brand-primary font-semibold shadow-sm")},"移动"),r.createElement("button",{type:"button",onClick:()=>c("copy"),className:"px-2.5 py-0.5 rounded-md transition-all "+(N?"bg-white text-brand-primary font-semibold shadow-sm":"text-muted-foreground")},"复制")))),r.createElement("form",{onSubmit:e=>{e.preventDefault(),C.mutate(d.trim())},className:"space-y-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1.5"},"点击选择目标文件夹"),r.createElement("div",{className:"border rounded-xl p-2 max-h-56 overflow-y-auto bg-muted/20 space-y-0.5 select-none"},r.createElement("div",{onClick:()=>u(""),className:"flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors "+(""===d?"bg-brand-primary text-white font-semibold":"hover:bg-black/5 text-foreground")},r.createElement(Oe,{className:"w-4 h-4 shrink-0"}),r.createElement("span",null,"根目录 (/)")),g?r.createElement("div",{className:"py-6 text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5"},r.createElement(Xe,{className:"w-3.5 h-3.5 animate-spin"})," 正在加载目录树..."):M(p,0))),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"目标目录路径 (可直接点选上方目录或手动输入，留空为根目录)"),r.createElement(j,{value:d,onChange:e=>u(e.target.value),placeholder:"例如: documents 或 photos/2026"})),r.createElement(Wt,null,r.createElement(U,{type:"button",variant:"outline",onClick:k},"取消"),r.createElement(U,{type:"submit",disabled:C.isPending},C.isPending?"处理中...":N?"确定复制到此处":"确定移动到此处")))))}function xa(){const e=Et((e=>e.shareModalFile)),t=Et((e=>e.setShareModalFile)),a=Et((e=>e.openSharedSpace)),s=Et((e=>e.showToast)),o=f(),[c,m]=n("READ"),[i,d]=n(""),[u,p]=n(""),[x,g]=n("168"),[b,E]=n(""),[v,w]=n(""),[N,k]=n(null),[C,M]=n(null);l((()=>{e&&(m("READ"),d(""),p(e.name),g("168"),E(""),w(""),k(null),M(null))}),[e]);const S=h({mutationFn:e=>y.createShare(e.filePath,e.expireHours,e.maxDownloads,e.permission,e.accessPassword,e.title),onSuccess:t=>{const a="undefined"!=typeof window?window.location.origin:"",r="undefined"!=typeof window?window.location.host:"localhost:59898",n=t.data.token,l=i.trim()?`?key=${encodeURIComponent(i.trim())}`:"";k({token:n,directUrl:`${a}/d/${n}`,webSpaceUrl:`${a}/#/s/${n}`,federatedUri:`storeit+fed://${r}/api/fed/shares/${n}${l}`}),o.invalidateQueries({queryKey:["shares"]}),s(e?.isDirectory?"共享文件夹与跨服协议链接已生成":"分享链接已生成","success")},onError:e=>{s(e.message||"生成分享链接失败","error")}}),F=()=>{t(null),k(null),M(null)},z=async(e,t)=>{await D(t)?(M(e),s("已复制到剪贴板","success"),setTimeout((()=>M(null)),1800)):s("复制失败，请手动选取复制","error")};return r.createElement(Ut,{open:Boolean(e),onOpenChange:e=>!e&&F()},r.createElement(Zt,{className:"sm:max-w-lg storeit-modal-spring"},r.createElement(It,null,r.createElement(_t,{className:"flex items-center gap-2"},r.createElement(nt,{className:"w-5 h-5 text-brand-secondary"}),e?.isDirectory?"创建共享文件夹 / 跨服共享链接":"创建文件分享 / 协同链接")),N?r.createElement("div",{className:"space-y-4 py-1 text-xs"},r.createElement("div",{className:"p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 space-y-1"},r.createElement("p",{className:"font-semibold"},"共享已生成（权限：","READ_WRITE"===c?"可读写协同 RW":"只读访问 R",i.trim()?` · 提取码: ${i.trim()}`:"","）"),r.createElement("p",{className:"text-[11px]"},"对方可通过 Web 互动链接在线浏览/编辑，或在任意 StoreIt 服务器通过 SFSP 跨服协议挂载。")),r.createElement("div",null,r.createElement("label",{className:"font-semibold text-foreground block mb-1"},"1. Web 共享空间互动链接（推荐：支持在线浏览目录、预览与 RW 读写协同）"),r.createElement("div",{className:"flex gap-2"},r.createElement(j,{readOnly:!0,value:N.webSpaceUrl,className:"text-xs font-mono"}),r.createElement(U,{size:"sm",onClick:()=>z("web",N.webSpaceUrl),className:"gap-1 shrink-0"},"web"===C?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3.5 h-3.5 text-emerald-300"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3.5 h-3.5"})," 复制")))),r.createElement("div",null,r.createElement("label",{className:"font-semibold text-foreground block mb-1"},"2. 直接下载 / 文件夹 ZIP 打包直链（防聊天软件爬虫误扣次数）"),r.createElement("div",{className:"flex gap-2"},r.createElement(j,{readOnly:!0,value:N.directUrl,className:"text-xs font-mono"}),r.createElement(U,{size:"sm",variant:"outline",onClick:()=>z("direct",N.directUrl),className:"gap-1 shrink-0"},"direct"===C?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3.5 h-3.5 text-emerald-600"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3.5 h-3.5"})," 复制")))),r.createElement("div",null,r.createElement("label",{className:"font-semibold text-foreground flex items-center gap-1.5 mb-1"},r.createElement(Q,{className:"w-3.5 h-3.5 text-brand-secondary"}),"3. 跨服联邦挂载协议地址 (SFSP/1.0 · 可在其他 StoreIt 实例一键挂载)"),r.createElement("div",{className:"flex gap-2"},r.createElement(j,{readOnly:!0,value:N.federatedUri,className:"text-xs font-mono"}),r.createElement(U,{size:"sm",variant:"outline",onClick:()=>z("fed",N.federatedUri),className:"gap-1 shrink-0"},"fed"===C?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3.5 h-3.5 text-emerald-600"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3.5 h-3.5"})," 复制协议串")))),r.createElement(Wt,{className:"gap-2 pt-2"},r.createElement(U,{type:"button",variant:"outline",onClick:()=>{const e=N.token,t=i.trim();F(),a(e,"",t)}},"立即在共享空间中打开"),r.createElement(U,{type:"button",onClick:F},"完成"))):r.createElement("form",{onSubmit:t=>{if(t.preventDefault(),!e)return;let a,r=parseInt(x,10);"custom"===x&&(r=parseInt(b,10),!Number.isInteger(r)||r<1)?s("自定义有效小时数必须为正整数","error"):v.trim()&&(a=parseInt(v,10),!Number.isInteger(a)||a<1)?s("最大下载次数必须为正整数","error"):S.mutate({filePath:e.path,expireHours:r,maxDownloads:a,permission:c,accessPassword:i.trim()||void 0,title:u.trim()||e.name})},className:"space-y-3.5 text-xs"},r.createElement("div",{className:"flex items-center gap-2.5 p-2.5 rounded-xl bg-muted/40 border"},e?.isDirectory?r.createElement(Te,{className:"w-5 h-5 text-amber-500 shrink-0"}):r.createElement(Fe,{className:"w-5 h-5 text-brand-secondary shrink-0"}),r.createElement("div",{className:"min-w-0 flex-1"},r.createElement("p",{className:"font-semibold text-brand-primary truncate"},e?.name),r.createElement("p",{className:"text-[11px] text-muted-foreground truncate"},"路径: /",e?.path," (",e?.isDirectory?"文件夹共享":"单文件分享",")"))),r.createElement("div",null,r.createElement("label",{className:"font-semibold text-foreground flex items-center gap-1.5 mb-1.5"},r.createElement(st,{className:"w-3.5 h-3.5 text-brand-secondary"}),"共享读写权限管控 (R / RW)"),r.createElement("div",{className:"grid grid-cols-2 gap-2"},r.createElement("button",{type:"button",onClick:()=>m("READ"),className:"p-2.5 rounded-xl border text-left transition-all "+("READ"===c?"border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold":"bg-white hover:bg-black/5 text-foreground")},r.createElement("div",null,"只读权限 (R)"),r.createElement("div",{className:"text-[10px] text-muted-foreground font-normal mt-0.5"},"仅允许浏览子目录、在线预览与下载")),r.createElement("button",{type:"button",onClick:()=>m("READ_WRITE"),className:"p-2.5 rounded-xl border text-left transition-all "+("READ_WRITE"===c?"border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold":"bg-white hover:bg-black/5 text-foreground")},r.createElement("div",null,"可读写协同 (RW)"),r.createElement("div",{className:"text-[10px] text-muted-foreground font-normal mt-0.5"},"允许上传、新建、在线编辑与删除子项")))),r.createElement("div",{className:"grid grid-cols-1 sm:grid-cols-2 gap-3"},r.createElement("div",null,r.createElement("label",{className:"font-medium text-foreground flex items-center gap-1 mb-1"},r.createElement(_e,{className:"w-3 h-3 text-brand-secondary"})," 访问提取码 (留空则公开)"),r.createElement(j,{type:"text",placeholder:"可选，如 8888 或 team2026",value:i,onChange:e=>d(e.target.value),className:"font-mono text-xs h-9"})),r.createElement("div",null,r.createElement("label",{className:"font-medium text-foreground block mb-1"},"共享显示名称"),r.createElement(j,{type:"text",placeholder:"共享标题",value:u,onChange:e=>p(e.target.value),className:"text-xs h-9"}))),r.createElement("div",{className:"grid grid-cols-1 sm:grid-cols-2 gap-3"},r.createElement("div",null,r.createElement("label",{className:"font-medium text-foreground block mb-1"},"链接有效期"),r.createElement("select",{value:x,onChange:e=>g(e.target.value),className:"w-full h-9 rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-ring"},r.createElement("option",{value:"24"},"1 天"),r.createElement("option",{value:"168"},"7 天"),r.createElement("option",{value:"720"},"30 天"),r.createElement("option",{value:"-1"},"永久有效"),r.createElement("option",{value:"custom"},"自定义小时数")),"custom"===x&&r.createElement(j,{type:"number",min:"1",placeholder:"有效小时数 (如 48)",value:b,onChange:e=>E(e.target.value),className:"mt-1.5 text-xs h-8",required:!0})),r.createElement("div",null,r.createElement("label",{className:"font-medium text-foreground block mb-1"},"最大下载次数 (留空不限)"),r.createElement(j,{type:"number",min:"1",placeholder:"例如: 50",value:v,onChange:e=>w(e.target.value),className:"text-xs h-9"}))),r.createElement(Wt,{className:"pt-1"},r.createElement(U,{type:"button",variant:"outline",onClick:F},"取消"),r.createElement(U,{type:"submit",disabled:S.isPending},S.isPending?"生成中...":"生成共享与跨服协议链接")))))}function ha(e,t){if(!t)return"";if(t.startsWith("http://")||t.startsWith("https://")||t.startsWith("data:")||t.startsWith("blob:")||t.startsWith("/"))return t;const a=e&&e.includes("/")?e.slice(0,e.lastIndexOf("/")):"",r=(a?`${a}/${t}`:t).split("/"),n=[];for(const e of r)e&&"."!==e&&(".."===e?n.pop():n.push(e));return P(n.join("/"))}const fa={"\\alpha":"α","\\beta":"β","\\gamma":"γ","\\delta":"δ","\\epsilon":"ε","\\zeta":"ζ","\\eta":"η","\\theta":"θ","\\lambda":"λ","\\mu":"μ","\\pi":"π","\\rho":"ρ","\\sigma":"σ","\\tau":"τ","\\phi":"φ","\\omega":"ω","\\Delta":"Δ","\\Sigma":"Σ","\\Omega":"Ω","\\Pi":"Π","\\infty":"∞","\\pm":"±","\\mp":"∓","\\times":"×","\\div":"÷","\\cdot":"·","\\neq":"≠","\\ne":"≠","\\leq":"≤","\\le":"≤","\\geq":"≥","\\ge":"≥","\\approx":"≈","\\equiv":"≡","\\propto":"∝","\\sum":"∑","\\prod":"∏","\\int":"∫","\\partial":"∂","\\nabla":"∇","\\forall":"∀","\\exists":"∃","\\in":"∈","\\notin":"∉","\\subset":"⊂","\\subseteq":"⊆","\\cup":"∪","\\cap":"∩","\\rightarrow":"→","\\to":"→","\\leftarrow":"←","\\Rightarrow":"⇒","\\Leftarrow":"⇐","\\leftrightarrow":"↔","\\Leftrightarrow":"⇔"};function ga(e){let t=e.trim();t=t.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g,"($1)/($2)"),t=t.replace(/\\sqrt\{([^{}]+)\}/g,"√($1)"),t=t.replace(/\\text\{([^{}]+)\}/g,"$1");for(const[e,a]of Object.entries(fa))t=t.split(e).join(a);const a=[],n=/(\^\{([^{}]+)\}|\^([a-zA-Z0-9+-])|_\{([^{}]+)\}|_([a-zA-Z0-9+-]))/g;let l,s=0,o=0;for(;null!==(l=n.exec(t));){l.index>s&&a.push(t.slice(s,l.index));const e=l[2]||l[3],c=l[4]||l[5];void 0!==e?a.push(r.createElement("sup",{key:"m_"+o++,className:"text-[0.75em] font-semibold"},e)):void 0!==c&&a.push(r.createElement("sub",{key:"m_"+o++,className:"text-[0.75em]"},c)),s=n.lastIndex}return s<t.length&&a.push(t.slice(s)),a}function ba({lang:e,code:t}){const[a,l]=n(!1),[o,c]=n(!0),m=s((()=>t.split("\n")),[t]),i=(e||"text").toLowerCase();return"math"===i||"latex"===i||"katex"===i?r.createElement("div",{className:"my-3 p-4 rounded-xl bg-indigo-950/5 border border-indigo-500/20 text-center font-serif text-base overflow-x-auto"},m.map(((e,t)=>r.createElement("div",{key:t,className:"py-0.5"},ga(e))))):r.createElement("div",{className:"my-3.5 rounded-xl overflow-hidden border border-white/10 bg-[#1e1e2e] text-[#cdd6f4] shadow-sm"},r.createElement("div",{className:"flex items-center justify-between px-3.5 py-1.5 bg-[#181825] border-b border-white/10 text-[11px] text-[#a6adc8] select-none"},r.createElement("div",{className:"flex items-center gap-2"},r.createElement("span",{className:"inline-flex items-center gap-1 font-mono uppercase tracking-wider text-[#89b4fa] font-semibold"},i),r.createElement("span",{className:"text-white/20"},"·"),r.createElement("span",null,m.length," 行")),r.createElement("div",{className:"flex items-center gap-2"},r.createElement("button",{type:"button",onClick:()=>c((e=>!e)),className:"px-1.5 py-0.5 rounded hover:bg-white/10 transition-colors"},o?"隐藏行号":"显示行号"),r.createElement("button",{type:"button",onClick:async()=>{await D(t)&&(l(!0),setTimeout((()=>l(!1)),1800))},className:"inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/10 hover:bg-white/15 text-[#cdd6f4] transition-colors"},a?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3 h-3 text-emerald-400"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3 h-3"})," 复制代码")))),r.createElement("div",{className:"p-3.5 overflow-x-auto font-mono text-xs leading-relaxed"},m.map(((e,t)=>r.createElement("div",{key:t,className:"table-row hover:bg-white/[0.03]"},o&&r.createElement("span",{className:"table-cell pr-4 text-right select-none text-[#585b70] w-8"},t+1),r.createElement("span",{className:"table-cell whitespace-pre"},function(e){const t=e.trimStart();if(t.startsWith("//")||t.startsWith("#")||t.startsWith("--"))return r.createElement("span",{className:"text-[#6c7086] italic"},e);const a=/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b(?:import|from|export|default|function|return|const|let|var|if|else|for|while|switch|case|break|continue|class|interface|type|extends|implements|new|try|catch|finally|throw|async|await|public|private|protected|static|final|void|int|long|double|boolean|true|false|null|undefined|def|elif|None|True|False|SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|JOIN|GROUP|ORDER|BY|LIMIT)\b|\b\d+(?:\.\d+)?\b)/g,n=[];let l,s=0,o=0;for(;null!==(l=a.exec(e));){l.index>s&&n.push(e.slice(s,l.index));const t=l[0];t.startsWith('"')||t.startsWith("'")||t.startsWith("`")?n.push(r.createElement("span",{key:o++,className:"text-[#a6e3a1]"},t)):/^\d/.test(t)?n.push(r.createElement("span",{key:o++,className:"text-[#fab387]"},t)):n.push(r.createElement("span",{key:o++,className:"text-[#cba6f7] font-semibold"},t)),s=a.lastIndex}return s<e.length&&n.push(e.slice(s)),n}(e)))))))}function ya(e){let t=e.trim();t.startsWith("|")&&(t=t.slice(1)),t.endsWith("|")&&(t=t.slice(0,-1));const a=[];let r="";for(let e=0;e<t.length;e++)"\\"===t[e]&&e+1<t.length&&"|"===t[e+1]?(r+="|",e++):"|"===t[e]?(a.push(r.trim()),r=""):r+=t[e];return a.push(r.trim()),a}function Ea({content:e,basePath:t,showToc:a=!0}){const[l,o]=n(!1),{elements:c,headings:m,footnotes:i}=s((()=>{const a=(e||"").split(/\r?\n/),n=[],l=new Map,s=[];let o=null,c=0;if("---"===a[0]?.trim()){let e=-1;for(let t=1;t<Math.min(a.length,40);t++)if("---"===a[t].trim()||"..."===a[t].trim()){e=t;break}if(e>0){const t={};for(let r=1;r<e;r++){const e=a[r].match(/^([A-Za-z0-9_-]+)\s*:\s*(.*)$/);e&&(t[e[1]]=e[2].replace(/^["']|["']$/g,"").trim())}Object.keys(t).length>0&&(o=t),c=e+1}}for(let e=c;e<a.length;e++){const t=a[e].match(/^\[\^([^\]]+)\]:\s*(.+)$/);t?l.set(t[1],t[2].trim()):s.push(a[e])}const m=(e,a="in")=>{if(!e)return null;const n=/(`[^`]+`|\$(?!\s)[^$\n]+(?<!\s)\$|!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|\[\^[^\]]+\]|\[\[[^\]]+\]\]|<kbd>[^<]+<\/kbd>|\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|__[^_]+__|~~[^~]+~~|==[^=]+==|\^[^^\s]+\^|~[^~\s]+~|\*(?!\s)[^*]+(?<!\s)\*|https?:\/\/[^\s<)]+)/g,s=[];let o,c=0,i=0;for(;null!==(o=n.exec(e));){o.index>c&&s.push(e.slice(c,o.index));const d=o[0],u=`${a}_${i++}`;if(d.startsWith("`")&&d.endsWith("`"))s.push(r.createElement("code",{key:u,className:"px-1.5 py-0.5 mx-0.5 rounded-md bg-brand-primary/10 text-brand-primary font-mono text-[0.88em] font-medium"},d.slice(1,-1)));else if(d.startsWith("$")&&d.endsWith("$"))s.push(r.createElement("span",{key:u,className:"px-1 py-0.5 mx-0.5 rounded bg-indigo-500/10 text-indigo-900 font-serif italic"},ga(d.slice(1,-1))));else if(d.startsWith("![")){const e=d.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);if(e){const a=e[1],n=ha(t,e[2]),l=e[3];s.push(r.createElement("span",{key:u,className:"inline-block my-2 max-w-full"},r.createElement("img",{src:n,alt:a,title:l||a,className:"max-h-96 max-w-full rounded-xl border shadow-sm object-contain mx-auto"}),a&&r.createElement("span",{className:"block text-center text-[11px] text-muted-foreground mt-1"},a)))}else s.push(d)}else if(d.startsWith("[^")&&d.endsWith("]")){const e=d.slice(2,-1);s.push(r.createElement("sup",{key:u,className:"ml-0.5"},r.createElement("a",{href:`#fn-def-${e}`,id:`fn-ref-${e}`,className:"text-[11px] font-semibold text-brand-primary hover:underline px-0.5 rounded bg-brand-primary/10",title:l.get(e)||`脚注 ${e}`},"[",e,"]")))}else if(d.startsWith("[[")&&d.endsWith("]]"))s.push(r.createElement("kbd",{key:u,className:"px-1.5 py-0.5 text-[11px] font-mono font-semibold bg-muted border border-b-2 rounded-md text-foreground shadow-sm"},d.slice(2,-2)));else if(d.startsWith("<kbd>")&&d.endsWith("</kbd>"))s.push(r.createElement("kbd",{key:u,className:"px-1.5 py-0.5 text-[11px] font-mono font-semibold bg-muted border border-b-2 rounded-md text-foreground shadow-sm"},d.slice(5,-6)));else if(d.startsWith("[")){const e=d.match(/^\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);if(e){const t=e[1],a=e[2],n=e[3],l=/^(https?:\/\/|mailto:|#|\/)/i.test(a)?a:"#";s.push(r.createElement("a",{key:u,href:l,title:n,target:l.startsWith("#")?void 0:"_blank",rel:"noopener noreferrer",className:"text-blue-600 hover:text-blue-700 underline underline-offset-2 font-medium"},m(t,`${u}_lbl`)))}else s.push(d)}else d.startsWith("***")&&d.endsWith("***")?s.push(r.createElement("strong",{key:u,className:"font-bold italic"},m(d.slice(3,-3),u))):d.startsWith("**")&&d.endsWith("**")||d.startsWith("__")&&d.endsWith("__")?s.push(r.createElement("strong",{key:u,className:"font-bold text-foreground"},m(d.slice(2,-2),u))):d.startsWith("~~")&&d.endsWith("~~")?s.push(r.createElement("del",{key:u,className:"line-through text-muted-foreground"},m(d.slice(2,-2),u))):d.startsWith("==")&&d.endsWith("==")?s.push(r.createElement("mark",{key:u,className:"bg-amber-200/80 text-amber-950 px-1 py-0.2 rounded font-medium"},m(d.slice(2,-2),u))):d.startsWith("^")&&d.endsWith("^")&&d.length>2?s.push(r.createElement("sup",{key:u,className:"text-[0.75em]"},d.slice(1,-1))):d.startsWith("~")&&d.endsWith("~")&&d.length>2?s.push(r.createElement("sub",{key:u,className:"text-[0.75em]"},d.slice(1,-1))):d.startsWith("*")&&d.endsWith("*")?s.push(r.createElement("em",{key:u,className:"italic"},m(d.slice(1,-1),u))):/^https?:\/\//i.test(d)?s.push(r.createElement("a",{key:u,href:d,target:"_blank",rel:"noopener noreferrer",className:"text-blue-600 hover:text-blue-700 underline underline-offset-2 break-all"},d)):s.push(d);c=n.lastIndex}return c<e.length&&s.push(e.slice(c)),s},i=[];o&&i.push(r.createElement("div",{key:"frontmatter",className:"mb-4 p-3 rounded-xl bg-muted/50 border text-xs flex flex-wrap gap-x-4 gap-y-1.5"},Object.entries(o).map((([e,t])=>r.createElement("div",{key:e,className:"flex items-center gap-1.5"},r.createElement("span",{className:"font-mono text-muted-foreground"},e,":"),r.createElement("span",{className:"font-semibold text-brand-primary"},t))))));let d=0;for(;d<s.length;){const e=s[d],t=e.trim();if(!t){d++;continue}const a=t.match(/^(`{3,}|~{3,})(.*)$/);if(a){const e=a[1],t=(a[2]||"").trim(),n=[];for(d++;d<s.length&&!s[d].trim().startsWith(e);)n.push(s[d]),d++;d<s.length&&d++,i.push(r.createElement(ba,{key:`code_${d}`,lang:t,code:n.join("\n")}));continue}if(t.startsWith("$$")){if(t.endsWith("$$")&&t.length>4){const e=t.slice(2,-2);i.push(r.createElement("div",{key:`math_${d}`,className:"my-3 p-3.5 rounded-xl bg-indigo-950/5 border border-indigo-500/20 text-center font-serif text-base overflow-x-auto"},ga(e))),d++;continue}const e=[];for(t.slice(2).trim()&&e.push(t.slice(2)),d++;d<s.length&&!s[d].trim().endsWith("$$");)e.push(s[d]),d++;if(d<s.length){const t=s[d].trim().slice(0,-2).trim();t&&e.push(t),d++}i.push(r.createElement("div",{key:`math_blk_${d}`,className:"my-3 p-3.5 rounded-xl bg-indigo-950/5 border border-indigo-500/20 text-center font-serif text-base overflow-x-auto"},e.map(((e,t)=>r.createElement("div",{key:t},ga(e))))));continue}const l=t.match(/^:::\s*([a-zA-Z]+)(?:\s+(.*))?$/);if(l){const e=l[1].toLowerCase(),t=l[2]||"",a=[];for(d++;d<s.length&&":::"!==s[d].trim();)a.push(s[d]),d++;d<s.length&&d++,"details"===e?i.push(r.createElement("details",{key:`details_${d}`,className:"my-3 rounded-xl border bg-muted/20 p-3 text-sm group"},r.createElement("summary",{className:"font-semibold cursor-pointer select-none text-brand-primary"},t||"点击展开详情"),r.createElement("div",{className:"mt-2 pt-2 border-t text-foreground space-y-1.5"},a.map(((e,t)=>r.createElement("p",{key:t},m(e,`det_${d}_${t}`))))))):i.push(va(e.toUpperCase(),t,a,`dir_${d}`,m));continue}if(/^(?:-{3,}|\*{3,}|_{3,})$/.test(t)){i.push(r.createElement("hr",{key:`hr_${d}`,className:"my-4 border-t border-border"})),d++;continue}const o=e.match(/^(#{1,6})\s+(.+)$/);if(o){const e=o[1].length,t=o[2].replace(/\s+#+\s*$/,"").trim(),a=(u=t,`md-h-${p=n.length}-${u.replace(/[`*_~=#<>[\]()!]/g,"").trim().toLowerCase().replace(/\s+/g,"-")||p}`);n.push({id:a,level:e,text:t});const l={1:"text-2xl font-extrabold text-brand-primary mt-5 mb-2.5 pb-1.5 border-b",2:"text-xl font-bold text-brand-primary mt-4 mb-2 pb-1 border-b border-border/60",3:"text-lg font-bold text-brand-primary mt-3.5 mb-1.5",4:"text-base font-semibold text-brand-primary mt-3 mb-1",5:"text-sm font-semibold text-brand-primary mt-2.5 mb-1",6:"text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-2 mb-1"},s=`h${e}`;i.push(r.createElement(s,{key:`h_${d}`,id:a,className:l[e]},m(t,`h_${d}`))),d++}else if(e.includes("|")&&d+1<s.length&&/^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$/.test(s[d+1])){const e=ya(s[d]),t=ya(s[d+1]).map((e=>{const t=e.trim();return t.startsWith(":")&&t.endsWith(":")?"center":t.endsWith(":")?"right":"left"}));d+=2;const a=[];for(;d<s.length&&s[d].trim()&&s[d].includes("|");)a.push(ya(s[d])),d++;i.push(r.createElement("div",{key:`tbl_${d}`,className:"my-3.5 overflow-x-auto rounded-xl border shadow-sm"},r.createElement("table",{className:"w-full border-collapse text-xs"},r.createElement("thead",null,r.createElement("tr",{className:"bg-muted/60 border-b text-brand-primary font-semibold"},e.map(((e,a)=>r.createElement("th",{key:a,style:{textAlign:t[a]||"left"},className:"px-3.5 py-2.5 border-r last:border-r-0"},m(e,`th_${d}_${a}`)))))),r.createElement("tbody",{className:"divide-y"},a.map(((a,n)=>r.createElement("tr",{key:n,className:"hover:bg-muted/30 transition-colors"},e.map(((e,l)=>r.createElement("td",{key:l,style:{textAlign:t[l]||"left"},className:"px-3.5 py-2 border-r last:border-r-0"},m(a[l]||"",`td_${d}_${n}_${l}`)))))))))))}else if(t.startsWith(">")){const e=[];for(;d<s.length&&s[d].trim().startsWith(">");)e.push(s[d].trim().replace(/^>\s?/,"")),d++;const t=e[0]?.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:\s+(.*))?$/i);if(t){const a=t[1].toUpperCase(),r=t[2]||"";i.push(va(a,r,e.slice(1),`alert_${d}`,m))}else i.push(r.createElement("blockquote",{key:`bq_${d}`,className:"my-3 border-l-4 border-brand-secondary/60 bg-muted/30 rounded-r-xl pl-4 pr-3 py-2 text-muted-foreground italic space-y-1"},e.map(((e,t)=>r.createElement("p",{key:t},m(e,`bq_${d}_${t}`))))))}else if(/^\s*(?:[-*+]|\d+\.)\s+/.test(e)){const e=[];for(;d<s.length&&/^\s*(?:[-*+]|\d+\.)\s+/.test(s[d]);){const t=s[d],a=t.match(/^(\s*)/),r=a?Math.floor(a[1].length/2):0,n=t.match(/^\s*(\d+)\.\s+(.*)$/),l=t.match(/^\s*[-*+]\s+(.*)$/),o=n?n[2]:l?l[1]:t,c=o.match(/^\[([ xX])\]\s+(.*)$/);e.push({indent:r,ordered:Boolean(n),orderNum:n?n[1]:void 0,taskState:c?"x"===c[1].toLowerCase()?"checked":"unchecked":null,text:c?c[2]:o}),d++}i.push(r.createElement("div",{key:`list_${d}`,className:"my-2.5 space-y-1.5"},e.map(((e,t)=>r.createElement("div",{key:t,style:{paddingLeft:18*e.indent+"px"},className:"flex items-start gap-2 leading-relaxed"},null!==e.taskState?r.createElement("span",{className:"mt-1 w-4 h-4 rounded flex items-center justify-center border shrink-0 "+("checked"===e.taskState?"bg-emerald-600 border-emerald-600 text-white":"border-muted-foreground/40 bg-white")},"checked"===e.taskState&&r.createElement(le,{className:"w-3 h-3"})):e.ordered?r.createElement("span",{className:"text-brand-secondary font-mono text-xs font-semibold min-w-[1.25rem] pt-0.5 shrink-0"},e.orderNum,"."):r.createElement("span",{className:"w-1.5 h-1.5 rounded-full bg-brand-secondary mt-2 shrink-0 ml-1"}),r.createElement("span",{className:"flex-1 "+("checked"===e.taskState?"line-through text-muted-foreground":"")},m(e.text,`li_${d}_${t}`)))))))}else if(d+1<s.length&&/^:\s+.+/.test(s[d+1])){const e=s[d].trim();d++;const t=[];for(;d<s.length&&/^:\s+.+/.test(s[d]);)t.push(s[d].replace(/^:\s+/,"").trim()),d++;i.push(r.createElement("dl",{key:`dl_${d}`,className:"my-2.5 pl-3 border-l-2 border-brand-primary/30"},r.createElement("dt",{className:"font-bold text-brand-primary"},m(e,`dt_${d}`)),t.map(((e,t)=>r.createElement("dd",{key:t,className:"ml-4 mt-0.5 text-muted-foreground"},m(e,`dd_${d}_${t}`))))))}else i.push(r.createElement("p",{key:`p_${d}`,className:"my-2 leading-relaxed"},m(e,`p_${d}`))),d++}var u,p;return{elements:i,headings:n,footnotes:Array.from(l.entries())}}),[e,t]);return r.createElement("div",{className:"flex flex-col lg:flex-row gap-4 text-sm text-foreground"},r.createElement("div",{className:"flex-1 min-w-0 space-y-1"},c,i.length>0&&r.createElement("div",{className:"mt-6 pt-3 border-t text-xs text-muted-foreground space-y-1.5"},r.createElement("p",{className:"font-semibold text-foreground"},"脚注引用"),i.map((([e,t])=>r.createElement("div",{key:e,id:`fn-def-${e}`,className:"flex items-start gap-2"},r.createElement("a",{href:`#fn-ref-${e}`,className:"font-mono text-brand-primary font-semibold hover:underline shrink-0"},"[",e,"]"),r.createElement("span",{className:"flex-1"},t)))))),a&&m.length>=2&&r.createElement("aside",{className:"lg:w-52 shrink-0 border-t lg:border-t-0 lg:border-l pt-3 lg:pt-0 lg:pl-3 select-none"},r.createElement("button",{type:"button",onClick:()=>o((e=>!e)),className:"flex items-center justify-between w-full text-xs font-semibold text-brand-primary mb-2 hover:opacity-80"},r.createElement("span",{className:"inline-flex items-center gap-1.5"},r.createElement(We,{className:"w-3.5 h-3.5 text-brand-secondary"}),"文档大纲 (",m.length,")"),l?r.createElement(ie,{className:"w-3.5 h-3.5"}):r.createElement(ce,{className:"w-3.5 h-3.5"})),!l&&r.createElement("nav",{className:"space-y-1 max-h-72 overflow-y-auto pr-1"},m.map((e=>r.createElement("a",{key:e.id,href:`#${e.id}`,onClick:t=>{t.preventDefault();const a=document.getElementById(e.id);a?.scrollIntoView({behavior:"smooth",block:"start"})},style:{paddingLeft:10*Math.max(0,e.level-1)+"px"},className:"block text-xs text-muted-foreground hover:text-brand-primary truncate py-0.5 transition-colors",title:e.text},e.text))))))}function va(e,t,a,n,l){const s={NOTE:{label:"提示 (Note)",box:"bg-blue-50/80 border-blue-300 text-blue-950",titleColor:"text-blue-700",icon:r.createElement(Ue,{className:"w-4 h-4 text-blue-600 shrink-0"})},TIP:{label:"技巧 (Tip)",box:"bg-emerald-50/80 border-emerald-300 text-emerald-950",titleColor:"text-emerald-700",icon:r.createElement(Ze,{className:"w-4 h-4 text-emerald-600 shrink-0"})},IMPORTANT:{label:"重要 (Important)",box:"bg-purple-50/80 border-purple-300 text-purple-950",titleColor:"text-purple-700",icon:r.createElement(ct,{className:"w-4 h-4 text-purple-600 shrink-0"})},WARNING:{label:"警告 (Warning)",box:"bg-amber-50/80 border-amber-300 text-amber-950",titleColor:"text-amber-700",icon:r.createElement(X,{className:"w-4 h-4 text-amber-600 shrink-0"})},CAUTION:{label:"危险 (Caution)",box:"bg-rose-50/80 border-rose-300 text-rose-950",titleColor:"text-rose-700",icon:r.createElement(J,{className:"w-4 h-4 text-rose-600 shrink-0"})},DANGER:{label:"危险 (Danger)",box:"bg-rose-50/80 border-rose-300 text-rose-950",titleColor:"text-rose-700",icon:r.createElement(J,{className:"w-4 h-4 text-rose-600 shrink-0"})}},o=s[e]||s.NOTE;return r.createElement("div",{key:n,className:`my-3 p-3.5 rounded-xl border-l-4 border ${o.box} space-y-1.5`},r.createElement("div",{className:`flex items-center gap-1.5 font-semibold text-xs ${o.titleColor}`},o.icon,r.createElement("span",null,t||o.label)),r.createElement("div",{className:"text-xs leading-relaxed space-y-1"},a.map(((e,t)=>r.createElement("p",{key:t},l(e,`${n}_${t}`))))))}const wa=262144,Na=5242880;function ka(){const e=f(),t=Et((e=>e.previewFile)),a=Et((e=>e.previewAutoEdit)),m=Et((e=>e.setPreviewFile)),i=Et((e=>e.viewMode)),d=Et((e=>e.currentPath)),u=Et((e=>e.searchQuery)),p=Et((e=>e.showToast)),x=Et((e=>e.openConfirm)),[h,g]=n(null),[b,E]=n(""),[v,N]=n("UTF-8"),[C,M]=n(void 0),[F,$]=n(!1),[R,q]=n(!1),[O,j]=n(!1),[A,Z]=n(!1),[I,W]=n(!1),[_,L]=n(!1),[B,K]=n(1),[H,Q]=n(0),[G,V]=n("render"),[X,J]=n(!0),[ee,te]=n(!0),[ae,ne]=n(!1),[se,oe]=n(1),[ce,de]=n(!1),[ue,pe]=n(!1),ge=c(null),ye=c(null),ve=c(null),Ne=t?z(t.name):null,ke=!!t&&["md","markdown"].includes(k(t.name)),Ce=t?P(t.path):"",Me=t?T(t.path):"",Se=ce||ue,ze=s((()=>{const t=["files",i,"search"===i?u:d];return(e.getQueryData(t)||[]).filter((e=>!e.isDirectory&&S(e.name)))}),[e,i,d,u,t]),Te=s((()=>t?ze.findIndex((e=>e.path===t.path)):-1),[t,ze]),$e=!F&&Te>0,Pe=!F&&Te>=0&&Te<ze.length-1,De=o((()=>{$e&&m(ze[Te-1])}),[$e,ze,Te,m]),Re=o((()=>{Pe&&m(ze[Te+1])}),[Pe,ze,Te,m]),qe=o((()=>{de((e=>{const t=!e;return!t&&document.fullscreenElement&&document.exitFullscreen().catch((()=>{})),t}))}),[]),Oe=o((async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else{const e=ge.current||document.documentElement;await e.requestFullscreen(),de(!0)}}catch{de((e=>!e))}}),[]);l((()=>{const e=()=>{const e=Boolean(document.fullscreenElement);pe(e),e&&de(!0)};return document.addEventListener("fullscreenchange",e),()=>document.removeEventListener("fullscreenchange",e)}),[]);const Ue=o((async()=>{if(t)if((t.size||0)>Na)p("文件超过 5 MB，不支持在线编辑，请下载后修改","error");else{W(!0);try{const e=await y.getFileContent(t.path);g(e.content),E(e.content),N(e.charset||"UTF-8"),M(e.modifiedTime),j(!1),$(!0)}catch(e){p(e.message||"无法进入在线编辑模式","error")}finally{W(!1)}}}),[t,p]),je=o((async(a=!1)=>{if(t&&!R){q(!0);try{const r=await y.saveFileContent(t.path,b,a?void 0:C,v);g(b),M(r.file.modifiedTime),$(!1),e.invalidateQueries({queryKey:["files"]}),e.invalidateQueries({queryKey:["quota"]});const n=Et.getState().selectedFile;n&&n.path===t.path&&Et.getState().setSelectedFile({...n,size:r.file.size,modifiedTime:r.file.modifiedTime}),p("文本内容已成功保存","success")}catch(e){409===e?.status?x({title:"检测到文件并发修改冲突",description:"该文件在您编辑期间已被其他窗口或上传任务修改。是否仍要以当前编辑器内容强制覆盖保存？",confirmText:"强制覆盖保存",destructive:!0,onConfirm:()=>{je(!0)}}):p(e.message||"保存文件失败","error")}finally{q(!1)}}}),[t,b,R,C,v,e,p,x]);l((()=>{L(!1),Z(!1),$(!1),K(1),Q(0),V("render"),oe(1),t||(de(!1),"undefined"!=typeof document&&document.fullscreenElement&&document.exitFullscreen().catch((()=>{})))}),[t]),l((()=>{if(!t)return;const e=e=>{if(F)return void((e.ctrlKey||e.metaKey)&&"s"===e.key.toLowerCase()&&(e.preventDefault(),je(!1)));const t=e.target?.tagName?.toLowerCase();"input"!==t&&"textarea"!==t&&("ArrowLeft"===e.key&&$e?(e.preventDefault(),De()):"ArrowRight"===e.key&&Pe?(e.preventDefault(),Re()):"f"!==e.key.toLowerCase()||e.ctrlKey||e.metaKey||e.altKey||(e.preventDefault(),qe()))};return window.addEventListener("keydown",e),()=>window.removeEventListener("keydown",e)}),[t,F,$e,Pe,De,Re,je,qe]),l((()=>{if(t&&"text"===Ne){if(W(!0),j(!1),Z(!1),g(null),a&&(t.size||0)<=Na)return void y.getFileContent(t.path).then((e=>{g(e.content),E(e.content),N(e.charset||"UTF-8"),M(e.modifiedTime),$(!0),W(!1)})).catch((e=>{p(e.message||"无法加载可编辑文本","error"),Z(!0),W(!1)}));if(0===t.size)return g(""),E(""),N("UTF-8"),j(!1),void W(!1);fetch(Ce,{headers:{Range:"bytes=0-"+(wa-1)}}).then((async e=>{if(!e.ok)throw new Error("无法加载文本");const a=(e.headers.get("Content-Range")||"").match(/\/(\d+)$/),r=a?Number(a[1]):t.size??0,n=(t.size??0)>wa||r>wa,l=await e.arrayBuffer(),s=new Uint8Array(l),o=Math.min(s.length,8192);if(!(o>=2&&(255===s[0]&&254===s[1]||254===s[0]&&255===s[1])))for(let e=0;e<o;e++)if(0===s[e])return{text:"",charset:"UTF-8",truncated:!1,binary:!0};const{text:c,charset:m}=function(e){if(e.length>=3&&239===e[0]&&187===e[1]&&191===e[2])return{text:new TextDecoder("utf-8").decode(e.subarray(3)),charset:"UTF-8"};if(e.length>=2&&255===e[0]&&254===e[1])return{text:new TextDecoder("utf-16le").decode(e.subarray(2)),charset:"UTF-16LE"};if(e.length>=2&&254===e[0]&&255===e[1])return{text:new TextDecoder("utf-16be").decode(e.subarray(2)),charset:"UTF-16BE"};try{return{text:new TextDecoder("utf-8",{fatal:!0}).decode(e),charset:"UTF-8"}}catch{try{return{text:new TextDecoder("gb18030",{fatal:!1}).decode(e),charset:"GB18030"}}catch{return{text:new TextDecoder("utf-8",{fatal:!1}).decode(e),charset:"UTF-8"}}}}(s);return{text:n?c.replace(/\uFFFD+$/,""):c,charset:m,truncated:n,binary:!1}})).then((({text:e,charset:t,truncated:a,binary:r})=>{r?Z(!0):(g(e),E(e),N(t),j(a)),W(!1)})).catch((()=>{g("加载文本内容失败"),W(!1)}))}else g(null)}),[t,Ne,Ce,a,p]);const Ae=()=>{if(!t)return;const e=document.createElement("a");e.href=Me,e.download=t.name,document.body.appendChild(e),e.click(),document.body.removeChild(e)},Ze=(e,t="",a="")=>{const r=ye.current;if(!r)return void E((r=>r+e+a+t));const n=r.selectionStart,l=r.selectionEnd,s=b.substring(n,l)||a,o=b.substring(0,n)+e+s+t+b.substring(l);E(o),setTimeout((()=>{r.focus(),r.selectionStart=n+e.length,r.selectionEnd=n+e.length+s.length}),0)},Ie=e=>{if("Tab"===e.key){e.preventDefault();const t=e.currentTarget,a=t.selectionStart,r=t.selectionEnd,n=b.substring(0,a)+"  "+b.substring(r);E(n),setTimeout((()=>{t.selectionStart=t.selectionEnd=a+2}),0)}},We=F&&b!==(h??""),_e=r.createElement("div",{className:"text-center p-8 space-y-3"},r.createElement(Fe,{className:"w-16 h-16 text-muted-foreground/40 mx-auto"}),r.createElement("p",{className:"text-sm font-medium text-foreground"},A?"检测到该文件包含二进制数据，无法作为纯文本预览或编辑":_?"该文件在线预览加载失败，请下载后查看":"该文件格式暂不支持在线直接预览"),r.createElement(U,{onClick:Ae,className:"gap-2"},r.createElement(be,{className:"w-4 h-4"})," 立即下载到本地查看"));return r.createElement(Ut,{open:Boolean(t),onOpenChange:e=>!e&&m(null)},r.createElement(Zt,{ref:ge,className:"flex flex-col storeit-modal-spring "+(Se?"!w-screen !h-screen !max-w-none !max-h-none !rounded-none !border-0 p-4 sm:p-5":"max-w-4xl max-h-[88vh] p-6")},r.createElement(It,{className:"flex-row flex-wrap items-center justify-between gap-2 space-y-0 pb-3 border-b pr-7 shrink-0"},r.createElement("div",{className:"flex items-center gap-2 min-w-0"},r.createElement(we,{className:"w-5 h-5 text-brand-secondary shrink-0"}),r.createElement(_t,{className:"text-base truncate font-semibold",title:t?.name},t?.name),r.createElement("span",{className:"text-xs text-muted-foreground whitespace-nowrap"},"(",w(t?.size||0),")"),"text"===Ne&&!A&&r.createElement("span",{className:"text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded text-muted-foreground whitespace-nowrap"},v),We&&r.createElement("span",{className:"text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium whitespace-nowrap"},"● 未保存修改"),!F&&ze.length>1&&Te>=0&&r.createElement("span",{className:"text-[11px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground whitespace-nowrap"},Te+1," / ",ze.length)),r.createElement("div",{className:"flex flex-wrap items-center gap-1.5 shrink-0"},!F&&ze.length>1&&r.createElement("div",{className:"flex items-center gap-1 mr-1"},r.createElement(U,{size:"sm",variant:"outline",className:"h-8 w-8 p-0",disabled:!$e,onClick:De,title:"上一个文件 (←)"},r.createElement(me,{className:"w-4 h-4"})),r.createElement(U,{size:"sm",variant:"outline",className:"h-8 w-8 p-0",disabled:!Pe,onClick:Re,title:"下一个文件 (→)"},r.createElement(ie,{className:"w-4 h-4"}))),"text"===Ne&&!A&&r.createElement(r.Fragment,null,F?r.createElement(r.Fragment,null,ke&&r.createElement(U,{size:"sm",variant:X?"secondary":"outline",className:"gap-1 h-8",onClick:()=>J((e=>!e)),title:"切换实时分栏渲染预览"},r.createElement(he,{className:"w-3.5 h-3.5"}),X?"分栏预览中":"开启分栏"),r.createElement(U,{size:"sm",variant:"default",className:"gap-1.5 h-8",disabled:R,onClick:()=>je(!1),title:"保存文本修改 (Ctrl+S)"},r.createElement(et,{className:"w-3.5 h-3.5"}),R?"保存中...":"保存"),r.createElement(U,{size:"sm",variant:"outline",className:"gap-1 h-8",onClick:()=>{$(!1),E(h||"")}},r.createElement(ft,{className:"w-3.5 h-3.5"})," 取消")):r.createElement(r.Fragment,null,(t?.size||0)<=Na&&r.createElement(U,{size:"sm",variant:"outline",className:"gap-1.5 h-8",onClick:Ue},r.createElement(Ee,{className:"w-3.5 h-3.5 text-brand-secondary"})," 在线编辑"),r.createElement(U,{size:"sm",variant:"outline",className:"gap-1 h-8",onClick:async()=>{const e=F?b:h||"";await D(e)&&(ne(!0),setTimeout((()=>ne(!1)),1800))},title:"复制全部文本"},ae?r.createElement(r.Fragment,null,r.createElement(le,{className:"w-3.5 h-3.5 text-emerald-600"})," 已复制"):r.createElement(r.Fragment,null,r.createElement(fe,{className:"w-3.5 h-3.5"})," 复制")),(!ke||"raw"===G)&&r.createElement(U,{size:"sm",variant:"outline",className:"h-8 w-8 p-0",onClick:()=>te((e=>!e)),title:ee?"切换为横向滚动":"切换为自动换行"},r.createElement(ht,{className:"w-3.5 h-3.5"})))),ke&&"text"===Ne&&!A&&!F&&r.createElement("div",{className:"inline-flex items-center rounded-lg border bg-muted/40 p-0.5"},r.createElement("button",{type:"button",onClick:()=>V("render"),className:"inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-all "+("render"===G?"bg-white text-brand-primary shadow-sm font-semibold":"text-muted-foreground hover:text-foreground")},r.createElement(re,{className:"w-3 h-3"})," 渲染"),r.createElement("button",{type:"button",onClick:()=>V("split"),className:"inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-all "+("split"===G?"bg-white text-brand-primary shadow-sm font-semibold":"text-muted-foreground hover:text-foreground")},r.createElement(he,{className:"w-3 h-3"})," 分栏"),r.createElement("button",{type:"button",onClick:()=>V("raw"),className:"inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-all "+("raw"===G?"bg-white text-brand-primary shadow-sm font-semibold":"text-muted-foreground hover:text-foreground")},r.createElement(xe,{className:"w-3 h-3"})," 源码")),r.createElement(U,{size:"sm",variant:"outline",className:"gap-1 h-8",onClick:qe,onDoubleClick:Oe,title:Se?"退出全屏模式 (快捷键 F)":"铺满全屏预览 (快捷键 F，双击进入系统级全屏)"},Se?r.createElement(r.Fragment,null,r.createElement(He,{className:"w-3.5 h-3.5"})," 退出全屏"):r.createElement(r.Fragment,null,r.createElement(Be,{className:"w-3.5 h-3.5"})," 全屏")),r.createElement(U,{size:"sm",variant:"outline",className:"gap-1.5 h-8",onClick:Ae},r.createElement(be,{className:"w-3.5 h-3.5"})," 下载"))),r.createElement("div",{className:"relative flex-1 overflow-auto flex items-center justify-center p-2 bg-black/5 rounded-xl mt-3 transition-all duration-200 "+(Se?"min-h-0 h-full":"min-h-[340px]")},"image"===Ne&&!_&&r.createElement("div",{className:"relative flex flex-col items-center justify-center w-full h-full overflow-hidden",onWheel:e=>{if(e.ctrlKey||e.metaKey){e.preventDefault();const t=e.deltaY<0?.2:-.2;K((e=>Math.min(5,Math.max(.25,+(e+t).toFixed(2)))))}}},r.createElement("div",{className:"overflow-auto max-w-full flex items-center justify-center p-4 "+(Se?"h-[calc(100vh-140px)]":"max-h-[62vh]")},r.createElement("img",{src:Ce,alt:t?.name,onDoubleClick:()=>K((e=>1===e?2:1)),style:{transform:`scale(${B}) rotate(${H}deg)`,transition:"transform 0.2s cubic-bezier(0.22, 1, 0.36, 1)"},className:(Se?"max-h-[calc(100vh-160px)]":"max-h-[58vh]")+" max-w-full object-contain rounded-lg shadow-sm cursor-zoom-in",onError:()=>L(!0)})),r.createElement("div",{className:"mt-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur border shadow-md text-xs"},r.createElement("button",{type:"button",onClick:()=>K((e=>Math.max(.25,+(e-.25).toFixed(2)))),className:"p-1 hover:bg-black/5 rounded transition-colors",title:"缩小"},r.createElement(bt,{className:"w-3.5 h-3.5"})),r.createElement("button",{type:"button",onClick:()=>{K(1),Q(0)},className:"px-1.5 font-mono text-[11px] hover:bg-black/5 rounded",title:"点击复位 100% (双击图片快速放大)"},Math.round(100*B),"%"),r.createElement("button",{type:"button",onClick:()=>K((e=>Math.min(5,+(e+.25).toFixed(2)))),className:"p-1 hover:bg-black/5 rounded transition-colors",title:"放大"},r.createElement(gt,{className:"w-3.5 h-3.5"})),r.createElement("span",{className:"text-black/20"},"|"),r.createElement("button",{type:"button",onClick:()=>Q((e=>(e+90)%360)),className:"p-1 hover:bg-black/5 rounded transition-colors",title:"顺时针旋转 90°"},r.createElement(Je,{className:"w-3.5 h-3.5"})),r.createElement("span",{className:"text-black/20"},"|"),r.createElement("button",{type:"button",onClick:Oe,className:"p-1 hover:bg-black/5 rounded transition-colors",title:"切换浏览器系统全屏"},ue?r.createElement(He,{className:"w-3.5 h-3.5"}):r.createElement(Be,{className:"w-3.5 h-3.5"})))),"video"===Ne&&!_&&r.createElement("video",{src:Ce,controls:!0,autoPlay:!0,className:(Se?"h-[calc(100vh-115px)] w-full bg-black":"max-h-[62vh] max-w-full")+" rounded-lg shadow-sm object-contain",onError:()=>L(!0)}),"audio"===Ne&&!_&&r.createElement("div",{className:`p-8 w-full ${Se?"max-w-xl":"max-w-md"} bg-white rounded-2xl shadow-sm text-center space-y-5 border`},r.createElement("div",{className:"w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white flex items-center justify-center mx-auto shadow-md"},r.createElement(we,{className:"w-8 h-8"})),r.createElement("div",null,r.createElement("p",{className:"text-base font-semibold text-brand-primary break-all"},t?.name),r.createElement("p",{className:"text-xs text-muted-foreground mt-1"},w(t?.size||0))),r.createElement("audio",{ref:ve,src:Ce,controls:!0,autoPlay:!0,className:"w-full",onError:()=>L(!0)}),r.createElement("div",{className:"flex items-center justify-center gap-1.5 text-xs text-muted-foreground"},r.createElement("span",null,"倍速:"),[.75,1,1.25,1.5,2].map((e=>r.createElement("button",{key:e,type:"button",onClick:()=>{oe(e),ve.current&&(ve.current.playbackRate=e)},className:"px-2 py-0.5 rounded-md transition-colors "+(se===e?"bg-brand-primary text-white font-semibold":"bg-muted hover:bg-black/10 text-foreground")},e,"x"))))),"pdf"===Ne&&!_&&r.createElement("iframe",{src:Ce,className:`w-full ${Se?"h-[calc(100vh-110px)]":"h-[64vh]"} rounded-lg border bg-white`,title:t?.name}),"text"===Ne&&!A&&r.createElement("div",{className:`w-full ${Se?"h-[calc(100vh-110px)]":"h-[64vh]"} flex flex-col rounded-xl overflow-hidden border ${!F&&ke&&"render"===G?"bg-white text-foreground p-5":!F&&ke&&"split"===G?"bg-white text-foreground p-0":F&&ke&&X?"bg-[#1e1e2e] text-[#cdd6f4] p-0":"bg-[#1e1e2e] text-[#cdd6f4] font-mono p-4"} text-xs leading-relaxed`},O&&!F&&r.createElement("div",{className:"mb-2 p-2 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-400/30 text-[11px] flex items-center justify-between gap-2 shrink-0"},r.createElement("div",{className:"flex items-center gap-1.5"},r.createElement(Y,{className:"w-3.5 h-3.5 shrink-0"}),r.createElement("span",null,"内容过大，预览仅加载前 256 KB 内容。")),(t?.size||0)<=Na&&r.createElement("button",{type:"button",onClick:Ue,className:"px-2.5 py-0.5 rounded bg-brand-primary text-white font-semibold hover:opacity-90"},"加载完整文件并编辑")),F&&ke&&r.createElement("div",{className:"flex flex-wrap items-center gap-1 px-3 py-1.5 bg-[#181825] border-b border-white/10 text-[11px] text-[#cdd6f4] shrink-0 select-none"},r.createElement("button",{type:"button",onClick:()=>Ze("## ","","二级标题"),className:"px-2 py-0.5 rounded hover:bg-white/10 font-semibold",title:"插入标题"},"H2"),r.createElement("button",{type:"button",onClick:()=>Ze("**","**","加粗文本"),className:"px-2 py-0.5 rounded hover:bg-white/10 font-bold",title:"加粗"},"B"),r.createElement("button",{type:"button",onClick:()=>Ze("*","*","斜体文本"),className:"px-2 py-0.5 rounded hover:bg-white/10 italic",title:"斜体"},"I"),r.createElement("button",{type:"button",onClick:()=>Ze("~~","~~","删除线"),className:"px-2 py-0.5 rounded hover:bg-white/10 line-through",title:"删除线"},"S"),r.createElement("button",{type:"button",onClick:()=>Ze("==","==","高亮重点"),className:"px-2 py-0.5 rounded hover:bg-white/10 text-amber-300",title:"高亮标记 ==text=="},"==高亮=="),r.createElement("button",{type:"button",onClick:()=>Ze("`","`","code"),className:"px-2 py-0.5 rounded hover:bg-white/10 font-mono",title:"行内代码"},"`代码`"),r.createElement("button",{type:"button",onClick:()=>Ze("\n```js\n","\n```\n","console.log('hello');"),className:"px-2 py-0.5 rounded hover:bg-white/10 font-mono",title:"代码块"},"代码块"),r.createElement("button",{type:"button",onClick:()=>Ze("\n- [ ] ","","待办事项"),className:"px-2 py-0.5 rounded hover:bg-white/10",title:"任务列表"},"[x] 任务"),r.createElement("button",{type:"button",onClick:()=>Ze("\n| 列1 | 列2 | 列3 |\n| :--- | :---: | ---: |\n| "," | 数据2 | 100 |\n","数据1"),className:"px-2 py-0.5 rounded hover:bg-white/10",title:"插入 GFM 表格"},"表格"),r.createElement("button",{type:"button",onClick:()=>Ze("\n> [!NOTE]\n> ","\n","在此输入提示说明内容"),className:"px-2 py-0.5 rounded hover:bg-white/10 text-sky-300",title:"插入 GitHub 风格提示块 [!NOTE]"},"[!NOTE]"),r.createElement("button",{type:"button",onClick:()=>Ze("$$","$$","\\sum_{i=1}^{n} x_i"),className:"px-2 py-0.5 rounded hover:bg-white/10 font-serif italic",title:"插入数学公式"},"∑ 公式"),r.createElement("button",{type:"button",onClick:()=>Ze("[","](https://example.com)","链接文字"),className:"px-2 py-0.5 rounded hover:bg-white/10",title:"插入超链接"},"链接")),r.createElement("div",{className:"flex-1 overflow-auto flex flex-col min-h-0"},I?r.createElement("div",{className:"flex flex-col items-center justify-center h-full gap-2 text-muted-foreground"},r.createElement(Xe,{className:"w-4 h-4 animate-spin"})," 加载中..."):F?ke&&X?r.createElement("div",{className:"flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 min-h-0 h-full"},r.createElement("textarea",{ref:ye,autoFocus:!0,value:b,onChange:e=>E(e.target.value),onKeyDown:Ie,spellCheck:!1,className:"w-full h-full p-4 bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs leading-relaxed outline-none resize-none selection:bg-brand-secondary/40 overflow-auto",placeholder:"在此输入 Markdown 内容（右侧实时预览渲染效果）..."}),r.createElement("div",{className:"w-full h-full p-5 bg-white text-foreground overflow-auto"},r.createElement(Ea,{content:b,basePath:t?.path,showToc:!1}))):r.createElement("textarea",{ref:ye,autoFocus:!0,value:b,onChange:e=>E(e.target.value),onKeyDown:Ie,spellCheck:!1,className:"w-full flex-1 bg-transparent text-[#cdd6f4] font-mono text-xs leading-relaxed outline-none resize-none selection:bg-brand-secondary/40",placeholder:"在此输入文本内容（支持 Tab 缩进与 Ctrl+S 快捷保存）..."}):ke&&"render"===G?r.createElement(Ea,{content:h||"",basePath:t?.path,showToc:!0}):ke&&"split"===G?r.createElement("div",{className:"flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x min-h-0 h-full"},r.createElement("pre",{className:"p-4 bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs overflow-auto whitespace-pre-wrap break-words"},h),r.createElement("div",{className:"p-5 bg-white text-foreground overflow-auto"},r.createElement(Ea,{content:h||"",basePath:t?.path,showToc:!1}))):r.createElement("pre",{className:ee?"whitespace-pre-wrap break-words":"whitespace-pre overflow-x-auto"},h))),null===Ne||_||A?_e:null)))}function Ca(){const e=Et((e=>e.uploadConflict)),t=Et((e=>e.setUploadConflict)),a=Et((e=>e.showToast)),l=zt((e=>e.addFile)),s=f(),[o,c]=n("merge"),[m,i]=n("rename"),[d,u]=n(!1);if(!e)return null;const p=e.conflictingFolders.length>0,x=e.conflictingFiles.length>0||p&&"merge"===o;return r.createElement(Ut,{open:Boolean(e),onOpenChange:e=>!e&&t(null)},r.createElement(Zt,{className:"sm:max-w-md storeit-modal-spring"},r.createElement(It,null,r.createElement(_t,{className:"flex items-center gap-2"},r.createElement(Y,{className:"w-5 h-5 text-amber-500"}),"检测到同名文件或文件夹冲突")),r.createElement("div",{className:"space-y-4 text-xs"},r.createElement("p",{className:"text-muted-foreground"},"目标目录 ",r.createElement("code",{className:"bg-muted px-1.5 py-0.5 rounded font-mono"},"/",e.targetDir||"根目录")," 中已存在同名项目，请选择处理方式："),p&&r.createElement("div",{className:"p-3 rounded-xl border bg-muted/20 space-y-2"},r.createElement("p",{className:"font-semibold text-foreground"},"同名文件夹 (",e.conflictingFolders.join(", "),")："),r.createElement("div",{className:"grid grid-cols-3 gap-2"},[{key:"merge",label:"合并目录",desc:"保留现有目录并传入内部"},{key:"rename",label:"自动重命名",desc:"新建 文件夹 (1)"},{key:"overwrite",label:"覆盖原目录",desc:"清空旧目录后写入"}].map((e=>r.createElement("button",{key:e.key,type:"button",onClick:()=>c(e.key),className:"p-2 rounded-xl border text-left transition-all "+(o===e.key?"border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold":"bg-white hover:bg-black/5 text-foreground")},r.createElement("div",null,e.label),r.createElement("div",{className:"text-[10px] text-muted-foreground font-normal mt-0.5"},e.desc)))))),x&&r.createElement("div",{className:"p-3 rounded-xl border bg-muted/20 space-y-2"},r.createElement("p",{className:"font-semibold text-foreground"},e.conflictingFiles.length>0?`同名文件 (${e.conflictingFiles.slice(0,3).join(", ")}${e.conflictingFiles.length>3?" 等":""})：`:"合并目录内的同名文件处理方式："),r.createElement("div",{className:"grid grid-cols-2 gap-2"},[{key:"rename",label:"自动重命名",desc:"保留两者，如 file (1).ext"},{key:"overwrite",label:"覆盖同名文件",desc:"直接替换已有同名文件"}].map((e=>r.createElement("button",{key:e.key,type:"button",onClick:()=>i(e.key),className:"p-2 rounded-xl border text-left transition-all "+(m===e.key?"border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold":"bg-white hover:bg-black/5 text-foreground")},r.createElement("div",null,e.label),r.createElement("div",{className:"text-[10px] text-muted-foreground font-normal mt-0.5"},e.desc))))))),r.createElement(Wt,{className:"gap-2"},r.createElement(U,{type:"button",variant:"outline",onClick:()=>t(null)},"取消上传"),r.createElement(U,{type:"button",disabled:d,onClick:async()=>{u(!0);try{const a=new Map;for(const t of e.conflictingFolders){const r=await y.resolveFolderConflict(e.targetDir,t,o);a.set(t,r.folderName)}const r=e=>{if(!e)return"";const t=e.split("/"),r=t[0];return a.has(r)&&(t[0]=a.get(r)),t.join("/")};for(const t of e.emptyDirs){const a=r(t);try{await y.createDirectory(e.targetDir,a)}catch{}}for(const t of e.entries){const a=r(t.subPath),n=a?e.targetDir?`${e.targetDir}/${a}`:a:e.targetDir;await l(t.file,n,m)}s.invalidateQueries({queryKey:["files"]}),t(null)}catch(e){a(e.message||"处理上传冲突失败","error")}finally{u(!1)}}},d?"处理中...":"按所选策略开始上传"))))}function Ma(){const e=Et((e=>e.passwordModalOpen)),t=Et((e=>e.setPasswordModalOpen)),a=Et((e=>e.showToast)),l=g((e=>e.user)),s=g((e=>e.setUser)),[o,c]=n(""),[m,i]=n(""),[d,u]=n(""),[p,x]=n(!1);return r.createElement(Ut,{open:e,onOpenChange:t},r.createElement(Zt,{className:"sm:max-w-md storeit-modal-spring"},r.createElement(It,null,r.createElement(_t,{className:"flex items-center gap-2"},r.createElement(je,{className:"w-5 h-5 text-brand-secondary"}),"修改登录口令")),l?.mustChangePassword&&r.createElement("div",{className:"p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs"},"系统检测到您的账号处于待修改初始口令状态，请设置新的个人登录口令。"),r.createElement("form",{onSubmit:async e=>{if(e.preventDefault(),m.length<8)a("新口令至少需要 8 位字符","error");else if(m===d){x(!0);try{await y.changeOwnPassword(o,m),l&&s({...l,mustChangePassword:!1}),a("登录口令已成功修改","success"),c(""),i(""),u(""),t(!1)}catch(e){a(e.message||"修改口令失败","error")}finally{x(!1)}}else a("两次输入的新口令不一致","error")},className:"space-y-4"},r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"当前原口令"),r.createElement(j,{type:"password",value:o,onChange:e=>c(e.target.value),placeholder:"请输入当前口令",required:!0})),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"新口令 (≥8位)"),r.createElement(j,{type:"password",value:m,onChange:e=>i(e.target.value),placeholder:"至少 8 位字符",required:!0})),r.createElement("div",null,r.createElement("label",{className:"text-xs font-medium text-foreground block mb-1"},"确认新口令"),r.createElement(j,{type:"password",value:d,onChange:e=>u(e.target.value),placeholder:"再次输入新口令",required:!0})),r.createElement(Wt,null,r.createElement(U,{type:"button",variant:"outline",onClick:()=>t(!1)},"取消"),r.createElement(U,{type:"submit",disabled:p},p?"保存中...":"确认修改")))))}function Sa(){const e=Et((e=>e.confirmDialog)),t=Et((e=>e.closeConfirm));return e?r.createElement(Ut,{open:Boolean(e),onOpenChange:e=>!e&&t()},r.createElement(Zt,{className:"sm:max-w-md storeit-modal-spring"},r.createElement(It,null,r.createElement(_t,null,e.title)),r.createElement("p",{className:"text-sm text-muted-foreground leading-relaxed"},e.description),r.createElement(Wt,{className:"gap-2"},r.createElement(U,{type:"button",variant:"outline",onClick:t},"取消"),r.createElement(U,{type:"button",variant:e.destructive?"destructive":"default",onClick:()=>{const a=e.onConfirm;t(),a()}},e.confirmText||"确定")))):null}function Fa(){const e=Et((e=>e.toasts)),t=Et((e=>e.dismissToast));return 0===e.length?null:r.createElement("div",{className:"fixed top-20 right-6 z-[60] flex flex-col gap-2 max-w-sm w-full pointer-events-none"},e.map((e=>r.createElement("div",{key:e.id,className:"storeit-spring-bar pointer-events-auto flex items-center justify-between gap-2.5 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-md text-xs font-medium "+("success"===e.type?"bg-emerald-50/95 text-emerald-800 border-emerald-200":"error"===e.type?"bg-rose-50/95 text-rose-800 border-rose-200":"bg-white/95 text-foreground border-black/10")},r.createElement("div",{className:"flex items-center gap-2 min-w-0"},"success"===e.type?r.createElement(se,{className:"w-4 h-4 text-emerald-600 shrink-0"}):"error"===e.type?r.createElement(Y,{className:"w-4 h-4 text-rose-600 shrink-0"}):r.createElement(Ue,{className:"w-4 h-4 text-brand-secondary shrink-0"}),r.createElement("span",{className:"break-words"},e.text)),r.createElement("button",{type:"button",onClick:()=>t(e.id),className:"opacity-60 hover:opacity-100 shrink-0"},r.createElement(ft,{className:"w-3.5 h-3.5"}))))))}function za(){const e=m(),{checkAuth:t,isAuthenticated:a,isLoading:n,user:s}=g(),o=Et((e=>e.viewMode));return l((()=>{const e=["files","recent","favorites","shares","admin","settings","about","search"];"/about"!==window.location.pathname||window.location.hash||(window.history.replaceState(null,"","#/about"),Et.setState({viewMode:"about",selectedFile:null,selectedPaths:[]}));const t=()=>{const t=window.location.hash.replace(/^#\/?/,"");if(t&&"files"!==t){if(t.startsWith("s/")){const e=decodeURIComponent(t.slice(2).split("/")[0]||"");if(e)return void Et.setState({viewMode:"shares",activeShareToken:e,activeShareServerUrl:"",selectedFile:null,selectedPaths:[]})}if(t.startsWith("files/")){const e=t.slice("files/".length).split("/").filter(Boolean).map((e=>{try{return decodeURIComponent(e)}catch{return e}})).join("/");Et.setState({viewMode:"files",currentPath:e,selectedFile:null,selectedPaths:[]})}else e.includes(t)&&Et.setState({viewMode:t,selectedFile:null,selectedPaths:[]})}else Et.setState({viewMode:"files",currentPath:"",selectedFile:null,selectedPaths:[]})};return t(),window.addEventListener("popstate",t),()=>window.removeEventListener("popstate",t)}),[]),l((()=>{t().then((t=>{t||e.push("/login")}))}),[t,e]),l((()=>{s?.mustChangePassword&&Et.getState().setPasswordModalOpen(!0)}),[s?.mustChangePassword]),l((()=>{n||a||e.push("/login")}),[n,a,e]),n||!a?r.createElement("div",{className:"min-h-screen flex items-center justify-center bg-brand-bg text-muted-foreground gap-3"},r.createElement(Xe,{className:"w-8 h-8 animate-spin text-brand-secondary"}),r.createElement("span",{className:"text-sm"},"正在加载 StoreIt 存储服务...")):r.createElement("div",{className:"flex flex-col h-screen overflow-hidden bg-brand-bg"},r.createElement(Kt,null),r.createElement("div",{className:"flex flex-1 overflow-hidden"},r.createElement(Ht,null),r.createElement("main",{className:"flex-1 flex flex-col overflow-hidden bg-white/40"},r.createElement(Qt,null,r.createElement("div",{className:"px-6 py-2 border-b bg-white/30 backdrop-blur-sm shrink-0"},r.createElement(Gt,null)),r.createElement("div",{key:o,className:"storeit-view-enter flex-1 overflow-y-auto"},"files"===o||"recent"===o||"favorites"===o||"search"===o?r.createElement(Xt,null):"shares"===o?r.createElement(Jt,null):"admin"===o?r.createElement(ra,null):"settings"===o?r.createElement(la,null):"about"===o?r.createElement(sa,null):null)))),r.createElement(ca,null),r.createElement(Fa,null),r.createElement(Sa,null),r.createElement(ma,null),r.createElement(da,null),r.createElement(ua,null),r.createElement(pa,null),r.createElement(xa,null),r.createElement(ka,null),r.createElement(Ma,null),r.createElement(Ca,null))}}},function(e){e.O(0,[261,20,175,819,971,117,744],(function(){return e(e.s=5334)})),_N_E=e.O()}]);
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[931],{5334:function(e,t,a){Promise.resolve().then(a.bind(a,5719))},5719:function(e,t,a){"use strict";a.r(t),a.d(t,{default:function(){return MainPage}});var React=a(2265),useState=React.useState,useEffect=React.useEffect,useMemo=React.useMemo,useCallback=React.useCallback,useRef=React.useRef,useRouter=a(9376).useRouter,create=a(3011).U,_zmw=a(6885),persist=_zmw.tJ,createJSONStorage=_zmw.FL,ReactMarkdown=a(1713).a,remarkGfm=a(1770).D,_rq=a(9827),useQuery=_rq.aM,useMutation=_rq.D,useQueryClient=_rq.NL,useAuthStore=a(3864).t,_api=a(1837),api=_api.h,ApiError=_api.ApiError,_u=a(3448),cn=_u.cn,formatBytes=_u.formatBytes,formatDate=_u.formatDate,getFileExtension=_u.getFileExtension,getParentDirectory=_u.getParentDirectory,getFileCategory=_u.getFileCategory,isPreviewable=_u.isPreviewable,isEditableText=_u.isEditableText,getPreviewKind=_u.getPreviewKind,getDownloadUrl=_u.getDownloadUrl,getZipDownloadUrl=_u.getZipDownloadUrl,getPreviewUrl=_u.getPreviewUrl,copyToClipboard=_u.copyToClipboard,THEME_OPTIONS=_u.THEME_OPTIONS,getSavedTheme=_u.getSavedTheme,applyThemeToDom=_u.applyThemeToDom,detectBrowserLocale=_u.detectBrowserLocale,getSavedLocale=_u.getSavedLocale,isLocaleFollowingBrowser=_u.isLocaleFollowingBrowser,applyLocaleToDom=_u.applyLocaleToDom,tr=_u.tr,localizeServerMessage=_u.localizeServerMessage,Button=a(2381).z,Input=a(279).I,_dm=a(1418),DropdownMenuPrimitive={Root:_dm.fC,Trigger:_dm.xz,Group:_dm.ZA,Portal:_dm.Uv,Sub:_dm.Tr,RadioGroup:_dm.Ee,SubTrigger:_dm.fF,SubContent:_dm.tu,Content:_dm.VY,Item:_dm.ck,CheckboxItem:_dm.oC,RadioItem:_dm.Rk,Label:_dm.Z8,Separator:_dm.Z0},_dlg=a(9027),DialogPrimitive={Root:_dlg.fC,Trigger:_dlg.xz,Portal:_dlg.h_,Close:_dlg.x8,Overlay:_dlg.aV,Content:_dlg.VY,Title:_dlg.Dx,Description:_dlg.dk},_prog=a(610),ProgressPrimitive={Root:_prog.fC,Indicator:_prog.z$},_sw=a(721),SwitchPrimitives={Root:_sw.fC,Thumb:_sw.bU},_lucide=a(9205);
+const Globe=(0,_lucide.Z)("Globe",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20",key:"13o17"}],["path",{d:"M2 12h20",key:"9i4pu4"}]]);
+const Palette=(0,_lucide.Z)("Palette",[["circle",{cx:"13.5",cy:"6.5",r:".5",fill:"currentColor",key:"1okk4w"}],["circle",{cx:"17.5",cy:"10.5",r:".5",fill:"currentColor",key:"f64h9f"}],["circle",{cx:"8.5",cy:"7.5",r:".5",fill:"currentColor",key:"45f9"}],["circle",{cx:"6.5",cy:"12.5",r:".5",fill:"currentColor",key:"121g"}],["path",{d:"M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z",key:"123f"}]]);
+const Ticket=(0,_lucide.Z)("Ticket",[["path",{d:"M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z",key:"134"}],["path",{d:"M13 5v2",key:"1"}],["path",{d:"M13 17v2",key:"2"}],["path",{d:"M13 11v2",key:"3"}]]);
+const AlertCircle=(0,_lucide.Z)("AlertCircle",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["line",{x1:"12",x2:"12",y1:"8",y2:"12",key:"1pkeuh"}],["line",{x1:"12",x2:"12.01",y1:"16",y2:"16",key:"4dfq90"}]]);
+const AlertTriangle=(0,_lucide.Z)("AlertTriangle",[["path",{d:"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3",key:"wmoenq"}],["path",{d:"M12 9v4",key:"juzpu7"}],["path",{d:"M12 17h.01",key:"p32p05"}]]);
+const AlertOctagon=(0,_lucide.Z)("AlertOctagon",[["polygon",{points:"7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2",key:"h34r1"}],["line",{x1:"12",x2:"12",y1:"8",y2:"12",key:"1pkeuh"}],["line",{x1:"12",x2:"12.01",y1:"16",y2:"16",key:"4dfq90"}]]);
+const ArrowDown=(0,_lucide.Z)("ArrowDown",[["path",{d:"M12 5v14",key:"s699le"}],["path",{d:"m19 12-7 7-7-7",key:"1idqje"}]]);
+const ArrowRight=(0,_lucide.Z)("ArrowRight",[["path",{d:"M5 12h14",key:"1ays0h"}],["path",{d:"m12 5 7 7-7 7",key:"xquz4c"}]]);
+const ArrowUp=(0,_lucide.Z)("ArrowUp",[["path",{d:"m5 12 7-7 7 7",key:"hav0vg"}],["path",{d:"M12 19V5",key:"x0mq9r"}]]);
+const ArrowUpDown=(0,_lucide.Z)("ArrowUpDown",[["path",{d:"m21 16-4 4-4-4",key:"f6ql7i"}],["path",{d:"M17 20V4",key:"1ejh1v"}],["path",{d:"m3 8 4-4 4 4",key:"11wl7u"}],["path",{d:"M7 4v16",key:"1glfcx"}]]);
+const BookOpen=(0,_lucide.Z)("BookOpen",[["path",{d:"M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z",key:"vv98re"}],["path",{d:"M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z",key:"1cyq3y"}]]);
+const Calendar=(0,_lucide.Z)("Calendar",[["path",{d:"M8 2v4",key:"1cmpym"}],["path",{d:"M16 2v4",key:"4m81vk"}],["rect",{width:"18",height:"18",x:"3",y:"4",rx:"2",key:"1hopcy"}],["path",{d:"M3 10h18",key:"8toen8"}]]);
+const Check=(0,_lucide.Z)("Check",[["path",{d:"M20 6 9 17l-5-5",key:"1gmf2c"}]]);
+const CheckCheck=(0,_lucide.Z)("CheckCheck",[["path",{d:"M18 6 7 17l-5-5",key:"116fxf"}],["path",{d:"m22 10-7.5 7.5L13 16",key:"ke71qq"}]]);
+const CheckCircle2=(0,_lucide.Z)("CheckCircle2",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]]);
+const CheckSquare=(0,_lucide.Z)("CheckSquare",[["polyline",{points:"9 11 12 14 22 4",key:"1K3w9a"}],["path",{d:"M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11",key:"1jnkn4"}]]);
+const ChevronDown=(0,_lucide.Z)("ChevronDown",[["path",{d:"m6 9 6 6 6-6",key:"qrunsl"}]]);
+const ChevronLeft=(0,_lucide.Z)("ChevronLeft",[["path",{d:"m15 18-6-6 6-6",key:"1wnfg3"}]]);
+const ChevronRight=(0,_lucide.Z)("ChevronRight",[["path",{d:"m9 18 6-6-6-6",key:"mthhwq"}]]);
+const ChevronUp=(0,_lucide.Z)("ChevronUp",[["path",{d:"m18 15-6-6-6 6",key:"153udz"}]]);
+const Circle=(0,_lucide.Z)("Circle",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}]]);
+const Clock=(0,_lucide.Z)("Clock",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["polyline",{points:"12 6 12 12 16 14",key:"68esgv"}]]);
+const CloudUpload=(0,_lucide.Z)("CloudUpload",[["path",{d:"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242",key:"1pljnt"}],["path",{d:"M12 12v9",key:"192myk"}],["path",{d:"m16 16-4-4-4 4",key:"119cdb"}]]);
+const Code=(0,_lucide.Z)("Code",[["polyline",{points:"16 18 22 12 16 6",key:"z7tu5w"}],["polyline",{points:"8 6 2 12 8 18",key:"1eg1df"}]]);
+const Columns=(0,_lucide.Z)("Columns",[["rect",{width:"18",height:"18",x:"3",y:"3",rx:"2",key:"afitv7"}],["path",{d:"M12 3v18",key:"108xh3"}]]);
+const Copy=(0,_lucide.Z)("Copy",[["rect",{width:"14",height:"14",x:"8",y:"8",rx:"2",ry:"2",key:"17jyea"}],["path",{d:"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2",key:"zix9uf"}]]);
+const Database=(0,_lucide.Z)("Database",[["ellipse",{cx:"12",cy:"5",rx:"9",ry:"3",key:"msslwz"}],["path",{d:"M3 5V19A9 3 0 0 0 21 19V5",key:"1wlel7"}],["path",{d:"M3 12A9 3 0 0 0 21 12",key:"mv7ke4"}]]);
+const Download=(0,_lucide.Z)("Download",[["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",key:"ih7n3h"}],["polyline",{points:"7 10 12 15 17 10",key:"2ggqvy"}],["line",{x1:"12",x2:"12",y1:"15",y2:"3",key:"1vk2je"}]]);
+const Edit2=(0,_lucide.Z)("Edit2",[["path",{d:"M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z",key:"5qss01"}]]);
+const Edit3=(0,_lucide.Z)("Edit3",[["path",{d:"M12 20h9",key:"t2du7b"}],["path",{d:"M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z",key:"13n1m3"}]]);
+const ExternalLink=(0,_lucide.Z)("ExternalLink",[["path",{d:"M15 3h6v6",key:"1q9fwt"}],["path",{d:"M10 14 21 3",key:"gplh6r"}],["path",{d:"M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",key:"a6xqqp"}]]);
+const Eye=(0,_lucide.Z)("Eye",[["path",{d:"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",key:"1nclc0"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]]);
+const FileArchive=(0,_lucide.Z)("FileArchive",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M10 9H8",key:"b1mrlr"}],["path",{d:"M10 13H8",key:"142P08"}],["path",{d:"M10 17H8",key:"1n5v10"}]]);
+const FileAudio=(0,_lucide.Z)("FileAudio",[["path",{d:"M17.5 22h.5a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v3",key:"12329p"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M2 19a2 2 0 1 1 4 0v1a2 2 0 1 1-4 0v-4a6 6 0 0 1 12 0v4a2 2 0 1 1-4 0v-1a2 2 0 1 1 4 0",key:"1et2d5"}]]);
+const FileCode=(0,_lucide.Z)("FileCode",[["path",{d:"M10 12.5 8 15l2 2.5",key:"1tg20x"}],["path",{d:"m14 12.5 2 2.5-2 2.5",key:"1bir2l"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z",key:"1mlx3k"}]]);
+const FileImage=(0,_lucide.Z)("FileImage",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["circle",{cx:"10",cy:"12",r:"2",key:"17b9bb"}],["path",{d:"m20 17-1.296-1.296a2.41 2.41 0 0 0-3.408 0L9 22",key:"12w7p7"}]]);
+const FilePlus2=(0,_lucide.Z)("FilePlus2",[["path",{d:"M4 22h14a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v4",key:"1pf5j1"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M3 15h6",key:"4232k"}],["path",{d:"M6 12v6",key:"15v8r6"}]]);
+const FileText=(0,_lucide.Z)("FileText",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"M10 9H8",key:"b1mrlr"}],["path",{d:"M16 13H8",key:"t4e002"}],["path",{d:"M16 17H8",key:"z1uh3a"}]]);
+const FileVideo=(0,_lucide.Z)("FileVideo",[["path",{d:"M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z",key:"1rqfz7"}],["path",{d:"M14 2v4a2 2 0 0 0 2 2h4",key:"tnqrlb"}],["path",{d:"m10 11 5 3-5 3v-6Z",key:"1ntvm4"}]]);
+const Folder=(0,_lucide.Z)("Folder",[["path",{d:"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z",key:"1kt360"}]]);
+const FolderInput=(0,_lucide.Z)("FolderInput",[["path",{d:"M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1",key:"14dc1k"}],["path",{d:"M2 13h10",key:"12fb38"}],["path",{d:"m9 16 3-3-3-3",key:"1d2p4n"}]]);
+const FolderOpen=(0,_lucide.Z)("FolderOpen",[["path",{d:"m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2",key:"12r28w"}]]);
+const FolderPlus=(0,_lucide.Z)("FolderPlus",[["path",{d:"M12 10v6",key:"1bos4e"}],["path",{d:"M9 13h6",key:"1u5f0p"}],["path",{d:"M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z",key:"1kt360"}]]);
+const Github=(0,_lucide.Z)("Github",[["path",{d:"M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4",key:"tonef"}],["path",{d:"M9 18c-4.51 2-5-2-7-2",key:"9comsn"}]]);
+const HardDrive=(0,_lucide.Z)("HardDrive",[["line",{x1:"22",x2:"2",y1:"12",y2:"12",key:"1y58io"}],["path",{d:"M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z",key:"oot6mr"}],["line",{x1:"6",x2:"6.01",y1:"16",y2:"16",key:"sgf278"}],["line",{x1:"10",x2:"10.01",y1:"16",y2:"16",key:"1l4acy"}]]);
+const Heart=(0,_lucide.Z)("Heart",[["path",{d:"M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z",key:"c30ky"}]]);
+const Home=(0,_lucide.Z)("Home",[["path",{d:"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8",key:"5wwlr5"}],["path",{d:"M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",key:"1d0kgt"}]]);
+const Info=(0,_lucide.Z)("Info",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M12 16v-4",key:"1dtifu"}],["path",{d:"M12 8h.01",key:"e9boi3"}]]);
+const KeyRound=(0,_lucide.Z)("KeyRound",[["path",{d:"M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z",key:"1fxcex"}],["circle",{cx:"16.5",cy:"7.5",r:".5",fill:"currentColor",key:"w0ekpg"}]]);
+const LayoutGrid=(0,_lucide.Z)("LayoutGrid",[["rect",{width:"7",height:"7",x:"3",y:"3",rx:"1",key:"1g98yp"}],["rect",{width:"7",height:"7",x:"14",y:"3",rx:"1",key:"6d4xhi"}],["rect",{width:"7",height:"7",x:"14",y:"14",rx:"1",key:"1v5o0"}],["rect",{width:"7",height:"7",x:"3",y:"14",rx:"1",key:"1bb6yr"}]]);
+const Lightbulb=(0,_lucide.Z)("Lightbulb",[["path",{d:"M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5",key:"1gvzjb"}],["path",{d:"M9 18h6",key:"x1upvd"}],["path",{d:"M10 22h4",key:"ceow96"}]]);
+const List=(0,_lucide.Z)("List",[["line",{x1:"8",x2:"21",y1:"6",y2:"6",key:"7ey8pc"}],["line",{x1:"8",x2:"21",y1:"12",y2:"12",key:"rjfblc"}],["line",{x1:"8",x2:"21",y1:"18",y2:"18",key:"c3b1m8"}],["line",{x1:"3",x2:"3.01",y1:"6",y2:"6",key:"1g7gq3"}],["line",{x1:"3",x2:"3.01",y1:"12",y2:"12",key:"1p63bc"}],["line",{x1:"3",x2:"3.01",y1:"18",y2:"18",key:"28t2mc"}]]);
+const ListTree=(0,_lucide.Z)("ListTree",[["path",{d:"M21 12h-8",key:"1bmf0i"}],["path",{d:"M21 6H8",key:"1pqb7v"}],["path",{d:"M21 18h-8",key:"1c4r2k"}],["path",{d:"M3 6v4c0 1.1.9 2 2 2h3",key:"1y83k1"}],["path",{d:"M3 10v6c0 1.1.9 2 2 2h3",key:"1v493a"}]]);
+const Lock=(0,_lucide.Z)("Lock",[["rect",{width:"18",height:"11",x:"3",y:"11",rx:"2",ry:"2",key:"1w4ew1"}],["path",{d:"M7 11V7a5 5 0 0 1 10 0v4",key:"fwvmzm"}]]);
+const LogOut=(0,_lucide.Z)("LogOut",[["path",{d:"M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4",key:"1uf3rs"}],["polyline",{points:"16 17 21 12 16 7",key:"1gabdz"}],["line",{x1:"21",x2:"9",y1:"12",y2:"12",key:"1uyos4"}]]);
+const Maximize2=(0,_lucide.Z)("Maximize2",[["polyline",{points:"15 3 21 3 21 9",key:"mznyad"}],["polyline",{points:"9 21 3 21 3 15",key:"1avn1i"}],["line",{x1:"21",x2:"14",y1:"3",y2:"10",key:"17b57r"}],["line",{x1:"3",x2:"10",y1:"21",y2:"14",key:"1intq8"}]]);
+const Menu=(0,_lucide.Z)("Menu",[["line",{x1:"4",x2:"20",y1:"12",y2:"12",key:"1e0a9i"}],["line",{x1:"4",x2:"20",y1:"6",y2:"6",key:"1owob3"}],["line",{x1:"4",x2:"20",y1:"18",y2:"18",key:"yk5zj1"}]]);
+const Minimize2=(0,_lucide.Z)("Minimize2",[["polyline",{points:"4 14 10 14 10 20",key:"11kfnr"}],["polyline",{points:"20 10 14 10 14 4",key:"97r2m"}],["line",{x1:"14",x2:"21",y1:"10",y2:"3",key:"o5lafz"}],["line",{x1:"3",x2:"10",y1:"21",y2:"14",key:"1intq8"}]]);
+const MoreHorizontal=(0,_lucide.Z)("MoreHorizontal",[["circle",{cx:"12",cy:"12",r:"1",key:"41hilf"}],["circle",{cx:"19",cy:"12",r:"1",key:"1wjl8i"}],["circle",{cx:"5",cy:"12",r:"1",key:"1pcz8c"}]]);
+const MoreVertical=(0,_lucide.Z)("MoreVertical",[["circle",{cx:"12",cy:"12",r:"1",key:"41hilf"}],["circle",{cx:"12",cy:"5",r:"1",key:"gxeob9"}],["circle",{cx:"12",cy:"19",r:"1",key:"lyex9k"}]]);
+const Pause=(0,_lucide.Z)("Pause",[["rect",{x:"14",y:"4",width:"4",height:"16",rx:"1",key:"zuxfzm"}],["rect",{x:"6",y:"4",width:"4",height:"16",rx:"1",key:"1okwgv"}]]);
+const Play=(0,_lucide.Z)("Play",[["polygon",{points:"6 3 20 12 6 21 6 3",key:"1oa8hb"}]]);
+const RefreshCw=(0,_lucide.Z)("RefreshCw",[["path",{d:"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",key:"v9h5vc"}],["path",{d:"M21 3v5h-5",key:"1q7to0"}],["path",{d:"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16",key:"3uifl3"}],["path",{d:"M8 16H3v5",key:"1cv678"}]]);
+const RotateCw=(0,_lucide.Z)("RotateCw",[["path",{d:"M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8",key:"1p45f6"}],["path",{d:"M21 3v5h-5",key:"1q7to0"}]]);
+const Save=(0,_lucide.Z)("Save",[["path",{d:"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z",key:"1c8476"}],["path",{d:"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7",key:"1ydtos"}],["path",{d:"M7 3v4a1 1 0 0 0 1 1h7",key:"t51u73"}]]);
+const Search=(0,_lucide.Z)("Search",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["path",{d:"m21 21-4.3-4.3",key:"1qie3q"}]]);
+const Server=(0,_lucide.Z)("Server",[["rect",{width:"20",height:"8",x:"2",y:"2",rx:"2",ry:"2",key:"ngkwjq"}],["rect",{width:"20",height:"8",x:"2",y:"14",rx:"2",ry:"2",key:"iecqi9"}],["line",{x1:"6",x2:"6.01",y1:"6",y2:"6",key:"16zg32"}],["line",{x1:"6",x2:"6.01",y1:"18",y2:"18",key:"nzw8ys"}]]);
+const Settings=(0,_lucide.Z)("Settings",[["path",{d:"M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",key:"1qme2f"}],["circle",{cx:"12",cy:"12",r:"3",key:"1v7zrd"}]]);
+const Share2=(0,_lucide.Z)("Share2",[["circle",{cx:"18",cy:"5",r:"3",key:"gq8acd"}],["circle",{cx:"6",cy:"12",r:"3",key:"w7nqdw"}],["circle",{cx:"18",cy:"19",r:"3",key:"1xt0gg"}],["line",{x1:"8.59",x2:"15.42",y1:"13.51",y2:"17.49",key:"47mynk"}],["line",{x1:"15.41",x2:"8.59",y1:"6.51",y2:"10.49",key:"1n3mei"}]]);
+const ShieldAlert=(0,_lucide.Z)("ShieldAlert",[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",key:"oel41y"}],["path",{d:"M12 8v4",key:"1got3b"}],["path",{d:"M12 16h.01",key:"1drbdi"}]]);
+const ShieldCheck=(0,_lucide.Z)("ShieldCheck",[["path",{d:"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",key:"oel41y"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]]);
+const Sliders=(0,_lucide.Z)("Sliders",[["line",{x1:"4",x2:"4",y1:"21",y2:"14",key:"1s142t"}],["line",{x1:"4",x2:"4",y1:"10",y2:"3",key:"1i929v"}],["line",{x1:"12",x2:"12",y1:"21",y2:"12",key:"hf22a"}],["line",{x1:"12",x2:"12",y1:"8",y2:"3",key:"1j0mnr"}],["line",{x1:"20",x2:"20",y1:"21",y2:"16",key:"12d42w"}],["line",{x1:"20",x2:"20",y1:"12",y2:"3",key:"1c12rk"}],["line",{x1:"2",x2:"6",y1:"14",y2:"14",key:"1j59d8"}],["line",{x1:"10",x2:"14",y1:"8",y2:"8",key:"1fa5r6"}],["line",{x1:"18",x2:"22",y1:"16",y2:"16",key:"1dc27r"}]]);
+const Sparkles=(0,_lucide.Z)("Sparkles",[["path",{d:"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",key:"4124o"}]]);
+const Star=(0,_lucide.Z)("Star",[["polygon",{points:"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2",key:"126Qv8"}]]);
+const Trash2=(0,_lucide.Z)("Trash2",[["path",{d:"M3 6h18",key:"d0wm0j"}],["path",{d:"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6",key:"4alrt4"}],["path",{d:"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2",key:"v07s0e"}],["line",{x1:"10",x2:"10",y1:"11",y2:"17",key:"1uufr5"}],["line",{x1:"14",x2:"14",y1:"11",y2:"17",key:"limitq"}]]);
+const Upload=(0,_lucide.Z)("Upload",[["path",{d:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",key:"ih7n3h"}],["polyline",{points:"17 8 12 3 7 8",key:"t8dd8p"}],["line",{x1:"12",x2:"12",y1:"3",y2:"15",key:"widbto"}]]);
+const UploadCloud=(0,_lucide.Z)("UploadCloud",[["path",{d:"M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242",key:"1pljnt"}],["path",{d:"M12 12v9",key:"192myk"}],["path",{d:"m16 16-4-4-4 4",key:"119cdb"}]]);
+const User=(0,_lucide.Z)("User",[["path",{d:"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2",key:"975kel"}],["circle",{cx:"12",cy:"7",r:"4",key:"17ys0d"}]]);
+const UserPlus=(0,_lucide.Z)("UserPlus",[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",key:"1Lc7a"}],["circle",{cx:"9",cy:"7",r:"4",key:"nufk8"}],["line",{x1:"19",x2:"19",y1:"8",y2:"14",key:"1bvy3"}],["line",{x1:"22",x2:"16",y1:"11",y2:"11",key:"13g4k"}]]);
+const Users=(0,_lucide.Z)("Users",[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",key:"1Lc7a"}],["circle",{cx:"9",cy:"7",r:"4",key:"nufk8"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87",key:"kshe6"}],["path",{d:"M16 3.13a4 4 0 0 1 0 7.75",key:"1da9ce"}]]);
+const WrapText=(0,_lucide.Z)("WrapText",[["line",{x1:"3",x2:"21",y1:"6",y2:"6",key:"4m8b9"}],["path",{d:"M3 12h15a3 3 0 1 1 0 6h-4",key:"1cl27"}],["polyline",{points:"16 16 14 18 16 20",key:"12v2r"}],["line",{x1:"3",x2:"10",y1:"18",y2:"18",key:"12k3p"}]]);
+const X=(0,_lucide.Z)("X",[["path",{d:"M18 6 6 18",key:"1bl5f8"}],["path",{d:"m6 6 12 12",key:"d8bk6v"}]]);
+const ZoomIn=(0,_lucide.Z)("ZoomIn",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["line",{x1:"21",x2:"16.65",y1:"21",y2:"16.65",key:"13gj7c"}],["line",{x1:"11",x2:"11",y1:"8",y2:"14",key:"1vmskp"}],["line",{x1:"8",x2:"14",y1:"11",y2:"11",key:"durymu"}]]);
+const ZoomOut=(0,_lucide.Z)("ZoomOut",[["circle",{cx:"11",cy:"11",r:"8",key:"4ej97u"}],["line",{x1:"21",x2:"16.65",y1:"21",y2:"16.65",key:"13gj7c"}],["line",{x1:"8",x2:"14",y1:"11",y2:"11",key:"durymu"}]]);
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+const DropdownMenu = DropdownMenuPrimitive.Root;
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+const DropdownMenuGroup = DropdownMenuPrimitive.Group;
+const DropdownMenuPortal = DropdownMenuPrimitive.Portal;
+const DropdownMenuSub = DropdownMenuPrimitive.Sub;
+const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
+const DropdownMenuSubTrigger = React.forwardRef(({
+  className,
+  inset,
+  children,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DropdownMenuPrimitive.SubTrigger, _extends({
+  ref: ref,
+  className: cn("flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent", inset && "pl-8", className)
+}, props), children, /*#__PURE__*/React.createElement(ChevronRight, {
+  className: "ml-auto h-4 w-4"
+})));
+DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
+const DropdownMenuSubContent = React.forwardRef(({
+  className,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DropdownMenuPrimitive.SubContent, _extends({
+  ref: ref,
+  className: cn("z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2", className)
+}, props)));
+DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
+const DropdownMenuContent = React.forwardRef(({
+  className,
+  sideOffset = 4,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DropdownMenuPrimitive.Portal, null, /*#__PURE__*/React.createElement(DropdownMenuPrimitive.Content, _extends({
+  ref: ref,
+  sideOffset: sideOffset,
+  className: cn("z-50 min-w-[10rem] overflow-hidden rounded-xl border bg-popover p-1 text-popover-foreground shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2", className)
+}, props))));
+DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
+const DropdownMenuItem = React.forwardRef(({
+  className,
+  inset,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DropdownMenuPrimitive.Item, _extends({
+  ref: ref,
+  className: cn("relative flex cursor-pointer select-none items-center rounded-lg px-2.5 py-1.5 text-sm outline-none transition-colors focus:bg-secondary/15 focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50", inset && "pl-8", className)
+}, props)));
+DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
+const DropdownMenuSeparator = React.forwardRef(({
+  className,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DropdownMenuPrimitive.Separator, _extends({
+  ref: ref,
+  className: cn("-mx-1 my-1 h-px bg-muted", className)
+}, props)));
+DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+const Dialog = DialogPrimitive.Root;
+const DialogTrigger = DialogPrimitive.Trigger;
+const DialogPortal = DialogPrimitive.Portal;
+const DialogClose = DialogPrimitive.Close;
+const DialogOverlay = React.forwardRef(({
+  className,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DialogPrimitive.Overlay, _extends({
+  ref: ref,
+  className: cn("fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0", className)
+}, props)));
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+const DialogContent = React.forwardRef(({
+  className,
+  children,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DialogPortal, null, /*#__PURE__*/React.createElement(DialogOverlay, null), /*#__PURE__*/React.createElement(DialogPrimitive.Content, _extends({
+  ref: ref,
+  className: cn("fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-2xl", className)
+}, props), children, /*#__PURE__*/React.createElement(DialogPrimitive.Close, {
+  className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none"
+}, /*#__PURE__*/React.createElement(X, {
+  className: "h-4 w-4"
+}), /*#__PURE__*/React.createElement("span", {
+  className: "sr-only"
+}, "Close")))));
+DialogContent.displayName = DialogPrimitive.Content.displayName;
+const DialogHeader = ({
+  className,
+  ...props
+}) => /*#__PURE__*/React.createElement("div", _extends({
+  className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className)
+}, props));
+DialogHeader.displayName = "DialogHeader";
+const DialogFooter = ({
+  className,
+  ...props
+}) => /*#__PURE__*/React.createElement("div", _extends({
+  className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)
+}, props));
+DialogFooter.displayName = "DialogFooter";
+const DialogTitle = React.forwardRef(({
+  className,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DialogPrimitive.Title, _extends({
+  ref: ref,
+  className: cn("text-lg font-semibold leading-none tracking-tight text-brand-primary", className)
+}, props)));
+DialogTitle.displayName = DialogPrimitive.Title.displayName;
+const DialogDescription = React.forwardRef(({
+  className,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(DialogPrimitive.Description, _extends({
+  ref: ref,
+  className: cn("text-sm text-muted-foreground", className)
+}, props)));
+DialogDescription.displayName = DialogPrimitive.Description.displayName;
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+const Progress = React.forwardRef(({
+  className,
+  value,
+  indicatorColor,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(ProgressPrimitive.Root, _extends({
+  ref: ref,
+  className: cn("relative h-2 w-full overflow-hidden rounded-full bg-secondary/20", className)
+}, props), /*#__PURE__*/React.createElement(ProgressPrimitive.Indicator, {
+  className: cn("h-full w-full flex-1 transition-all", indicatorColor || "bg-primary"),
+  style: {
+    transform: `translateX(-${100 - (value || 0)}%)`
+  }
+})));
+Progress.displayName = ProgressPrimitive.Root.displayName;
+function _extends() { _extends = Object.assign ? Object.assign.bind() : function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+const Switch = React.forwardRef(({
+  className,
+  ...props
+}, ref) => /*#__PURE__*/React.createElement(SwitchPrimitives.Root, _extends({
+  className: cn("peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-input", className)
+}, props, {
+  ref: ref
+}), /*#__PURE__*/React.createElement(SwitchPrimitives.Thumb, {
+  className: cn("pointer-events-none block h-4 w-4 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0")
+})));
+Switch.displayName = SwitchPrimitives.Root.displayName;
+const useFileStore = create((set, get) => ({
+  currentPath: "",
+  viewMode: "files",
+  layout: "grid",
+  theme: "classic",
+  locale: "zh",
+  localeAuto: true,
+  sortBy: "name",
+  sortOrder: "asc",
+  searchQuery: "",
+  selectedFile: null,
+  selectedPaths: [],
+  previewFile: null,
+  previewAutoEdit: false,
+  uploadConflict: null,
+  shareModalFile: null,
+  activeShareToken: null,
+  activeShareServerUrl: "",
+  activeSharePassword: "",
+  moveModalFile: null,
+  batchMovePaths: null,
+  moveModalMode: "move",
+  renameModalFile: null,
+  newFolderModalOpen: false,
+  newFileModalOpen: false,
+  passwordModalOpen: false,
+  sidebarOpen: false,
+  toasts: [],
+  confirmDialog: null,
+  setCurrentPath: path => {
+    set({
+      currentPath: path,
+      selectedFile: null,
+      selectedPaths: []
+    });
+    if (get().viewMode === "files") {
+      syncHash("files", path);
+    }
+  },
+  setViewMode: mode => {
+    set({
+      viewMode: mode,
+      selectedFile: null,
+      selectedPaths: []
+    });
+    syncHash(mode, mode === "files" ? get().currentPath : "");
+  },
+  setLayout: layout => set({
+    layout
+  }),
+  setTheme: theme => {
+    applyThemeToDom(theme);
+    set({
+      theme
+    });
+  },
+  setLocale: target => {
+    if (target === "auto") {
+      const detected = detectBrowserLocale();
+      applyLocaleToDom(detected, "auto");
+      set({
+        locale: detected,
+        localeAuto: true
+      });
+    } else {
+      applyLocaleToDom(target, true);
+      set({
+        locale: target,
+        localeAuto: false
+      });
+    }
+  },
+  syncLocaleFromBrowser: () => {
+    const active = getSavedLocale();
+    const isAuto = isLocaleFollowingBrowser();
+    applyLocaleToDom(active);
+    set({
+      locale: active,
+      localeAuto: isAuto
+    });
+  },
+  setSort: field => {
+    const {
+      sortBy,
+      sortOrder
+    } = get();
+    if (sortBy === field) {
+      set({
+        sortOrder: sortOrder === "asc" ? "desc" : "asc"
+      });
+    } else {
+      set({
+        sortBy: field,
+        sortOrder: field === "name" ? "asc" : "desc"
+      });
+    }
+  },
+  setSearchQuery: query => set({
+    searchQuery: query
+  }),
+  setSelectedFile: file => set({
+    selectedFile: file
+  }),
+  toggleSelectPath: path => {
+    const {
+      selectedPaths
+    } = get();
+    if (selectedPaths.includes(path)) {
+      set({
+        selectedPaths: selectedPaths.filter(p => p !== path)
+      });
+    } else {
+      set({
+        selectedPaths: [...selectedPaths, path]
+      });
+    }
+  },
+  setSelectedPaths: paths => set({
+    selectedPaths: paths
+  }),
+  clearSelection: () => set({
+    selectedPaths: []
+  }),
+  setPreviewFile: file => set({
+    previewFile: file,
+    previewAutoEdit: false
+  }),
+  openEditor: file => set({
+    previewFile: file,
+    previewAutoEdit: true
+  }),
+  setUploadConflict: conflict => set({
+    uploadConflict: conflict
+  }),
+  setShareModalFile: file => set({
+    shareModalFile: file
+  }),
+  openSharedSpace: (token, remoteServerUrl = "", password = "") => {
+    set({
+      viewMode: "shares",
+      activeShareToken: token,
+      activeShareServerUrl: remoteServerUrl,
+      activeSharePassword: password
+    });
+    if (typeof window !== "undefined" && !remoteServerUrl) {
+      window.history.pushState(null, "", `#/s/${encodeURIComponent(token)}`);
+    }
+  },
+  closeSharedSpace: () => {
+    set({
+      activeShareToken: null,
+      activeShareServerUrl: "",
+      activeSharePassword: ""
+    });
+    if (typeof window !== "undefined" && window.location.hash.startsWith("#/s/")) {
+      window.history.pushState(null, "", "#/shares");
+    }
+  },
+  setMoveModalFile: file => set({
+    moveModalFile: file,
+    moveModalMode: "move"
+  }),
+  setBatchMovePaths: paths => set({
+    batchMovePaths: paths,
+    moveModalMode: "move"
+  }),
+  setMoveModalMode: mode => set({
+    moveModalMode: mode
+  }),
+  openCopyModal: file => set({
+    moveModalFile: file,
+    moveModalMode: "copy"
+  }),
+  openBatchCopyModal: paths => set({
+    batchMovePaths: paths,
+    moveModalMode: "copy"
+  }),
+  setRenameModalFile: file => set({
+    renameModalFile: file
+  }),
+  setNewFolderModalOpen: open => set({
+    newFolderModalOpen: open
+  }),
+  setNewFileModalOpen: open => set({
+    newFileModalOpen: open
+  }),
+  setPasswordModalOpen: open => set({
+    passwordModalOpen: open
+  }),
+  setSidebarOpen: open => set({
+    sidebarOpen: open
+  }),
+  toggleSidebar: () => set(state => ({
+    sidebarOpen: !state.sidebarOpen
+  })),
+  navigateToFolder: target => {
+    const {
+      currentPath,
+      viewMode
+    } = get();
+    let nextPath = target;
+    if (viewMode === "files" && !target.includes("/")) {
+      nextPath = currentPath ? `${currentPath}/${target}` : target;
+    }
+    set({
+      currentPath: nextPath,
+      viewMode: "files",
+      selectedFile: null,
+      selectedPaths: []
+    });
+    syncHash("files", nextPath);
+  },
+  openFolder: path => {
+    set({
+      currentPath: path,
+      viewMode: "files",
+      selectedFile: null,
+      selectedPaths: []
+    });
+    syncHash("files", path);
+  },
+  openContainingFolder: item => {
+    const parent = item.path.includes("/") ? item.path.slice(0, item.path.lastIndexOf("/")) : "";
+    set({
+      currentPath: parent,
+      viewMode: "files",
+      selectedFile: item,
+      selectedPaths: []
+    });
+    syncHash("files", parent);
+  },
+  navigateUp: () => {
+    const {
+      currentPath
+    } = get();
+    if (!currentPath) return;
+    const parts = currentPath.split("/");
+    parts.pop();
+    const nextPath = parts.join("/");
+    set({
+      currentPath: nextPath,
+      selectedFile: null,
+      selectedPaths: [],
+      viewMode: "files"
+    });
+    syncHash("files", nextPath);
+  },
+  showToast: (text, type = "info") => {
+    const id = "t_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+    const localized = localizeServerMessage(text, get().locale);
+    set(s => ({
+      toasts: [...s.toasts, {
+        id,
+        text: localized,
+        type
+      }]
+    }));
+    setTimeout(() => {
+      set(s => ({
+        toasts: s.toasts.filter(t => t.id !== id)
+      }));
+    }, 3200);
+  },
+  dismissToast: id => {
+    set(s => ({
+      toasts: s.toasts.filter(t => t.id !== id)
+    }));
+  },
+  openConfirm: options => set({
+    confirmDialog: options
+  }),
+  closeConfirm: () => set({
+    confirmDialog: null
+  })
+}));
+function useI18n() {
+  const locale = useFileStore(s => s.locale);
+  const localeAuto = useFileStore(s => s.localeAuto);
+  const setLocale = useFileStore(s => s.setLocale);
+  const isEn = locale === "en";
+  const t = (zh, en) => isEn ? en : zh;
+  return {
+    locale,
+    isEn,
+    localeAuto,
+    setLocale,
+    t
+  };
+}
+function viewModeToHash(mode, currentPath = "") {
+  if (mode === "files") {
+    if (!currentPath) return "#/";
+    const encoded = currentPath.split("/").filter(Boolean).map(encodeURIComponent).join("/");
+    return encoded ? `#/files/${encoded}` : "#/";
+  }
+  return `#/${mode}`;
+}
+function syncHash(mode, currentPath = "") {
+  if (typeof window === "undefined") return;
+  const target = viewModeToHash(mode, currentPath);
+  if (window.location.hash !== target) {
+    window.history.pushState(null, "", target);
+  }
+}
+const CHUNK_SIZE = 5 * 1024 * 1024;
+const CHUNK_THRESHOLD = 50 * 1024 * 1024;
+const CONCURRENCY = 3;
+const MAX_ACTIVE_TASKS = 2;
+const fileMap = new Map();
+const activeChunkControllers = new Map();
+const activeSimpleControllers = new Map();
+function generateFingerprint(file, directory) {
+  return `${file.name}_${file.size}_${file.lastModified}_${directory || "root"}`;
+}
+const useUploadStore = create()(persist((set, get) => ({
+  tasks: [],
+  isDrawerOpen: true,
+  concurrencyLimit: CONCURRENCY,
+  toggleDrawer: () => set(state => ({
+    isDrawerOpen: !state.isDrawerOpen
+  })),
+  setDrawerOpen: open => set({
+    isDrawerOpen: open
+  }),
+  addFile: async (file, directory, conflictStrategy = "rename") => {
+    const fingerprint = generateFingerprint(file, directory);
+    const {
+      tasks
+    } = get();
+    const existing = tasks.find(t => t.fingerprint === fingerprint && t.status !== "completed");
+    if (existing) {
+      fileMap.set(existing.id, file);
+      const isActive = existing.status === "pending" || existing.status === "uploading" || existing.status === "initializing" || existing.status === "merging";
+      if (isActive) {
+        set(state => ({
+          isDrawerOpen: true
+        }));
+        return existing.id;
+      }
+      set(state => ({
+        isDrawerOpen: true,
+        tasks: state.tasks.map(t => t.id === existing.id ? {
+          ...t,
+          status: "pending",
+          errorMessage: undefined
+        } : t)
+      }));
+      scheduleNextUploads(get, set);
+      return existing.id;
+    }
+    const tempId = "task_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
+    const totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
+    const newTask = {
+      id: tempId,
+      fingerprint,
+      name: file.name,
+      size: file.size,
+      directory,
+      conflictStrategy,
+      chunkSize: CHUNK_SIZE,
+      totalChunks,
+      uploadedChunks: [],
+      status: "pending",
+      progress: 0,
+      speed: 0,
+      createdAt: Date.now(),
+      lastUpdated: Date.now()
+    };
+    fileMap.set(tempId, file);
+    set(state => ({
+      isDrawerOpen: true,
+      tasks: [newTask, ...state.tasks]
+    }));
+    scheduleNextUploads(get, set);
+    return tempId;
+  },
+  pauseTask: id => {
+    const simpleCtrl = activeSimpleControllers.get(id);
+    if (simpleCtrl) {
+      simpleCtrl.abort();
+      activeSimpleControllers.delete(id);
+    }
+    const chunkCtrls = activeChunkControllers.get(id);
+    if (chunkCtrls) {
+      chunkCtrls.forEach(ctrl => ctrl.abort());
+      chunkCtrls.clear();
+    }
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === id ? {
+        ...t,
+        status: "paused",
+        speed: 0
+      } : t)
+    }));
+    scheduleNextUploads(get, set);
+  },
+  resumeTask: async id => {
+    const task = get().tasks.find(t => t.id === id);
+    if (!task) return;
+    const file = fileMap.get(id);
+    if (!file) {
+      set(state => ({
+        tasks: state.tasks.map(t => t.id === id ? {
+          ...t,
+          status: "interrupted",
+          errorMessage: tr("刷新后文件句柄已失效，请重新选择文件继续", "File handle lost after reload, please re-select the file to resume")
+        } : t)
+      }));
+      return;
+    }
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === id ? {
+        ...t,
+        status: "pending",
+        errorMessage: undefined
+      } : t)
+    }));
+    scheduleNextUploads(get, set);
+  },
+  rebindFileAndResume: async (id, file) => {
+    const task = get().tasks.find(t => t.id === id);
+    if (!task) return;
+    if (file.name !== task.name || file.size !== task.size) {
+      const errMsg = tr(`所选文件不匹配！期望: ${task.name} (${formatBytes(task.size)})，实际: ${file.name} (${formatBytes(file.size)})`, `Selected file mismatch! Expected: ${task.name} (${formatBytes(task.size)}), got: ${file.name} (${formatBytes(file.size)})`);
+      set(state => ({
+        tasks: state.tasks.map(t => t.id === id ? {
+          ...t,
+          errorMessage: errMsg
+        } : t)
+      }));
+      throw new Error(errMsg);
+    }
+    fileMap.set(id, file);
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === id ? {
+        ...t,
+        status: "pending",
+        errorMessage: undefined
+      } : t)
+    }));
+    scheduleNextUploads(get, set);
+  },
+  cancelTask: async id => {
+    const simpleCtrl = activeSimpleControllers.get(id);
+    if (simpleCtrl) {
+      simpleCtrl.abort();
+      activeSimpleControllers.delete(id);
+    }
+    const chunkCtrls = activeChunkControllers.get(id);
+    if (chunkCtrls) {
+      chunkCtrls.forEach(ctrl => ctrl.abort());
+      chunkCtrls.clear();
+    }
+    activeChunkControllers.delete(id);
+    fileMap.delete(id);
+    try {
+      if (!id.startsWith("task_")) {
+        await api.cancelChunkedUpload(id);
+      }
+    } catch {}
+    set(state => ({
+      tasks: state.tasks.filter(t => t.id !== id)
+    }));
+    scheduleNextUploads(get, set);
+  },
+  retryTask: async id => {
+    const task = get().tasks.find(t => t.id === id);
+    if (!task) return;
+    const file = fileMap.get(id);
+    if (!file) {
+      set(state => ({
+        tasks: state.tasks.map(t => t.id === id ? {
+          ...t,
+          status: "interrupted",
+          errorMessage: tr("请重新选择文件重试", "Please re-select the file to retry")
+        } : t)
+      }));
+      return;
+    }
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === id ? {
+        ...t,
+        status: "pending",
+        errorMessage: undefined
+      } : t)
+    }));
+    scheduleNextUploads(get, set);
+  },
+  clearCompleted: () => {
+    set(state => ({
+      tasks: state.tasks.filter(t => t.status !== "completed" && t.status !== "error")
+    }));
+  },
+  enqueueWithConflictCheck: async (entries, emptyDirs, targetDir) => {
+    let existingItems = [];
+    try {
+      const res = await api.getFiles(targetDir);
+      existingItems = res.items;
+    } catch {}
+    const existingFolders = new Set(existingItems.filter(i => i.isDirectory).map(i => i.name));
+    const existingFiles = new Set(existingItems.filter(i => !i.isDirectory).map(i => i.name));
+    const topFolders = new Set();
+    const topFiles = new Set();
+    for (const e of entries) {
+      if (e.subPath) {
+        const top = e.subPath.split("/")[0];
+        if (top) topFolders.add(top);
+      } else {
+        topFiles.add(e.file.name);
+      }
+    }
+    for (const d of emptyDirs) {
+      const top = d.split("/")[0];
+      if (top) topFolders.add(top);
+    }
+    const conflictingFolders = Array.from(topFolders).filter(f => existingFolders.has(f));
+    const conflictingFiles = Array.from(topFiles).filter(f => existingFiles.has(f));
+    if (conflictingFolders.length > 0 || conflictingFiles.length > 0) {
+      useFileStore.getState().setUploadConflict({
+        targetDir,
+        entries,
+        emptyDirs,
+        conflictingFolders,
+        conflictingFiles
+      });
+      return;
+    }
+    for (const emptySub of emptyDirs) {
+      try {
+        await api.createDirectory(targetDir, emptySub);
+      } catch {}
+    }
+    for (const item of entries) {
+      const dest = item.subPath ? targetDir ? `${targetDir}/${item.subPath}` : item.subPath : targetDir;
+      await get().addFile(item.file, dest, "rename");
+    }
+  }
+}), {
+  name: "storeit-upload-tasks",
+  storage: createJSONStorage(() => localStorage),
+  onRehydrateStorage: () => state => {
+    if (!state) return;
+    state.tasks = state.tasks.map(t => {
+      if (t.status === "uploading" || t.status === "initializing" || t.status === "pending" || t.status === "merging") {
+        return {
+          ...t,
+          status: "interrupted",
+          speed: 0,
+          errorMessage: tr("页面刷新中断，请重新添加或绑定原文件继续断点续传", "Interrupted by page reload, please re-add or rebind the file to resume")
+        };
+      }
+      return t;
+    });
+  },
+  partialize: state => ({
+    tasks: state.tasks.map(t => ({
+      id: t.id,
+      fingerprint: t.fingerprint,
+      name: t.name,
+      size: t.size,
+      directory: t.directory,
+      conflictStrategy: t.conflictStrategy,
+      chunkSize: t.chunkSize,
+      totalChunks: t.totalChunks,
+      uploadedChunks: [],
+      status: t.status === "completed" ? "completed" : "interrupted",
+      progress: t.progress,
+      speed: 0,
+      errorMessage: t.errorMessage,
+      createdAt: t.createdAt,
+      lastUpdated: t.lastUpdated
+    })),
+    isDrawerOpen: state.isDrawerOpen
+  })
+}));
+function scheduleNextUploads(get, set) {
+  const {
+    tasks
+  } = get();
+  const activeCount = tasks.filter(t => t.status === "uploading" || t.status === "initializing" || t.status === "merging").length;
+  if (activeCount >= MAX_ACTIVE_TASKS) return;
+  const nextTask = tasks.find(t => t.status === "pending");
+  if (!nextTask) return;
+  const file = fileMap.get(nextTask.id);
+  if (!file) {
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === nextTask.id ? {
+        ...t,
+        status: "interrupted",
+        errorMessage: tr("文件句柄丢失，请重新选择文件", "File handle lost, please re-select the file")
+      } : t)
+    }));
+    return;
+  }
+  if (file.size <= CHUNK_THRESHOLD) {
+    executeSimpleUpload(nextTask.id, file, get, set);
+  } else {
+    executeChunkedUpload(nextTask.id, file, get, set);
+  }
+}
+async function executeSimpleUpload(taskId, file, get, set) {
+  const task = get().tasks.find(t => t.id === taskId);
+  if (!task) return;
+  const controller = new AbortController();
+  activeSimpleControllers.set(taskId, controller);
+  set(state => ({
+    tasks: state.tasks.map(t => t.id === taskId ? {
+      ...t,
+      status: "uploading",
+      speed: 0,
+      errorMessage: undefined
+    } : t)
+  }));
+  let lastBytes = 0;
+  let lastTime = Date.now();
+  try {
+    await api.uploadSingleFile(file, task.directory, percent => {
+      const now = Date.now();
+      const currentBytes = percent / 100 * file.size;
+      const timeDelta = (now - lastTime) / 1000;
+      let speed = 0;
+      if (timeDelta > 0.4) {
+        speed = Math.max(0, (currentBytes - lastBytes) / timeDelta);
+        lastBytes = currentBytes;
+        lastTime = now;
+      }
+      set(state => ({
+        tasks: state.tasks.map(t => t.id === taskId ? {
+          ...t,
+          progress: percent,
+          speed: speed || t.speed,
+          lastUpdated: now
+        } : t)
+      }));
+    }, controller.signal, task.conflictStrategy || "rename");
+    activeSimpleControllers.delete(taskId);
+    fileMap.delete(taskId);
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === taskId ? {
+        ...t,
+        status: "completed",
+        progress: 100,
+        speed: 0,
+        lastUpdated: Date.now()
+      } : t)
+    }));
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("storeit:file-uploaded"));
+    }
+  } catch (err) {
+    activeSimpleControllers.delete(taskId);
+    if (controller.signal.aborted) return;
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === taskId ? {
+        ...t,
+        status: "error",
+        speed: 0,
+        errorMessage: err.message || tr("上传失败", "Upload failed")
+      } : t)
+    }));
+  } finally {
+    scheduleNextUploads(get, set);
+  }
+}
+async function executeChunkedUpload(taskId, file, get, set) {
+  const task = get().tasks.find(t => t.id === taskId);
+  if (!task) return;
+  set(state => ({
+    tasks: state.tasks.map(t => t.id === taskId ? {
+      ...t,
+      status: "initializing",
+      errorMessage: undefined
+    } : t)
+  }));
+  let realUploadId = taskId;
+  let serverUploadedChunks = [];
+  let totalChunks = task.totalChunks;
+  let chunkSize = task.chunkSize;
+  try {
+    if (taskId.startsWith("task_")) {
+      const initRes = await api.initChunkedUpload(file.name, file.size, task.directory, task.conflictStrategy || "rename");
+      realUploadId = initRes.uploadId;
+      totalChunks = initRes.totalChunks;
+      chunkSize = initRes.chunkSize;
+      fileMap.delete(taskId);
+      fileMap.set(realUploadId, file);
+      const pausedDuringHandshake = get().tasks.find(t => t.id === taskId)?.status === "paused";
+      set(state => ({
+        tasks: state.tasks.map(t => t.id === taskId ? {
+          ...t,
+          id: realUploadId,
+          totalChunks,
+          chunkSize,
+          uploadedChunks: [],
+          status: pausedDuringHandshake ? "paused" : "uploading"
+        } : t)
+      }));
+    } else {
+      try {
+        const statusRes = await api.getUploadStatus(taskId);
+        serverUploadedChunks = statusRes.uploadedChunks || [];
+        totalChunks = statusRes.totalChunks;
+        chunkSize = statusRes.chunkSize;
+        const pausedDuringHandshake = get().tasks.find(t => t.id === taskId)?.status === "paused";
+        set(state => ({
+          tasks: state.tasks.map(t => t.id === taskId ? {
+            ...t,
+            uploadedChunks: serverUploadedChunks,
+            totalChunks,
+            chunkSize,
+            progress: Math.min(99, Math.floor(serverUploadedChunks.length / totalChunks * 100)),
+            status: pausedDuringHandshake ? "paused" : "uploading"
+          } : t)
+        }));
+      } catch (err) {
+        if (err?.status !== 400) throw err;
+        const initRes = await api.initChunkedUpload(file.name, file.size, task.directory, task.conflictStrategy || "rename");
+        const previousId = taskId;
+        realUploadId = initRes.uploadId;
+        totalChunks = initRes.totalChunks;
+        chunkSize = initRes.chunkSize;
+        serverUploadedChunks = [];
+        fileMap.delete(previousId);
+        fileMap.set(realUploadId, file);
+        activeChunkControllers.delete(previousId);
+        const pausedDuringHandshake = get().tasks.find(t => t.id === previousId)?.status === "paused";
+        set(state => ({
+          tasks: state.tasks.map(t => t.id === previousId ? {
+            ...t,
+            id: realUploadId,
+            uploadedChunks: [],
+            progress: 0,
+            totalChunks,
+            chunkSize,
+            errorMessage: undefined,
+            status: pausedDuringHandshake ? "paused" : "uploading"
+          } : t)
+        }));
+      }
+    }
+  } catch (err) {
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === taskId ? {
+        ...t,
+        status: "error",
+        errorMessage: tr(`初始化上传失败: ${err.message}`, `Failed to initialize upload: ${err.message}`)
+      } : t)
+    }));
+    scheduleNextUploads(get, set);
+    return;
+  }
+  if (!get().tasks.some(t => t.id === realUploadId)) {
+    try {
+      await api.cancelChunkedUpload(realUploadId);
+    } catch {}
+    return;
+  }
+  if (get().tasks.find(t => t.id === realUploadId)?.status !== "uploading") {
+    return;
+  }
+  let controllers = activeChunkControllers.get(realUploadId);
+  if (!controllers) {
+    controllers = new Map();
+    activeChunkControllers.set(realUploadId, controllers);
+  }
+  const inFlightBytes = new Map();
+  const chunkRetryCount = new Map();
+  const uploadedSet = new Set(serverUploadedChunks);
+  const pendingChunks = [];
+  for (let i = 0; i < totalChunks; i++) {
+    if (!uploadedSet.has(i)) {
+      pendingChunks.push(i);
+    }
+  }
+  if (pendingChunks.length === 0) {
+    await completeChunkedUploadSession(realUploadId, get, set);
+    return;
+  }
+  const concurrency = get().concurrencyLimit || CONCURRENCY;
+  let activeWorkers = 0;
+  let isAbortedOrDone = false;
+  let lastBytes = uploadedSet.size * chunkSize;
+  let lastTime = Date.now();
+  const progressInterval = setInterval(() => {
+    const currentTask = get().tasks.find(t => t.id === realUploadId);
+    if (!currentTask || currentTask.status !== "uploading") {
+      clearInterval(progressInterval);
+      return;
+    }
+    let inFlightSum = 0;
+    inFlightBytes.forEach(b => inFlightSum += b);
+    const totalBytesLoaded = Math.min(file.size, currentTask.uploadedChunks.length * chunkSize + inFlightSum);
+    const now = Date.now();
+    const timeDelta = (now - lastTime) / 1000;
+    let speed = currentTask.speed;
+    if (timeDelta > 0.5) {
+      speed = Math.max(0, (totalBytesLoaded - lastBytes) / timeDelta);
+      lastBytes = totalBytesLoaded;
+      lastTime = now;
+    }
+    const calculatedProgress = Math.min(99, Math.floor(totalBytesLoaded / file.size * 100));
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === realUploadId ? {
+        ...t,
+        progress: Math.max(t.progress, calculatedProgress),
+        speed,
+        lastUpdated: now
+      } : t)
+    }));
+  }, 300);
+  const next = async () => {
+    if (isAbortedOrDone) return;
+    const currentTask = get().tasks.find(t => t.id === realUploadId);
+    if (!currentTask || currentTask.status !== "uploading") {
+      isAbortedOrDone = true;
+      clearInterval(progressInterval);
+      return;
+    }
+    if (pendingChunks.length === 0) {
+      if (activeWorkers === 0) {
+        clearInterval(progressInterval);
+        await completeChunkedUploadSession(realUploadId, get, set);
+      }
+      return;
+    }
+    const chunkIndex = pendingChunks.shift();
+    activeWorkers++;
+    const start = chunkIndex * chunkSize;
+    const end = Math.min(file.size, start + chunkSize);
+    const chunkBlob = file.slice(start, end);
+    const controller = new AbortController();
+    controllers.set(chunkIndex, controller);
+    try {
+      await api.uploadChunk(realUploadId, chunkIndex, chunkBlob, controller.signal, loaded => {
+        inFlightBytes.set(chunkIndex, loaded);
+      });
+      controllers.delete(chunkIndex);
+      inFlightBytes.delete(chunkIndex);
+      set(state => ({
+        tasks: state.tasks.map(t => {
+          if (t.id !== realUploadId) return t;
+          const newUploaded = Array.from(new Set([...t.uploadedChunks, chunkIndex])).sort((a, b) => a - b);
+          return {
+            ...t,
+            uploadedChunks: newUploaded,
+            progress: Math.max(t.progress, Math.min(99, Math.floor(newUploaded.length / t.totalChunks * 100))),
+            lastUpdated: Date.now()
+          };
+        })
+      }));
+    } catch (err) {
+      controllers.delete(chunkIndex);
+      inFlightBytes.delete(chunkIndex);
+      if (err.name === "AbortError" || controller.signal.aborted) {
+        return;
+      }
+      const retries = chunkRetryCount.get(chunkIndex) || 0;
+      if (retries < 2) {
+        chunkRetryCount.set(chunkIndex, retries + 1);
+        pendingChunks.push(chunkIndex);
+        setTimeout(() => next(), 500 * Math.pow(2, retries));
+        return;
+      } else {
+        isAbortedOrDone = true;
+        clearInterval(progressInterval);
+        set(state => ({
+          tasks: state.tasks.map(t => t.id === realUploadId ? {
+            ...t,
+            status: "error",
+            speed: 0,
+            errorMessage: tr(`分片 ${chunkIndex + 1} 上传失败: ${err.message}`, `Chunk ${chunkIndex + 1} upload failed: ${err.message}`)
+          } : t)
+        }));
+        scheduleNextUploads(get, set);
+        return;
+      }
+    } finally {
+      activeWorkers--;
+    }
+    next();
+  };
+  for (let i = 0; i < concurrency; i++) {
+    next();
+  }
+}
+async function completeChunkedUploadSession(uploadId, get, set) {
+  set(state => ({
+    tasks: state.tasks.map(t => t.id === uploadId ? {
+      ...t,
+      status: "merging",
+      progress: 99,
+      speed: 0
+    } : t)
+  }));
+  try {
+    await api.completeChunkedUpload(uploadId);
+    fileMap.delete(uploadId);
+    activeChunkControllers.delete(uploadId);
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === uploadId ? {
+        ...t,
+        status: "completed",
+        progress: 100,
+        speed: 0,
+        lastUpdated: Date.now()
+      } : t)
+    }));
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("storeit:file-uploaded"));
+    }
+  } catch (err) {
+    set(state => ({
+      tasks: state.tasks.map(t => t.id === uploadId ? {
+        ...t,
+        status: "error",
+        speed: 0,
+        errorMessage: tr(`合并分片失败: ${err.message}`, `Failed to merge chunks: ${err.message}`)
+      } : t)
+    }));
+  } finally {
+    scheduleNextUploads(get, set);
+  }
+}
+function Navbar() {
+  const currentPath = useFileStore(s => s.currentPath);
+  const layout = useFileStore(s => s.layout);
+  const setLayout = useFileStore(s => s.setLayout);
+  const theme = useFileStore(s => s.theme);
+  const setTheme = useFileStore(s => s.setTheme);
+  const searchQuery = useFileStore(s => s.searchQuery);
+  const setSearchQuery = useFileStore(s => s.setSearchQuery);
+  const viewMode = useFileStore(s => s.viewMode);
+  const setViewMode = useFileStore(s => s.setViewMode);
+  const setNewFolderModalOpen = useFileStore(s => s.setNewFolderModalOpen);
+  const setNewFileModalOpen = useFileStore(s => s.setNewFileModalOpen);
+  const setPasswordModalOpen = useFileStore(s => s.setPasswordModalOpen);
+  const toggleSidebar = useFileStore(s => s.toggleSidebar);
+  const {
+    locale,
+    isEn,
+    localeAuto,
+    setLocale,
+    t
+  } = useI18n();
+  const user = useAuthStore(s => s.user);
+  const logout = useAuthStore(s => s.logout);
+  const enqueueWithConflictCheck = useUploadStore(s => s.enqueueWithConflictCheck);
+  const fileInputRef = useRef(null);
+  const folderInputRef = useRef(null);
+  const searchDebounceRef = useRef(null);
+  const [localSearch, setLocalSearch] = useState(searchQuery);
+  useEffect(() => {
+    const saved = getSavedTheme();
+    applyThemeToDom(saved);
+    useFileStore.setState({
+      theme: saved
+    });
+    useFileStore.getState().syncLocaleFromBrowser();
+  }, []);
+  useEffect(() => {
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
+  const triggerSearch = rawValue => {
+    const query = rawValue.trim();
+    if (query) {
+      setSearchQuery(query);
+      if (useFileStore.getState().viewMode !== "search") {
+        setViewMode("search");
+      }
+    } else {
+      setSearchQuery("");
+      if (useFileStore.getState().viewMode === "search") {
+        setViewMode("files");
+      }
+    }
+  };
+  const handleSearchChange = val => {
+    setLocalSearch(val);
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => {
+      triggerSearch(val);
+    }, 300);
+  };
+  const handleSearchSubmit = e => {
+    e.preventDefault();
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    triggerSearch(localSearch);
+  };
+  const handleFilesSelected = e => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    if (viewMode !== "files") setViewMode("files");
+    const entries = [];
+    for (let i = 0; i < files.length; i++) {
+      entries.push({
+        file: files[i],
+        subPath: ""
+      });
+    }
+    enqueueWithConflictCheck(entries, [], currentPath);
+    e.target.value = "";
+  };
+  const handleFoldersSelected = e => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    if (viewMode !== "files") setViewMode("files");
+    const entries = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const relPath = file.webkitRelativePath || "";
+      const pathParts = relPath.split("/");
+      pathParts.pop();
+      const subDir = pathParts.join("/");
+      entries.push({
+        file,
+        subPath: subDir
+      });
+    }
+    enqueueWithConflictCheck(entries, [], currentPath);
+    e.target.value = "";
+  };
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      window.location.href = "/login";
+    }
+  };
+  const activeThemeMeta = THEME_OPTIONS.find(item => item.key === theme) || THEME_OPTIONS[0];
+  const activeThemeLabel = isEn ? activeThemeMeta.labelEn : activeThemeMeta.label;
+  return /*#__PURE__*/React.createElement("header", {
+    className: "h-16 px-4 sm:px-6 bg-white/80 backdrop-blur-md border-b flex items-center justify-between gap-3 sticky top-0 z-30 select-none"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 shrink-0"
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "md:hidden h-9 w-9 text-brand-primary",
+    onClick: () => toggleSidebar(),
+    title: t("打开侧边菜单", "Open sidebar menu")
+  }, /*#__PURE__*/React.createElement(Menu, {
+    className: "w-5 h-5"
+  })), /*#__PURE__*/React.createElement("div", {
+    onClick: () => {
+      useFileStore.getState().setCurrentPath("");
+      setViewMode("files");
+    },
+    className: "flex items-center gap-2.5 cursor-pointer group"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white flex items-center justify-center shadow-md transition-transform duration-200 group-hover:scale-105"
+  }, /*#__PURE__*/React.createElement(HardDrive, {
+    className: "w-5 h-5"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "font-extrabold text-lg text-brand-primary tracking-tight hidden sm:inline-block"
+  }, isEn ? "StoreIt" : /*#__PURE__*/React.createElement(React.Fragment, null, "\u50A8\u4E4B ", /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-normal text-brand-secondary ml-0.5"
+  }, "StoreIt"))))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSearchSubmit,
+    className: "relative flex-1 max-w-xs sm:max-w-md"
+  }, /*#__PURE__*/React.createElement(Search, {
+    className: "w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+  }), /*#__PURE__*/React.createElement(Input, {
+    type: "search",
+    placeholder: t("输入关键词实时搜索文件...", "Search files in real time..."),
+    value: localSearch,
+    onChange: e => handleSearchChange(e.target.value),
+    className: "pl-9 h-9 bg-muted/40 border-0 focus-visible:bg-white focus-visible:ring-1 rounded-xl text-xs transition-all duration-150"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5 sm:gap-2 shrink-0"
+  }, /*#__PURE__*/React.createElement("input", {
+    ref: fileInputRef,
+    type: "file",
+    multiple: true,
+    className: "hidden",
+    onChange: handleFilesSelected
+  }), /*#__PURE__*/React.createElement("input", {
+    ref: folderInputRef,
+    type: "file"
+    // @ts-ignore
+    ,
+    webkitdirectory: "",
+    multiple: true,
+    className: "hidden",
+    onChange: handleFoldersSelected
+  }), /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
+    asChild: true
+  }, /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    className: "gap-1.5 rounded-xl shadow-sm px-2.5 sm:px-3"
+  }, /*#__PURE__*/React.createElement(Upload, {
+    className: "w-4 h-4"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "hidden sm:inline"
+  }, t("上传", "Upload")), /*#__PURE__*/React.createElement(ChevronDown, {
+    className: "w-3.5 h-3.5 opacity-60"
+  }))), /*#__PURE__*/React.createElement(DropdownMenuContent, {
+    align: "end",
+    className: "w-52 storeit-menu-pop"
+  }, /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => fileInputRef.current?.click(),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Upload, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("上传单个 / 多文件", "Upload Files")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => folderInputRef.current?.click(),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(FolderPlus, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("上传整个文件夹", "Upload Folder")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => setNewFileModalOpen(true),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(FilePlus2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("新建文本 / Markdown", "New Text / Markdown")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => setNewFolderModalOpen(true),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(FolderPlus, {
+    className: "w-4 h-4 text-amber-500"
+  }), t("新建文件夹", "New Folder")))), /*#__PURE__*/React.createElement(Button, {
+    variant: "outline",
+    size: "sm",
+    onClick: () => setNewFileModalOpen(true),
+    className: "gap-1.5 rounded-xl hidden lg:flex",
+    title: t("新建空白文本或 Markdown 文档", "Create a new text or Markdown file")
+  }, /*#__PURE__*/React.createElement(FilePlus2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("新建文件", "New File")), /*#__PURE__*/React.createElement(Button, {
+    variant: "outline",
+    size: "sm",
+    onClick: () => setNewFolderModalOpen(true),
+    className: "gap-1.5 rounded-xl hidden sm:flex"
+  }, /*#__PURE__*/React.createElement(FolderPlus, {
+    className: "w-4 h-4 text-amber-500"
+  }), t("新建文件夹", "New Folder")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center border rounded-xl p-0.5 bg-muted/40"
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: `h-7 w-7 rounded-lg transition-all duration-150 ${layout === "grid" ? "bg-white shadow-sm text-brand-primary" : "text-muted-foreground"}`,
+    onClick: () => setLayout("grid"),
+    title: t("网格视图", "Grid view")
+  }, /*#__PURE__*/React.createElement(LayoutGrid, {
+    className: "w-3.5 h-3.5"
+  })), /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: `h-7 w-7 rounded-lg transition-all duration-150 ${layout === "list" ? "bg-white shadow-sm text-brand-primary" : "text-muted-foreground"}`,
+    onClick: () => setLayout("list"),
+    title: t("列表视图", "List view")
+  }, /*#__PURE__*/React.createElement(List, {
+    className: "w-3.5 h-3.5"
+  }))), /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
+    asChild: true
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "sm",
+    className: "gap-1.5 px-2.5 h-9 rounded-xl border border-transparent hover:border-border",
+    title: t("切换语言 (Language)", "Switch Language")
+  }, /*#__PURE__*/React.createElement(Globe, {
+    className: "w-4 h-4 text-brand-primary"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-medium text-foreground hidden md:inline"
+  }, isEn ? "EN" : "中文"))), /*#__PURE__*/React.createElement(DropdownMenuContent, {
+    align: "end",
+    className: "w-52 storeit-menu-pop p-1.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-2.5 py-1.5 border-b mb-1"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold text-brand-primary"
+  }, t("界面语言 (Language)", "Language")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-muted-foreground"
+  }, t("非中文浏览器自动切换为英文", "Auto-switches to English on non-Chinese browsers"))), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => setLocale("auto"),
+    className: "flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg cursor-pointer"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: `text-xs ${localeAuto ? "font-bold text-brand-primary" : "font-medium"}`
+  }, t("跟随浏览器 (自动)", "Follow Browser (Auto)")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[10px] text-muted-foreground"
+  }, t("根据系统/浏览器语言自动匹配", "Detect from browser language"))), localeAuto && /*#__PURE__*/React.createElement(Check, {
+    className: "w-3.5 h-3.5 text-brand-primary shrink-0"
+  })), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => setLocale("zh"),
+    className: "flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg cursor-pointer"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `text-xs ${!localeAuto && locale === "zh" ? "font-bold text-brand-primary" : "font-medium"}`
+  }, "\u7B80\u4F53\u4E2D\u6587 (zh-CN)"), !localeAuto && locale === "zh" && /*#__PURE__*/React.createElement(Check, {
+    className: "w-3.5 h-3.5 text-brand-primary shrink-0"
+  })), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => setLocale("en"),
+    className: "flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg cursor-pointer"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: `text-xs ${!localeAuto && locale === "en" ? "font-bold text-brand-primary" : "font-medium"}`
+  }, "English (en-US)"), !localeAuto && locale === "en" && /*#__PURE__*/React.createElement(Check, {
+    className: "w-3.5 h-3.5 text-brand-primary shrink-0"
+  })))), /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
+    asChild: true
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "sm",
+    className: "gap-1.5 px-2.5 h-9 rounded-xl border border-transparent hover:border-border",
+    title: `${t("切换界面主题", "Switch Theme")} (${activeThemeLabel})`
+  }, /*#__PURE__*/React.createElement(Palette, {
+    className: "w-4 h-4 text-brand-primary"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full border border-white shadow-sm shrink-0",
+    style: {
+      backgroundColor: activeThemeMeta.swatch
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-medium text-foreground hidden xl:inline"
+  }, activeThemeLabel))), /*#__PURE__*/React.createElement(DropdownMenuContent, {
+    align: "end",
+    className: "w-56 storeit-menu-pop p-1.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-2.5 py-1.5 border-b mb-1"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold text-brand-primary"
+  }, t("界面主题色切换", "Theme Palette")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-muted-foreground"
+  }, t("选择配色方案（自动记忆）", "Choose a color palette (auto-saved)"))), THEME_OPTIONS.map(opt => {
+    const active = theme === opt.key;
+    return /*#__PURE__*/React.createElement(DropdownMenuItem, {
+      key: opt.key,
+      onClick: () => setTheme(opt.key),
+      className: "flex items-center justify-between gap-2 px-2.5 py-2 rounded-lg cursor-pointer"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2.5 min-w-0"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "w-4 h-4 rounded-full border border-black/10 shadow-sm shrink-0",
+      style: {
+        backgroundColor: opt.swatch
+      }
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "min-w-0"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: `text-xs ${active ? "font-bold text-brand-primary" : "font-medium text-foreground"}`
+    }, isEn ? opt.labelEn : opt.label), /*#__PURE__*/React.createElement("p", {
+      className: "text-[10px] text-muted-foreground truncate"
+    }, isEn ? opt.descEn : opt.desc))), active && /*#__PURE__*/React.createElement(Check, {
+      className: "w-3.5 h-3.5 text-brand-primary shrink-0"
+    }));
+  }))), /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
+    asChild: true
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "sm",
+    className: "gap-2 pl-2 pr-2 sm:pr-3 rounded-xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-7 h-7 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold text-xs"
+  }, user?.username?.charAt(0).toUpperCase() || "U"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-foreground hidden sm:inline"
+  }, user?.username))), /*#__PURE__*/React.createElement(DropdownMenuContent, {
+    align: "end",
+    className: "w-48 storeit-menu-pop"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-3 py-2 border-b"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-semibold truncate"
+  }, user?.username), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-muted-foreground"
+  }, t("角色", "Role"), ": ", user?.role || "USER")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => setPasswordModalOpen(true),
+    className: "gap-2 cursor-pointer"
+  }, /*#__PURE__*/React.createElement(KeyRound, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("修改登录口令", "Change Password")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: handleLogout,
+    className: "gap-2 text-destructive focus:text-destructive cursor-pointer"
+  }, /*#__PURE__*/React.createElement(LogOut, {
+    className: "w-4 h-4"
+  }), t("退出登录", "Sign Out"))))));
+}
+function Sidebar() {
+  const queryClient = useQueryClient();
+  const viewMode = useFileStore(s => s.viewMode);
+  const setViewMode = useFileStore(s => s.setViewMode);
+  const setCurrentPath = useFileStore(s => s.setCurrentPath);
+  const selectedFile = useFileStore(s => s.selectedFile);
+  const setSelectedFile = useFileStore(s => s.setSelectedFile);
+  const openContainingFolder = useFileStore(s => s.openContainingFolder);
+  const setPreviewFile = useFileStore(s => s.setPreviewFile);
+  const openEditor = useFileStore(s => s.openEditor);
+  const setShareModalFile = useFileStore(s => s.setShareModalFile);
+  const setMoveModalFile = useFileStore(s => s.setMoveModalFile);
+  const setRenameModalFile = useFileStore(s => s.setRenameModalFile);
+  const sidebarOpen = useFileStore(s => s.sidebarOpen);
+  const setSidebarOpen = useFileStore(s => s.setSidebarOpen);
+  const showToast = useFileStore(s => s.showToast);
+  const openConfirm = useFileStore(s => s.openConfirm);
+  const {
+    locale,
+    t
+  } = useI18n();
+  const user = useAuthStore(s => s.user);
+  const isAdmin = user?.role?.toUpperCase() === "ADMIN";
+  const {
+    data: quota
+  } = useQuery({
+    queryKey: ["quota"],
+    queryFn: () => api.getQuota()
+  });
+  const {
+    data: favoritesData
+  } = useQuery({
+    queryKey: ["favoritesList"],
+    queryFn: () => api.getFavorites()
+  });
+  const isFavorite = Boolean(selectedFile && (favoritesData || []).some(f => f.path === selectedFile.path));
+  const deleteMutation = useMutation({
+    mutationFn: path => api.deleteFile(path),
+    onSuccess: () => {
+      setSelectedFile(null);
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["quota"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["favoritesList"]
+      });
+      showToast(t("删除成功", "Deleted successfully"), "success");
+    },
+    onError: err => showToast(err.message || t("删除失败", "Failed to delete"), "error")
+  });
+  const favoriteMutation = useMutation({
+    mutationFn: ({
+      path,
+      favorite
+    }) => api.setFavorite(path, favorite),
+    onSuccess: (_res, vars) => {
+      queryClient.invalidateQueries({
+        queryKey: ["favoritesList"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      showToast(vars.favorite ? t("已加入收藏夹", "Added to favorites") : t("已取消收藏", "Removed from favorites"), "success");
+    },
+    onError: err => showToast(err.message || t("收藏操作失败", "Failed to update favorite"), "error")
+  });
+  const navItems = [{
+    mode: "files",
+    label: t("我的文件", "My Files"),
+    icon: /*#__PURE__*/React.createElement(Folder, {
+      className: "w-4 h-4"
+    })
+  }, {
+    mode: "recent",
+    label: t("最近访问", "Recent"),
+    icon: /*#__PURE__*/React.createElement(Clock, {
+      className: "w-4 h-4"
+    })
+  }, {
+    mode: "favorites",
+    label: t("收藏夹", "Favorites"),
+    icon: /*#__PURE__*/React.createElement(Star, {
+      className: "w-4 h-4"
+    })
+  }, {
+    mode: "shares",
+    label: t("我的分享", "Shares & Mounts"),
+    icon: /*#__PURE__*/React.createElement(Share2, {
+      className: "w-4 h-4"
+    })
+  }, {
+    mode: "admin",
+    label: t("用户管理", "Users & Invites"),
+    icon: /*#__PURE__*/React.createElement(Users, {
+      className: "w-4 h-4"
+    }),
+    adminOnly: true
+  }, {
+    mode: "settings",
+    label: t("系统设置", "Settings"),
+    icon: /*#__PURE__*/React.createElement(Settings, {
+      className: "w-4 h-4"
+    }),
+    adminOnly: true
+  }, {
+    mode: "about",
+    label: t("关于 储之", "About StoreIt"),
+    icon: /*#__PURE__*/React.createElement(Info, {
+      className: "w-4 h-4"
+    })
+  }];
+  const handleNavClick = mode => {
+    if (mode === "files") {
+      setCurrentPath("");
+    }
+    setViewMode(mode);
+    setSidebarOpen(false);
+  };
+  const percent = quota && quota.total > 0 ? quota.used / quota.total * 100 : 0;
+  const storageColor = percent > 90 ? "bg-rose-500" : percent > 70 ? "bg-amber-500" : "bg-brand-primary";
+  const getCategoryLabel = (name, isDir) => {
+    if (isDir) return t("文件夹", "Folder");
+    const cat = getFileCategory(name);
+    switch (cat) {
+      case "image":
+        return t("图片", "Image");
+      case "video":
+        return t("视频", "Video");
+      case "audio":
+        return t("音频", "Audio");
+      case "pdf":
+        return t("PDF 文档", "PDF Document");
+      case "code":
+        return t("文本/代码", "Text / Code");
+      case "archive":
+        return t("压缩包", "Archive");
+      case "document":
+        return t("Office 文档", "Office Document");
+      default:
+        return t("文件", "File");
+    }
+  };
+  const renderFileIcon = (name, isDir) => {
+    if (isDir) return /*#__PURE__*/React.createElement(Folder, {
+      className: "w-5 h-5 text-amber-500"
+    });
+    const cat = getFileCategory(name);
+    switch (cat) {
+      case "image":
+        return /*#__PURE__*/React.createElement(FileImage, {
+          className: "w-5 h-5 text-purple-500"
+        });
+      case "video":
+        return /*#__PURE__*/React.createElement(FileVideo, {
+          className: "w-5 h-5 text-rose-500"
+        });
+      case "audio":
+        return /*#__PURE__*/React.createElement(FileAudio, {
+          className: "w-5 h-5 text-emerald-500"
+        });
+      case "pdf":
+        return /*#__PURE__*/React.createElement(FileText, {
+          className: "w-5 h-5 text-red-500"
+        });
+      case "code":
+        return /*#__PURE__*/React.createElement(FileCode, {
+          className: "w-5 h-5 text-blue-500"
+        });
+      case "archive":
+        return /*#__PURE__*/React.createElement(FileArchive, {
+          className: "w-5 h-5 text-amber-600"
+        });
+      default:
+        return /*#__PURE__*/React.createElement(FileText, {
+          className: "w-5 h-5 text-muted-foreground"
+        });
+    }
+  };
+  const sidebarContent = /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-full overflow-hidden select-none"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "md:hidden flex items-center justify-between p-4 border-b"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-semibold text-brand-primary text-sm"
+  }, t("导航与详情", "Navigation & Details")), /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    onClick: () => setSidebarOpen(false),
+    className: "h-8 w-8"
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-4 h-4"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "p-3 space-y-1 overflow-y-auto"
+  }, navItems.map(item => {
+    if (item.adminOnly && !isAdmin) return null;
+    const isActive = viewMode === item.mode;
+    return /*#__PURE__*/React.createElement("button", {
+      key: item.mode,
+      onClick: () => handleNavClick(item.mode),
+      className: `w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? "bg-brand-primary text-white shadow-sm" : "text-muted-foreground hover:bg-black/5 hover:text-foreground"}`
+    }, item.icon, /*#__PURE__*/React.createElement("span", null, item.label));
+  })), quota && /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-3 mx-3 my-2 bg-black/[0.03] rounded-2xl border border-black/5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-xs text-muted-foreground mb-1.5 font-medium"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement(HardDrive, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("存储空间", "Storage")), /*#__PURE__*/React.createElement("span", null, quota.unlimited && quota.scope === "user" ? `${formatBytes(quota.used)} / ${t("无限制", "Unlimited")}` : `${formatBytes(quota.used)} / ${formatBytes(quota.total)}`)), /*#__PURE__*/React.createElement("div", {
+    className: "w-full h-1.5 bg-black/10 rounded-full overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `h-full rounded-full transition-all duration-300 ${storageColor}`,
+    style: {
+      width: `${Math.min(100, Math.max(0, percent))}%`
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-auto border-t p-4 bg-white/40"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-2"
+  }, /*#__PURE__*/React.createElement("h4", {
+    className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+  }, t("文件属性与详情", "File Properties")), selectedFile && /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-5 w-5 text-muted-foreground hover:text-foreground",
+    onClick: () => setSelectedFile(null),
+    title: t("关闭详情", "Close details")
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-3 h-3"
+  }))), selectedFile ? /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3 animate-in fade-in-50 duration-150 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-start gap-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mt-0.5 shrink-0"
+  }, renderFileIcon(selectedFile.name, selectedFile.isDirectory)), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0 flex-1"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-foreground truncate",
+    title: selectedFile.name
+  }, selectedFile.name), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 text-muted-foreground text-[11px] mt-0.5"
+  }, /*#__PURE__*/React.createElement("span", null, getCategoryLabel(selectedFile.name, selectedFile.isDirectory)), /*#__PURE__*/React.createElement("span", null, "\xB7"), /*#__PURE__*/React.createElement("span", null, selectedFile.isDirectory ? t("目录", "Directory") : formatBytes(selectedFile.size || 0))))), selectedFile.modifiedTime && /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5 text-[11px] text-muted-foreground"
+  }, /*#__PURE__*/React.createElement(Calendar, {
+    className: "w-3.5 h-3.5 shrink-0"
+  }), /*#__PURE__*/React.createElement("span", null, formatDate(selectedFile.modifiedTime, locale))), /*#__PURE__*/React.createElement("div", {
+    className: "text-[11px] text-muted-foreground break-all bg-black/[0.03] p-1.5 rounded font-mono"
+  }, "/", selectedFile.path), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-1.5 pt-1"
+  }, !selectedFile.isDirectory && isPreviewable(selectedFile.name) && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => setPreviewFile(selectedFile)
+  }, /*#__PURE__*/React.createElement(Eye, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("预览", "Preview")), !selectedFile.isDirectory && isEditableText(selectedFile.name) && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => openEditor(selectedFile)
+  }, /*#__PURE__*/React.createElement(Edit3, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("编辑", "Edit")), !selectedFile.isDirectory && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    asChild: true
+  }, /*#__PURE__*/React.createElement("a", {
+    href: getDownloadUrl(selectedFile.path),
+    download: selectedFile.name
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("下载", "Download"))), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => setShareModalFile(selectedFile)
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), selectedFile.isDirectory ? t("共享", "Share Folder") : t("分享", "Share")), viewMode !== "files" && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => openContainingFolder(selectedFile)
+  }, /*#__PURE__*/React.createElement(FolderOpen, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("所在目录", "Open Location")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: `h-7 text-xs gap-1 ${isFavorite ? "text-amber-600 border-amber-300" : ""}`,
+    onClick: () => favoriteMutation.mutate({
+      path: selectedFile.path,
+      favorite: !isFavorite
+    })
+  }, /*#__PURE__*/React.createElement(Star, {
+    className: `w-3 h-3 ${isFavorite ? "fill-amber-500 text-amber-500" : ""}`
+  }), isFavorite ? t("取消收藏", "Unfavorite") : t("加入收藏", "Favorite")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => setRenameModalFile(selectedFile)
+  }, /*#__PURE__*/React.createElement(Edit2, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("重命名", "Rename")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => setMoveModalFile(selectedFile)
+  }, /*#__PURE__*/React.createElement(FolderInput, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("移动", "Move")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "col-span-2 h-7 text-xs gap-1 text-destructive hover:bg-destructive/10 border-destructive/20",
+    onClick: () => {
+      openConfirm({
+        title: t("确认彻底删除", "Confirm Permanent Deletion"),
+        description: t(`确定要彻底删除 "${selectedFile.name}" 吗？此操作不可撤销！`, `Are you sure you want to permanently delete "${selectedFile.name}"? This action cannot be undone.`),
+        confirmText: t("彻底删除", "Delete"),
+        destructive: true,
+        onConfirm: () => deleteMutation.mutate(selectedFile.path)
+      });
+    }
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    className: "w-3 h-3"
+  }), t("删除", "Delete")))) : /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-6 text-muted-foreground/60 text-xs"
+  }, t("选择文件以查看详细属性与操作", "Select a file to view properties & actions"))));
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("aside", {
+    className: "hidden md:flex w-64 border-r bg-white/50 backdrop-blur-sm flex-col shrink-0"
+  }, sidebarContent), sidebarOpen && /*#__PURE__*/React.createElement("div", {
+    className: "md:hidden fixed inset-0 z-50 flex"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 bg-black/40 backdrop-blur-sm",
+    onClick: () => setSidebarOpen(false)
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "relative w-72 max-w-[80vw] h-full bg-white shadow-2xl z-10 flex flex-col"
+  }, sidebarContent)));
+}
+function Breadcrumb() {
+  const currentPath = useFileStore(s => s.currentPath);
+  const setCurrentPath = useFileStore(s => s.setCurrentPath);
+  const viewMode = useFileStore(s => s.viewMode);
+  const setViewMode = useFileStore(s => s.setViewMode);
+  const {
+    t
+  } = useI18n();
+  if (viewMode !== "files" && viewMode !== "search") {
+    const titles = {
+      recent: t("最近访问", "Recent"),
+      favorites: t("收藏夹", "Favorites"),
+      shares: t("我的分享", "Shares & Mounts"),
+      admin: t("用户管理", "Users & Invites"),
+      settings: t("系统设置", "Settings"),
+      about: t("关于", "About")
+    };
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-1.5 text-sm text-muted-foreground py-2 select-none"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        setViewMode("files");
+        setCurrentPath("");
+      },
+      className: "hover:text-brand-primary flex items-center gap-1 transition-colors"
+    }, /*#__PURE__*/React.createElement(Home, {
+      className: "w-4 h-4"
+    }), /*#__PURE__*/React.createElement("span", null, t("首页", "Home"))), /*#__PURE__*/React.createElement(ChevronRight, {
+      className: "w-3.5 h-3.5 text-black/30"
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "font-semibold text-brand-primary"
+    }, titles[viewMode] || viewMode));
+  }
+  const parts = currentPath ? currentPath.split("/").filter(Boolean) : [];
+  return /*#__PURE__*/React.createElement("nav", {
+    className: "flex items-center gap-1.5 text-sm text-muted-foreground py-2 select-none overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setViewMode("files");
+      setCurrentPath("");
+    },
+    className: "hover:text-brand-primary flex items-center gap-1 transition-colors shrink-0"
+  }, /*#__PURE__*/React.createElement(Home, {
+    className: "w-4 h-4"
+  }), /*#__PURE__*/React.createElement("span", null, t("首页", "Home"))), parts.map((part, idx) => {
+    const pathUpToHere = parts.slice(0, idx + 1).join("/");
+    const isLast = idx === parts.length - 1;
+    return /*#__PURE__*/React.createElement(React.Fragment, {
+      key: pathUpToHere
+    }, /*#__PURE__*/React.createElement(ChevronRight, {
+      className: "w-3.5 h-3.5 text-black/30 shrink-0"
+    }), isLast ? /*#__PURE__*/React.createElement("span", {
+      className: "font-semibold text-brand-primary shrink-0 truncate max-w-[200px]"
+    }, part) : /*#__PURE__*/React.createElement("button", {
+      onClick: () => setCurrentPath(pathUpToHere),
+      className: "hover:text-brand-primary transition-colors shrink-0 truncate max-w-[150px]"
+    }, part));
+  }));
+}
+function DropZone({
+  children
+}) {
+  const [isDragOver, setIsDragOver] = useState(false);
+  const dragCounter = useRef(0);
+  const queryClient = useQueryClient();
+  const currentPath = useFileStore(s => s.currentPath);
+  const viewMode = useFileStore(s => s.viewMode);
+  const setViewMode = useFileStore(s => s.setViewMode);
+  const enqueueWithConflictCheck = useUploadStore(s => s.enqueueWithConflictCheck);
+  const {
+    t
+  } = useI18n();
+  const handleDragEnter = useCallback(e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (viewMode !== "files" && viewMode !== "recent" && viewMode !== "favorites" && viewMode !== "search") return;
+    dragCounter.current++;
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragOver(true);
+    }
+  }, [viewMode]);
+  const handleDragLeave = useCallback(e => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current--;
+    if (dragCounter.current <= 0) {
+      setIsDragOver(false);
+      dragCounter.current = 0;
+    }
+  }, []);
+  const handleDragOver = useCallback(e => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+  const handleDrop = useCallback(async e => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    dragCounter.current = 0;
+    const items = e.dataTransfer.items;
+    if (!items || items.length === 0) return;
+    if (viewMode !== "files") {
+      setViewMode("files");
+    }
+    const filesToUpload = [];
+    const emptyDirsToCreate = [];
+    const readEntry = async (entry, relativeDir) => {
+      if (entry.isFile) {
+        await new Promise(resolve => {
+          entry.file(file => {
+            filesToUpload.push({
+              file,
+              subPath: relativeDir
+            });
+            resolve();
+          });
+        });
+      } else if (entry.isDirectory) {
+        const dirReader = entry.createReader();
+        const allChildren = [];
+        const readEntries = async () => {
+          const entries = await new Promise(resolve => {
+            dirReader.readEntries(results => resolve(results));
+          });
+          if (entries.length > 0) {
+            allChildren.push(...entries);
+            await readEntries();
+          }
+        };
+        await readEntries();
+        const thisDir = relativeDir ? `${relativeDir}/${entry.name}` : entry.name;
+        if (allChildren.length === 0) {
+          emptyDirsToCreate.push(thisDir);
+        } else {
+          for (const child of allChildren) {
+            await readEntry(child, thisDir);
+          }
+        }
+      }
+    };
+    const entryPromises = [];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      if (typeof item.webkitGetAsEntry === "function") {
+        const entry = item.webkitGetAsEntry();
+        if (entry) {
+          entryPromises.push(readEntry(entry, ""));
+        }
+      } else if (item.kind === "file") {
+        const f = item.getAsFile();
+        if (f) filesToUpload.push({
+          file: f,
+          subPath: ""
+        });
+      }
+    }
+    await Promise.all(entryPromises);
+    await enqueueWithConflictCheck(filesToUpload, emptyDirsToCreate, currentPath);
+    queryClient.invalidateQueries({
+      queryKey: ["files"]
+    });
+  }, [currentPath, viewMode, setViewMode, enqueueWithConflictCheck, queryClient]);
+  return /*#__PURE__*/React.createElement("div", {
+    onDragEnter: handleDragEnter,
+    onDragLeave: handleDragLeave,
+    onDragOver: handleDragOver,
+    onDrop: handleDrop,
+    className: "relative flex-1 flex flex-col h-full overflow-hidden"
+  }, isDragOver && /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 z-50 flex flex-col items-center justify-center bg-brand-primary/80 backdrop-blur-sm text-white animate-in fade-in-0 duration-150 p-6 pointer-events-none"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-24 h-24 rounded-3xl bg-white/20 flex items-center justify-center mb-6 shadow-2xl animate-bounce"
+  }, /*#__PURE__*/React.createElement(UploadCloud, {
+    className: "w-12 h-12 text-white"
+  })), /*#__PURE__*/React.createElement("h3", {
+    className: "text-2xl font-bold mb-2"
+  }, t("释放鼠标立即上传", "Drop files or folders to upload")), /*#__PURE__*/React.createElement("p", {
+    className: "text-white/80 text-sm max-w-md text-center flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement(FolderPlus, {
+    className: "w-4 h-4"
+  }), t("目标目录：", "Destination: "), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono bg-white/20 px-2 py-0.5 rounded text-white font-medium"
+  }, "/", currentPath || t("根目录", "root"))), /*#__PURE__*/React.createElement("p", {
+    className: "text-white/60 text-xs mt-3"
+  }, t("支持单文件、特大文件以及多级文件夹（含空目录）递归拖入上传", "Supports single files, ultra-large files, and recursive multi-level folder uploads"))), children);
+}
+function FileCard({
+  item,
+  index = 0,
+  onOpen,
+  onDownload,
+  onDelete,
+  onToggleFavorite,
+  onShare,
+  onMove,
+  onCopy,
+  onRename,
+  onPreview,
+  onContextMenu
+}) {
+  const selectedFile = useFileStore(s => s.selectedFile);
+  const setSelectedFile = useFileStore(s => s.setSelectedFile);
+  const selectedPaths = useFileStore(s => s.selectedPaths);
+  const toggleSelectPath = useFileStore(s => s.toggleSelectPath);
+  const viewMode = useFileStore(s => s.viewMode);
+  const openContainingFolder = useFileStore(s => s.openContainingFolder);
+  const openEditor = useFileStore(s => s.openEditor);
+  const openCopyModal = useFileStore(s => s.openCopyModal);
+  const {
+    t
+  } = useI18n();
+  const isSelected = selectedFile?.path === item.path;
+  const isChecked = selectedPaths.includes(item.path);
+  const parentDir = getParentDirectory(item.path);
+  const showParentBadge = viewMode !== "files" && Boolean(parentDir);
+  const renderIcon = () => {
+    if (item.isDirectory) {
+      return /*#__PURE__*/React.createElement(Folder, {
+        className: "w-12 h-12 text-amber-500 fill-amber-500/20 transition-transform duration-200 group-hover:scale-105"
+      });
+    }
+    const cat = getFileCategory(item.name);
+    const cls = "w-12 h-12 transition-transform duration-200 group-hover:scale-105";
+    switch (cat) {
+      case "image":
+        return /*#__PURE__*/React.createElement(FileImage, {
+          className: `${cls} text-purple-500`
+        });
+      case "video":
+        return /*#__PURE__*/React.createElement(FileVideo, {
+          className: `${cls} text-rose-500`
+        });
+      case "audio":
+        return /*#__PURE__*/React.createElement(FileAudio, {
+          className: `${cls} text-emerald-500`
+        });
+      case "code":
+        return /*#__PURE__*/React.createElement(FileCode, {
+          className: `${cls} text-blue-500`
+        });
+      case "archive":
+        return /*#__PURE__*/React.createElement(FileArchive, {
+          className: `${cls} text-amber-600`
+        });
+      case "pdf":
+        return /*#__PURE__*/React.createElement(FileText, {
+          className: `${cls} text-red-500`
+        });
+      case "document":
+        return /*#__PURE__*/React.createElement(FileText, {
+          className: `${cls} text-sky-500`
+        });
+      default:
+        return /*#__PURE__*/React.createElement(FileText, {
+          className: `${cls} text-muted-foreground`
+        });
+    }
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    style: {
+      animationDelay: `${Math.min(index * 15, 180)}ms`
+    },
+    onClick: e => {
+      if (e.ctrlKey || e.metaKey) {
+        toggleSelectPath(item.path);
+      }
+      setSelectedFile(item);
+    },
+    onDoubleClick: () => onOpen(item),
+    onContextMenu: e => onContextMenu?.(e, item),
+    className: `storeit-card-enter group relative flex flex-col items-center justify-between p-4 rounded-2xl bg-white/80 hover:bg-white border cursor-pointer shadow-sm hover:shadow-md select-none ${isChecked || isSelected ? "ring-2 ring-brand-primary border-transparent bg-white shadow-md" : "hover:-translate-y-1"}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full flex items-center justify-between text-muted-foreground"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: e => {
+      e.stopPropagation();
+      toggleSelectPath(item.path);
+    },
+    className: `w-4 h-4 rounded border flex items-center justify-center transition-all ${isChecked ? "bg-brand-primary border-brand-primary text-white opacity-100 scale-105" : "border-black/25 bg-white/80 opacity-0 group-hover:opacity-100"}`,
+    title: isChecked ? t("取消选择", "Deselect") : t("多选此项", "Select item")
+  }, isChecked && /*#__PURE__*/React.createElement(Check, {
+    className: "w-3 h-3"
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: e => {
+      e.stopPropagation();
+      onToggleFavorite(item);
+    },
+    className: `hover:text-amber-500 transition-transform active:scale-125 ${item.isFavorite ? "text-amber-500 fill-amber-500 opacity-100" : "opacity-60 group-hover:opacity-100"}`,
+    title: item.isFavorite ? t("取消收藏", "Remove favorite") : t("加入收藏", "Add to favorites")
+  }, /*#__PURE__*/React.createElement(Star, {
+    className: `w-4 h-4 ${item.isFavorite ? "fill-amber-500" : ""}`
+  }))), /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
+    asChild: true,
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-6 w-6 opacity-60 group-hover:opacity-100"
+  }, /*#__PURE__*/React.createElement(MoreVertical, {
+    className: "w-3.5 h-3.5"
+  }))), /*#__PURE__*/React.createElement(DropdownMenuContent, {
+    align: "end",
+    className: "w-48 storeit-menu-pop"
+  }, !item.isDirectory ? /*#__PURE__*/React.createElement(React.Fragment, null, isPreviewable(item.name) && /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onPreview(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Eye, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("预览", "Preview")), isEditableText(item.name) && /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => openEditor(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Edit3, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("在线编辑", "Online Edit")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onDownload(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("下载", "Download")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onShare(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("分享", "Share")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onDownload(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("打包下载 (.zip)", "Download ZIP (.zip)")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onShare(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("共享文件夹 (R/RW)", "Share Folder (R/RW)")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null)), viewMode !== "files" && /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => openContainingFolder(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(FolderOpen, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("打开所在目录", "Open Containing Folder")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onRename(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Edit2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("重命名", "Rename")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onMove(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(FolderInput, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("移动到...", "Move to...")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onCopy ? onCopy(item) : openCopyModal(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("复制到...", "Copy to...")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onDelete(item),
+    className: "gap-2 text-destructive focus:text-destructive"
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    className: "w-4 h-4"
+  }), t("删除", "Delete"))))), /*#__PURE__*/React.createElement("div", {
+    className: "my-2"
+  }, renderIcon()), /*#__PURE__*/React.createElement("div", {
+    className: "w-full text-center"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-medium text-foreground truncate px-1",
+    title: item.name
+  }, item.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground block mt-0.5 truncate"
+  }, item.isDirectory ? t("文件夹", "Folder") : formatBytes(item.size || 0), showParentBadge ? ` · /${parentDir}` : "")));
+}
+function FileTableRow({
+  item,
+  index = 0,
+  onOpen,
+  onDownload,
+  onDelete,
+  onToggleFavorite,
+  onShare,
+  onMove,
+  onCopy,
+  onRename,
+  onPreview,
+  onContextMenu
+}) {
+  const selectedFile = useFileStore(s => s.selectedFile);
+  const setSelectedFile = useFileStore(s => s.setSelectedFile);
+  const selectedPaths = useFileStore(s => s.selectedPaths);
+  const toggleSelectPath = useFileStore(s => s.toggleSelectPath);
+  const viewMode = useFileStore(s => s.viewMode);
+  const openContainingFolder = useFileStore(s => s.openContainingFolder);
+  const openEditor = useFileStore(s => s.openEditor);
+  const openCopyModal = useFileStore(s => s.openCopyModal);
+  const {
+    locale,
+    t
+  } = useI18n();
+  const isSelected = selectedFile?.path === item.path;
+  const isChecked = selectedPaths.includes(item.path);
+  const parentDir = getParentDirectory(item.path);
+  const showParentBadge = viewMode !== "files" && Boolean(parentDir);
+  const renderIcon = () => {
+    if (item.isDirectory) {
+      return /*#__PURE__*/React.createElement(Folder, {
+        className: "w-5 h-5 text-amber-500 fill-amber-500/20"
+      });
+    }
+    const cat = getFileCategory(item.name);
+    switch (cat) {
+      case "image":
+        return /*#__PURE__*/React.createElement(FileImage, {
+          className: "w-5 h-5 text-purple-500"
+        });
+      case "video":
+        return /*#__PURE__*/React.createElement(FileVideo, {
+          className: "w-5 h-5 text-rose-500"
+        });
+      case "audio":
+        return /*#__PURE__*/React.createElement(FileAudio, {
+          className: "w-5 h-5 text-emerald-500"
+        });
+      case "code":
+        return /*#__PURE__*/React.createElement(FileCode, {
+          className: "w-5 h-5 text-blue-500"
+        });
+      case "archive":
+        return /*#__PURE__*/React.createElement(FileArchive, {
+          className: "w-5 h-5 text-amber-600"
+        });
+      case "pdf":
+        return /*#__PURE__*/React.createElement(FileText, {
+          className: "w-5 h-5 text-red-500"
+        });
+      default:
+        return /*#__PURE__*/React.createElement(FileText, {
+          className: "w-5 h-5 text-muted-foreground"
+        });
+    }
+  };
+  return /*#__PURE__*/React.createElement("tr", {
+    style: {
+      animationDelay: `${Math.min(index * 12, 150)}ms`
+    },
+    onClick: e => {
+      if (e.ctrlKey || e.metaKey) {
+        toggleSelectPath(item.path);
+      }
+      setSelectedFile(item);
+    },
+    onDoubleClick: () => onOpen(item),
+    onContextMenu: e => onContextMenu?.(e, item),
+    className: `storeit-row-enter border-b transition-colors cursor-pointer select-none group ${isChecked || isSelected ? "bg-brand-primary/10" : "hover:bg-white/80"}`
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3 w-16"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: e => {
+      e.stopPropagation();
+      toggleSelectPath(item.path);
+    },
+    className: `w-4 h-4 rounded border flex items-center justify-center transition-all ${isChecked ? "bg-brand-primary border-brand-primary text-white scale-105" : "border-black/25 bg-white hover:border-brand-primary"}`
+  }, isChecked && /*#__PURE__*/React.createElement(Check, {
+    className: "w-3 h-3"
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: e => {
+      e.stopPropagation();
+      onToggleFavorite(item);
+    },
+    className: `text-muted-foreground/40 hover:text-amber-500 transition-transform active:scale-125 ${item.isFavorite ? "text-amber-500 fill-amber-500 opacity-100" : ""}`
+  }, /*#__PURE__*/React.createElement(Star, {
+    className: `w-4 h-4 ${item.isFavorite ? "fill-amber-500" : ""}`
+  })))), /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3 min-w-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "shrink-0 transition-transform duration-150 group-hover:scale-105"
+  }, renderIcon()), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-medium text-sm text-foreground truncate block max-w-md",
+    title: item.name
+  }, item.name), showParentBadge && /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground font-mono block truncate"
+  }, t("所在目录", "Location"), ": /", parentDir)))), /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3 text-xs text-muted-foreground whitespace-nowrap"
+  }, item.isDirectory ? "--" : formatBytes(item.size || 0)), /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3 text-xs text-muted-foreground whitespace-nowrap hidden sm:table-cell"
+  }, formatDate(item.modifiedTime, locale)), /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3 text-right"
+  }, /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
+    asChild: true,
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-7 w-7 opacity-0 group-hover:opacity-100"
+  }, /*#__PURE__*/React.createElement(MoreHorizontal, {
+    className: "w-4 h-4"
+  }))), /*#__PURE__*/React.createElement(DropdownMenuContent, {
+    align: "end",
+    className: "w-48 storeit-menu-pop"
+  }, !item.isDirectory ? /*#__PURE__*/React.createElement(React.Fragment, null, isPreviewable(item.name) && /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onPreview(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Eye, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("预览", "Preview")), isEditableText(item.name) && /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => openEditor(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Edit3, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("在线编辑", "Online Edit")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onDownload(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("下载", "Download")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onShare(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("分享", "Share")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onDownload(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("打包下载 (.zip)", "Download ZIP (.zip)")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onShare(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("共享文件夹 (R/RW)", "Share Folder (R/RW)")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null)), viewMode !== "files" && /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => openContainingFolder(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(FolderOpen, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("打开所在目录", "Open Containing Folder")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onRename(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Edit2, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("重命名", "Rename")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onMove(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(FolderInput, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("移动到...", "Move to...")), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onCopy ? onCopy(item) : openCopyModal(item),
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("复制到...", "Copy to...")), /*#__PURE__*/React.createElement(DropdownMenuSeparator, null), /*#__PURE__*/React.createElement(DropdownMenuItem, {
+    onClick: () => onDelete(item),
+    className: "gap-2 text-destructive focus:text-destructive"
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    className: "w-4 h-4"
+  }), t("删除", "Delete"))))));
+}
+function FileList() {
+  const queryClient = useQueryClient();
+  const currentPath = useFileStore(s => s.currentPath);
+  const viewMode = useFileStore(s => s.viewMode);
+  const layout = useFileStore(s => s.layout);
+  const sortBy = useFileStore(s => s.sortBy);
+  const sortOrder = useFileStore(s => s.sortOrder);
+  const setSort = useFileStore(s => s.setSort);
+  const searchQuery = useFileStore(s => s.searchQuery);
+  const selectedPaths = useFileStore(s => s.selectedPaths);
+  const setSelectedPaths = useFileStore(s => s.setSelectedPaths);
+  const clearSelection = useFileStore(s => s.clearSelection);
+  const openFolder = useFileStore(s => s.openFolder);
+  const openContainingFolder = useFileStore(s => s.openContainingFolder);
+  const setSelectedFile = useFileStore(s => s.setSelectedFile);
+  const setPreviewFile = useFileStore(s => s.setPreviewFile);
+  const openEditor = useFileStore(s => s.openEditor);
+  const setShareModalFile = useFileStore(s => s.setShareModalFile);
+  const setMoveModalFile = useFileStore(s => s.setMoveModalFile);
+  const setBatchMovePaths = useFileStore(s => s.setBatchMovePaths);
+  const openCopyModal = useFileStore(s => s.openCopyModal);
+  const openBatchCopyModal = useFileStore(s => s.openBatchCopyModal);
+  const setRenameModalFile = useFileStore(s => s.setRenameModalFile);
+  const showToast = useFileStore(s => s.showToast);
+  const openConfirm = useFileStore(s => s.openConfirm);
+  const {
+    locale,
+    t
+  } = useI18n();
+  const [contextMenu, setContextMenu] = useState(null);
+  useEffect(() => {
+    const handleCloseMenu = () => setContextMenu(null);
+    window.addEventListener("click", handleCloseMenu);
+    window.addEventListener("scroll", handleCloseMenu, true);
+    return () => {
+      window.removeEventListener("click", handleCloseMenu);
+      window.removeEventListener("scroll", handleCloseMenu, true);
+    };
+  }, []);
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ["files", viewMode, viewMode === "search" ? searchQuery : currentPath],
+    queryFn: async () => {
+      if (viewMode === "recent") return api.getRecent();
+      if (viewMode === "favorites") return api.getFavorites();
+      if (viewMode === "search") return api.searchFiles(searchQuery);
+      const res = await api.getFiles(currentPath);
+      return res.items;
+    }
+  });
+  const {
+    data: favoritesData
+  } = useQuery({
+    queryKey: ["favoritesList"],
+    queryFn: () => api.getFavorites()
+  });
+  const favoritesSet = useMemo(() => {
+    return new Set((favoritesData || []).map(f => f.path));
+  }, [favoritesData]);
+  const uploadTimerRef = useRef(null);
+  useEffect(() => {
+    const handleUploaded = () => {
+      if (uploadTimerRef.current) clearTimeout(uploadTimerRef.current);
+      uploadTimerRef.current = setTimeout(() => {
+        refetch();
+        queryClient.invalidateQueries({
+          queryKey: ["quota"]
+        });
+      }, 300);
+    };
+    window.addEventListener("storeit:file-uploaded", handleUploaded);
+    return () => {
+      window.removeEventListener("storeit:file-uploaded", handleUploaded);
+      if (uploadTimerRef.current) clearTimeout(uploadTimerRef.current);
+    };
+  }, [refetch, queryClient]);
+  const deleteMutation = useMutation({
+    mutationFn: path => api.deleteFile(path),
+    onSuccess: () => {
+      refetch();
+      queryClient.invalidateQueries({
+        queryKey: ["quota"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["favoritesList"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["shares"]
+      });
+      setSelectedFile(null);
+      showToast(t("删除成功", "Deleted successfully"), "success");
+    },
+    onError: err => showToast(err.message || t("删除文件失败", "Failed to delete file"), "error")
+  });
+  const batchDeleteMutation = useMutation({
+    mutationFn: paths => api.batchDeleteFiles(paths),
+    onSuccess: (_res, paths) => {
+      refetch();
+      queryClient.invalidateQueries({
+        queryKey: ["quota"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["favoritesList"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["shares"]
+      });
+      setSelectedFile(null);
+      clearSelection();
+      showToast(t(`已成功删除 ${paths.length} 个项目`, `Deleted ${paths.length} items`), "success");
+    },
+    onError: err => showToast(err.message || t("批量删除失败", "Batch delete failed"), "error")
+  });
+  const favoriteMutation = useMutation({
+    mutationFn: ({
+      path,
+      favorite
+    }) => api.setFavorite(path, favorite),
+    onSuccess: (_res, vars) => {
+      queryClient.invalidateQueries({
+        queryKey: ["favoritesList"]
+      });
+      refetch();
+      showToast(vars.favorite ? t("已加入收藏夹", "Added to favorites") : t("已取消收藏", "Removed from favorites"), "success");
+    },
+    onError: err => showToast(err.message || t("更新收藏失败", "Failed to update favorite"), "error")
+  });
+  const handleOpen = item => {
+    if (item.isDirectory) {
+      openFolder(item.path);
+    } else {
+      setPreviewFile(item);
+    }
+  };
+  const handleDownload = item => {
+    const link = document.createElement("a");
+    if (item.isDirectory) {
+      link.href = getZipDownloadUrl([item.path]);
+      link.download = `${item.name}.zip`;
+      showToast(t(`正在打包下载文件夹 "${item.name}.zip"...`, `Downloading folder "${item.name}.zip"...`), "info");
+    } else {
+      link.href = getDownloadUrl(item.path);
+      link.download = item.name;
+    }
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+  const handleBatchDownload = () => {
+    if (selectedPaths.length === 0) return;
+    const link = document.createElement("a");
+    link.href = getZipDownloadUrl(selectedPaths);
+    link.download = t(`StoreIt-打包下载-${selectedPaths.length}项.zip`, `StoreIt-Archive-${selectedPaths.length}-items.zip`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast(t(`正在打包下载已选的 ${selectedPaths.length} 个项目...`, `Downloading ${selectedPaths.length} selected items as ZIP...`), "info");
+  };
+  const handleDelete = item => {
+    openConfirm({
+      title: t(`确认删除${item.isDirectory ? "文件夹" : "文件"}`, `Confirm Delete ${item.isDirectory ? "Folder" : "File"}`),
+      description: t(`确定要彻底删除 "${item.name}" 吗？此操作不可撤销！`, `Are you sure you want to permanently delete "${item.name}"? This action cannot be undone.`),
+      confirmText: t("彻底删除", "Delete"),
+      destructive: true,
+      onConfirm: () => deleteMutation.mutate(item.path)
+    });
+  };
+  const handleBatchDelete = () => {
+    if (selectedPaths.length === 0) return;
+    openConfirm({
+      title: t(`确认批量删除 (${selectedPaths.length} 项)`, `Confirm Batch Delete (${selectedPaths.length} items)`),
+      description: t(`确定要彻底删除选中的 ${selectedPaths.length} 个文件或文件夹吗？此操作不可撤销！`, `Are you sure you want to permanently delete the ${selectedPaths.length} selected items? This action cannot be undone.`),
+      confirmText: t("确认批量删除", "Delete All"),
+      destructive: true,
+      onConfirm: () => batchDeleteMutation.mutate(selectedPaths)
+    });
+  };
+  const handleBatchFavorite = async () => {
+    for (const p of selectedPaths) {
+      try {
+        await api.setFavorite(p, true);
+      } catch {}
+    }
+    queryClient.invalidateQueries({
+      queryKey: ["favoritesList"]
+    });
+    refetch();
+    showToast(t(`已将 ${selectedPaths.length} 个项目加入收藏夹`, `Added ${selectedPaths.length} items to favorites`), "success");
+    clearSelection();
+  };
+  const handleToggleFavorite = item => {
+    favoriteMutation.mutate({
+      path: item.path,
+      favorite: !item.isFavorite
+    });
+  };
+  const handleContextMenu = (e, item) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedFile(item);
+    setContextMenu({
+      x: Math.min(e.clientX, typeof window !== "undefined" ? window.innerWidth - 200 : e.clientX),
+      y: Math.min(e.clientY, typeof window !== "undefined" ? window.innerHeight - 310 : e.clientY),
+      item
+    });
+  };
+  const rawItems = data || [];
+  const items = useMemo(() => {
+    const mapped = rawItems.map(it => ({
+      ...it,
+      isFavorite: viewMode === "favorites" ? true : favoritesSet.has(it.path)
+    }));
+    const dirFactor = sortOrder === "asc" ? 1 : -1;
+    return mapped.sort((a, b) => {
+      if (a.isDirectory !== b.isDirectory) {
+        return a.isDirectory ? -1 : 1;
+      }
+      if (sortBy === "size") {
+        return ((a.size || 0) - (b.size || 0)) * dirFactor;
+      }
+      if (sortBy === "modifiedTime") {
+        return (Number(a.modifiedTime || 0) - Number(b.modifiedTime || 0)) * dirFactor;
+      }
+      return a.name.localeCompare(b.name, locale === "en" ? "en-US" : "zh-CN", {
+        numeric: true
+      }) * dirFactor;
+    });
+  }, [rawItems, favoritesSet, viewMode, sortBy, sortOrder, locale]);
+  const renderSortIcon = field => {
+    if (sortBy !== field) return /*#__PURE__*/React.createElement(ArrowUpDown, {
+      className: "w-3 h-3 opacity-40"
+    });
+    return sortOrder === "asc" ? /*#__PURE__*/React.createElement(ArrowUp, {
+      className: "w-3 h-3 text-brand-primary"
+    }) : /*#__PURE__*/React.createElement(ArrowDown, {
+      className: "w-3 h-3 text-brand-primary"
+    });
+  };
+  if (isLoading) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex-1 flex flex-col items-center justify-center p-12 text-muted-foreground gap-3"
+    }, /*#__PURE__*/React.createElement(RefreshCw, {
+      className: "w-8 h-8 animate-spin text-brand-secondary"
+    }), /*#__PURE__*/React.createElement("p", {
+      className: "text-sm"
+    }, t("正在加载文件列表...", "Loading files...")));
+  }
+  if (isError) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex-1 flex flex-col items-center justify-center p-12 text-destructive select-none gap-3"
+    }, /*#__PURE__*/React.createElement(AlertCircle, {
+      className: "w-10 h-10 text-destructive"
+    }), /*#__PURE__*/React.createElement("p", {
+      className: "text-base font-semibold"
+    }, t("读取文件列表失败", "Failed to load file list")), /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-muted-foreground"
+    }, error?.message || t("可能登录会话已过期或网络断开", "Your session may have expired or network is disconnected")), /*#__PURE__*/React.createElement(Button, {
+      variant: "outline",
+      size: "sm",
+      onClick: () => refetch(),
+      className: "gap-1.5 mt-2"
+    }, /*#__PURE__*/React.createElement(RefreshCw, {
+      className: "w-3.5 h-3.5"
+    }), " ", t("重新加载", "Reload")));
+  }
+  if (items.length === 0) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "storeit-view-enter flex-1 flex flex-col items-center justify-center p-12 text-muted-foreground select-none"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "w-20 h-20 rounded-full bg-brand-secondary/10 flex items-center justify-center mb-4 text-brand-secondary"
+    }, /*#__PURE__*/React.createElement(FolderOpen, {
+      className: "w-10 h-10"
+    })), /*#__PURE__*/React.createElement("p", {
+      className: "text-base font-semibold text-brand-primary"
+    }, viewMode === "search" ? t("未找到匹配的文件", "No matching files found") : viewMode === "favorites" ? t("收藏夹暂无文件", "No favorite items yet") : viewMode === "recent" ? t("暂无最近访问记录", "No recently accessed files") : t("此目录下暂无文件", "This folder is empty")), /*#__PURE__*/React.createElement("p", {
+      className: "text-xs text-muted-foreground mt-1 max-w-sm text-center"
+    }, viewMode === "files" ? t("直接将文件或文件夹拖拽至此，或点击右上角“上传 / 新建文件”开始添加", "Drag and drop files or folders here, or click 'Upload / New File' in the top bar") : t("可在我的文件中右键或点击星标将重要文件添加至此", "Right-click or star files in 'My Files' to add them here")));
+  }
+  const allSelected = items.length > 0 && selectedPaths.length === items.length;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "storeit-view-enter flex-1 overflow-y-auto p-4 relative min-h-full space-y-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center justify-between gap-2 px-1"
+  }, selectedPaths.length > 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "storeit-spring-bar flex flex-wrap items-center gap-2 bg-brand-primary text-white px-3.5 py-1.5 rounded-xl shadow-sm text-xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-semibold"
+  }, t(`已选 ${selectedPaths.length} 项`, `${selectedPaths.length} selected`)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => allSelected ? clearSelection() : setSelectedPaths(items.map(it => it.path)),
+    className: "px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 transition-colors"
+  }, allSelected ? t("取消全选", "Deselect All") : t("全选当前页", "Select All")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleBatchDownload,
+    className: "px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("打包下载", "Download ZIP")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setBatchMovePaths(selectedPaths),
+    className: "px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
+  }, /*#__PURE__*/React.createElement(FolderInput, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("批量移动", "Move")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => openBatchCopyModal(selectedPaths),
+    className: "px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
+  }, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("批量复制", "Copy")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleBatchFavorite,
+    className: "px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 flex items-center gap-1 transition-colors"
+  }, /*#__PURE__*/React.createElement(Star, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("批量收藏", "Favorite")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleBatchDelete,
+    className: "px-2 py-0.5 rounded bg-rose-500/80 hover:bg-rose-500 flex items-center gap-1 transition-colors"
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("批量删除", "Delete")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: clearSelection,
+    className: "p-0.5 rounded hover:bg-white/20 ml-1",
+    title: t("退出多选", "Clear selection")
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-3.5 h-3.5"
+  }))) : /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 text-xs text-muted-foreground select-none"
+  }, /*#__PURE__*/React.createElement("span", null, t(`共 ${items.length} 项`, `${items.length} items`)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setSelectedPaths(items.map(it => it.path)),
+    className: "inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-black/5 text-muted-foreground hover:text-foreground transition-colors"
+  }, /*#__PURE__*/React.createElement(CheckSquare, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("全选", "Select All")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: async () => {
+      try {
+        const res = await api.resyncFiles();
+        refetch();
+        queryClient.invalidateQueries({
+          queryKey: ["quota"]
+        });
+        showToast(t(`磁盘索引同步完成 (共扫描 ${res.indexed} 项)`, `Disk index synced (${res.indexed} items scanned)`), "success");
+      } catch (err) {
+        showToast(err.message || t("同步索引失败", "Failed to resync index"), "error");
+      }
+    },
+    className: "inline-flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-black/5 text-muted-foreground hover:text-foreground transition-colors",
+    title: t("递归扫描物理存储目录并更新文件搜索索引", "Recursively scan physical storage directory and refresh search index")
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-3 h-3"
+  }), " ", t("同步索引", "Sync Index"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1 text-xs select-none"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-muted-foreground mr-1"
+  }, t("排序:", "Sort:")), [{
+    key: "name",
+    label: t("名称", "Name")
+  }, {
+    key: "size",
+    label: t("大小", "Size")
+  }, {
+    key: "modifiedTime",
+    label: t("时间", "Modified")
+  }].map(col => /*#__PURE__*/React.createElement("button", {
+    key: col.key,
+    type: "button",
+    onClick: () => setSort(col.key),
+    className: `inline-flex items-center gap-1 px-2.5 py-1 rounded-lg transition-all duration-150 ${sortBy === col.key ? "bg-white shadow-sm text-brand-primary font-semibold" : "text-muted-foreground hover:bg-black/5 hover:text-foreground"}`
+  }, /*#__PURE__*/React.createElement("span", null, col.label), renderSortIcon(col.key))))), layout === "grid" ? /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3.5"
+  }, items.map((item, idx) => /*#__PURE__*/React.createElement(FileCard, {
+    key: item.path,
+    item: item,
+    index: idx,
+    onOpen: handleOpen,
+    onDownload: handleDownload,
+    onDelete: handleDelete,
+    onToggleFavorite: handleToggleFavorite,
+    onShare: it => setShareModalFile(it),
+    onMove: it => setMoveModalFile(it),
+    onCopy: it => openCopyModal(it),
+    onRename: it => setRenameModalFile(it),
+    onPreview: it => setPreviewFile(it),
+    onContextMenu: handleContextMenu
+  }))) : /*#__PURE__*/React.createElement("div", {
+    className: "bg-white/80 rounded-2xl border shadow-sm overflow-hidden"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left border-collapse"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "border-b bg-muted/40 text-xs font-semibold text-muted-foreground select-none"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-3 w-16"
+  }), /*#__PURE__*/React.createElement("th", {
+    onClick: () => setSort("name"),
+    className: "py-2.5 px-3 cursor-pointer hover:text-brand-primary"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-1"
+  }, t("名称", "Name"), " ", renderSortIcon("name"))), /*#__PURE__*/React.createElement("th", {
+    onClick: () => setSort("size"),
+    className: "py-2.5 px-3 w-28 cursor-pointer hover:text-brand-primary"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-1"
+  }, t("大小", "Size"), " ", renderSortIcon("size"))), /*#__PURE__*/React.createElement("th", {
+    onClick: () => setSort("modifiedTime"),
+    className: "py-2.5 px-3 w-44 hidden sm:table-cell cursor-pointer hover:text-brand-primary"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-1"
+  }, t("修改时间", "Modified"), " ", renderSortIcon("modifiedTime"))), /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-3 w-16 text-right"
+  }, t("操作", "Actions")))), /*#__PURE__*/React.createElement("tbody", null, items.map((item, idx) => /*#__PURE__*/React.createElement(FileTableRow, {
+    key: item.path,
+    item: item,
+    index: idx,
+    onOpen: handleOpen,
+    onDownload: handleDownload,
+    onDelete: handleDelete,
+    onToggleFavorite: handleToggleFavorite,
+    onShare: it => setShareModalFile(it),
+    onMove: it => setMoveModalFile(it),
+    onCopy: it => openCopyModal(it),
+    onRename: it => setRenameModalFile(it),
+    onPreview: it => setPreviewFile(it),
+    onContextMenu: handleContextMenu
+  }))))), contextMenu && /*#__PURE__*/React.createElement("div", {
+    style: {
+      top: contextMenu.y,
+      left: contextMenu.x
+    },
+    className: "storeit-menu-pop fixed z-50 w-52 bg-white/95 backdrop-blur-md rounded-2xl border shadow-xl p-1.5 text-xs select-none",
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "px-2.5 py-1.5 font-semibold text-foreground truncate border-b mb-1"
+  }, contextMenu.item.name), !contextMenu.item.isDirectory && isPreviewable(contextMenu.item.name) && /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setPreviewFile(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Eye, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("预览", "Preview")), !contextMenu.item.isDirectory && isEditableText(contextMenu.item.name) && /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      openEditor(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Edit3, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("在线编辑", "Online Edit")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      handleDownload(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), contextMenu.item.isDirectory ? t("打包下载 (.zip)", "Download ZIP (.zip)") : t("下载", "Download")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setShareModalFile(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), contextMenu.item.isDirectory ? t("共享文件夹 (R/RW)", "Share Folder (R/RW)") : t("分享", "Share")), viewMode !== "files" && /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      openContainingFolder(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(FolderOpen, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("打开所在目录", "Open Containing Folder")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      handleToggleFavorite(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Star, {
+    className: `w-3.5 h-3.5 ${contextMenu.item.isFavorite ? "fill-amber-500 text-amber-500" : ""}`
+  }), contextMenu.item.isFavorite ? t("取消收藏", "Remove Favorite") : t("加入收藏", "Add to Favorites")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setRenameModalFile(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Edit2, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("重命名", "Rename")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setMoveModalFile(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(FolderInput, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("移动到...", "Move to...")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      openCopyModal(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("复制到...", "Copy to...")), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      setSelectedFile(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-black/5 text-left text-foreground"
+  }, /*#__PURE__*/React.createElement(Info, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("属性与详情", "Properties")), /*#__PURE__*/React.createElement("div", {
+    className: "h-px bg-black/5 my-1"
+  }), /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      handleDelete(contextMenu.item);
+      setContextMenu(null);
+    },
+    className: "w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg hover:bg-destructive/10 text-left text-destructive"
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    className: "w-3.5 h-3.5"
+  }), t("删除", "Delete"))));
+}
+function parseShareLinkInput(raw) {
+  let input = (raw || "").trim();
+  let extractedPassword = "";
+  const qIdx = input.indexOf("?");
+  if (qIdx >= 0) {
+    const qs = new URLSearchParams(input.slice(qIdx + 1));
+    extractedPassword = qs.get("key") || qs.get("password") || qs.get("pwd") || "";
+    input = input.slice(0, qIdx);
+  }
+  if (input.startsWith("storeit+fed://")) {
+    const rest = input.slice("storeit+fed://".length);
+    const isLocal = rest.startsWith("localhost") || rest.startsWith("127.0.0.1");
+    input = (isLocal ? "http://" : "https://") + rest;
+  }
+  let remoteServerUrl = "";
+  let pathPart = input;
+  if (input.startsWith("http://") || input.startsWith("https://")) {
+    try {
+      const u = new URL(input);
+      if (typeof window !== "undefined" && u.origin !== window.location.origin) {
+        remoteServerUrl = u.origin;
+      }
+      pathPart = u.pathname + u.hash;
+    } catch {}
+  }
+  let token = pathPart;
+  if (token.includes("/api/fed/shares/")) {
+    token = token.slice(token.indexOf("/api/fed/shares/") + "/api/fed/shares/".length);
+  } else if (token.includes("#/s/")) {
+    token = token.slice(token.indexOf("#/s/") + "#/s/".length);
+  } else if (token.includes("/d/")) {
+    token = token.slice(token.indexOf("/d/") + "/d/".length);
+  }
+  if (token.includes("/")) {
+    token = token.slice(0, token.indexOf("/"));
+  }
+  token = token.replace(/[^A-Za-z0-9_-]/g, "");
+  return {
+    token,
+    remoteServerUrl,
+    extractedPassword
+  };
+}
+function SharesTab() {
+  const queryClient = useQueryClient();
+  const showToast = useFileStore(s => s.showToast);
+  const openConfirm = useFileStore(s => s.openConfirm);
+  const activeShareToken = useFileStore(s => s.activeShareToken);
+  const activeShareServerUrl = useFileStore(s => s.activeShareServerUrl);
+  const activeSharePassword = useFileStore(s => s.activeSharePassword);
+  const openSharedSpace = useFileStore(s => s.openSharedSpace);
+  const closeSharedSpace = useFileStore(s => s.closeSharedSpace);
+  const {
+    locale,
+    t
+  } = useI18n();
+  const [copiedId, setCopiedId] = useState(null);
+  const [linkInput, setLinkInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [mountNameInput, setMountNameInput] = useState("");
+  const [manifest, setManifest] = useState(null);
+  const [subPath, setSubPath] = useState("");
+  const [sharedItems, setSharedItems] = useState([]);
+  const [loadingSpace, setLoadingSpace] = useState(false);
+  const [spaceError, setSpaceError] = useState(null);
+  const [needsPasswordPrompt, setNeedsPasswordPrompt] = useState(false);
+  const [viewingSharedItem, setViewingSharedItem] = useState(null);
+  const [sharedTextContent, setSharedTextContent] = useState("");
+  const [editingSharedText, setEditingSharedText] = useState(false);
+  const [savingSharedText, setSavingSharedText] = useState(false);
+  const [sharedSplitMd, setSharedSplitMd] = useState(true);
+  const [newSubfolderName, setNewSubfolderName] = useState("");
+  const [showMkdirBar, setShowMkdirBar] = useState(false);
+  const [newSharedFileName, setNewSharedFileName] = useState("");
+  const [showNewFileBar, setShowNewFileBar] = useState(false);
+  const sharedUploadInputRef = useRef(null);
+  const {
+    data: sharesData,
+    isLoading,
+    refetch
+  } = useQuery({
+    queryKey: ["shares"],
+    queryFn: () => api.getShares()
+  });
+  const {
+    data: mountsData,
+    refetch: refetchMounts
+  } = useQuery({
+    queryKey: ["shareMounts"],
+    queryFn: () => api.getShareMounts()
+  });
+  const loadActiveShareSpace = async (token, serverUrl, pwd, targetSubPath = "") => {
+    if (!token) return;
+    setLoadingSpace(true);
+    setSpaceError(null);
+    setNeedsPasswordPrompt(false);
+    try {
+      const mf = await api.getFederatedManifest(token, pwd, serverUrl);
+      setManifest(mf);
+      const listRes = await api.listFederatedShare(token, targetSubPath, pwd, serverUrl);
+      setSharedItems(listRes.items || []);
+      setSubPath(listRes.currentSubPath || "");
+    } catch (err) {
+      if (err?.passwordRequired || err?.status === 403) {
+        setNeedsPasswordPrompt(true);
+      }
+      setSpaceError(err.message || t("无法加载共享空间", "Failed to load shared space"));
+    } finally {
+      setLoadingSpace(false);
+    }
+  };
+  useEffect(() => {
+    if (activeShareToken) {
+      setViewingSharedItem(null);
+      loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, "");
+    } else {
+      setManifest(null);
+      setSharedItems([]);
+      setSubPath("");
+    }
+  }, [activeShareToken, activeShareServerUrl, activeSharePassword]);
+  const handleLoadInputShare = async saveAsMount => {
+    const parsed = parseShareLinkInput(linkInput);
+    if (!parsed.token) {
+      showToast(t("请输入有效的分享链接、Token 或 storeit+fed:// 跨服协议地址", "Please enter a valid share link, token, or storeit+fed:// URI"), "error");
+      return;
+    }
+    const pwd = passwordInput.trim() || parsed.extractedPassword;
+    openSharedSpace(parsed.token, parsed.remoteServerUrl, pwd);
+    if (saveAsMount) {
+      try {
+        let mf = null;
+        try {
+          mf = await api.getFederatedManifest(parsed.token, pwd, parsed.remoteServerUrl);
+        } catch {}
+        await api.createShareMount({
+          shareLinkOrToken: linkInput.trim(),
+          accessPassword: pwd || undefined,
+          mountName: mountNameInput.trim() || mf?.name || undefined,
+          permission: mf?.permission || "READ_WRITE",
+          ownerName: mf?.ownerUsername || parsed.remoteServerUrl || "local",
+          isDirectory: mf ? mf.isDirectory : true
+        });
+        refetchMounts();
+        showToast(t("已保存到我的共享挂载列表", "Saved to mounted shares"), "success");
+        setLinkInput("");
+        setMountNameInput("");
+      } catch (err) {
+        showToast(err.message || t("保存挂载失败", "Failed to save mount"), "error");
+      }
+    }
+  };
+  const revokeMutation = useMutation({
+    mutationFn: id => api.revokeShare(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["shares"]
+      });
+      showToast(t("分享链接已撤销", "Share link revoked"), "success");
+    },
+    onError: err => showToast(err.message || t("撤销分享失败", "Failed to revoke share"), "error")
+  });
+  const deleteMountMutation = useMutation({
+    mutationFn: id => api.deleteShareMount(id),
+    onSuccess: () => {
+      refetchMounts();
+      showToast(t("已移除挂载项", "Mount removed"), "success");
+    }
+  });
+  const handleCopy = async (key, text) => {
+    if (await copyToClipboard(text)) {
+      setCopiedId(key);
+      showToast(t("已复制到剪贴板", "Copied to clipboard"), "success");
+      setTimeout(() => setCopiedId(null), 1800);
+    }
+  };
+  const handleRevoke = (id, filePath) => {
+    openConfirm({
+      title: t("确认撤销共享", "Confirm Revoke Share"),
+      description: t(`确定要撤销对 "${filePath}" 的共享链接吗？撤销后所有访问与跨服挂载将立即失效。`, `Are you sure you want to revoke the share link for "${filePath}"? All web and federated mounts will stop working immediately.`),
+      confirmText: t("确认撤销", "Revoke"),
+      destructive: true,
+      onConfirm: () => revokeMutation.mutate(id)
+    });
+  };
+  const fedBase = activeShareServerUrl ? activeShareServerUrl.replace(/\/+$/, "") : "";
+  const pwdQuery = activeSharePassword ? `&password=${encodeURIComponent(activeSharePassword)}` : "";
+  const getSharedPreviewUrl = itemSubPath => `${fedBase}/api/fed/shares/${encodeURIComponent(activeShareToken || "")}/preview?subPath=${encodeURIComponent(itemSubPath)}${pwdQuery}`;
+  const getSharedDownloadUrl = itemSubPath => `${fedBase}/api/fed/shares/${encodeURIComponent(activeShareToken || "")}/download?subPath=${encodeURIComponent(itemSubPath)}${pwdQuery}`;
+  const getSharedZipUrl = targetSubPath => `${fedBase}/api/fed/shares/${encodeURIComponent(activeShareToken || "")}/zip?subPath=${encodeURIComponent(targetSubPath)}${pwdQuery}`;
+  const handleOpenSharedItem = async it => {
+    if (!activeShareToken) return;
+    if (it.isDirectory) {
+      setViewingSharedItem(null);
+      await loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, it.path);
+      return;
+    }
+    setViewingSharedItem(it);
+    setEditingSharedText(false);
+    if (getPreviewKind(it.name) === "text") {
+      try {
+        const res = await api.getFederatedFileContent(activeShareToken, it.path, activeSharePassword, activeShareServerUrl);
+        setSharedTextContent(res.content || "");
+      } catch (err) {
+        showToast(err.message || t("读取共享文件内容失败", "Failed to read shared file"), "error");
+      }
+    }
+  };
+  const handleSaveSharedText = async () => {
+    if (!activeShareToken || !viewingSharedItem) return;
+    setSavingSharedText(true);
+    try {
+      await api.saveFederatedFileContent(activeShareToken, viewingSharedItem.path, sharedTextContent, activeSharePassword, activeShareServerUrl);
+      setEditingSharedText(false);
+      showToast(t("共享文件内容已保存", "Shared file saved"), "success");
+      loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+    } catch (err) {
+      showToast(err.message || t("保存共享文件失败", "Failed to save shared file"), "error");
+    } finally {
+      setSavingSharedText(false);
+    }
+  };
+  const handleSharedUpload = async e => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !activeShareToken) return;
+    for (let i = 0; i < files.length; i++) {
+      try {
+        await api.uploadToFederatedShare(activeShareToken, subPath, files[i], "rename", activeSharePassword, activeShareServerUrl);
+      } catch (err) {
+        showToast(err.message || t(`上传 ${files[i].name} 失败`, `Failed to upload ${files[i].name}`), "error");
+      }
+    }
+    e.target.value = "";
+    showToast(t("文件已上传至共享目录", "Files uploaded to shared folder"), "success");
+    loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+  };
+  const handleCreateSharedSubfolder = async e => {
+    e.preventDefault();
+    if (!activeShareToken || !newSubfolderName.trim()) return;
+    try {
+      await api.createFederatedSubfolder(activeShareToken, subPath, newSubfolderName.trim(), activeSharePassword, activeShareServerUrl);
+      setNewSubfolderName("");
+      setShowMkdirBar(false);
+      showToast(t("共享子文件夹已创建", "Subfolder created"), "success");
+      loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+    } catch (err) {
+      showToast(err.message || t("创建子文件夹失败", "Failed to create subfolder"), "error");
+    }
+  };
+  const handleCreateSharedBlankFile = async e => {
+    e.preventDefault();
+    if (!activeShareToken || !newSharedFileName.trim()) return;
+    try {
+      const name = newSharedFileName.trim();
+      const initial = name.endsWith(".md") ? `# ${name}\n\n` : "";
+      const res = await api.createFederatedBlankFile(activeShareToken, subPath, name, initial, activeSharePassword, activeShareServerUrl);
+      setNewSharedFileName("");
+      setShowNewFileBar(false);
+      showToast(t("共享文件已创建", "Shared file created"), "success");
+      await loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+      if (res.file) {
+        setViewingSharedItem({
+          name: res.file.name,
+          path: res.file.path,
+          isDirectory: false,
+          size: res.file.size
+        });
+        setSharedTextContent(initial);
+        setEditingSharedText(true);
+      }
+    } catch (err) {
+      showToast(err.message || t("创建共享文件失败", "Failed to create shared file"), "error");
+    }
+  };
+  const handleDeleteSharedItem = async it => {
+    if (!activeShareToken) return;
+    try {
+      await api.deleteFederatedItem(activeShareToken, it.path, activeSharePassword, activeShareServerUrl);
+      if (viewingSharedItem?.path === it.path) setViewingSharedItem(null);
+      showToast(t(`已从共享目录删除 "${it.name}"`, `Deleted "${it.name}" from shared folder`), "success");
+      loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+    } catch (err) {
+      showToast(err.message || t("删除失败", "Failed to delete"), "error");
+    }
+  };
+  const shares = sharesData || [];
+  const mounts = mountsData || [];
+  const isRW = manifest?.permission === "READ_WRITE";
+  const subParts = subPath ? subPath.split("/").filter(Boolean) : [];
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-6 max-w-5xl mx-auto space-y-6 storeit-view-enter"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center justify-between gap-3 pb-4 border-b"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-6 h-6 text-brand-secondary"
+  }), t("共享文件夹 · 跨服联邦挂载与分享中心", "Shared Folders · Cross-Server Federation & Shares")), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-muted-foreground mt-1"
+  }, t("管理单文件与文件夹共享（支持 R 只读 / RW 读写权限管控），或通过 SFSP/1.0 协议加载本机及跨服务器共享空间", "Manage file & folder shares (with R read-only / RW read-write permissions) or mount local & remote shared spaces via SFSP/1.0"))), /*#__PURE__*/React.createElement(Button, {
+    variant: "outline",
+    size: "sm",
+    onClick: () => {
+      refetch();
+      refetchMounts();
+      if (activeShareToken) {
+        loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+      }
+    },
+    className: "gap-1.5"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-4 h-4"
+  }), " ", t("刷新全部", "Refresh All"))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-semibold text-brand-primary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Globe, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("加载共享链接 / 跨服联邦挂载 (SFSP/1.0)", "Open Share Link / Mount Federated Space (SFSP/1.0)")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-muted-foreground mt-0.5"
+  }, t("支持粘贴本机分享 Token、Web 链接（", "Paste a share token, web URL ("), /*#__PURE__*/React.createElement("code", {
+    className: "bg-muted px-1 rounded"
+  }, "/#/s/TOKEN"), t("）或任意远程 StoreIt 节点协议地址（", "), or remote StoreIt federation URI ("), /*#__PURE__*/React.createElement("code", {
+    className: "bg-muted px-1 rounded"
+  }, "storeit+fed://host/api/fed/shares/TOKEN"), t("）", ")")))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-5"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("分享链接 / Token / 跨服协议 URI", "Share Link / Token / Federation URI")), /*#__PURE__*/React.createElement(Input, {
+    value: linkInput,
+    onChange: e => setLinkInput(e.target.value),
+    placeholder: t("粘贴 #/s/... 或 storeit+fed://...", "Paste #/s/... or storeit+fed://..."),
+    className: "text-xs font-mono"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("提取码 (若设置)", "Access Code")), /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: passwordInput,
+    onChange: e => setPasswordInput(e.target.value),
+    placeholder: t("可选提取码", "Optional"),
+    className: "text-xs"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("挂载备注名 (可选)", "Alias (Optional)")), /*#__PURE__*/React.createElement(Input, {
+    value: mountNameInput,
+    onChange: e => setMountNameInput(e.target.value),
+    placeholder: t("如：团队设计库", "e.g. Team Assets"),
+    className: "text-xs"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-3 flex gap-1.5"
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    onClick: () => handleLoadInputShare(false),
+    className: "flex-1 text-xs"
+  }, t("立即打开", "Open Now")), /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: () => handleLoadInputShare(true),
+    className: "flex-1 text-xs"
+  }, t("保存并挂载", "Save & Mount")))), mounts.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "pt-2 border-t space-y-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold text-muted-foreground"
+  }, t(`已保存的共享挂载 (${mounts.length})：`, `Saved Mounts (${mounts.length}):`)), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5"
+  }, mounts.map(m => {
+    const isActive = activeShareToken === m.shareToken && (activeShareServerUrl || "") === (m.remoteServerUrl || "");
+    return /*#__PURE__*/React.createElement("div", {
+      key: m.id,
+      onClick: () => openSharedSpace(m.shareToken, m.remoteServerUrl || "", m.accessPassword || ""),
+      className: `p-3 rounded-xl border cursor-pointer transition-all flex items-center justify-between gap-2 ${isActive ? "border-brand-primary bg-brand-primary/10 shadow-sm" : "bg-muted/20 hover:bg-white"}`
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2.5 min-w-0"
+    }, /*#__PURE__*/React.createElement(FolderOpen, {
+      className: "w-5 h-5 text-amber-500 shrink-0"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "min-w-0"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-xs font-semibold text-brand-primary truncate"
+    }, m.mountName), /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-1.5 text-[10px] text-muted-foreground"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: `px-1.5 py-0.2 rounded font-semibold ${m.permission === "READ_WRITE" ? "bg-emerald-100 text-emerald-700" : "bg-blue-100 text-blue-700"}`
+    }, m.permission === "READ_WRITE" ? t("RW 读写", "RW") : t("R 只读", "R")), /*#__PURE__*/React.createElement("span", {
+      className: "truncate"
+    }, m.remoteServerUrl ? `${t("跨服", "Remote")}: ${m.remoteServerUrl}` : `${t("来自", "From")}: ${m.ownerName || t("本机", "Local")}`)))), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: e => {
+        e.stopPropagation();
+        deleteMountMutation.mutate(m.id);
+      },
+      className: "p-1 text-muted-foreground hover:text-destructive rounded",
+      title: t("移除挂载", "Remove mount")
+    }, /*#__PURE__*/React.createElement(Trash2, {
+      className: "w-3.5 h-3.5"
+    })));
+  })))), activeShareToken && /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl border-2 border-brand-primary/30 shadow-md overflow-hidden storeit-modal-spring"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-4 bg-brand-primary/5 border-b flex flex-wrap items-center justify-between gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5 min-w-0"
+  }, /*#__PURE__*/React.createElement(FolderOpen, {
+    className: "w-5 h-5 text-amber-500 shrink-0"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 flex-wrap"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-sm text-brand-primary truncate"
+  }, manifest?.name || `${t("共享空间", "Shared Space")} (${activeShareToken})`), manifest && /*#__PURE__*/React.createElement("span", {
+    className: `text-[10px] px-2 py-0.5 rounded-full font-semibold ${isRW ? "bg-emerald-100 text-emerald-800 border border-emerald-300" : "bg-blue-100 text-blue-800 border border-blue-300"}`
+  }, isRW ? t("RW 可读写协同", "RW Read & Write") : t("R 只读访问", "R Read-Only")), /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-mono bg-muted px-2 py-0.5 rounded text-muted-foreground"
+  }, activeShareServerUrl ? `${t("SFSP 跨服节点", "SFSP Remote Node")}: ${activeShareServerUrl}` : t("SFSP/1.0 本机节点", "SFSP/1.0 Local Node"))), manifest && /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-muted-foreground mt-0.5"
+  }, t(`所有者: ${manifest.ownerUsername} · 已下载 ${manifest.downloads} 次`, `Owner: ${manifest.ownerUsername} · ${manifest.downloads} downloads`)))), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center gap-1.5"
+  }, manifest && isRW && manifest.isDirectory && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("input", {
+    ref: sharedUploadInputRef,
+    type: "file",
+    multiple: true,
+    className: "hidden",
+    onChange: handleSharedUpload
+  }), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "default",
+    className: "h-8 text-xs gap-1",
+    onClick: () => sharedUploadInputRef.current?.click()
+  }, /*#__PURE__*/React.createElement(Upload, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("上传文件", "Upload")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 text-xs gap-1",
+    onClick: () => {
+      setShowNewFileBar(v => !v);
+      setShowMkdirBar(false);
+    }
+  }, /*#__PURE__*/React.createElement(FilePlus2, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("新建文件", "New File")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 text-xs gap-1",
+    onClick: () => {
+      setShowMkdirBar(v => !v);
+      setShowNewFileBar(false);
+    }
+  }, /*#__PURE__*/React.createElement(FolderPlus, {
+    className: "w-3.5 h-3.5 text-amber-500"
+  }), t("新建子目录", "New Subfolder"))), manifest && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 text-xs gap-1",
+    onClick: () => {
+      const a = document.createElement("a");
+      a.href = getSharedZipUrl(subPath);
+      a.download = `${manifest.name || "Shared"}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("打包下载 (.zip)", "Download ZIP")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "h-8 text-xs gap-1",
+    onClick: closeSharedSpace
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("关闭共享视图", "Close")))), manifest?.isDirectory && /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-2 bg-muted/20 border-b flex items-center gap-1.5 text-xs text-muted-foreground overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      setViewingSharedItem(null);
+      loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, "");
+    },
+    className: "inline-flex items-center gap-1 hover:text-brand-primary font-medium"
+  }, /*#__PURE__*/React.createElement(Home, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("共享根目录", "Shared Root")), subParts.map((part, idx) => {
+    const targetSub = subParts.slice(0, idx + 1).join("/");
+    return /*#__PURE__*/React.createElement(React.Fragment, {
+      key: targetSub
+    }, /*#__PURE__*/React.createElement(ChevronRight, {
+      className: "w-3 h-3 opacity-40"
+    }), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      onClick: () => {
+        setViewingSharedItem(null);
+        loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, targetSub);
+      },
+      className: "hover:text-brand-primary font-medium"
+    }, part));
+  })), showMkdirBar && /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleCreateSharedSubfolder,
+    className: "px-4 py-2.5 bg-amber-50/60 border-b flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(FolderPlus, {
+    className: "w-4 h-4 text-amber-500 shrink-0"
+  }), /*#__PURE__*/React.createElement(Input, {
+    autoFocus: true,
+    value: newSubfolderName,
+    onChange: e => setNewSubfolderName(e.target.value),
+    placeholder: t("输入新子文件夹名称...", "Enter new subfolder name..."),
+    className: "h-8 text-xs max-w-xs"
+  }), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    size: "sm",
+    className: "h-8 text-xs"
+  }, t("创建", "Create")), /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    size: "sm",
+    variant: "ghost",
+    className: "h-8 text-xs",
+    onClick: () => setShowMkdirBar(false)
+  }, t("取消", "Cancel"))), showNewFileBar && /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleCreateSharedBlankFile,
+    className: "px-4 py-2.5 bg-blue-50/60 border-b flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(FilePlus2, {
+    className: "w-4 h-4 text-brand-secondary shrink-0"
+  }), /*#__PURE__*/React.createElement(Input, {
+    autoFocus: true,
+    value: newSharedFileName,
+    onChange: e => setNewSharedFileName(e.target.value),
+    placeholder: t("输入新文件名称 (如 README.md 或 notes.txt)...", "Enter file name (e.g. README.md or notes.txt)..."),
+    className: "h-8 text-xs max-w-xs"
+  }), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    size: "sm",
+    className: "h-8 text-xs"
+  }, t("创建并编辑", "Create & Edit")), /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    size: "sm",
+    variant: "ghost",
+    className: "h-8 text-xs",
+    onClick: () => setShowNewFileBar(false)
+  }, t("取消", "Cancel"))), /*#__PURE__*/React.createElement("div", {
+    className: "p-4"
+  }, loadingSpace ? /*#__PURE__*/React.createElement("div", {
+    className: "py-12 text-center text-muted-foreground flex items-center justify-center gap-2 text-xs"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-4 h-4 animate-spin text-brand-secondary"
+  }), t("正在通过 SFSP 协议同步共享目录...", "Syncing shared folder via SFSP...")) : spaceError ? /*#__PURE__*/React.createElement("div", {
+    className: "py-8 max-w-md mx-auto text-center space-y-3"
+  }, /*#__PURE__*/React.createElement(Lock, {
+    className: "w-8 h-8 text-amber-500 mx-auto"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-semibold text-foreground"
+  }, spaceError), needsPasswordPrompt && /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2 justify-center"
+  }, /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: passwordInput,
+    onChange: e => setPasswordInput(e.target.value),
+    placeholder: t("请输入该共享的访问提取码", "Enter access code"),
+    className: "max-w-[200px] h-8 text-xs"
+  }), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    className: "h-8 text-xs",
+    onClick: () => openSharedSpace(activeShareToken, activeShareServerUrl, passwordInput.trim())
+  }, t("验证提取码", "Unlock")))) : /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4"
+  }, sharedItems.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "py-10 text-center text-xs text-muted-foreground"
+  }, t("此共享目录下暂无文件", "This shared folder is empty"), isRW && t("（可点击右上角“上传文件”或“新建文件”添加内容）", " (use 'Upload' or 'New File' above to add content)")) : /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto border rounded-xl"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left border-collapse text-xs"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "border-b bg-muted/40 text-muted-foreground"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold"
+  }, t("名称", "Name")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold w-28"
+  }, t("大小", "Size")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold w-40 hidden sm:table-cell"
+  }, t("修改时间", "Modified")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold text-right"
+  }, t("操作", "Actions")))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y"
+  }, sharedItems.map(it => /*#__PURE__*/React.createElement("tr", {
+    key: it.path || it.name,
+    onDoubleClick: () => handleOpenSharedItem(it),
+    className: "hover:bg-muted/20 cursor-pointer"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, it.isDirectory ? /*#__PURE__*/React.createElement(Folder, {
+    className: "w-4 h-4 text-amber-500 shrink-0"
+  }) : /*#__PURE__*/React.createElement(FileText, {
+    className: "w-4 h-4 text-brand-secondary shrink-0"
+  }), /*#__PURE__*/React.createElement("span", {
+    onClick: () => handleOpenSharedItem(it),
+    className: "font-medium text-foreground hover:text-brand-primary"
+  }, it.name))), /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3 text-muted-foreground"
+  }, it.isDirectory ? t("文件夹", "Folder") : formatBytes(it.size || 0)), /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3 text-muted-foreground hidden sm:table-cell"
+  }, formatDate(it.modifiedTime, locale)), /*#__PURE__*/React.createElement("td", {
+    className: "py-2.5 px-3 text-right whitespace-nowrap space-x-1"
+  }, /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "h-7 px-2 text-xs gap-1",
+    onClick: () => handleOpenSharedItem(it)
+  }, /*#__PURE__*/React.createElement(Eye, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), it.isDirectory ? t("进入", "Open") : t("查看", "View")), !it.isDirectory && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "h-7 px-2 text-xs gap-1",
+    asChild: true
+  }, /*#__PURE__*/React.createElement("a", {
+    href: getSharedDownloadUrl(it.path),
+    download: it.name
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("下载", "Download"))), isRW && manifest?.isDirectory && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "h-7 px-2 text-xs text-destructive hover:text-destructive",
+    onClick: () => handleDeleteSharedItem(it)
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    className: "w-3.5 h-3.5"
+  })))))))), viewingSharedItem && !viewingSharedItem.isDirectory && /*#__PURE__*/React.createElement("div", {
+    className: "p-4 rounded-2xl border bg-muted/10 space-y-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center justify-between gap-2 border-b pb-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(FileText, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "font-semibold text-sm text-brand-primary"
+  }, viewingSharedItem.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-muted-foreground"
+  }, "(", formatBytes(viewingSharedItem.size || 0), ")")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5"
+  }, getPreviewKind(viewingSharedItem.name) === "text" && isRW && /*#__PURE__*/React.createElement(React.Fragment, null, editingSharedText ? /*#__PURE__*/React.createElement(React.Fragment, null, ["md", "markdown"].includes(getFileExtension(viewingSharedItem.name)) && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => setSharedSplitMd(v => !v)
+  }, /*#__PURE__*/React.createElement(Columns, {
+    className: "w-3 h-3"
+  }), sharedSplitMd ? t("分栏预览", "Split View") : t("纯源码", "Source Only")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    className: "h-7 text-xs gap-1",
+    disabled: savingSharedText,
+    onClick: handleSaveSharedText
+  }, /*#__PURE__*/React.createElement(Save, {
+    className: "w-3 h-3"
+  }), savingSharedText ? t("保存中...", "Saving...") : t("保存修改", "Save")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs",
+    onClick: () => setEditingSharedText(false)
+  }, t("取消", "Cancel"))) : /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-7 text-xs gap-1",
+    onClick: () => setEditingSharedText(true)
+  }, /*#__PURE__*/React.createElement(Edit3, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("在线协同编辑", "Collaborate & Edit"))), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "ghost",
+    className: "h-7 text-xs",
+    onClick: () => setViewingSharedItem(null)
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-3.5 h-3.5"
+  })))), getPreviewKind(viewingSharedItem.name) === "image" ? /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-center p-2"
+  }, /*#__PURE__*/React.createElement("img", {
+    src: getSharedPreviewUrl(viewingSharedItem.path),
+    alt: viewingSharedItem.name,
+    className: "max-h-96 rounded-xl shadow-sm object-contain"
+  })) : getPreviewKind(viewingSharedItem.name) === "video" ? /*#__PURE__*/React.createElement("video", {
+    src: getSharedPreviewUrl(viewingSharedItem.path),
+    controls: true,
+    className: "max-h-96 w-full rounded-xl bg-black"
+  }) : getPreviewKind(viewingSharedItem.name) === "audio" ? /*#__PURE__*/React.createElement("audio", {
+    src: getSharedPreviewUrl(viewingSharedItem.path),
+    controls: true,
+    className: "w-full"
+  }) : getPreviewKind(viewingSharedItem.name) === "pdf" ? /*#__PURE__*/React.createElement("iframe", {
+    src: getSharedPreviewUrl(viewingSharedItem.path),
+    className: "w-full h-96 rounded-xl border bg-white",
+    title: viewingSharedItem.name
+  }) : editingSharedText ? ["md", "markdown"].includes(getFileExtension(viewingSharedItem.name)) && sharedSplitMd ? /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-3 h-80"
+  }, /*#__PURE__*/React.createElement("textarea", {
+    value: sharedTextContent,
+    onChange: e => setSharedTextContent(e.target.value),
+    className: "w-full h-full p-3 rounded-xl bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs outline-none resize-none"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "w-full h-full p-3 rounded-xl bg-white border overflow-auto"
+  }, /*#__PURE__*/React.createElement(MarkdownRenderer, {
+    content: sharedTextContent,
+    showToc: false
+  }))) : /*#__PURE__*/React.createElement("textarea", {
+    value: sharedTextContent,
+    onChange: e => setSharedTextContent(e.target.value),
+    className: "w-full h-72 p-3 rounded-xl bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs outline-none resize-none"
+  }) : ["md", "markdown"].includes(getFileExtension(viewingSharedItem.name)) ? /*#__PURE__*/React.createElement("div", {
+    className: "p-4 rounded-xl bg-white border max-h-96 overflow-auto"
+  }, /*#__PURE__*/React.createElement(MarkdownRenderer, {
+    content: sharedTextContent
+  })) : /*#__PURE__*/React.createElement("pre", {
+    className: "p-3 rounded-xl bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs max-h-80 overflow-auto whitespace-pre-wrap"
+  }, sharedTextContent))))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-semibold text-brand-primary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(ShieldCheck, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t(`我发起的共享与外链 (${shares.length})`, `My Created Shares (${shares.length})`)), isLoading ? /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-12 text-muted-foreground flex flex-col items-center gap-3"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-6 h-6 animate-spin text-brand-secondary"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs"
+  }, t("正在读取分享列表...", "Loading shares..."))) : shares.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-12 bg-white/60 rounded-2xl border border-dashed text-muted-foreground"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-10 h-10 mx-auto mb-2 opacity-30 text-brand-secondary"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-brand-primary text-sm"
+  }, t("还没有发起过共享", "No active shares yet")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-muted-foreground mt-1"
+  }, t("在“我的文件”中右键任意文件夹或文件并点击“分享”，即可创建只读或 RW 读写协同共享", "Right-click any file or folder in 'My Files' and choose 'Share' to create a R or RW share"))) : /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3"
+  }, shares.map(item => {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const host = typeof window !== "undefined" ? window.location.host : "localhost:59898";
+    const webSpaceUrl = `${origin}/#/s/${item.token}`;
+    const directUrl = `${origin}${item.url}`;
+    const fedUri = `storeit+fed://${host}/api/fed/shares/${item.token}`;
+    return /*#__PURE__*/React.createElement("div", {
+      key: item.id,
+      className: "p-4 bg-white/80 hover:bg-white rounded-2xl border shadow-sm transition-all flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "space-y-2 min-w-0 flex-1 w-full"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap items-center gap-2"
+    }, item.isDirectory ? /*#__PURE__*/React.createElement(Folder, {
+      className: "w-4 h-4 text-amber-500 shrink-0"
+    }) : /*#__PURE__*/React.createElement(FileText, {
+      className: "w-4 h-4 text-brand-secondary shrink-0"
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "font-semibold text-sm text-foreground truncate max-w-md",
+      title: item.filePath
+    }, item.title || item.filePath), /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground"
+    }, item.isDirectory ? t("共享文件夹", "Shared Folder") : t("单文件", "Single File")), /*#__PURE__*/React.createElement("span", {
+      className: `text-[10px] px-2 py-0.5 rounded-full font-semibold ${item.permission === "READ_WRITE" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"}`
+    }, item.permission === "READ_WRITE" ? t("RW 可读写", "RW Read/Write") : t("R 只读", "R Read-Only")), item.passwordProtected && /*#__PURE__*/React.createElement("span", {
+      className: "text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 flex items-center gap-0.5"
+    }, /*#__PURE__*/React.createElement(Lock, {
+      className: "w-2.5 h-2.5"
+    }), " ", t("含提取码", "Protected"))), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap items-center gap-2"
+    }, /*#__PURE__*/React.createElement("input", {
+      readOnly: true,
+      value: webSpaceUrl,
+      className: "w-full sm:w-80 text-xs font-mono bg-muted/50 border rounded-lg px-2.5 py-1 text-muted-foreground outline-none select-all",
+      onClick: e => e.target.select()
+    }), /*#__PURE__*/React.createElement(Button, {
+      variant: "outline",
+      size: "sm",
+      className: "h-7 px-2.5 text-xs gap-1",
+      onClick: () => handleCopy(`web_${item.id}`, webSpaceUrl)
+    }, copiedId === `web_${item.id}` ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+      className: "w-3 h-3 text-emerald-600"
+    }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+      className: "w-3 h-3"
+    }), " ", t("互动链接", "Web Link"))), /*#__PURE__*/React.createElement(Button, {
+      variant: "outline",
+      size: "sm",
+      className: "h-7 px-2.5 text-xs gap-1",
+      onClick: () => handleCopy(`dl_${item.id}`, directUrl)
+    }, copiedId === `dl_${item.id}` ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+      className: "w-3 h-3 text-emerald-600"
+    }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+      className: "w-3 h-3"
+    }), " ", t("下载直链", "Direct URL"))), /*#__PURE__*/React.createElement(Button, {
+      variant: "outline",
+      size: "sm",
+      className: "h-7 px-2.5 text-xs gap-1",
+      onClick: () => handleCopy(`fed_${item.id}`, fedUri)
+    }, copiedId === `fed_${item.id}` ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+      className: "w-3 h-3 text-emerald-600"
+    }), " ", t("已复制协议", "Copied URI")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Globe, {
+      className: "w-3 h-3 text-brand-secondary"
+    }), t("跨服 URI", "SFSP URI")))), /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-wrap items-center gap-4 text-xs text-muted-foreground"
+    }, /*#__PURE__*/React.createElement("span", null, t("路径", "Path"), ": /", item.filePath), /*#__PURE__*/React.createElement("span", null, t("下载次数", "Downloads"), ":", " ", /*#__PURE__*/React.createElement("strong", {
+      className: "text-foreground"
+    }, item.downloads || 0, " /", " ", item.maxDownloads ? item.maxDownloads : t("不限", "Unlimited"))), /*#__PURE__*/React.createElement("span", null, t("有效期至", "Expires"), ":", " ", /*#__PURE__*/React.createElement("strong", {
+      className: "text-foreground"
+    }, item.expiry ? formatDate(item.expiry, locale) : t("永久有效", "Never"))))), /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2 shrink-0"
+    }, /*#__PURE__*/React.createElement(Button, {
+      variant: "outline",
+      size: "sm",
+      className: "text-xs h-8",
+      onClick: () => openSharedSpace(item.token, "", "")
+    }, t("打开共享空间", "Open Space")), /*#__PURE__*/React.createElement(Button, {
+      variant: "destructive",
+      size: "sm",
+      className: "gap-1 h-8 bg-destructive/10 text-destructive hover:bg-destructive hover:text-white border-0 shadow-none",
+      onClick: () => handleRevoke(item.id, item.filePath)
+    }, /*#__PURE__*/React.createElement(Trash2, {
+      className: "w-3.5 h-3.5"
+    }), " ", t("撤销", "Revoke"))));
+  }))));
+}
+const UNIT_MULTIPLIER = {
+  MB: 1024 * 1024,
+  GB: 1024 * 1024 * 1024,
+  TB: 1024 * 1024 * 1024 * 1024
+};
+function bytesToUnitValue(bytes) {
+  if (!bytes || bytes <= 0) return {
+    value: 10,
+    unit: "unlimited"
+  };
+  if (bytes % UNIT_MULTIPLIER.TB === 0) return {
+    value: bytes / UNIT_MULTIPLIER.TB,
+    unit: "TB"
+  };
+  if (bytes % UNIT_MULTIPLIER.GB === 0) return {
+    value: bytes / UNIT_MULTIPLIER.GB,
+    unit: "GB"
+  };
+  return {
+    value: Math.max(1, Math.round(bytes / UNIT_MULTIPLIER.MB)),
+    unit: "MB"
+  };
+}
+function unitValueToBytes(value, unit) {
+  if (unit === "unlimited") return 0;
+  const num = Math.max(1, Number(value) || 1);
+  return Math.round(num * UNIT_MULTIPLIER[unit]);
+}
+function UserManagementTab() {
+  const queryClient = useQueryClient();
+  const currentUser = useAuthStore(s => s.user);
+  const {
+    locale,
+    t
+  } = useI18n();
+  const [newUsername, setNewUsername] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newQuotaVal, setNewQuotaVal] = useState(10);
+  const [newQuotaUnit, setNewQuotaUnit] = useState("unlimited");
+  const [newMustChange, setNewMustChange] = useState(false);
+  const [customInviteCode, setCustomInviteCode] = useState("");
+  const [inviteMaxUses, setInviteMaxUses] = useState("1");
+  const [inviteExpireHours, setInviteExpireHours] = useState("168");
+  const [inviteQuotaVal, setInviteQuotaVal] = useState(10);
+  const [inviteQuotaUnit, setInviteQuotaUnit] = useState("GB");
+  const [inviteNote, setInviteNote] = useState("");
+  const [copiedInviteId, setCopiedInviteId] = useState(null);
+  const [feedback, setFeedback] = useState(null);
+  const {
+    data,
+    isLoading,
+    refetch
+  } = useQuery({
+    queryKey: ["adminUsers"],
+    queryFn: () => api.getAdminUsers()
+  });
+  const {
+    data: invitesData,
+    isLoading: loadingInvites,
+    refetch: refetchInvites
+  } = useQuery({
+    queryKey: ["adminInvites"],
+    queryFn: () => api.getAdminInvites()
+  });
+  const createMutation = useMutation({
+    mutationFn: payload => api.createAdminUser(payload),
+    onSuccess: () => {
+      setFeedback({
+        text: t("用户创建成功", "User created successfully"),
+        type: "success"
+      });
+      setNewUsername("");
+      setNewPassword("");
+      setNewQuotaVal(10);
+      setNewQuotaUnit("unlimited");
+      setNewMustChange(false);
+      queryClient.invalidateQueries({
+        queryKey: ["adminUsers"]
+      });
+    },
+    onError: err => {
+      setFeedback({
+        text: err.message || t("创建用户失败", "Failed to create user"),
+        type: "error"
+      });
+    }
+  });
+  const updateMutation = useMutation({
+    mutationFn: ({
+      username,
+      quota,
+      role,
+      enabled
+    }) => api.updateAdminUser(username, {
+      storageQuota: quota,
+      role,
+      enabled
+    }),
+    onSuccess: () => {
+      setFeedback({
+        text: t("用户属性已保存", "User attributes saved"),
+        type: "success"
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["adminUsers"]
+      });
+    },
+    onError: err => {
+      setFeedback({
+        text: err.message || t("保存失败", "Failed to save"),
+        type: "error"
+      });
+    }
+  });
+  const resetPasswordMutation = useMutation({
+    mutationFn: ({
+      username,
+      password,
+      mustChangePassword
+    }) => api.resetAdminUserPassword(username, password, mustChangePassword),
+    onSuccess: () => {
+      setFeedback({
+        text: t("用户口令已重置", "User password reset"),
+        type: "success"
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["adminUsers"]
+      });
+    },
+    onError: err => {
+      setFeedback({
+        text: err.message || t("口令重置失败", "Failed to reset password"),
+        type: "error"
+      });
+    }
+  });
+  const createInviteMutation = useMutation({
+    mutationFn: () => {
+      const quotaBytes = unitValueToBytes(inviteQuotaVal, inviteQuotaUnit);
+      return api.createAdminInvite({
+        code: customInviteCode.trim() || undefined,
+        maxUses: parseInt(inviteMaxUses, 10) || 0,
+        expireHours: parseInt(inviteExpireHours, 10),
+        defaultQuota: quotaBytes,
+        note: inviteNote.trim()
+      });
+    },
+    onSuccess: res => {
+      setFeedback({
+        text: t(`邀请码 ${res.data.code} 已生成`, `Invite code ${res.data.code} generated`),
+        type: "success"
+      });
+      setCustomInviteCode("");
+      setInviteNote("");
+      queryClient.invalidateQueries({
+        queryKey: ["adminInvites"]
+      });
+    },
+    onError: err => {
+      setFeedback({
+        text: err.message || t("生成邀请码失败", "Failed to generate invite code"),
+        type: "error"
+      });
+    }
+  });
+  const deleteInviteMutation = useMutation({
+    mutationFn: id => api.deleteAdminInvite(id),
+    onSuccess: () => {
+      setFeedback({
+        text: t("邀请码已删除", "Invite code deleted"),
+        type: "success"
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["adminInvites"]
+      });
+    },
+    onError: err => {
+      setFeedback({
+        text: err.message || t("删除邀请码失败", "Failed to delete invite code"),
+        type: "error"
+      });
+    }
+  });
+  const handleCreate = e => {
+    e.preventDefault();
+    if (!newUsername.trim() || newPassword.length < 8) {
+      setFeedback({
+        text: t("用户名不能为空，口令至少 8 位", "Username is required and password must be at least 8 characters"),
+        type: "error"
+      });
+      return;
+    }
+    const bytes = unitValueToBytes(newQuotaVal, newQuotaUnit);
+    createMutation.mutate({
+      username: newUsername.trim(),
+      password: newPassword,
+      storageQuota: bytes,
+      mustChangePassword: newMustChange
+    });
+  };
+  const handleCopyInvite = async (key, text) => {
+    if (await copyToClipboard(text)) {
+      setCopiedInviteId(key);
+      setTimeout(() => setCopiedInviteId(null), 1800);
+    }
+  };
+  const users = data || [];
+  const invites = invitesData || [];
+  const computedNewBytes = unitValueToBytes(newQuotaVal, newQuotaUnit);
+  const computedInviteBytes = unitValueToBytes(inviteQuotaVal, inviteQuotaUnit);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-6 max-w-5xl mx-auto space-y-6 animate-in fade-in-50 duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pb-4 border-b"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Users, {
+    className: "w-6 h-6 text-brand-secondary"
+  }), t("系统用户与受邀注册管理", "User & Invited Registration Management")), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-muted-foreground mt-1"
+  }, t("管理用户配额与状态、生成自助注册邀请码或重置用户口令", "Manage user storage quotas & status, generate invitation codes, or reset passwords"))), /*#__PURE__*/React.createElement(Button, {
+    variant: "outline",
+    size: "sm",
+    onClick: () => {
+      refetch();
+      refetchInvites();
+    },
+    className: "gap-1.5"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-4 h-4"
+  }), " ", t("刷新", "Refresh"))), feedback && /*#__PURE__*/React.createElement("div", {
+    className: `p-3.5 rounded-xl flex items-center gap-2.5 text-sm ${feedback.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-destructive/10 text-destructive border border-destructive/20"}`
+  }, feedback.type === "success" ? /*#__PURE__*/React.createElement(CheckCircle2, {
+    className: "w-4 h-4 text-emerald-600 shrink-0"
+  }) : /*#__PURE__*/React.createElement(AlertCircle, {
+    className: "w-4 h-4 text-destructive shrink-0"
+  }), /*#__PURE__*/React.createElement("span", null, feedback.text)), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between border-b pb-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-semibold text-brand-primary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Ticket, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("自主受邀注册 · 邀请码生成与管理", "Invited Registration · Invitation Codes")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-muted-foreground mt-0.5"
+  }, t("生成邀请码或专属注册直链，新用户可在登录页切换至“受邀注册”自助开户并自动分配预设配额", "Generate invite codes or direct registration links so new users can sign up with preset storage quotas")))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: e => {
+      e.preventDefault();
+      createInviteMutation.mutate();
+    },
+    className: "grid grid-cols-1 sm:grid-cols-12 gap-3 items-end"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-3"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("自定义邀请码 (留空随机生成)", "Custom Code (blank = random)")), /*#__PURE__*/React.createElement(Input, {
+    value: customInviteCode,
+    onChange: e => setCustomInviteCode(e.target.value),
+    placeholder: t("如 ST-TEAM-2026", "e.g. ST-TEAM-2026"),
+    className: "font-mono text-xs"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("可用次数", "Max Uses")), /*#__PURE__*/React.createElement("select", {
+    value: inviteMaxUses,
+    onChange: e => setInviteMaxUses(e.target.value),
+    className: "w-full h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "1"
+  }, t("1 次 (单人专属)", "1 use (Single)")), /*#__PURE__*/React.createElement("option", {
+    value: "5"
+  }, t("5 次", "5 uses")), /*#__PURE__*/React.createElement("option", {
+    value: "10"
+  }, t("10 次", "10 uses")), /*#__PURE__*/React.createElement("option", {
+    value: "50"
+  }, t("50 次", "50 uses")), /*#__PURE__*/React.createElement("option", {
+    value: "0"
+  }, t("不限次数", "Unlimited")))), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("有效期", "Expiration")), /*#__PURE__*/React.createElement("select", {
+    value: inviteExpireHours,
+    onChange: e => setInviteExpireHours(e.target.value),
+    className: "w-full h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "24"
+  }, t("1 天", "1 Day")), /*#__PURE__*/React.createElement("option", {
+    value: "168"
+  }, t("7 天", "7 Days")), /*#__PURE__*/React.createElement("option", {
+    value: "720"
+  }, t("30 天", "30 Days")), /*#__PURE__*/React.createElement("option", {
+    value: "-1"
+  }, t("永久有效", "Never Expire")))), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-3"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("注册初始配额", "Default Quota"), " (", computedInviteBytes === 0 ? t("不限额", "Unlimited") : formatBytes(computedInviteBytes), ")"), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1"
+  }, inviteQuotaUnit !== "unlimited" && /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: "1",
+    value: inviteQuotaVal,
+    onChange: e => setInviteQuotaVal(Math.max(1, Number(e.target.value))),
+    className: "w-16 text-xs"
+  }), /*#__PURE__*/React.createElement("select", {
+    value: inviteQuotaUnit,
+    onChange: e => setInviteQuotaUnit(e.target.value),
+    className: "flex-1 h-9 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "unlimited"
+  }, t("不限额", "Unlimited")), /*#__PURE__*/React.createElement("option", {
+    value: "MB"
+  }, "MB"), /*#__PURE__*/React.createElement("option", {
+    value: "GB"
+  }, "GB"), /*#__PURE__*/React.createElement("option", {
+    value: "TB"
+  }, "TB")))), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: createInviteMutation.isPending,
+    className: "w-full gap-1.5"
+  }, /*#__PURE__*/React.createElement(Ticket, {
+    className: "w-4 h-4"
+  }), " ", t("生成邀请码", "Generate"))), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-12"
+  }, /*#__PURE__*/React.createElement(Input, {
+    value: inviteNote,
+    onChange: e => setInviteNote(e.target.value),
+    placeholder: t("可选备注说明（例如：研发组新成员邀请、活动临时账号等）", "Optional note (e.g. R&D team onboarding, guest account, etc.)"),
+    className: "h-8 text-xs"
+  }))), loadingInvites ? /*#__PURE__*/React.createElement("div", {
+    className: "py-4 text-center text-xs text-muted-foreground"
+  }, t("正在加载邀请码...", "Loading invitation codes...")) : invites.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "py-6 text-center text-xs text-muted-foreground bg-muted/20 rounded-xl border border-dashed"
+  }, t("暂无邀请码，点击上方“生成邀请码”即可创建受邀注册凭证", "No invitation codes yet. Click 'Generate' above to create one.")) : /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto border rounded-xl"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left border-collapse text-xs"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "border-b bg-muted/40 text-muted-foreground"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold"
+  }, t("邀请码", "Code")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold"
+  }, t("已用 / 上限", "Used / Max")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold"
+  }, t("预设配额", "Default Quota")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold"
+  }, t("有效期至", "Expires")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold"
+  }, t("备注", "Note")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 px-3 font-semibold text-right"
+  }, t("操作", "Actions")))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y"
+  }, invites.map(inv => {
+    const registerLink = typeof window !== "undefined" ? `${window.location.origin}/login?invite=${encodeURIComponent(inv.code)}` : `/login?invite=${encodeURIComponent(inv.code)}`;
+    const maxedOut = inv.maxUses > 0 && inv.usedCount >= inv.maxUses;
+    const expired = Boolean(inv.expiresAt && inv.expiresAt * 1000 < Date.now());
+    return /*#__PURE__*/React.createElement("tr", {
+      key: inv.id,
+      className: "hover:bg-muted/20"
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "py-2.5 px-3 font-mono font-bold text-brand-primary"
+    }, inv.code, (maxedOut || expired) && /*#__PURE__*/React.createElement("span", {
+      className: "ml-1.5 px-1.5 py-0.2 rounded bg-rose-100 text-rose-700 text-[10px] font-sans"
+    }, expired ? t("已过期", "Expired") : t("已用尽", "Used Up"))), /*#__PURE__*/React.createElement("td", {
+      className: "py-2.5 px-3"
+    }, inv.usedCount, " / ", inv.maxUses <= 0 ? t("不限", "∞") : inv.maxUses), /*#__PURE__*/React.createElement("td", {
+      className: "py-2.5 px-3"
+    }, inv.defaultQuota <= 0 ? t("不限额", "Unlimited") : formatBytes(inv.defaultQuota)), /*#__PURE__*/React.createElement("td", {
+      className: "py-2.5 px-3 text-muted-foreground"
+    }, inv.expiresAt ? formatDate(inv.expiresAt, locale) : t("永久有效", "Never")), /*#__PURE__*/React.createElement("td", {
+      className: "py-2.5 px-3 text-muted-foreground max-w-[160px] truncate"
+    }, inv.note || "--"), /*#__PURE__*/React.createElement("td", {
+      className: "py-2.5 px-3 text-right whitespace-nowrap space-x-1.5"
+    }, /*#__PURE__*/React.createElement(Button, {
+      size: "sm",
+      variant: "outline",
+      className: "h-7 px-2 text-xs gap-1",
+      onClick: () => handleCopyInvite(`code_${inv.id}`, inv.code)
+    }, copiedInviteId === `code_${inv.id}` ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+      className: "w-3 h-3 text-emerald-600"
+    }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+      className: "w-3 h-3"
+    }), " ", t("复制码", "Copy Code"))), /*#__PURE__*/React.createElement(Button, {
+      size: "sm",
+      variant: "outline",
+      className: "h-7 px-2 text-xs gap-1",
+      onClick: () => handleCopyInvite(`link_${inv.id}`, registerLink)
+    }, copiedInviteId === `link_${inv.id}` ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+      className: "w-3 h-3 text-emerald-600"
+    }), t("已复制直链", "Copied Link")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+      className: "w-3 h-3"
+    }), " ", t("注册直链", "Invite Link"))), /*#__PURE__*/React.createElement(Button, {
+      size: "sm",
+      variant: "ghost",
+      className: "h-7 px-2 text-xs text-destructive hover:text-destructive",
+      onClick: () => deleteInviteMutation.mutate(inv.id)
+    }, /*#__PURE__*/React.createElement(Trash2, {
+      className: "w-3.5 h-3.5"
+    }))));
+  }))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-semibold text-brand-primary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(UserPlus, {
+    className: "w-4 h-4 text-brand-secondary"
+  }), t("管理员手动新增用户", "Create User Manually")), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleCreate,
+    className: "grid grid-cols-1 sm:grid-cols-12 gap-3 items-end"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-3"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("用户名", "Username")), /*#__PURE__*/React.createElement(Input, {
+    value: newUsername,
+    onChange: e => setNewUsername(e.target.value),
+    placeholder: t("字母/数字/下划线", "Letters, digits, _"),
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-3"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("初始口令 (≥8位)", "Initial Password (≥ 8 chars)")), /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: newPassword,
+    onChange: e => setNewPassword(e.target.value),
+    placeholder: t("至少 8 位字符", "At least 8 characters"),
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-4"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("存储配额", "Storage Quota"), " (", computedNewBytes === 0 ? t("不限额", "Unlimited") : formatBytes(computedNewBytes), ")"), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-1.5"
+  }, newQuotaUnit !== "unlimited" && /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: "1",
+    value: newQuotaVal,
+    onChange: e => setNewQuotaVal(Math.max(1, Number(e.target.value))),
+    className: "w-24"
+  }), /*#__PURE__*/React.createElement("select", {
+    value: newQuotaUnit,
+    onChange: e => setNewQuotaUnit(e.target.value),
+    className: "flex-1 h-9 rounded-lg border border-input bg-background px-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "unlimited"
+  }, t("不限额 (Unlimited)", "Unlimited")), /*#__PURE__*/React.createElement("option", {
+    value: "MB"
+  }, "MB"), /*#__PURE__*/React.createElement("option", {
+    value: "GB"
+  }, "GB"), /*#__PURE__*/React.createElement("option", {
+    value: "TB"
+  }, "TB")))), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: createMutation.isPending,
+    className: "w-full gap-1.5"
+  }, /*#__PURE__*/React.createElement(UserPlus, {
+    className: "w-4 h-4"
+  }), " ", t("开户", "Create"))), /*#__PURE__*/React.createElement("div", {
+    className: "sm:col-span-12 flex items-center gap-2 pt-1 text-xs text-muted-foreground"
+  }, /*#__PURE__*/React.createElement("input", {
+    id: "new-must-change",
+    type: "checkbox",
+    checked: newMustChange,
+    onChange: e => setNewMustChange(e.target.checked),
+    className: "rounded border-input"
+  }), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "new-must-change",
+    className: "cursor-pointer select-none"
+  }, t("要求该用户首次登录后立即修改初始口令", "Require this user to change their initial password upon first login"))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white rounded-2xl border shadow-sm overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-4 border-b"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-base font-semibold text-brand-primary"
+  }, t(`用户列表 (${users.length})`, `Users (${users.length})`))), isLoading ? /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-12 text-muted-foreground flex items-center justify-center gap-2"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-5 h-5 animate-spin text-brand-secondary"
+  }), t("加载中...", "Loading...")) : /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left border-collapse text-sm"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "border-b bg-muted/40 text-xs text-muted-foreground"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-4 font-semibold"
+  }, t("用户名", "Username")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-4 font-semibold"
+  }, t("存储配额", "Quota")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-4 font-semibold"
+  }, t("角色", "Role")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-4 font-semibold"
+  }, t("账号状态", "Status")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-4 font-semibold text-center"
+  }, t("保存属性", "Save")), /*#__PURE__*/React.createElement("th", {
+    className: "py-2.5 px-4 font-semibold"
+  }, t("重置口令", "Reset Password")))), /*#__PURE__*/React.createElement("tbody", {
+    className: "divide-y"
+  }, users.map(u => /*#__PURE__*/React.createElement(UserRow, {
+    key: u.username,
+    user: u,
+    isCurrent: u.username === currentUser?.username,
+    onSave: (quota, role, enabled) => updateMutation.mutate({
+      username: u.username,
+      quota,
+      role,
+      enabled
+    }),
+    onResetPassword: (pwd, mustChange) => resetPasswordMutation.mutate({
+      username: u.username,
+      password: pwd,
+      mustChangePassword: mustChange
+    }),
+    onError: msg => setFeedback({
+      text: msg,
+      type: "error"
+    })
+  })))))));
+}
+function UserRow({
+  user,
+  isCurrent,
+  onSave,
+  onResetPassword,
+  onError
+}) {
+  const initial = bytesToUnitValue(user.storageQuota);
+  const [quotaVal, setQuotaVal] = useState(initial.value);
+  const [quotaUnit, setQuotaUnit] = useState(initial.unit);
+  const [role, setRole] = useState(user.role || "USER");
+  const [enabled, setEnabled] = useState(user.enabled !== false);
+  const [newPwd, setNewPwd] = useState("");
+  const [mustChange, setMustChange] = useState(false);
+  const {
+    t
+  } = useI18n();
+  useEffect(() => {
+    const parsed = bytesToUnitValue(user.storageQuota);
+    setQuotaVal(parsed.value);
+    setQuotaUnit(parsed.unit);
+    setRole(user.role || "USER");
+    setEnabled(user.enabled !== false);
+  }, [user.storageQuota, user.role, user.enabled]);
+  const bytes = unitValueToBytes(quotaVal, quotaUnit);
+  return /*#__PURE__*/React.createElement("tr", {
+    className: "hover:bg-muted/20 transition-colors"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-3 px-4 font-semibold text-brand-primary whitespace-nowrap"
+  }, /*#__PURE__*/React.createElement("div", null, user.username, isCurrent && /*#__PURE__*/React.createElement("span", {
+    className: "ml-1.5 text-xs text-brand-secondary"
+  }, "(", t("当前登录", "You"), ")")), user.mustChangePassword && /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] text-amber-600 font-normal block"
+  }, t("待改初始密码", "Must change password"))), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 px-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5"
+  }, quotaUnit !== "unlimited" && /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: "1",
+    value: quotaVal,
+    onChange: e => setQuotaVal(Math.max(1, Number(e.target.value))),
+    className: "w-20 h-8 text-xs font-mono"
+  }), /*#__PURE__*/React.createElement("select", {
+    value: quotaUnit,
+    onChange: e => setQuotaUnit(e.target.value),
+    className: "h-8 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "unlimited"
+  }, t("不限额", "Unlimited")), /*#__PURE__*/React.createElement("option", {
+    value: "MB"
+  }, "MB"), /*#__PURE__*/React.createElement("option", {
+    value: "GB"
+  }, "GB"), /*#__PURE__*/React.createElement("option", {
+    value: "TB"
+  }, "TB")))), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 px-4"
+  }, /*#__PURE__*/React.createElement("select", {
+    value: role,
+    disabled: isCurrent,
+    onChange: e => setRole(e.target.value),
+    className: "h-8 rounded-lg border border-input bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "USER"
+  }, "USER"), /*#__PURE__*/React.createElement("option", {
+    value: "ADMIN"
+  }, "ADMIN"))), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 px-4 whitespace-nowrap"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Switch, {
+    checked: enabled,
+    disabled: isCurrent,
+    onCheckedChange: setEnabled
+  }), /*#__PURE__*/React.createElement("span", {
+    className: `text-xs ${enabled ? "text-emerald-600 font-medium" : "text-destructive"}`
+  }, enabled ? t("正常", "Active") : t("已禁用", "Disabled")))), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 px-4 text-center"
+  }, /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 px-2.5 text-xs gap-1",
+    onClick: () => onSave(bytes, role, enabled)
+  }, /*#__PURE__*/React.createElement(Save, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("保存", "Save"))), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 px-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    placeholder: t("新口令 (≥8位)", "New pwd (≥8)"),
+    value: newPwd,
+    onChange: e => setNewPwd(e.target.value),
+    className: "w-28 h-8 text-xs"
+  }), /*#__PURE__*/React.createElement("label", {
+    className: "flex items-center gap-1 text-[11px] text-muted-foreground whitespace-nowrap cursor-pointer select-none"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "checkbox",
+    checked: mustChange,
+    onChange: e => setMustChange(e.target.checked),
+    className: "rounded border-input"
+  }), t("需改密", "Force change")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 px-2.5 text-xs gap-1 shrink-0",
+    onClick: () => {
+      if (newPwd.length < 8) {
+        onError(t("口令至少 8 位", "Password must be at least 8 characters"));
+        return;
+      }
+      onResetPassword(newPwd, mustChange);
+      setNewPwd("");
+      setMustChange(false);
+    }
+  }, /*#__PURE__*/React.createElement(KeyRound, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("重置", "Reset")))));
+}
+function SettingsTab() {
+  const queryClient = useQueryClient();
+  const {
+    t
+  } = useI18n();
+  const [activeTab, setActiveTab] = useState("visual");
+  const [yamlTab, setYamlTab] = useState("app");
+  const [appYamlText, setAppYamlText] = useState("");
+  const [adminYamlText, setAdminYamlText] = useState("");
+  const [port, setPort] = useState(59898);
+  const [servletSessionTimeout, setServletSessionTimeout] = useState("30d");
+  const [sessionMaxAgeDays, setSessionMaxAgeDays] = useState(30);
+  const [cookieName, setCookieName] = useState("STOREIT_SESSION");
+  const [sslEnabled, setSslEnabled] = useState(false);
+  const [keyStorePath, setKeyStorePath] = useState("./keystore.p12");
+  const [keyStorePass, setKeyStorePass] = useState("changeit");
+  const [keyStoreType, setKeyStoreType] = useState("PKCS12");
+  const [storageRoot, setStorageRoot] = useState("storage");
+  const [datasourceUrl, setDatasourceUrl] = useState("jdbc:sqlite:./data/storeit.db");
+  const [maxFileSize, setMaxFileSize] = useState("100GB");
+  const [maxRequestSize, setMaxRequestSize] = useState("100GB");
+  const [appSslEnabled, setAppSslEnabled] = useState(false);
+  const [requireCustomAdmin, setRequireCustomAdmin] = useState(false);
+  const [adminUsername, setAdminUsername] = useState("admin");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [maxFailures, setMaxFailures] = useState(5);
+  const [windowMinutes, setWindowMinutes] = useState(15);
+  const [logLevel, setLogLevel] = useState("info");
+  const [message, setMessage] = useState(null);
+  const {
+    data,
+    isLoading
+  } = useQuery({
+    queryKey: ["adminConfig"],
+    queryFn: () => api.getAdminConfig()
+  });
+  useEffect(() => {
+    if (data) {
+      setAppYamlText(data.applicationYaml || "");
+      setAdminYamlText(data.adminYaml || "");
+      const appCfg = data.applicationConfig || {};
+      const serverCfg = appCfg.server || {};
+      const servletCfg = serverCfg.servlet || {};
+      const srvSessionCfg = servletCfg.session || {};
+      const sslCfg = serverCfg.ssl || {};
+      const springCfg = appCfg.spring || {};
+      const dsCfg = springCfg.datasource || {};
+      const spServletCfg = springCfg.servlet || {};
+      const multipartCfg = spServletCfg.multipart || {};
+      const appProp = appCfg.app || {};
+      const loginProp = appProp.login || {};
+      const sessionProp = appProp.session || {};
+      const loggingCfg = appCfg.logging || {};
+      const levelCfg = loggingCfg.level || {};
+      if (serverCfg.port !== undefined) setPort(Number(serverCfg.port));
+      if (srvSessionCfg.timeout !== undefined) setServletSessionTimeout(String(srvSessionCfg.timeout));
+      if (sessionProp["max-age-days"] !== undefined) setSessionMaxAgeDays(Number(sessionProp["max-age-days"]));
+      if (sessionProp["cookie-name"] !== undefined) setCookieName(String(sessionProp["cookie-name"]));
+      if (sslCfg.enabled !== undefined) setSslEnabled(Boolean(sslCfg.enabled));
+      if (sslCfg["key-store"] !== undefined) setKeyStorePath(String(sslCfg["key-store"]));
+      if (sslCfg["key-store-password"] !== undefined) setKeyStorePass(String(sslCfg["key-store-password"]));
+      if (sslCfg["key-store-type"] !== undefined) setKeyStoreType(String(sslCfg["key-store-type"]));
+      if (appProp["storage-root"] !== undefined) setStorageRoot(String(appProp["storage-root"]));
+      if (dsCfg.url !== undefined) setDatasourceUrl(String(dsCfg.url));
+      if (multipartCfg["max-file-size"] !== undefined) setMaxFileSize(String(multipartCfg["max-file-size"]));
+      if (multipartCfg["max-request-size"] !== undefined) setMaxRequestSize(String(multipartCfg["max-request-size"]));
+      if (appProp["ssl-enabled"] !== undefined) setAppSslEnabled(Boolean(appProp["ssl-enabled"]));
+      if (appProp["require-custom-admin"] !== undefined) setRequireCustomAdmin(Boolean(appProp["require-custom-admin"]));
+      if (loginProp["max-failures"] !== undefined) setMaxFailures(Number(loginProp["max-failures"]));
+      if (loginProp["window-minutes"] !== undefined) setWindowMinutes(Number(loginProp["window-minutes"]));
+      if (levelCfg.root !== undefined) setLogLevel(String(levelCfg.root).toLowerCase());
+      const adminCfg = data.adminConfig || {};
+      const defaultAdmin = (adminCfg.app || {})["default-admin"] || {};
+      if (defaultAdmin.username) setAdminUsername(String(defaultAdmin.username));
+    }
+  }, [data]);
+  const saveMutation = useMutation({
+    mutationFn: payload => api.updateAdminConfig(payload),
+    onSuccess: res => {
+      setMessage({
+        text: res.message || t("配置保存成功！", "Configuration saved successfully!"),
+        type: "success"
+      });
+      setAdminPassword("");
+      queryClient.invalidateQueries({
+        queryKey: ["adminConfig"]
+      });
+    },
+    onError: err => {
+      setMessage({
+        text: err.message || t("保存配置失败", "Failed to save configuration"),
+        type: "error"
+      });
+    }
+  });
+  const handleSaveVisual = () => {
+    if (!Number.isInteger(port) || port < 1 || port > 65535) {
+      setMessage({
+        text: t("保存失败：服务端口必须是 1–65535 之间的整数", "Save failed: server port must be an integer between 1 and 65535"),
+        type: "error"
+      });
+      return;
+    }
+    if (!Number.isInteger(sessionMaxAgeDays) || sessionMaxAgeDays < 1 || sessionMaxAgeDays > 365) {
+      setMessage({
+        text: t("保存失败：会话保持天数必须是 1–365 之间的整数", "Save failed: session max-age days must be an integer between 1 and 365"),
+        type: "error"
+      });
+      return;
+    }
+    if (!Number.isInteger(maxFailures) || maxFailures < 1 || maxFailures > 1000) {
+      setMessage({
+        text: t("保存失败：连续错误锁定次数必须是不小于 1 的整数", "Save failed: max login failures must be an integer >= 1"),
+        type: "error"
+      });
+      return;
+    }
+    if (!Number.isInteger(windowMinutes) || windowMinutes < 1 || windowMinutes > 1440) {
+      setMessage({
+        text: t("保存失败：统计时间窗口分钟数必须是不小于 1 的整数", "Save failed: login throttle window minutes must be >= 1"),
+        type: "error"
+      });
+      return;
+    }
+    if (!datasourceUrl.trim().startsWith("jdbc:sqlite:")) {
+      setMessage({
+        text: t("保存失败：SQLite 数据源 URL 必须以 jdbc:sqlite: 开头", "Save failed: SQLite datasource URL must start with jdbc:sqlite:"),
+        type: "error"
+      });
+      return;
+    }
+    saveMutation.mutate({
+      visualConfig: {
+        port,
+        servletSessionTimeout: servletSessionTimeout.trim() || "30d",
+        sessionMaxAgeDays,
+        cookieName: cookieName.trim() || "STOREIT_SESSION",
+        sslEnabled,
+        keyStorePath: keyStorePath.trim() || "./keystore.p12",
+        keyStorePass,
+        keyStoreType: keyStoreType.trim() || "PKCS12",
+        storageRoot: storageRoot.trim() || "storage",
+        datasourceUrl: datasourceUrl.trim(),
+        maxFileSize: maxFileSize.trim() || "100GB",
+        maxRequestSize: maxRequestSize.trim() || "100GB",
+        appSslEnabled,
+        requireCustomAdmin,
+        maxFailures,
+        windowMinutes,
+        logLevel,
+        adminUsername: adminUsername.trim() || "admin",
+        adminPassword: adminPassword.trim() || undefined
+      }
+    });
+  };
+  const handleSaveRaw = () => {
+    saveMutation.mutate({
+      applicationYaml: appYamlText,
+      adminYaml: adminYamlText
+    });
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-6 max-w-4xl mx-auto space-y-6 animate-in fade-in-50 duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h2", {
+    className: "text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Settings, {
+    className: "w-6 h-6 text-brand-secondary"
+  }), t("系统配置管理", "System Configuration")), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-muted-foreground mt-1"
+  }, t("安全维护 StoreIt 核心运行参数与外部配置文件（./config/*.yml），自动创建 .bak 备份。注意：可视化保存会重写 YAML 且不保留注释，如需保留注释请使用「YAML 原文编辑」模式。", "Safely manage StoreIt runtime parameters and external config files (./config/*.yml) with automatic .bak backups. Note: Visual mode rewrites YAML without comments; use 'Raw YAML' to preserve comments."))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: activeTab === "visual" ? "default" : "outline",
+    size: "sm",
+    onClick: () => setActiveTab("visual"),
+    className: "gap-1.5"
+  }, /*#__PURE__*/React.createElement(Sliders, {
+    className: "w-4 h-4"
+  }), t("可视化配置", "Visual Editor")), /*#__PURE__*/React.createElement(Button, {
+    variant: activeTab === "raw" ? "default" : "outline",
+    size: "sm",
+    onClick: () => setActiveTab("raw"),
+    className: "gap-1.5"
+  }, /*#__PURE__*/React.createElement(FileCode, {
+    className: "w-4 h-4"
+  }), t("YAML 原文编辑", "Raw YAML")))), message && /*#__PURE__*/React.createElement("div", {
+    className: `p-4 rounded-xl flex items-start gap-3 ${message.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-destructive/10 text-destructive border border-destructive/20"}`
+  }, message.type === "success" ? /*#__PURE__*/React.createElement(CheckCircle2, {
+    className: "w-5 h-5 shrink-0 mt-0.5 text-emerald-600"
+  }) : /*#__PURE__*/React.createElement(AlertTriangle, {
+    className: "w-5 h-5 shrink-0 mt-0.5 text-destructive"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "text-sm"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold"
+  }, message.text), message.type === "success" && /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-emerald-700 mt-1"
+  }, t("注意：端口、数据源、上传体积限制与 SSL 证书等核心参数修改后，需重启 StoreIt 进程生效。", "Note: Changes to port, datasource, upload limits, and SSL require restarting the StoreIt process to take effect.")))), isLoading ? /*#__PURE__*/React.createElement("div", {
+    className: "text-center py-16 text-muted-foreground flex flex-col items-center gap-3"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-8 h-8 animate-spin text-brand-secondary"
+  }), /*#__PURE__*/React.createElement("p", null, t("正在读取服务器配置...", "Loading server configuration..."))) : activeTab === "visual" ? /*#__PURE__*/React.createElement("div", {
+    className: "space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"
+  }, /*#__PURE__*/React.createElement(Server, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("服务、会话与日志 (Server & Session)", "Server, Session & Logging")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("服务监听端口 (server.port)", "Listen Port (server.port)")), /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: 1,
+    max: 65535,
+    value: port,
+    onChange: e => setPort(Number(e.target.value)),
+    placeholder: "59898"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("HTTP/HTTPS 监听端口 (1–65535)", "HTTP/HTTPS port (1–65535)"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("会话保持天数 (app.session.max-age-days)", "Session Max Age Days (app.session.max-age-days)")), /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: 1,
+    max: 365,
+    value: sessionMaxAgeDays,
+    onChange: e => setSessionMaxAgeDays(Number(e.target.value)),
+    placeholder: "30"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("登录会话有效时长（单位：天，1–365）", "Login session lifetime in days (1–365)"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("容器会话超时 (server.servlet.session.timeout)", "Servlet Session Timeout")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: servletSessionTimeout,
+    onChange: e => setServletSessionTimeout(e.target.value),
+    placeholder: "30d"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("Spring 容器超时时长 (如 30d、12h、60m)", "Container timeout (e.g. 30d, 12h, 60m)"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("会话 Cookie 名称 (app.session.cookie-name)", "Session Cookie Name")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: cookieName,
+    onChange: e => setCookieName(e.target.value),
+    placeholder: "STOREIT_SESSION"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("多实例同域名部署时可自定义区分", "Customize when running multiple instances on one domain"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("系统日志级别 (logging.level.root)", "Root Log Level (logging.level.root)")), /*#__PURE__*/React.createElement("select", {
+    value: logLevel,
+    onChange: e => setLogLevel(e.target.value),
+    className: "w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "info"
+  }, t("INFO (默认推荐)", "INFO (Recommended)")), /*#__PURE__*/React.createElement("option", {
+    value: "warn"
+  }, t("WARN (仅警告与错误)", "WARN (Warnings & Errors)")), /*#__PURE__*/React.createElement("option", {
+    value: "error"
+  }, t("ERROR (仅错误)", "ERROR (Errors Only)")), /*#__PURE__*/React.createElement("option", {
+    value: "debug"
+  }, t("DEBUG (调试详情)", "DEBUG (Verbose)")), /*#__PURE__*/React.createElement("option", {
+    value: "trace"
+  }, t("TRACE (全量追踪)", "TRACE (Full Trace)"))), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("全局日志输出粒度", "Global log verbosity"))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"
+  }, /*#__PURE__*/React.createElement(Database, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("存储目录、数据库与上传限制 (Storage & Multipart)", "Storage, Database & Upload Limits")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("物理存储根目录 (app.storage-root)", "Storage Root Directory (app.storage-root)")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: storageRoot,
+    onChange: e => setStorageRoot(e.target.value),
+    placeholder: "storage"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("用户上传文件在磁盘上的根文件夹路径", "Root folder path on disk for uploaded files"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("SQLite 数据库连接 URL (spring.datasource.url)", "SQLite Datasource URL")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: datasourceUrl,
+    onChange: e => setDatasourceUrl(e.target.value),
+    placeholder: "jdbc:sqlite:./data/storeit.db"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("元数据库文件路径（需以 jdbc:sqlite: 开头）", "Metadata DB path (must start with jdbc:sqlite:)"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("单文件最大上传限制 (spring.servlet.multipart.max-file-size)", "Max Single File Size")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: maxFileSize,
+    onChange: e => setMaxFileSize(e.target.value),
+    placeholder: "100GB"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("支持 MB / GB / TB 单位（如 100GB、10GB）", "Supports MB / GB / TB (e.g. 100GB, 10GB)"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("单次请求最大体积 (spring.servlet.multipart.max-request-size)", "Max Multipart Request Size")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: maxRequestSize,
+    onChange: e => setMaxRequestSize(e.target.value),
+    placeholder: "100GB"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("建议与 max-file-size 保持一致（如 100GB）", "Recommended to match max-file-size (e.g. 100GB)"))))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between border-b pb-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 text-brand-primary font-semibold text-base"
+  }, /*#__PURE__*/React.createElement(ShieldCheck, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("HTTPS 与 SSL 安全设置", "HTTPS & SSL Security")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-muted-foreground"
+  }, sslEnabled ? t("已启用直连 SSL", "Direct SSL Enabled") : t("未启用 (HTTP 模式)", "Disabled (HTTP Mode)")), /*#__PURE__*/React.createElement(Switch, {
+    checked: sslEnabled,
+    onCheckedChange: checked => {
+      setSslEnabled(checked);
+      setAppSslEnabled(checked);
+    }
+  }))), sslEnabled && /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 pt-1"
+  }, data?.keystoreExists === false && /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-xs flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(ShieldAlert, {
+    className: "w-4 h-4 text-amber-600 shrink-0"
+  }), /*#__PURE__*/React.createElement("span", null, t("警告：未在服务端路径 ", "Warning: Keystore file not found at "), /*#__PURE__*/React.createElement("code", {
+    className: "bg-amber-100 px-1 py-0.5 rounded font-mono font-semibold"
+  }, keyStorePath), t(" 找到 Keystore 文件。若未准备证书直接开启，重启后服务器可能无法启动。", ". Enabling SSL without a valid keystore may prevent the server from starting."))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-3 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("KeyStore 证书文件路径 (server.ssl.key-store)", "KeyStore File Path")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: keyStorePath,
+    onChange: e => setKeyStorePath(e.target.value),
+    placeholder: "./keystore.p12"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("KeyStore 访问口令 (server.ssl.key-store-password)", "KeyStore Password")), /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: keyStorePass,
+    onChange: e => setKeyStorePass(e.target.value),
+    placeholder: "changeit"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("KeyStore 类型 (server.ssl.key-store-type)", "KeyStore Type")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: keyStoreType,
+    onChange: e => setKeyStoreType(e.target.value),
+    placeholder: "PKCS12"
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pt-3 border-t text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "font-medium text-foreground"
+  }, t("Cookie Secure 强制安全标记与 HSTS (app.ssl-enabled)", "Secure Cookie Flag & HSTS (app.ssl-enabled)")), /*#__PURE__*/React.createElement("p", {
+    className: "text-muted-foreground text-[11px] max-w-lg"
+  }, t("开启后 Session Cookie 仅允许在 HTTPS 加密通道下发送。直连 SSL 或由 Nginx / Caddy 等反向代理终结 HTTPS 时均应开启；纯 HTTP 部署必须关闭。", "When enabled, session cookies are only sent over HTTPS. Enable for direct SSL or HTTPS reverse proxies (Nginx/Caddy); keep disabled for plain HTTP."))), /*#__PURE__*/React.createElement(Switch, {
+    checked: appSslEnabled,
+    onCheckedChange: setAppSslEnabled
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"
+  }, /*#__PURE__*/React.createElement(HardDrive, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("登录防暴力破解规则 (app.login.*)", "Login Rate Limiting (app.login.*)")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("连续错误锁定次数 (app.login.max-failures)", "Max Failed Attempts (app.login.max-failures)")), /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: 1,
+    max: 1000,
+    value: maxFailures,
+    onChange: e => setMaxFailures(Number(e.target.value))
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("统计时间窗口分钟数 (app.login.window-minutes)", "Window Duration Minutes (app.login.window-minutes)")), /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: 1,
+    max: 1440,
+    value: windowMinutes,
+    onChange: e => setWindowMinutes(Number(e.target.value))
+  })))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-5 rounded-2xl border shadow-sm space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 text-brand-primary font-semibold text-base border-b pb-2"
+  }, /*#__PURE__*/React.createElement(KeyRound, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("初始外部管理员配置 (admin.yml)", "Bootstrap Admin Configuration (admin.yml)")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("默认管理员账号 (app.default-admin.username)", "Default Admin Username")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    value: adminUsername,
+    onChange: e => setAdminUsername(e.target.value)
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("修改默认管理员口令 (app.default-admin.password)", "Update Default Admin Password")), /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: adminPassword,
+    onChange: e => setAdminPassword(e.target.value),
+    placeholder: t("留空保持原口令不变", "Leave blank to keep existing password")
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] text-muted-foreground mt-0.5 block"
+  }, t("若留空则不会改动 admin.yml 中的已有口令", "Leaving blank preserves the current password in admin.yml")))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between pt-2 border-t text-xs"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "font-medium text-foreground"
+  }, t("拒绝默认内置口令启动 (app.require-custom-admin)", "Refuse Startup with Default Credentials (app.require-custom-admin)")), /*#__PURE__*/React.createElement("p", {
+    className: "text-muted-foreground text-[11px]"
+  }, t("若开启，当系统仍在使用初始口令 admin / authorized_users 时将直接拒绝启动以保障安全", "If enabled, StoreIt refuses to start while default credentials (admin / authorized_users) are still in use"))), /*#__PURE__*/React.createElement(Switch, {
+    checked: requireCustomAdmin,
+    onCheckedChange: setRequireCustomAdmin
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-end pt-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    onClick: handleSaveVisual,
+    disabled: saveMutation.isPending,
+    className: "gap-2 px-6 h-10 shadow-md"
+  }, saveMutation.isPending ? /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-4 h-4 animate-spin"
+  }) : /*#__PURE__*/React.createElement(Save, {
+    className: "w-4 h-4"
+  }), t("保存全部配置", "Save All Configuration")))) : /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: yamlTab === "app" ? "default" : "outline",
+    size: "sm",
+    onClick: () => setYamlTab("app")
+  }, "application.yml"), /*#__PURE__*/React.createElement(Button, {
+    variant: yamlTab === "admin" ? "default" : "outline",
+    size: "sm",
+    onClick: () => setYamlTab("admin")
+  }, "admin.yml")), /*#__PURE__*/React.createElement(Button, {
+    onClick: handleSaveRaw,
+    disabled: saveMutation.isPending,
+    size: "sm",
+    className: "gap-1.5 shadow-sm"
+  }, /*#__PURE__*/React.createElement(Save, {
+    className: "w-4 h-4"
+  }), t("保存 YAML 文件", "Save YAML Files"))), /*#__PURE__*/React.createElement("div", {
+    className: "relative border rounded-2xl bg-[#1e1e2e] text-[#cdd6f4] p-4 font-mono text-sm shadow-inner"
+  }, /*#__PURE__*/React.createElement("textarea", {
+    className: "w-full h-[450px] bg-transparent outline-none resize-none font-mono text-xs leading-relaxed selection:bg-brand-secondary/40",
+    value: yamlTab === "app" ? appYamlText : adminYamlText,
+    onChange: e => yamlTab === "app" ? setAppYamlText(e.target.value) : setAdminYamlText(e.target.value),
+    spellCheck: false
+  }))));
+}
+function AboutTab() {
+  const {
+    t
+  } = useI18n();
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-6 max-w-2xl mx-auto space-y-6 animate-in fade-in-50 duration-200"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white/90 backdrop-blur-md rounded-3xl p-8 border shadow-lg text-center space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-20 h-20 rounded-3xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white mx-auto flex items-center justify-center shadow-xl"
+  }, /*#__PURE__*/React.createElement(HardDrive, {
+    className: "w-10 h-10"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
+    className: "text-3xl font-extrabold tracking-tight text-brand-primary"
+  }, t("关于 储之 (StoreIt)", "About StoreIt")), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-medium text-brand-secondary mt-1"
+  }, t("轻量级、高性能、现代化的大文件存储与分享服务", "Lightweight, high-performance modern file storage & federated sharing server"))), /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+  }), t("系统运行正常 · 版本 v2.1.0-dev", "System Healthy · Version v2.1.0-dev")), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-foreground/80 leading-relaxed max-w-lg mx-auto"
+  }, t("储之是一个基于 Spring Boot 3 与现代 React / Next.js 构建的文件服务器。默认支持 100GB 级特大文件多分片并行断点续传、文件拖拽极速归档、R/RW 共享文件夹与 SFSP 跨服联邦挂载，以及全量可视化系统配置维护。", "StoreIt is a self-hosted file server built on Spring Boot 3 and modern React / Next.js. It supports 100GB+ parallel resumable chunked uploads, drag-and-drop folder archiving, R/RW shared folders with SFSP cross-server federation, and visual YAML system configuration.")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center gap-3 pt-2"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "https://github.com/GuilingQiyu/StoreIt",
+    target: "_blank",
+    rel: "noreferrer",
+    className: "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary text-white text-sm font-medium hover:bg-brand-primary/90 transition-all shadow-md"
+  }, /*#__PURE__*/React.createElement(Github, {
+    className: "w-4 h-4"
+  }), t("GitHub 仓库", "GitHub Repository"), /*#__PURE__*/React.createElement(ExternalLink, {
+    className: "w-3.5 h-3.5 opacity-60"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "border-t pt-6 text-xs text-muted-foreground space-y-2"
+  }, /*#__PURE__*/React.createElement("p", null, t("© 2025–2026 归灵祈昱. All rights reserved.", "© 2025–2026 GuilingQiyu. All rights reserved.")), /*#__PURE__*/React.createElement("p", {
+    className: "flex items-center justify-center gap-1"
+  }, t("本程序基于 ", "Licensed under "), /*#__PURE__*/React.createElement("a", {
+    href: "https://www.gnu.org/licenses/agpl-3.0.html",
+    target: "_blank",
+    rel: "noreferrer",
+    className: "text-brand-primary font-medium hover:underline inline-flex items-center gap-0.5"
+  }, t("GNU AGPL-3.0 或更高版本", "GNU AGPL-3.0 or later")), t(" 开源授权。", ".")))));
+}
+function UploadItem({
+  task
+}) {
+  const pauseTask = useUploadStore(s => s.pauseTask);
+  const resumeTask = useUploadStore(s => s.resumeTask);
+  const cancelTask = useUploadStore(s => s.cancelTask);
+  const retryTask = useUploadStore(s => s.retryTask);
+  const rebindFileAndResume = useUploadStore(s => s.rebindFileAndResume);
+  const fileInputRef = useRef(null);
+  const {
+    t
+  } = useI18n();
+  const handleFilePicked = async e => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        await rebindFileAndResume(task.id, file);
+      } catch (err) {
+        useFileStore.getState().showToast(err.message || t("文件匹配失败", "File mismatch"), "error");
+      }
+    }
+  };
+  const getStatusBadge = () => {
+    switch (task.status) {
+      case "uploading":
+        return /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-brand-primary font-medium flex items-center gap-1"
+        }, /*#__PURE__*/React.createElement("span", {
+          className: "w-2 h-2 rounded-full bg-brand-primary animate-pulse"
+        }), t("上传中", "Uploading"), " (", formatBytes(task.speed), "/s)");
+      case "paused":
+        return /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-amber-600 font-medium flex items-center gap-1"
+        }, /*#__PURE__*/React.createElement(Pause, {
+          className: "w-3 h-3"
+        }), " ", t("已暂停", "Paused"));
+      case "merging":
+        return /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-indigo-600 font-medium flex items-center gap-1"
+        }, /*#__PURE__*/React.createElement(RefreshCw, {
+          className: "w-3 h-3 animate-spin"
+        }), " ", t("合并文件中...", "Merging chunks..."));
+      case "completed":
+        return /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-emerald-600 font-medium flex items-center gap-1"
+        }, /*#__PURE__*/React.createElement(CheckCircle2, {
+          className: "w-3 h-3"
+        }), " ", t("上传完成", "Completed"));
+      case "interrupted":
+        return /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-orange-600 font-medium flex items-center gap-1",
+          title: task.errorMessage
+        }, /*#__PURE__*/React.createElement(Clock, {
+          className: "w-3 h-3"
+        }), " ", t("已中断 (点击重新选择文件)", "Interrupted (rebind file)"));
+      case "error":
+        return /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-destructive font-medium flex items-center gap-1",
+          title: task.errorMessage
+        }, /*#__PURE__*/React.createElement(AlertCircle, {
+          className: "w-3 h-3"
+        }), " ", t("上传失败", "Failed"));
+      default:
+        return /*#__PURE__*/React.createElement("span", {
+          className: "text-xs text-muted-foreground"
+        }, t("准备中...", "Preparing..."));
+    }
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-white/70 hover:bg-white rounded-xl border border-black/5 transition-all shadow-sm"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-1.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 min-w-0 flex-1 mr-2"
+  }, /*#__PURE__*/React.createElement(FileText, {
+    className: "w-4 h-4 text-brand-secondary shrink-0"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "text-sm font-medium truncate",
+    title: task.name
+  }, task.name)), /*#__PURE__*/React.createElement("div", {
+    className: "shrink-0"
+  }, getStatusBadge())), /*#__PURE__*/React.createElement("div", {
+    className: "my-1.5"
+  }, /*#__PURE__*/React.createElement(Progress, {
+    value: task.progress,
+    className: "h-1.5 bg-black/5",
+    indicatorColor: task.status === "completed" ? "bg-emerald-500" : task.status === "paused" ? "bg-amber-500" : task.status === "error" || task.status === "interrupted" ? "bg-orange-500" : "bg-brand-primary"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-xs text-muted-foreground mt-1"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", null, formatBytes(task.size * task.progress / 100)), /*#__PURE__*/React.createElement("span", {
+    className: "mx-1"
+  }, "/"), /*#__PURE__*/React.createElement("span", null, formatBytes(task.size)), task.totalChunks > 1 && /*#__PURE__*/React.createElement("span", {
+    className: "ml-2 text-black/40"
+  }, "(", task.uploadedChunks.length, "/", task.totalChunks, " ", t("分片", "chunks"), ")")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1"
+  }, task.status === "uploading" && /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-6 w-6 text-muted-foreground hover:text-foreground",
+    onClick: () => pauseTask(task.id),
+    title: t("暂停上传", "Pause upload")
+  }, /*#__PURE__*/React.createElement(Pause, {
+    className: "w-3.5 h-3.5"
+  })), task.status === "paused" && /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-6 w-6 text-muted-foreground hover:text-foreground",
+    onClick: () => resumeTask(task.id),
+    title: t("继续上传", "Resume upload")
+  }, /*#__PURE__*/React.createElement(Play, {
+    className: "w-3.5 h-3.5"
+  })), task.status === "error" && /*#__PURE__*/React.createElement(Button, {
+    variant: "outline",
+    size: "sm",
+    className: "h-6 px-2 text-xs gap-1 border-rose-200 text-rose-700 hover:bg-rose-50",
+    onClick: () => retryTask(task.id),
+    title: t("重试上传", "Retry upload")
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-3 h-3"
+  }), " ", t("重试", "Retry")), (task.status === "interrupted" || task.status === "error") && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("input", {
+    ref: fileInputRef,
+    type: "file",
+    className: "hidden",
+    onChange: handleFilePicked
+  }), /*#__PURE__*/React.createElement(Button, {
+    variant: "outline",
+    size: "sm",
+    className: "h-6 px-2 text-xs gap-1 border-orange-200 text-orange-700 hover:bg-orange-50",
+    onClick: () => fileInputRef.current?.click(),
+    title: t("重新选取同名文件以恢复断点续传", "Re-select the same file to resume upload")
+  }, /*#__PURE__*/React.createElement(Upload, {
+    className: "w-3 h-3"
+  }), " ", t("绑定续传", "Rebind"))), task.status !== "completed" && /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-6 w-6 text-muted-foreground hover:text-destructive",
+    onClick: () => cancelTask(task.id),
+    title: t("取消上传", "Cancel upload")
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-3.5 h-3.5"
+  })))), task.errorMessage && /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-destructive mt-1 truncate",
+    title: task.errorMessage
+  }, task.errorMessage));
+}
+function UploadDrawer() {
+  const tasks = useUploadStore(s => s.tasks);
+  const isDrawerOpen = useUploadStore(s => s.isDrawerOpen);
+  const toggleDrawer = useUploadStore(s => s.toggleDrawer);
+  const clearCompleted = useUploadStore(s => s.clearCompleted);
+  const {
+    t
+  } = useI18n();
+  if (tasks.length === 0) return null;
+  const uploadingCount = tasks.filter(item => item.status === "uploading" || item.status === "merging").length;
+  const completedCount = tasks.filter(item => item.status === "completed").length;
+  const totalSpeed = tasks.reduce((sum, item) => sum + (item.speed || 0), 0);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-3rem)] bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-black/10 overflow-hidden transition-all duration-300"
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: toggleDrawer,
+    className: "flex items-center justify-between p-3.5 bg-gradient-to-r from-brand-primary to-brand-secondary text-white cursor-pointer select-none"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5"
+  }, /*#__PURE__*/React.createElement(CloudUpload, {
+    className: "w-5 h-5"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "font-semibold text-sm"
+  }, t("上传任务", "Uploads")), /*#__PURE__*/React.createElement("span", {
+    className: "bg-white/20 text-white text-xs px-2 py-0.5 rounded-full font-mono"
+  }, completedCount, "/", tasks.length), uploadingCount > 0 && totalSpeed > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-white/80 font-mono"
+  }, "\xB7 ", formatBytes(totalSpeed), "/s")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1",
+    onClick: e => e.stopPropagation()
+  }, completedCount > 0 && /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-7 w-7 text-white/80 hover:text-white hover:bg-white/10",
+    onClick: clearCompleted,
+    title: t("清除已完成任务", "Clear completed tasks")
+  }, /*#__PURE__*/React.createElement(Trash2, {
+    className: "w-3.5 h-3.5"
+  })), /*#__PURE__*/React.createElement(Button, {
+    variant: "ghost",
+    size: "icon",
+    className: "h-7 w-7 text-white/80 hover:text-white hover:bg-white/10",
+    onClick: toggleDrawer,
+    title: isDrawerOpen ? t("收起面板", "Collapse panel") : t("展开面板", "Expand panel")
+  }, isDrawerOpen ? /*#__PURE__*/React.createElement(ChevronDown, {
+    className: "w-4 h-4"
+  }) : /*#__PURE__*/React.createElement(ChevronUp, {
+    className: "w-4 h-4"
+  })))), isDrawerOpen && /*#__PURE__*/React.createElement("div", {
+    className: "max-h-80 overflow-y-auto p-3 space-y-2 divide-y divide-transparent"
+  }, tasks.map(task => /*#__PURE__*/React.createElement(UploadItem, {
+    key: task.id,
+    task: task
+  }))));
+}
+function NewFolderModal() {
+  const isOpen = useFileStore(s => s.newFolderModalOpen);
+  const setOpen = useFileStore(s => s.setNewFolderModalOpen);
+  const currentPath = useFileStore(s => s.currentPath);
+  const showToast = useFileStore(s => s.showToast);
+  const [folderName, setFolderName] = useState("");
+  const queryClient = useQueryClient();
+  const {
+    t
+  } = useI18n();
+  const createMutation = useMutation({
+    mutationFn: name => api.createDirectory(currentPath, name),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      showToast(t("文件夹创建成功", "Folder created successfully"), "success");
+      setFolderName("");
+      setOpen(false);
+    },
+    onError: err => {
+      showToast(err.message || t("创建文件夹失败", "Failed to create folder"), "error");
+    }
+  });
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!folderName.trim()) return;
+    createMutation.mutate(folderName.trim());
+  };
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: isOpen,
+    onOpenChange: setOpen
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-md"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(FolderPlus, {
+    className: "w-5 h-5 text-amber-500"
+  }), t("新建文件夹", "New Folder"))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("文件夹名称", "Folder Name")), /*#__PURE__*/React.createElement(Input, {
+    autoFocus: true,
+    value: folderName,
+    onChange: e => setFolderName(e.target.value),
+    placeholder: t("请输入文件夹名称", "Enter folder name"),
+    required: true
+  })), /*#__PURE__*/React.createElement(DialogFooter, null, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: () => setOpen(false)
+  }, t("取消", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: createMutation.isPending
+  }, t("创建", "Create"))))));
+}
+const QUICK_TEMPLATES = [{
+  labelZh: "Markdown 文档 (.md)",
+  labelEn: "Markdown Doc (.md)",
+  ext: ".md",
+  defaultNameZh: "未命名笔记.md",
+  defaultNameEn: "Untitled.md",
+  templateZh: "# 标题\n\n> [!NOTE]\n> 在此记录想法、文档或待办事项。\n\n- [ ] 待办事项 1\n- [x] 已完成事项\n",
+  templateEn: "# Title\n\n> [!NOTE]\n> Write your notes, documentation, or tasks here.\n\n- [ ] Todo item 1\n- [x] Completed item\n"
+}, {
+  labelZh: "纯文本 (.txt)",
+  labelEn: "Plain Text (.txt)",
+  ext: ".txt",
+  defaultNameZh: "新建文本.txt",
+  defaultNameEn: "notes.txt",
+  templateZh: "",
+  templateEn: ""
+}, {
+  labelZh: "YAML 配置 (.yml)",
+  labelEn: "YAML Config (.yml)",
+  ext: ".yml",
+  defaultNameZh: "config.yml",
+  defaultNameEn: "config.yml",
+  templateZh: "# 配置文件\napp:\n  name: demo\n  enabled: true\n",
+  templateEn: "# Configuration\napp:\n  name: demo\n  enabled: true\n"
+}, {
+  labelZh: "JSON 数据 (.json)",
+  labelEn: "JSON Data (.json)",
+  ext: ".json",
+  defaultNameZh: "data.json",
+  defaultNameEn: "data.json",
+  templateZh: '{\n  "name": "example",\n  "version": "1.0.0"\n}\n',
+  templateEn: '{\n  "name": "example",\n  "version": "1.0.0"\n}\n'
+}];
+function NewFileModal() {
+  const isOpen = useFileStore(s => s.newFileModalOpen);
+  const setOpen = useFileStore(s => s.setNewFileModalOpen);
+  const currentPath = useFileStore(s => s.currentPath);
+  const openEditor = useFileStore(s => s.openEditor);
+  const showToast = useFileStore(s => s.showToast);
+  const {
+    isEn,
+    t
+  } = useI18n();
+  const [fileName, setFileName] = useState("README.md");
+  const [useStarterContent, setUseStarterContent] = useState(true);
+  const [autoOpenEditor, setAutoOpenEditor] = useState(true);
+  const queryClient = useQueryClient();
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      const trimmed = fileName.trim();
+      const matched = QUICK_TEMPLATES.find(tpl => trimmed.toLowerCase().endsWith(tpl.ext));
+      const initialContent = useStarterContent && matched ? isEn ? matched.templateEn : matched.templateZh : "";
+      return api.createBlankFile(currentPath, trimmed, initialContent, "rename");
+    },
+    onSuccess: res => {
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["quota"]
+      });
+      showToast(t(`文件 "${res.file.name}" 创建成功`, `File "${res.file.name}" created`), "success");
+      setOpen(false);
+      if (autoOpenEditor && res.file) {
+        openEditor({
+          name: res.file.name,
+          path: res.file.path,
+          isDirectory: false,
+          size: res.file.size,
+          modifiedTime: res.file.modifiedTime
+        });
+      }
+    },
+    onError: err => {
+      showToast(err.message || t("创建文件失败", "Failed to create file"), "error");
+    }
+  });
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!fileName.trim()) return;
+    createMutation.mutate();
+  };
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: isOpen,
+    onOpenChange: setOpen
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-md storeit-modal-spring"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(FilePlus2, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("新建文本 / Markdown 文件", "New Text / Markdown File"))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-muted-foreground block mb-1.5"
+  }, t("快速选择文件类型", "Quick File Templates")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2"
+  }, QUICK_TEMPLATES.map(tpl => {
+    const active = fileName.trim().toLowerCase().endsWith(tpl.ext);
+    return /*#__PURE__*/React.createElement("button", {
+      key: tpl.ext,
+      type: "button",
+      onClick: () => setFileName(isEn ? tpl.defaultNameEn : tpl.defaultNameZh),
+      className: `px-3 py-2 rounded-xl border text-left text-xs transition-all ${active ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold" : "bg-white hover:bg-black/5 text-foreground"}`
+    }, isEn ? tpl.labelEn : tpl.labelZh);
+  }))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("文件名称 (支持任意文本扩展名或无扩展名，如 Dockerfile)", "File Name (any text extension or extensionless like Dockerfile)")), /*#__PURE__*/React.createElement(Input, {
+    autoFocus: true,
+    value: fileName,
+    onChange: e => setFileName(e.target.value),
+    placeholder: t("例如: README.md 或 notes.txt", "e.g. README.md or notes.txt"),
+    required: true
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 pt-1 text-xs"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "flex items-center gap-2 cursor-pointer select-none"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "checkbox",
+    checked: useStarterContent,
+    onChange: e => setUseStarterContent(e.target.checked),
+    className: "rounded border-input text-brand-primary focus:ring-brand-primary"
+  }), /*#__PURE__*/React.createElement("span", null, t("写入默认文件模板内容（如 Markdown 标题与大纲示例）", "Populate with starter template content"))), /*#__PURE__*/React.createElement("label", {
+    className: "flex items-center gap-2 cursor-pointer select-none"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "checkbox",
+    checked: autoOpenEditor,
+    onChange: e => setAutoOpenEditor(e.target.checked),
+    className: "rounded border-input text-brand-primary focus:ring-brand-primary"
+  }), /*#__PURE__*/React.createElement("span", null, t("创建后立即打开在线编辑器", "Open in online editor immediately after creation")))), /*#__PURE__*/React.createElement(DialogFooter, null, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: () => setOpen(false)
+  }, t("取消", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: createMutation.isPending
+  }, createMutation.isPending ? t("创建中...", "Creating...") : t("立即创建", "Create"))))));
+}
+function RenameModal() {
+  const item = useFileStore(s => s.renameModalFile);
+  const setRenameModalFile = useFileStore(s => s.setRenameModalFile);
+  const showToast = useFileStore(s => s.showToast);
+  const [newName, setNewName] = useState("");
+  const queryClient = useQueryClient();
+  const {
+    t
+  } = useI18n();
+  useEffect(() => {
+    if (item) {
+      setNewName(item.name);
+    }
+  }, [item]);
+  const renameMutation = useMutation({
+    mutationFn: name => api.renameFile(item.path, name),
+    onSuccess: (_data, name) => {
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["favoritesList"]
+      });
+      const selected = useFileStore.getState().selectedFile;
+      if (item && selected && selected.path === item.path) {
+        const parent = item.path.includes("/") ? item.path.slice(0, item.path.lastIndexOf("/")) : "";
+        const nextPath = parent ? `${parent}/${name}` : name;
+        useFileStore.getState().setSelectedFile({
+          ...selected,
+          name,
+          path: nextPath
+        });
+      }
+      showToast(t("重命名成功", "Renamed successfully"), "success");
+      setRenameModalFile(null);
+    },
+    onError: err => {
+      showToast(err.message || t("重命名失败", "Failed to rename"), "error");
+    }
+  });
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!newName.trim() || newName === item?.name) return;
+    renameMutation.mutate(newName.trim());
+  };
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: Boolean(item),
+    onOpenChange: open => !open && setRenameModalFile(null)
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-md"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Edit2, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("重命名", "Rename"))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("新名称", "New Name")), /*#__PURE__*/React.createElement(Input, {
+    autoFocus: true,
+    value: newName,
+    onChange: e => setNewName(e.target.value),
+    placeholder: t("请输入新名称", "Enter new name"),
+    required: true
+  })), /*#__PURE__*/React.createElement(DialogFooter, null, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: () => setRenameModalFile(null)
+  }, t("取消", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: renameMutation.isPending
+  }, t("确定", "Save"))))));
+}
+function MoveModal() {
+  const item = useFileStore(s => s.moveModalFile);
+  const setMoveModalFile = useFileStore(s => s.setMoveModalFile);
+  const batchPaths = useFileStore(s => s.batchMovePaths);
+  const setBatchMovePaths = useFileStore(s => s.setBatchMovePaths);
+  const mode = useFileStore(s => s.moveModalMode);
+  const setMode = useFileStore(s => s.setMoveModalMode);
+  const clearSelection = useFileStore(s => s.clearSelection);
+  const showToast = useFileStore(s => s.showToast);
+  const {
+    t
+  } = useI18n();
+  const [targetDir, setTargetDir] = useState("");
+  const [rootFolders, setRootFolders] = useState([]);
+  const [loadingTree, setLoadingTree] = useState(false);
+  const queryClient = useQueryClient();
+  const isOpen = Boolean(item) || Boolean(batchPaths && batchPaths.length > 0);
+  const movingPaths = batchPaths && batchPaths.length > 0 ? batchPaths : item ? [item.path] : [];
+  const isCopy = mode === "copy";
+  const isDisabledTarget = folderPath => {
+    return movingPaths.some(mp => folderPath === mp || folderPath.startsWith(mp + "/"));
+  };
+  useEffect(() => {
+    if (!isOpen) return;
+    setLoadingTree(true);
+    api.getFiles("").then(res => {
+      const dirs = res.items.filter(it => it.isDirectory).map(it => ({
+        name: it.name,
+        path: it.path,
+        loaded: false,
+        expanded: false
+      }));
+      setRootFolders(dirs);
+    }).catch(() => setRootFolders([])).finally(() => setLoadingTree(false));
+  }, [isOpen]);
+  const toggleExpandFolder = async targetPath => {
+    const updateTree = async nodes => {
+      const next = [];
+      for (const n of nodes) {
+        if (n.path === targetPath) {
+          if (!n.loaded) {
+            try {
+              const res = await api.getFiles(n.path);
+              const subDirs = res.items.filter(it => it.isDirectory).map(it => ({
+                name: it.name,
+                path: it.path,
+                loaded: false,
+                expanded: false
+              }));
+              next.push({
+                ...n,
+                loaded: true,
+                expanded: true,
+                children: subDirs
+              });
+            } catch {
+              next.push({
+                ...n,
+                loaded: true,
+                expanded: !n.expanded,
+                children: []
+              });
+            }
+          } else {
+            next.push({
+              ...n,
+              expanded: !n.expanded
+            });
+          }
+        } else if (n.children && n.children.length > 0) {
+          next.push({
+            ...n,
+            children: await updateTree(n.children)
+          });
+        } else {
+          next.push(n);
+        }
+      }
+      return next;
+    };
+    setRootFolders(await updateTree(rootFolders));
+  };
+  const handleClose = () => {
+    setMoveModalFile(null);
+    setBatchMovePaths(null);
+    setTargetDir("");
+  };
+  const actionMutation = useMutation({
+    mutationFn: async to => {
+      if (isCopy) {
+        if (batchPaths && batchPaths.length > 0) {
+          return api.batchCopyFiles(batchPaths, to);
+        }
+        return api.copyFile(item.path, to);
+      } else {
+        if (batchPaths && batchPaths.length > 0) {
+          return api.batchMoveFiles(batchPaths, to);
+        }
+        return api.moveFile(item.path, to);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["favoritesList"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["quota"]
+      });
+      if (!isCopy) {
+        const selected = useFileStore.getState().selectedFile;
+        if (selected && movingPaths.includes(selected.path)) {
+          useFileStore.getState().setSelectedFile(null);
+        }
+      }
+      if (batchPaths && batchPaths.length > 0) {
+        clearSelection();
+        showToast(isCopy ? t(`已成功复制 ${batchPaths.length} 个项目`, `Copied ${batchPaths.length} items`) : t(`已成功移动 ${batchPaths.length} 个项目`, `Moved ${batchPaths.length} items`), "success");
+      } else {
+        showToast(isCopy ? t("文件已复制", "Item copied") : t("文件已移动", "Item moved"), "success");
+      }
+      handleClose();
+    },
+    onError: err => {
+      showToast(err.message || (isCopy ? t("复制失败", "Copy failed") : t("移动失败", "Move failed")), "error");
+    }
+  });
+  const handleSubmit = e => {
+    e.preventDefault();
+    actionMutation.mutate(targetDir.trim());
+  };
+  const renderTree = (nodes, depth = 0) => {
+    return nodes.map(node => {
+      const disabled = isDisabledTarget(node.path);
+      const selected = targetDir === node.path;
+      return /*#__PURE__*/React.createElement("div", {
+        key: node.path
+      }, /*#__PURE__*/React.createElement("div", {
+        onClick: () => !disabled && setTargetDir(node.path),
+        style: {
+          paddingLeft: `${depth * 16 + 8}px`
+        },
+        className: `flex items-center gap-1.5 py-1.5 pr-2 rounded-lg text-xs cursor-pointer transition-colors ${disabled ? "opacity-40 cursor-not-allowed" : selected ? "bg-brand-primary text-white font-semibold" : "hover:bg-black/5 text-foreground"}`
+      }, /*#__PURE__*/React.createElement("button", {
+        type: "button",
+        onClick: e => {
+          e.stopPropagation();
+          if (!disabled) toggleExpandFolder(node.path);
+        },
+        className: "p-0.5 rounded hover:bg-black/10 shrink-0",
+        title: node.expanded ? t("折叠子目录", "Collapse") : t("展开子目录", "Expand")
+      }, node.expanded ? /*#__PURE__*/React.createElement(ChevronDown, {
+        className: "w-3.5 h-3.5"
+      }) : /*#__PURE__*/React.createElement(ChevronRight, {
+        className: "w-3.5 h-3.5"
+      })), node.expanded ? /*#__PURE__*/React.createElement(FolderOpen, {
+        className: `w-4 h-4 shrink-0 ${selected ? "text-amber-300" : "text-amber-500"}`
+      }) : /*#__PURE__*/React.createElement(Folder, {
+        className: `w-4 h-4 shrink-0 ${selected ? "text-amber-300" : "text-amber-500"}`
+      }), /*#__PURE__*/React.createElement("span", {
+        className: "truncate"
+      }, node.name)), node.expanded && node.children && node.children.length > 0 && renderTree(node.children, depth + 1));
+    });
+  };
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: isOpen,
+    onOpenChange: open => !open && handleClose()
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-md storeit-modal-spring"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "flex items-center justify-between pr-6"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-2"
+  }, isCopy ? /*#__PURE__*/React.createElement(Copy, {
+    className: "w-5 h-5 text-brand-secondary"
+  }) : /*#__PURE__*/React.createElement(FolderInput, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), batchPaths && batchPaths.length > 0 ? t(`批量${isCopy ? "复制" : "移动"} (${batchPaths.length} 项)`, `Batch ${isCopy ? "Copy" : "Move"} (${batchPaths.length} items)`) : t(`${isCopy ? "复制" : "移动"}文件 / 目录`, `${isCopy ? "Copy" : "Move"} Item`)), /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex rounded-lg border bg-muted/40 p-0.5 text-xs font-normal"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setMode("move"),
+    className: `px-2.5 py-0.5 rounded-md transition-all ${!isCopy ? "bg-white text-brand-primary font-semibold shadow-sm" : "text-muted-foreground"}`
+  }, t("移动", "Move")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setMode("copy"),
+    className: `px-2.5 py-0.5 rounded-md transition-all ${isCopy ? "bg-white text-brand-primary font-semibold shadow-sm" : "text-muted-foreground"}`
+  }, t("复制", "Copy"))))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1.5"
+  }, t("点击选择目标文件夹", "Select Destination Folder")), /*#__PURE__*/React.createElement("div", {
+    className: "border rounded-xl p-2 max-h-56 overflow-y-auto bg-muted/20 space-y-0.5 select-none"
+  }, /*#__PURE__*/React.createElement("div", {
+    onClick: () => setTargetDir(""),
+    className: `flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs cursor-pointer transition-colors ${targetDir === "" ? "bg-brand-primary text-white font-semibold" : "hover:bg-black/5 text-foreground"}`
+  }, /*#__PURE__*/React.createElement(Home, {
+    className: "w-4 h-4 shrink-0"
+  }), /*#__PURE__*/React.createElement("span", null, t("根目录 (/)", "Root (/)"))), loadingTree ? /*#__PURE__*/React.createElement("div", {
+    className: "py-6 text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-3.5 h-3.5 animate-spin"
+  }), t("正在加载目录树...", "Loading folder tree...")) : renderTree(rootFolders, 0))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("目标目录路径 (可直接点选上方目录或手动输入，留空为根目录)", "Target path (select above or type manually; leave blank for root)")), /*#__PURE__*/React.createElement(Input, {
+    value: targetDir,
+    onChange: e => setTargetDir(e.target.value),
+    placeholder: t("例如: documents 或 photos/2026", "e.g. documents or photos/2026")
+  })), /*#__PURE__*/React.createElement(DialogFooter, null, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: handleClose
+  }, t("取消", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: actionMutation.isPending
+  }, actionMutation.isPending ? t("处理中...", "Processing...") : isCopy ? t("确定复制到此处", "Copy Here") : t("确定移动到此处", "Move Here"))))));
+}
+function ShareModal() {
+  const item = useFileStore(s => s.shareModalFile);
+  const setShareModalFile = useFileStore(s => s.setShareModalFile);
+  const openSharedSpace = useFileStore(s => s.openSharedSpace);
+  const showToast = useFileStore(s => s.showToast);
+  const queryClient = useQueryClient();
+  const {
+    t
+  } = useI18n();
+  const [permission, setPermission] = useState("READ");
+  const [accessPassword, setAccessPassword] = useState("");
+  const [title, setTitle] = useState("");
+  const [expireHours, setExpireHours] = useState("168");
+  const [customHours, setCustomHours] = useState("");
+  const [maxDownloads, setMaxDownloads] = useState("");
+  const [generatedData, setGeneratedData] = useState(null);
+  const [copiedKey, setCopiedKey] = useState(null);
+  useEffect(() => {
+    if (item) {
+      setPermission("READ");
+      setAccessPassword("");
+      setTitle(item.name);
+      setExpireHours("168");
+      setCustomHours("");
+      setMaxDownloads("");
+      setGeneratedData(null);
+      setCopiedKey(null);
+    }
+  }, [item]);
+  const shareMutation = useMutation({
+    mutationFn: data => api.createShare(data.filePath, data.expireHours, data.maxDownloads, data.permission, data.accessPassword, data.title),
+    onSuccess: res => {
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const host = typeof window !== "undefined" ? window.location.host : "localhost:59898";
+      const token = res.data.token;
+      const pwdQuery = accessPassword.trim() ? `?key=${encodeURIComponent(accessPassword.trim())}` : "";
+      setGeneratedData({
+        token,
+        directUrl: `${origin}/d/${token}`,
+        webSpaceUrl: `${origin}/#/s/${token}`,
+        federatedUri: `storeit+fed://${host}/api/fed/shares/${token}${pwdQuery}`
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["shares"]
+      });
+      showToast(item?.isDirectory ? t("共享文件夹与跨服协议链接已生成", "Shared folder & SFSP federation links created") : t("分享链接已生成", "Share link created"), "success");
+    },
+    onError: err => {
+      showToast(err.message || t("生成分享链接失败", "Failed to create share link"), "error");
+    }
+  });
+  const handleClose = () => {
+    setShareModalFile(null);
+    setGeneratedData(null);
+    setCopiedKey(null);
+  };
+  const handleGenerate = e => {
+    e.preventDefault();
+    if (!item) return;
+    let hours = parseInt(expireHours, 10);
+    if (expireHours === "custom") {
+      hours = parseInt(customHours, 10);
+      if (!Number.isInteger(hours) || hours < 1) {
+        showToast(t("自定义有效小时数必须为正整数", "Custom expiration hours must be a positive integer"), "error");
+        return;
+      }
+    }
+    let max = undefined;
+    if (maxDownloads.trim()) {
+      max = parseInt(maxDownloads, 10);
+      if (!Number.isInteger(max) || max < 1) {
+        showToast(t("最大下载次数必须为正整数", "Max downloads must be a positive integer"), "error");
+        return;
+      }
+    }
+    shareMutation.mutate({
+      filePath: item.path,
+      expireHours: hours,
+      maxDownloads: max,
+      permission,
+      accessPassword: accessPassword.trim() || undefined,
+      title: title.trim() || item.name
+    });
+  };
+  const handleCopy = async (key, text) => {
+    if (await copyToClipboard(text)) {
+      setCopiedKey(key);
+      showToast(t("已复制到剪贴板", "Copied to clipboard"), "success");
+      setTimeout(() => setCopiedKey(null), 1800);
+    } else {
+      showToast(t("复制失败，请手动选取复制", "Copy failed, please copy manually"), "error");
+    }
+  };
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: Boolean(item),
+    onOpenChange: open => !open && handleClose()
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-lg storeit-modal-spring"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Share2, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), item?.isDirectory ? t("创建共享文件夹 / 跨服共享链接", "Create Shared Folder & Federation Link") : t("创建文件分享 / 协同链接", "Create File Share & Collaboration Link"))), generatedData ? /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 py-1 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 space-y-1"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold"
+  }, t("共享已生成（权限：", "Share created (Permission: "), permission === "READ_WRITE" ? t("可读写协同 RW", "Read/Write RW") : t("只读访问 R", "Read-Only R"), accessPassword.trim() ? ` · ${t("提取码", "Access Code")}: ${accessPassword.trim()}` : "", t("）", ")")), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px]"
+  }, t("对方可通过 Web 互动链接在线浏览/编辑，或在任意 StoreIt 服务器通过 SFSP 跨服协议挂载。", "Recipients can browse/edit via the interactive web link or mount it on any StoreIt node via SFSP/1.0."))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-semibold text-foreground block mb-1"
+  }, t("1. Web 共享空间互动链接（推荐：支持在线浏览目录、预览与 RW 读写协同）", "1. Interactive Web Space Link (Recommended: browse, preview & RW collaborate)")), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement(Input, {
+    readOnly: true,
+    value: generatedData.webSpaceUrl,
+    className: "text-xs font-mono"
+  }), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    onClick: () => handleCopy("web", generatedData.webSpaceUrl),
+    className: "gap-1 shrink-0"
+  }, copiedKey === "web" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+    className: "w-3.5 h-3.5 text-emerald-300"
+  }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("复制", "Copy"))))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-semibold text-foreground block mb-1"
+  }, t("2. 直接下载 / 文件夹 ZIP 打包直链（防聊天软件爬虫误扣次数）", "2. Direct File / Folder ZIP Download Link")), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement(Input, {
+    readOnly: true,
+    value: generatedData.directUrl,
+    className: "text-xs font-mono"
+  }), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    onClick: () => handleCopy("direct", generatedData.directUrl),
+    className: "gap-1 shrink-0"
+  }, copiedKey === "direct" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+    className: "w-3.5 h-3.5 text-emerald-600"
+  }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("复制", "Copy"))))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-semibold text-foreground flex items-center gap-1.5 mb-1"
+  }, /*#__PURE__*/React.createElement(Globe, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("3. 跨服联邦挂载协议地址 (SFSP/1.0 · 可在其他 StoreIt 实例一键挂载)", "3. Cross-Server Federation URI (SFSP/1.0 · mount on any StoreIt instance)")), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-2"
+  }, /*#__PURE__*/React.createElement(Input, {
+    readOnly: true,
+    value: generatedData.federatedUri,
+    className: "text-xs font-mono"
+  }), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    onClick: () => handleCopy("fed", generatedData.federatedUri),
+    className: "gap-1 shrink-0"
+  }, copiedKey === "fed" ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+    className: "w-3.5 h-3.5 text-emerald-600"
+  }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("复制协议串", "Copy URI"))))), /*#__PURE__*/React.createElement(DialogFooter, {
+    className: "gap-2 pt-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: () => {
+      const tok = generatedData.token;
+      const pwd = accessPassword.trim();
+      handleClose();
+      openSharedSpace(tok, "", pwd);
+    }
+  }, t("立即在共享空间中打开", "Open in Shared Space")), /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    onClick: handleClose
+  }, t("完成", "Done")))) : /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleGenerate,
+    className: "space-y-3.5 text-xs"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5 p-2.5 rounded-xl bg-muted/40 border"
+  }, item?.isDirectory ? /*#__PURE__*/React.createElement(Folder, {
+    className: "w-5 h-5 text-amber-500 shrink-0"
+  }) : /*#__PURE__*/React.createElement(FileText, {
+    className: "w-5 h-5 text-brand-secondary shrink-0"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0 flex-1"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-brand-primary truncate"
+  }, item?.name), /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] text-muted-foreground truncate"
+  }, t("路径", "Path"), ": /", item?.path, " (", item?.isDirectory ? t("文件夹共享", "Folder Share") : t("单文件分享", "File Share"), ")"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-semibold text-foreground flex items-center gap-1.5 mb-1.5"
+  }, /*#__PURE__*/React.createElement(ShieldCheck, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("共享读写权限管控 (R / RW)", "Access Permission (R / RW)")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setPermission("READ"),
+    className: `p-2.5 rounded-xl border text-left transition-all ${permission === "READ" ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold" : "bg-white hover:bg-black/5 text-foreground"}`
+  }, /*#__PURE__*/React.createElement("div", null, t("只读权限 (R)", "Read-Only (R)")), /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] text-muted-foreground font-normal mt-0.5"
+  }, t("仅允许浏览子目录、在线预览与下载", "Browse folders, preview & download only"))), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setPermission("READ_WRITE"),
+    className: `p-2.5 rounded-xl border text-left transition-all ${permission === "READ_WRITE" ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold" : "bg-white hover:bg-black/5 text-foreground"}`
+  }, /*#__PURE__*/React.createElement("div", null, t("可读写协同 (RW)", "Read & Write (RW)")), /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] text-muted-foreground font-normal mt-0.5"
+  }, t("允许上传、新建、在线编辑与删除子项", "Allow upload, create, online edit & delete"))))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-medium text-foreground flex items-center gap-1 mb-1"
+  }, /*#__PURE__*/React.createElement(Lock, {
+    className: "w-3 h-3 text-brand-secondary"
+  }), t("访问提取码 (留空则公开)", "Access Code (optional)")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    placeholder: t("可选，如 8888 或 team2026", "Optional, e.g. 8888 or team2026"),
+    value: accessPassword,
+    onChange: e => setAccessPassword(e.target.value),
+    className: "font-mono text-xs h-9"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-medium text-foreground block mb-1"
+  }, t("共享显示名称", "Display Title")), /*#__PURE__*/React.createElement(Input, {
+    type: "text",
+    placeholder: t("共享标题", "Share title"),
+    value: title,
+    onChange: e => setTitle(e.target.value),
+    className: "text-xs h-9"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 sm:grid-cols-2 gap-3"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-medium text-foreground block mb-1"
+  }, t("链接有效期", "Expiration")), /*#__PURE__*/React.createElement("select", {
+    value: expireHours,
+    onChange: e => setExpireHours(e.target.value),
+    className: "w-full h-9 rounded-lg border border-input bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "24"
+  }, t("1 天", "1 Day")), /*#__PURE__*/React.createElement("option", {
+    value: "168"
+  }, t("7 天", "7 Days")), /*#__PURE__*/React.createElement("option", {
+    value: "720"
+  }, t("30 天", "30 Days")), /*#__PURE__*/React.createElement("option", {
+    value: "-1"
+  }, t("永久有效", "Never Expire")), /*#__PURE__*/React.createElement("option", {
+    value: "custom"
+  }, t("自定义小时数", "Custom Hours"))), expireHours === "custom" && /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: "1",
+    placeholder: t("有效小时数 (如 48)", "Hours (e.g. 48)"),
+    value: customHours,
+    onChange: e => setCustomHours(e.target.value),
+    className: "mt-1.5 text-xs h-8",
+    required: true
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "font-medium text-foreground block mb-1"
+  }, t("最大下载次数 (留空不限)", "Max Downloads (blank = unlimited)")), /*#__PURE__*/React.createElement(Input, {
+    type: "number",
+    min: "1",
+    placeholder: t("例如: 50", "e.g. 50"),
+    value: maxDownloads,
+    onChange: e => setMaxDownloads(e.target.value),
+    className: "text-xs h-9"
+  }))), /*#__PURE__*/React.createElement(DialogFooter, {
+    className: "pt-1"
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: handleClose
+  }, t("取消", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: shareMutation.isPending
+  }, shareMutation.isPending ? t("生成中...", "Generating...") : t("生成共享与跨服协议链接", "Generate Share & SFSP Link"))))));
+}
+function slugifyHeading(text, index) {
+  const clean = text.replace(/[`*_~=#<>[\]()!]/g, "").trim().toLowerCase().replace(/\s+/g, "-");
+  return `md-h-${index}-${clean || index}`;
+}
+function resolveRelativePath(baseFilePath, relUrl) {
+  if (!relUrl) return "";
+  if (relUrl.startsWith("http://") || relUrl.startsWith("https://") || relUrl.startsWith("data:") || relUrl.startsWith("blob:") || relUrl.startsWith("/")) {
+    return relUrl;
+  }
+  const baseDir = baseFilePath && baseFilePath.includes("/") ? baseFilePath.slice(0, baseFilePath.lastIndexOf("/")) : "";
+  const combined = baseDir ? `${baseDir}/${relUrl}` : relUrl;
+  const parts = combined.split("/");
+  const resolved = [];
+  for (const part of parts) {
+    if (!part || part === ".") continue;
+    if (part === "..") {
+      resolved.pop();
+    } else {
+      resolved.push(part);
+    }
+  }
+  return getPreviewUrl(resolved.join("/"));
+}
+const LATEX_SYMBOLS = {
+  "\\alpha": "α",
+  "\\beta": "β",
+  "\\gamma": "γ",
+  "\\delta": "δ",
+  "\\epsilon": "ε",
+  "\\zeta": "ζ",
+  "\\eta": "η",
+  "\\theta": "θ",
+  "\\lambda": "λ",
+  "\\mu": "μ",
+  "\\pi": "π",
+  "\\rho": "ρ",
+  "\\sigma": "σ",
+  "\\tau": "τ",
+  "\\phi": "φ",
+  "\\omega": "ω",
+  "\\Delta": "Δ",
+  "\\Sigma": "Σ",
+  "\\Omega": "Ω",
+  "\\Pi": "Π",
+  "\\infty": "∞",
+  "\\pm": "±",
+  "\\mp": "∓",
+  "\\times": "×",
+  "\\div": "÷",
+  "\\cdot": "·",
+  "\\neq": "≠",
+  "\\ne": "≠",
+  "\\leq": "≤",
+  "\\le": "≤",
+  "\\geq": "≥",
+  "\\ge": "≥",
+  "\\approx": "≈",
+  "\\equiv": "≡",
+  "\\propto": "∝",
+  "\\sum": "∑",
+  "\\prod": "∏",
+  "\\int": "∫",
+  "\\partial": "∂",
+  "\\nabla": "∇",
+  "\\forall": "∀",
+  "\\exists": "∃",
+  "\\in": "∈",
+  "\\notin": "∉",
+  "\\subset": "⊂",
+  "\\subseteq": "⊆",
+  "\\cup": "∪",
+  "\\cap": "∩",
+  "\\rightarrow": "→",
+  "\\to": "→",
+  "\\leftarrow": "←",
+  "\\Rightarrow": "⇒",
+  "\\Leftarrow": "⇐",
+  "\\leftrightarrow": "↔",
+  "\\Leftrightarrow": "⇔"
+};
+function formatMathExpression(expr) {
+  let text = expr.trim();
+  text = text.replace(/\\frac\{([^{}]+)\}\{([^{}]+)\}/g, "($1)/($2)");
+  text = text.replace(/\\sqrt\{([^{}]+)\}/g, "√($1)");
+  text = text.replace(/\\text\{([^{}]+)\}/g, "$1");
+  for (const [cmd, sym] of Object.entries(LATEX_SYMBOLS)) {
+    text = text.split(cmd).join(sym);
+  }
+  const parts = [];
+  const tokenRegex = /(\^\{([^{}]+)\}|\^([a-zA-Z0-9+-])|_\{([^{}]+)\}|_([a-zA-Z0-9+-]))/g;
+  let lastIdx = 0;
+  let match;
+  let key = 0;
+  while ((match = tokenRegex.exec(text)) !== null) {
+    if (match.index > lastIdx) {
+      parts.push(text.slice(lastIdx, match.index));
+    }
+    const supContent = match[2] || match[3];
+    const subContent = match[4] || match[5];
+    if (supContent !== undefined) {
+      parts.push( /*#__PURE__*/React.createElement("sup", {
+        key: `m_${key++}`,
+        className: "text-[0.75em] font-semibold"
+      }, supContent));
+    } else if (subContent !== undefined) {
+      parts.push( /*#__PURE__*/React.createElement("sub", {
+        key: `m_${key++}`,
+        className: "text-[0.75em]"
+      }, subContent));
+    }
+    lastIdx = tokenRegex.lastIndex;
+  }
+  if (lastIdx < text.length) {
+    parts.push(text.slice(lastIdx));
+  }
+  return parts;
+}
+function highlightCodeLine(line) {
+  const trimmed = line.trimStart();
+  if (trimmed.startsWith("//") || trimmed.startsWith("#") || trimmed.startsWith("--")) {
+    return /*#__PURE__*/React.createElement("span", {
+      className: "text-[#6c7086] italic"
+    }, line);
+  }
+  const tokenRegex = /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|\b(?:import|from|export|default|function|return|const|let|var|if|else|for|while|switch|case|break|continue|class|interface|type|extends|implements|new|try|catch|finally|throw|async|await|public|private|protected|static|final|void|int|long|double|boolean|true|false|null|undefined|def|elif|None|True|False|SELECT|FROM|WHERE|INSERT|UPDATE|DELETE|JOIN|GROUP|ORDER|BY|LIMIT)\b|\b\d+(?:\.\d+)?\b)/g;
+  const nodes = [];
+  let lastIndex = 0;
+  let m;
+  let k = 0;
+  while ((m = tokenRegex.exec(line)) !== null) {
+    if (m.index > lastIndex) {
+      nodes.push(line.slice(lastIndex, m.index));
+    }
+    const tok = m[0];
+    if (tok.startsWith('"') || tok.startsWith("'") || tok.startsWith("`")) {
+      nodes.push( /*#__PURE__*/React.createElement("span", {
+        key: k++,
+        className: "text-[#a6e3a1]"
+      }, tok));
+    } else if (/^\d/.test(tok)) {
+      nodes.push( /*#__PURE__*/React.createElement("span", {
+        key: k++,
+        className: "text-[#fab387]"
+      }, tok));
+    } else {
+      nodes.push( /*#__PURE__*/React.createElement("span", {
+        key: k++,
+        className: "text-[#cba6f7] font-semibold"
+      }, tok));
+    }
+    lastIndex = tokenRegex.lastIndex;
+  }
+  if (lastIndex < line.length) {
+    nodes.push(line.slice(lastIndex));
+  }
+  return nodes;
+}
+function CodeBlockView({
+  lang,
+  code
+}) {
+  const [copied, setCopied] = useState(false);
+  const [showLineNums, setShowLineNums] = useState(true);
+  const lines = useMemo(() => code.split("\n"), [code]);
+  const normalizedLang = (lang || "text").toLowerCase();
+  const {
+    t
+  } = useI18n();
+  const handleCopy = async () => {
+    if (await copyToClipboard(code)) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    }
+  };
+  if (normalizedLang === "math" || normalizedLang === "latex" || normalizedLang === "katex") {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "my-3 p-4 rounded-xl bg-indigo-950/5 border border-indigo-500/20 text-center font-serif text-base overflow-x-auto"
+    }, lines.map((l, i) => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "py-0.5"
+    }, formatMathExpression(l))));
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "my-3.5 rounded-xl overflow-hidden border border-white/10 bg-[#1e1e2e] text-[#cdd6f4] shadow-sm"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between px-3.5 py-1.5 bg-[#181825] border-b border-white/10 text-[11px] text-[#a6adc8] select-none"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-1 font-mono uppercase tracking-wider text-[#89b4fa] font-semibold"
+  }, normalizedLang), /*#__PURE__*/React.createElement("span", {
+    className: "text-white/20"
+  }, "\xB7"), /*#__PURE__*/React.createElement("span", null, t(`${lines.length} 行`, `${lines.length} lines`))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setShowLineNums(v => !v),
+    className: "px-1.5 py-0.5 rounded hover:bg-white/10 transition-colors"
+  }, showLineNums ? t("隐藏行号", "Hide Lines") : t("显示行号", "Show Lines")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: handleCopy,
+    className: "inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white/10 hover:bg-white/15 text-[#cdd6f4] transition-colors"
+  }, copied ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+    className: "w-3 h-3 text-emerald-400"
+  }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-3 h-3"
+  }), " ", t("复制代码", "Copy Code"))))), /*#__PURE__*/React.createElement("div", {
+    className: "p-3.5 overflow-x-auto font-mono text-xs leading-relaxed"
+  }, lines.map((l, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "table-row hover:bg-white/[0.03]"
+  }, showLineNums && /*#__PURE__*/React.createElement("span", {
+    className: "table-cell pr-4 text-right select-none text-[#585b70] w-8"
+  }, i + 1), /*#__PURE__*/React.createElement("span", {
+    className: "table-cell whitespace-pre"
+  }, highlightCodeLine(l))))));
+}
+function parseTableCells(row) {
+  let trimmed = row.trim();
+  if (trimmed.startsWith("|")) trimmed = trimmed.slice(1);
+  if (trimmed.endsWith("|")) trimmed = trimmed.slice(0, -1);
+  const cells = [];
+  let current = "";
+  for (let i = 0; i < trimmed.length; i++) {
+    if (trimmed[i] === "\\" && i + 1 < trimmed.length && trimmed[i + 1] === "|") {
+      current += "|";
+      i++;
+    } else if (trimmed[i] === "|") {
+      cells.push(current.trim());
+      current = "";
+    } else {
+      current += trimmed[i];
+    }
+  }
+  cells.push(current.trim());
+  return cells;
+}
+function MarkdownRenderer({
+  content,
+  basePath,
+  showToc = true
+}) {
+  const [tocCollapsed, setTocCollapsed] = useState(false);
+  const {
+    isEn,
+    t
+  } = useI18n();
+  const {
+    elements,
+    headings,
+    footnotes
+  } = useMemo(() => {
+    const rawLines = (content || "").split(/\r?\n/);
+    const tocList = [];
+    const footnoteMap = new Map();
+    const bodyLines = [];
+    let frontmatter = null;
+    let startLine = 0;
+    if (rawLines[0]?.trim() === "---") {
+      let endFm = -1;
+      for (let i = 1; i < Math.min(rawLines.length, 40); i++) {
+        if (rawLines[i].trim() === "---" || rawLines[i].trim() === "...") {
+          endFm = i;
+          break;
+        }
+      }
+      if (endFm > 0) {
+        const fmData = {};
+        for (let i = 1; i < endFm; i++) {
+          const m = rawLines[i].match(/^([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+          if (m) {
+            fmData[m[1]] = m[2].replace(/^["']|["']$/g, "").trim();
+          }
+        }
+        if (Object.keys(fmData).length > 0) {
+          frontmatter = fmData;
+        }
+        startLine = endFm + 1;
+      }
+    }
+    for (let i = startLine; i < rawLines.length; i++) {
+      const fnMatch = rawLines[i].match(/^\[\^([^\]]+)\]:\s*(.+)$/);
+      if (fnMatch) {
+        footnoteMap.set(fnMatch[1], fnMatch[2].trim());
+      } else {
+        bodyLines.push(rawLines[i]);
+      }
+    }
+    const renderInline = (text, keyPrefix = "in") => {
+      if (!text) return null;
+      const inlineRegex = /(`[^`]+`|\$(?!\s)[^$\n]+(?<!\s)\$|!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|\[\^[^\]]+\]|\[\[[^\]]+\]\]|<kbd>[^<]+<\/kbd>|\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|__[^_]+__|~~[^~]+~~|==[^=]+==|\^[^^\s]+\^|~[^~\s]+~|\*(?!\s)[^*]+(?<!\s)\*|https?:\/\/[^\s<)]+)/g;
+      const out = [];
+      let lastIdx = 0;
+      let match;
+      let tokenIdx = 0;
+      while ((match = inlineRegex.exec(text)) !== null) {
+        if (match.index > lastIdx) {
+          out.push(text.slice(lastIdx, match.index));
+        }
+        const token = match[0];
+        const k = `${keyPrefix}_${tokenIdx++}`;
+        if (token.startsWith("`") && token.endsWith("`")) {
+          out.push( /*#__PURE__*/React.createElement("code", {
+            key: k,
+            className: "px-1.5 py-0.5 mx-0.5 rounded-md bg-brand-primary/10 text-brand-primary font-mono text-[0.88em] font-medium"
+          }, token.slice(1, -1)));
+        } else if (token.startsWith("$") && token.endsWith("$")) {
+          out.push( /*#__PURE__*/React.createElement("span", {
+            key: k,
+            className: "px-1 py-0.5 mx-0.5 rounded bg-indigo-500/10 text-indigo-900 font-serif italic"
+          }, formatMathExpression(token.slice(1, -1))));
+        } else if (token.startsWith("![")) {
+          const imgMatch = token.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);
+          if (imgMatch) {
+            const alt = imgMatch[1];
+            const src = resolveRelativePath(basePath, imgMatch[2]);
+            const title = imgMatch[3];
+            out.push( /*#__PURE__*/React.createElement("span", {
+              key: k,
+              className: "inline-block my-2 max-w-full"
+            }, /*#__PURE__*/React.createElement("img", {
+              src: src,
+              alt: alt,
+              title: title || alt,
+              className: "max-h-96 max-w-full rounded-xl border shadow-sm object-contain mx-auto"
+            }), alt && /*#__PURE__*/React.createElement("span", {
+              className: "block text-center text-[11px] text-muted-foreground mt-1"
+            }, alt)));
+          } else {
+            out.push(token);
+          }
+        } else if (token.startsWith("[^") && token.endsWith("]")) {
+          const fnId = token.slice(2, -1);
+          out.push( /*#__PURE__*/React.createElement("sup", {
+            key: k,
+            className: "ml-0.5"
+          }, /*#__PURE__*/React.createElement("a", {
+            href: `#fn-def-${fnId}`,
+            id: `fn-ref-${fnId}`,
+            className: "text-[11px] font-semibold text-brand-primary hover:underline px-0.5 rounded bg-brand-primary/10",
+            title: footnoteMap.get(fnId) || (isEn ? `Footnote ${fnId}` : `脚注 ${fnId}`)
+          }, "[", fnId, "]")));
+        } else if (token.startsWith("[[") && token.endsWith("]]")) {
+          out.push( /*#__PURE__*/React.createElement("kbd", {
+            key: k,
+            className: "px-1.5 py-0.5 text-[11px] font-mono font-semibold bg-muted border border-b-2 rounded-md text-foreground shadow-sm"
+          }, token.slice(2, -2)));
+        } else if (token.startsWith("<kbd>") && token.endsWith("</kbd>")) {
+          out.push( /*#__PURE__*/React.createElement("kbd", {
+            key: k,
+            className: "px-1.5 py-0.5 text-[11px] font-mono font-semibold bg-muted border border-b-2 rounded-md text-foreground shadow-sm"
+          }, token.slice(5, -6)));
+        } else if (token.startsWith("[")) {
+          const linkMatch = token.match(/^\[([^\]]+)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);
+          if (linkMatch) {
+            const label = linkMatch[1];
+            const rawHref = linkMatch[2];
+            const title = linkMatch[3];
+            const safeHref = /^(https?:\/\/|mailto:|#|\/)/i.test(rawHref) ? rawHref : "#";
+            out.push( /*#__PURE__*/React.createElement("a", {
+              key: k,
+              href: safeHref,
+              title: title,
+              target: safeHref.startsWith("#") ? undefined : "_blank",
+              rel: "noopener noreferrer",
+              className: "text-blue-600 hover:text-blue-700 underline underline-offset-2 font-medium"
+            }, renderInline(label, `${k}_lbl`)));
+          } else {
+            out.push(token);
+          }
+        } else if (token.startsWith("***") && token.endsWith("***")) {
+          out.push( /*#__PURE__*/React.createElement("strong", {
+            key: k,
+            className: "font-bold italic"
+          }, renderInline(token.slice(3, -3), k)));
+        } else if (token.startsWith("**") && token.endsWith("**") || token.startsWith("__") && token.endsWith("__")) {
+          out.push( /*#__PURE__*/React.createElement("strong", {
+            key: k,
+            className: "font-bold text-foreground"
+          }, renderInline(token.slice(2, -2), k)));
+        } else if (token.startsWith("~~") && token.endsWith("~~")) {
+          out.push( /*#__PURE__*/React.createElement("del", {
+            key: k,
+            className: "line-through text-muted-foreground"
+          }, renderInline(token.slice(2, -2), k)));
+        } else if (token.startsWith("==") && token.endsWith("==")) {
+          out.push( /*#__PURE__*/React.createElement("mark", {
+            key: k,
+            className: "bg-amber-200/80 text-amber-950 px-1 py-0.2 rounded font-medium"
+          }, renderInline(token.slice(2, -2), k)));
+        } else if (token.startsWith("^") && token.endsWith("^") && token.length > 2) {
+          out.push( /*#__PURE__*/React.createElement("sup", {
+            key: k,
+            className: "text-[0.75em]"
+          }, token.slice(1, -1)));
+        } else if (token.startsWith("~") && token.endsWith("~") && token.length > 2) {
+          out.push( /*#__PURE__*/React.createElement("sub", {
+            key: k,
+            className: "text-[0.75em]"
+          }, token.slice(1, -1)));
+        } else if (token.startsWith("*") && token.endsWith("*")) {
+          out.push( /*#__PURE__*/React.createElement("em", {
+            key: k,
+            className: "italic"
+          }, renderInline(token.slice(1, -1), k)));
+        } else if (/^https?:\/\//i.test(token)) {
+          out.push( /*#__PURE__*/React.createElement("a", {
+            key: k,
+            href: token,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            className: "text-blue-600 hover:text-blue-700 underline underline-offset-2 break-all"
+          }, token));
+        } else {
+          out.push(token);
+        }
+        lastIdx = inlineRegex.lastIndex;
+      }
+      if (lastIdx < text.length) {
+        out.push(text.slice(lastIdx));
+      }
+      return out;
+    };
+    const renderedBlocks = [];
+    if (frontmatter) {
+      renderedBlocks.push( /*#__PURE__*/React.createElement("div", {
+        key: "frontmatter",
+        className: "mb-4 p-3 rounded-xl bg-muted/50 border text-xs flex flex-wrap gap-x-4 gap-y-1.5"
+      }, Object.entries(frontmatter).map(([k, v]) => /*#__PURE__*/React.createElement("div", {
+        key: k,
+        className: "flex items-center gap-1.5"
+      }, /*#__PURE__*/React.createElement("span", {
+        className: "font-mono text-muted-foreground"
+      }, k, ":"), /*#__PURE__*/React.createElement("span", {
+        className: "font-semibold text-brand-primary"
+      }, v)))));
+    }
+    let i = 0;
+    while (i < bodyLines.length) {
+      const line = bodyLines[i];
+      const trimmed = line.trim();
+      if (!trimmed) {
+        i++;
+        continue;
+      }
+      const fenceMatch = trimmed.match(/^(`{3,}|~{3,})(.*)$/);
+      if (fenceMatch) {
+        const fence = fenceMatch[1];
+        const lang = (fenceMatch[2] || "").trim();
+        const codeLines = [];
+        i++;
+        while (i < bodyLines.length && !bodyLines[i].trim().startsWith(fence)) {
+          codeLines.push(bodyLines[i]);
+          i++;
+        }
+        if (i < bodyLines.length) i++;
+        renderedBlocks.push( /*#__PURE__*/React.createElement(CodeBlockView, {
+          key: `code_${i}`,
+          lang: lang,
+          code: codeLines.join("\n")
+        }));
+        continue;
+      }
+      if (trimmed.startsWith("$$")) {
+        if (trimmed.endsWith("$$") && trimmed.length > 4) {
+          const expr = trimmed.slice(2, -2);
+          renderedBlocks.push( /*#__PURE__*/React.createElement("div", {
+            key: `math_${i}`,
+            className: "my-3 p-3.5 rounded-xl bg-indigo-950/5 border border-indigo-500/20 text-center font-serif text-base overflow-x-auto"
+          }, formatMathExpression(expr)));
+          i++;
+          continue;
+        }
+        const mathLines = [];
+        if (trimmed.slice(2).trim()) mathLines.push(trimmed.slice(2));
+        i++;
+        while (i < bodyLines.length && !bodyLines[i].trim().endsWith("$$")) {
+          mathLines.push(bodyLines[i]);
+          i++;
+        }
+        if (i < bodyLines.length) {
+          const closing = bodyLines[i].trim().slice(0, -2).trim();
+          if (closing) mathLines.push(closing);
+          i++;
+        }
+        renderedBlocks.push( /*#__PURE__*/React.createElement("div", {
+          key: `math_blk_${i}`,
+          className: "my-3 p-3.5 rounded-xl bg-indigo-950/5 border border-indigo-500/20 text-center font-serif text-base overflow-x-auto"
+        }, mathLines.map((ml, idx) => /*#__PURE__*/React.createElement("div", {
+          key: idx
+        }, formatMathExpression(ml)))));
+        continue;
+      }
+      const directiveMatch = trimmed.match(/^:::\s*([a-zA-Z]+)(?:\s+(.*))?$/);
+      if (directiveMatch) {
+        const dirType = directiveMatch[1].toLowerCase();
+        const dirTitle = directiveMatch[2] || "";
+        const innerLines = [];
+        i++;
+        while (i < bodyLines.length && bodyLines[i].trim() !== ":::") {
+          innerLines.push(bodyLines[i]);
+          i++;
+        }
+        if (i < bodyLines.length) i++;
+        if (dirType === "details") {
+          renderedBlocks.push( /*#__PURE__*/React.createElement("details", {
+            key: `details_${i}`,
+            className: "my-3 rounded-xl border bg-muted/20 p-3 text-sm group"
+          }, /*#__PURE__*/React.createElement("summary", {
+            className: "font-semibold cursor-pointer select-none text-brand-primary"
+          }, dirTitle || (isEn ? "Click to expand details" : "点击展开详情")), /*#__PURE__*/React.createElement("div", {
+            className: "mt-2 pt-2 border-t text-foreground space-y-1.5"
+          }, innerLines.map((il, idx) => /*#__PURE__*/React.createElement("p", {
+            key: idx
+          }, renderInline(il, `det_${i}_${idx}`))))));
+        } else {
+          renderedBlocks.push(renderAdmonition(dirType.toUpperCase(), dirTitle, innerLines, `dir_${i}`, renderInline, isEn));
+        }
+        continue;
+      }
+      if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+        renderedBlocks.push( /*#__PURE__*/React.createElement("hr", {
+          key: `hr_${i}`,
+          className: "my-4 border-t border-border"
+        }));
+        i++;
+        continue;
+      }
+      const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+      if (headingMatch) {
+        const level = headingMatch[1].length;
+        const rawHeadingText = headingMatch[2].replace(/\s+#+\s*$/, "").trim();
+        const id = slugifyHeading(rawHeadingText, tocList.length);
+        tocList.push({
+          id,
+          level,
+          text: rawHeadingText
+        });
+        const headingClasses = {
+          1: "text-2xl font-extrabold text-brand-primary mt-5 mb-2.5 pb-1.5 border-b",
+          2: "text-xl font-bold text-brand-primary mt-4 mb-2 pb-1 border-b border-border/60",
+          3: "text-lg font-bold text-brand-primary mt-3.5 mb-1.5",
+          4: "text-base font-semibold text-brand-primary mt-3 mb-1",
+          5: "text-sm font-semibold text-brand-primary mt-2.5 mb-1",
+          6: "text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-2 mb-1"
+        };
+        const Tag = `h${level}`;
+        renderedBlocks.push( /*#__PURE__*/React.createElement(Tag, {
+          key: `h_${i}`,
+          id: id,
+          className: headingClasses[level]
+        }, renderInline(rawHeadingText, `h_${i}`)));
+        i++;
+        continue;
+      }
+      if (line.includes("|") && i + 1 < bodyLines.length && /^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$/.test(bodyLines[i + 1])) {
+        const headerCells = parseTableCells(bodyLines[i]);
+        const alignCells = parseTableCells(bodyLines[i + 1]);
+        const alignments = alignCells.map(c => {
+          const tCell = c.trim();
+          if (tCell.startsWith(":") && tCell.endsWith(":")) return "center";
+          if (tCell.endsWith(":")) return "right";
+          return "left";
+        });
+        i += 2;
+        const rows = [];
+        while (i < bodyLines.length && bodyLines[i].trim() && bodyLines[i].includes("|")) {
+          rows.push(parseTableCells(bodyLines[i]));
+          i++;
+        }
+        renderedBlocks.push( /*#__PURE__*/React.createElement("div", {
+          key: `tbl_${i}`,
+          className: "my-3.5 overflow-x-auto rounded-xl border shadow-sm"
+        }, /*#__PURE__*/React.createElement("table", {
+          className: "w-full border-collapse text-xs"
+        }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+          className: "bg-muted/60 border-b text-brand-primary font-semibold"
+        }, headerCells.map((cell, cIdx) => /*#__PURE__*/React.createElement("th", {
+          key: cIdx,
+          style: {
+            textAlign: alignments[cIdx] || "left"
+          },
+          className: "px-3.5 py-2.5 border-r last:border-r-0"
+        }, renderInline(cell, `th_${i}_${cIdx}`))))), /*#__PURE__*/React.createElement("tbody", {
+          className: "divide-y"
+        }, rows.map((row, rIdx) => /*#__PURE__*/React.createElement("tr", {
+          key: rIdx,
+          className: "hover:bg-muted/30 transition-colors"
+        }, headerCells.map((_h, cIdx) => /*#__PURE__*/React.createElement("td", {
+          key: cIdx,
+          style: {
+            textAlign: alignments[cIdx] || "left"
+          },
+          className: "px-3.5 py-2 border-r last:border-r-0"
+        }, renderInline(row[cIdx] || "", `td_${i}_${rIdx}_${cIdx}`)))))))));
+        continue;
+      }
+      if (trimmed.startsWith(">")) {
+        const quoteLines = [];
+        while (i < bodyLines.length && bodyLines[i].trim().startsWith(">")) {
+          quoteLines.push(bodyLines[i].trim().replace(/^>\s?/, ""));
+          i++;
+        }
+        const alertMatch = quoteLines[0]?.match(/^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\](?:\s+(.*))?$/i);
+        if (alertMatch) {
+          const alertType = alertMatch[1].toUpperCase();
+          const customTitle = alertMatch[2] || "";
+          renderedBlocks.push(renderAdmonition(alertType, customTitle, quoteLines.slice(1), `alert_${i}`, renderInline, isEn));
+        } else {
+          renderedBlocks.push( /*#__PURE__*/React.createElement("blockquote", {
+            key: `bq_${i}`,
+            className: "my-3 border-l-4 border-brand-secondary/60 bg-muted/30 rounded-r-xl pl-4 pr-3 py-2 text-muted-foreground italic space-y-1"
+          }, quoteLines.map((ql, qIdx) => /*#__PURE__*/React.createElement("p", {
+            key: qIdx
+          }, renderInline(ql, `bq_${i}_${qIdx}`)))));
+        }
+        continue;
+      }
+      if (/^\s*(?:[-*+]|\d+\.)\s+/.test(line)) {
+        const listItems = [];
+        while (i < bodyLines.length && /^\s*(?:[-*+]|\d+\.)\s+/.test(bodyLines[i])) {
+          const rawL = bodyLines[i];
+          const indentMatch = rawL.match(/^(\s*)/);
+          const indent = indentMatch ? Math.floor(indentMatch[1].length / 2) : 0;
+          const orderedMatch = rawL.match(/^\s*(\d+)\.\s+(.*)$/);
+          const unorderedMatch = rawL.match(/^\s*[-*+]\s+(.*)$/);
+          const itemBody = orderedMatch ? orderedMatch[2] : unorderedMatch ? unorderedMatch[1] : rawL;
+          const taskMatch = itemBody.match(/^\[([ xX])\]\s+(.*)$/);
+          listItems.push({
+            indent,
+            ordered: Boolean(orderedMatch),
+            orderNum: orderedMatch ? orderedMatch[1] : undefined,
+            taskState: taskMatch ? taskMatch[1].toLowerCase() === "x" ? "checked" : "unchecked" : null,
+            text: taskMatch ? taskMatch[2] : itemBody
+          });
+          i++;
+        }
+        renderedBlocks.push( /*#__PURE__*/React.createElement("div", {
+          key: `list_${i}`,
+          className: "my-2.5 space-y-1.5"
+        }, listItems.map((li, lIdx) => /*#__PURE__*/React.createElement("div", {
+          key: lIdx,
+          style: {
+            paddingLeft: `${li.indent * 18}px`
+          },
+          className: "flex items-start gap-2 leading-relaxed"
+        }, li.taskState !== null ? /*#__PURE__*/React.createElement("span", {
+          className: `mt-1 w-4 h-4 rounded flex items-center justify-center border shrink-0 ${li.taskState === "checked" ? "bg-emerald-600 border-emerald-600 text-white" : "border-muted-foreground/40 bg-white"}`
+        }, li.taskState === "checked" && /*#__PURE__*/React.createElement(Check, {
+          className: "w-3 h-3"
+        })) : li.ordered ? /*#__PURE__*/React.createElement("span", {
+          className: "text-brand-secondary font-mono text-xs font-semibold min-w-[1.25rem] pt-0.5 shrink-0"
+        }, li.orderNum, ".") : /*#__PURE__*/React.createElement("span", {
+          className: "w-1.5 h-1.5 rounded-full bg-brand-secondary mt-2 shrink-0 ml-1"
+        }), /*#__PURE__*/React.createElement("span", {
+          className: `flex-1 ${li.taskState === "checked" ? "line-through text-muted-foreground" : ""}`
+        }, renderInline(li.text, `li_${i}_${lIdx}`))))));
+        continue;
+      }
+      if (i + 1 < bodyLines.length && /^:\s+.+/.test(bodyLines[i + 1])) {
+        const term = bodyLines[i].trim();
+        i++;
+        const defs = [];
+        while (i < bodyLines.length && /^:\s+.+/.test(bodyLines[i])) {
+          defs.push(bodyLines[i].replace(/^:\s+/, "").trim());
+          i++;
+        }
+        renderedBlocks.push( /*#__PURE__*/React.createElement("dl", {
+          key: `dl_${i}`,
+          className: "my-2.5 pl-3 border-l-2 border-brand-primary/30"
+        }, /*#__PURE__*/React.createElement("dt", {
+          className: "font-bold text-brand-primary"
+        }, renderInline(term, `dt_${i}`)), defs.map((d, dIdx) => /*#__PURE__*/React.createElement("dd", {
+          key: dIdx,
+          className: "ml-4 mt-0.5 text-muted-foreground"
+        }, renderInline(d, `dd_${i}_${dIdx}`)))));
+        continue;
+      }
+      renderedBlocks.push( /*#__PURE__*/React.createElement("p", {
+        key: `p_${i}`,
+        className: "my-2 leading-relaxed"
+      }, renderInline(line, `p_${i}`)));
+      i++;
+    }
+    return {
+      elements: renderedBlocks,
+      headings: tocList,
+      footnotes: Array.from(footnoteMap.entries())
+    };
+  }, [content, basePath, isEn]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col lg:flex-row gap-4 text-sm text-foreground"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 min-w-0 space-y-1"
+  }, elements, footnotes.length > 0 && /*#__PURE__*/React.createElement("div", {
+    className: "mt-6 pt-3 border-t text-xs text-muted-foreground space-y-1.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-foreground"
+  }, t("脚注引用", "Footnotes")), footnotes.map(([fnId, fnText]) => /*#__PURE__*/React.createElement("div", {
+    key: fnId,
+    id: `fn-def-${fnId}`,
+    className: "flex items-start gap-2"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: `#fn-ref-${fnId}`,
+    className: "font-mono text-brand-primary font-semibold hover:underline shrink-0"
+  }, "[", fnId, "]"), /*#__PURE__*/React.createElement("span", {
+    className: "flex-1"
+  }, fnText))))), showToc && headings.length >= 2 && /*#__PURE__*/React.createElement("aside", {
+    className: "lg:w-52 shrink-0 border-t lg:border-t-0 lg:border-l pt-3 lg:pt-0 lg:pl-3 select-none"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setTocCollapsed(c => !c),
+    className: "flex items-center justify-between w-full text-xs font-semibold text-brand-primary mb-2 hover:opacity-80"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "inline-flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement(ListTree, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t(`文档大纲 (${headings.length})`, `Outline (${headings.length})`)), tocCollapsed ? /*#__PURE__*/React.createElement(ChevronRight, {
+    className: "w-3.5 h-3.5"
+  }) : /*#__PURE__*/React.createElement(ChevronDown, {
+    className: "w-3.5 h-3.5"
+  })), !tocCollapsed && /*#__PURE__*/React.createElement("nav", {
+    className: "space-y-1 max-h-72 overflow-y-auto pr-1"
+  }, headings.map(h => /*#__PURE__*/React.createElement("a", {
+    key: h.id,
+    href: `#${h.id}`,
+    onClick: e => {
+      e.preventDefault();
+      const el = document.getElementById(h.id);
+      el?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    },
+    style: {
+      paddingLeft: `${Math.max(0, h.level - 1) * 10}px`
+    },
+    className: "block text-xs text-muted-foreground hover:text-brand-primary truncate py-0.5 transition-colors",
+    title: h.text
+  }, h.text)))));
+}
+function renderAdmonition(type, customTitle, lines, key, renderInline, isEn = false) {
+  const styles = {
+    NOTE: {
+      label: isEn ? "Note" : "提示 (Note)",
+      box: "bg-blue-50/80 border-blue-300 text-blue-950",
+      titleColor: "text-blue-700",
+      icon: /*#__PURE__*/React.createElement(Info, {
+        className: "w-4 h-4 text-blue-600 shrink-0"
+      })
+    },
+    TIP: {
+      label: isEn ? "Tip" : "技巧 (Tip)",
+      box: "bg-emerald-50/80 border-emerald-300 text-emerald-950",
+      titleColor: "text-emerald-700",
+      icon: /*#__PURE__*/React.createElement(Lightbulb, {
+        className: "w-4 h-4 text-emerald-600 shrink-0"
+      })
+    },
+    IMPORTANT: {
+      label: isEn ? "Important" : "重要 (Important)",
+      box: "bg-purple-50/80 border-purple-300 text-purple-950",
+      titleColor: "text-purple-700",
+      icon: /*#__PURE__*/React.createElement(Sparkles, {
+        className: "w-4 h-4 text-purple-600 shrink-0"
+      })
+    },
+    WARNING: {
+      label: isEn ? "Warning" : "警告 (Warning)",
+      box: "bg-amber-50/80 border-amber-300 text-amber-950",
+      titleColor: "text-amber-700",
+      icon: /*#__PURE__*/React.createElement(AlertTriangle, {
+        className: "w-4 h-4 text-amber-600 shrink-0"
+      })
+    },
+    CAUTION: {
+      label: isEn ? "Caution" : "危险 (Caution)",
+      box: "bg-rose-50/80 border-rose-300 text-rose-950",
+      titleColor: "text-rose-700",
+      icon: /*#__PURE__*/React.createElement(AlertOctagon, {
+        className: "w-4 h-4 text-rose-600 shrink-0"
+      })
+    },
+    DANGER: {
+      label: isEn ? "Danger" : "危险 (Danger)",
+      box: "bg-rose-50/80 border-rose-300 text-rose-950",
+      titleColor: "text-rose-700",
+      icon: /*#__PURE__*/React.createElement(AlertOctagon, {
+        className: "w-4 h-4 text-rose-600 shrink-0"
+      })
+    }
+  };
+  const cfg = styles[type] || styles.NOTE;
+  return /*#__PURE__*/React.createElement("div", {
+    key: key,
+    className: `my-3 p-3.5 rounded-xl border-l-4 border ${cfg.box} space-y-1.5`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `flex items-center gap-1.5 font-semibold text-xs ${cfg.titleColor}`
+  }, cfg.icon, /*#__PURE__*/React.createElement("span", null, customTitle || cfg.label)), /*#__PURE__*/React.createElement("div", {
+    className: "text-xs leading-relaxed space-y-1"
+  }, lines.map((l, idx) => /*#__PURE__*/React.createElement("p", {
+    key: idx
+  }, renderInline(l, `${key}_${idx}`)))));
+}
+const MAX_TEXT_BYTES = 256 * 1024;
+const MAX_EDITABLE_BYTES = 5 * 1024 * 1024;
+function decodeTextBytesSmart(bytes) {
+  if (bytes.length >= 3 && bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) {
+    return {
+      text: new TextDecoder("utf-8").decode(bytes.subarray(3)),
+      charset: "UTF-8"
+    };
+  }
+  if (bytes.length >= 2 && bytes[0] === 0xff && bytes[1] === 0xfe) {
+    return {
+      text: new TextDecoder("utf-16le").decode(bytes.subarray(2)),
+      charset: "UTF-16LE"
+    };
+  }
+  if (bytes.length >= 2 && bytes[0] === 0xfe && bytes[1] === 0xff) {
+    return {
+      text: new TextDecoder("utf-16be").decode(bytes.subarray(2)),
+      charset: "UTF-16BE"
+    };
+  }
+  try {
+    const strictUtf8 = new TextDecoder("utf-8", {
+      fatal: true
+    }).decode(bytes);
+    return {
+      text: strictUtf8,
+      charset: "UTF-8"
+    };
+  } catch {
+    try {
+      const gbText = new TextDecoder("gb18030", {
+        fatal: false
+      }).decode(bytes);
+      return {
+        text: gbText,
+        charset: "GB18030"
+      };
+    } catch {
+      return {
+        text: new TextDecoder("utf-8", {
+          fatal: false
+        }).decode(bytes),
+        charset: "UTF-8"
+      };
+    }
+  }
+}
+function PreviewModal() {
+  const queryClient = useQueryClient();
+  const item = useFileStore(s => s.previewFile);
+  const previewAutoEdit = useFileStore(s => s.previewAutoEdit);
+  const setPreviewFile = useFileStore(s => s.setPreviewFile);
+  const viewMode = useFileStore(s => s.viewMode);
+  const currentPath = useFileStore(s => s.currentPath);
+  const searchQuery = useFileStore(s => s.searchQuery);
+  const showToast = useFileStore(s => s.showToast);
+  const openConfirm = useFileStore(s => s.openConfirm);
+  const {
+    t
+  } = useI18n();
+  const [textContent, setTextContent] = useState(null);
+  const [editContent, setEditContent] = useState("");
+  const [detectedCharset, setDetectedCharset] = useState("UTF-8");
+  const [loadedModifiedTime, setLoadedModifiedTime] = useState(undefined);
+  const [isEditing, setIsEditing] = useState(false);
+  const [savingText, setSavingText] = useState(false);
+  const [isTruncated, setIsTruncated] = useState(false);
+  const [isBinaryDetected, setIsBinaryDetected] = useState(false);
+  const [loadingText, setLoadingText] = useState(false);
+  const [previewFailed, setPreviewFailed] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState(0);
+  const [mdMode, setMdMode] = useState("render");
+  const [editSplitPreview, setEditSplitPreview] = useState(true);
+  const [wordWrap, setWordWrap] = useState(true);
+  const [copiedText, setCopiedText] = useState(false);
+  const [audioRate, setAudioRate] = useState(1);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
+  const viewerRef = useRef(null);
+  const textareaRef = useRef(null);
+  const audioRef = useRef(null);
+  const kind = item ? getPreviewKind(item.name) : null;
+  const isMarkdown = item ? ["md", "markdown"].includes(getFileExtension(item.name)) : false;
+  const previewUrl = item ? getPreviewUrl(item.path) : "";
+  const downloadUrl = item ? getDownloadUrl(item.path) : "";
+  const fullActive = isFullscreen || isNativeFullscreen;
+  const previewableSiblings = useMemo(() => {
+    const key = ["files", viewMode, viewMode === "search" ? searchQuery : currentPath];
+    const cached = queryClient.getQueryData(key) || [];
+    return cached.filter(f => !f.isDirectory && isPreviewable(f.name));
+  }, [queryClient, viewMode, currentPath, searchQuery, item]);
+  const currentIndex = useMemo(() => {
+    if (!item) return -1;
+    return previewableSiblings.findIndex(f => f.path === item.path);
+  }, [item, previewableSiblings]);
+  const hasPrev = !isEditing && currentIndex > 0;
+  const hasNext = !isEditing && currentIndex >= 0 && currentIndex < previewableSiblings.length - 1;
+  const goPrev = useCallback(() => {
+    if (hasPrev) setPreviewFile(previewableSiblings[currentIndex - 1]);
+  }, [hasPrev, previewableSiblings, currentIndex, setPreviewFile]);
+  const goNext = useCallback(() => {
+    if (hasNext) setPreviewFile(previewableSiblings[currentIndex + 1]);
+  }, [hasNext, previewableSiblings, currentIndex, setPreviewFile]);
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreen(prev => {
+      const next = !prev;
+      if (!next && document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+      return next;
+    });
+  }, []);
+  const toggleNativeFullscreen = useCallback(async () => {
+    try {
+      if (!document.fullscreenElement) {
+        const targetEl = viewerRef.current || document.documentElement;
+        await targetEl.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch {
+      setIsFullscreen(v => !v);
+    }
+  }, []);
+  useEffect(() => {
+    const onFsChange = () => {
+      const active = Boolean(document.fullscreenElement);
+      setIsNativeFullscreen(active);
+      if (active) setIsFullscreen(true);
+    };
+    document.addEventListener("fullscreenchange", onFsChange);
+    return () => document.removeEventListener("fullscreenchange", onFsChange);
+  }, []);
+  const startEditing = useCallback(async () => {
+    if (!item) return;
+    if ((item.size || 0) > MAX_EDITABLE_BYTES) {
+      showToast(t("文件超过 5 MB，不支持在线编辑，请下载后修改", "File exceeds 5 MB limit for online editing; please download to edit"), "error");
+      return;
+    }
+    setLoadingText(true);
+    try {
+      const res = await api.getFileContent(item.path);
+      setTextContent(res.content);
+      setEditContent(res.content);
+      setDetectedCharset(res.charset || "UTF-8");
+      setLoadedModifiedTime(res.modifiedTime);
+      setIsTruncated(false);
+      setIsEditing(true);
+    } catch (err) {
+      showToast(err.message || t("无法进入在线编辑模式", "Failed to enter online edit mode"), "error");
+    } finally {
+      setLoadingText(false);
+    }
+  }, [item, showToast, t]);
+  const performSaveEdit = useCallback(async (forceOverwrite = false) => {
+    if (!item || savingText) return;
+    setSavingText(true);
+    try {
+      const res = await api.saveFileContent(item.path, editContent, forceOverwrite ? undefined : loadedModifiedTime, detectedCharset);
+      setTextContent(editContent);
+      setLoadedModifiedTime(res.file.modifiedTime);
+      setIsEditing(false);
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["quota"]
+      });
+      const selected = useFileStore.getState().selectedFile;
+      if (selected && selected.path === item.path) {
+        useFileStore.getState().setSelectedFile({
+          ...selected,
+          size: res.file.size,
+          modifiedTime: res.file.modifiedTime
+        });
+      }
+      showToast(t("文本内容已成功保存", "File content saved successfully"), "success");
+    } catch (err) {
+      if (err?.status === 409) {
+        openConfirm({
+          title: t("检测到文件并发修改冲突", "Concurrent Edit Conflict Detected"),
+          description: t("该文件在您编辑期间已被其他窗口或上传任务修改。是否仍要以当前编辑器内容强制覆盖保存？", "This file was modified by another session while you were editing. Overwrite with your current changes?"),
+          confirmText: t("强制覆盖保存", "Overwrite & Save"),
+          destructive: true,
+          onConfirm: () => {
+            performSaveEdit(true);
+          }
+        });
+      } else {
+        showToast(err.message || t("保存文件失败", "Failed to save file"), "error");
+      }
+    } finally {
+      setSavingText(false);
+    }
+  }, [item, editContent, savingText, loadedModifiedTime, detectedCharset, queryClient, showToast, openConfirm, t]);
+  useEffect(() => {
+    setPreviewFailed(false);
+    setIsBinaryDetected(false);
+    setIsEditing(false);
+    setZoom(1);
+    setRotation(0);
+    setMdMode("render");
+    setAudioRate(1);
+    if (!item) {
+      setIsFullscreen(false);
+      if (typeof document !== "undefined" && document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  }, [item]);
+  useEffect(() => {
+    if (!item) return;
+    const handleKeyDown = e => {
+      if (isEditing) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+          e.preventDefault();
+          performSaveEdit(false);
+        }
+        return;
+      }
+      const tag = e.target?.tagName?.toLowerCase();
+      if (tag === "input" || tag === "textarea") return;
+      if (e.key === "ArrowLeft" && hasPrev) {
+        e.preventDefault();
+        goPrev();
+      } else if (e.key === "ArrowRight" && hasNext) {
+        e.preventDefault();
+        goNext();
+      } else if (e.key.toLowerCase() === "f" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [item, isEditing, hasPrev, hasNext, goPrev, goNext, performSaveEdit, toggleFullscreen]);
+  useEffect(() => {
+    if (item && kind === "text") {
+      setLoadingText(true);
+      setIsTruncated(false);
+      setIsBinaryDetected(false);
+      setTextContent(null);
+      if (previewAutoEdit && (item.size || 0) <= MAX_EDITABLE_BYTES) {
+        api.getFileContent(item.path).then(res => {
+          setTextContent(res.content);
+          setEditContent(res.content);
+          setDetectedCharset(res.charset || "UTF-8");
+          setLoadedModifiedTime(res.modifiedTime);
+          setIsEditing(true);
+          setLoadingText(false);
+        }).catch(err => {
+          showToast(err.message || t("无法加载可编辑文本", "Failed to load editable text"), "error");
+          setIsBinaryDetected(true);
+          setLoadingText(false);
+        });
+        return;
+      }
+      if (item.size === 0) {
+        setTextContent("");
+        setEditContent("");
+        setDetectedCharset("UTF-8");
+        setIsTruncated(false);
+        setLoadingText(false);
+        return;
+      }
+      fetch(previewUrl, {
+        headers: {
+          Range: `bytes=0-${MAX_TEXT_BYTES - 1}`
+        }
+      }).then(async r => {
+        if (!r.ok) throw new Error("Failed to load text");
+        const contentRange = r.headers.get("Content-Range") || "";
+        const match = contentRange.match(/\/(\d+)$/);
+        const totalBytes = match ? Number(match[1]) : item.size ?? 0;
+        const truncated = (item.size ?? 0) > MAX_TEXT_BYTES || totalBytes > MAX_TEXT_BYTES;
+        const buf = await r.arrayBuffer();
+        const bytes = new Uint8Array(buf);
+        const checkLen = Math.min(bytes.length, 8192);
+        const isUtf16Bom = checkLen >= 2 && (bytes[0] === 0xff && bytes[1] === 0xfe || bytes[0] === 0xfe && bytes[1] === 0xff);
+        if (!isUtf16Bom) {
+          for (let i = 0; i < checkLen; i++) {
+            if (bytes[i] === 0) {
+              return {
+                text: "",
+                charset: "UTF-8",
+                truncated: false,
+                binary: true
+              };
+            }
+          }
+        }
+        const {
+          text: raw,
+          charset
+        } = decodeTextBytesSmart(bytes);
+        return {
+          text: truncated ? raw.replace(/\uFFFD+$/, "") : raw,
+          charset,
+          truncated,
+          binary: false
+        };
+      }).then(({
+        text,
+        charset,
+        truncated,
+        binary
+      }) => {
+        if (binary) {
+          setIsBinaryDetected(true);
+        } else {
+          setTextContent(text);
+          setEditContent(text);
+          setDetectedCharset(charset);
+          setIsTruncated(truncated);
+        }
+        setLoadingText(false);
+      }).catch(() => {
+        setTextContent(t("加载文本内容失败", "Failed to load text content"));
+        setLoadingText(false);
+      });
+    } else {
+      setTextContent(null);
+    }
+  }, [item, kind, previewUrl, previewAutoEdit, showToast, t]);
+  const handleDownload = () => {
+    if (!item) return;
+    const a = document.createElement("a");
+    a.href = downloadUrl;
+    a.download = item.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+  const handleCopyText = async () => {
+    const val = isEditing ? editContent : textContent || "";
+    if (await copyToClipboard(val)) {
+      setCopiedText(true);
+      setTimeout(() => setCopiedText(false), 1800);
+    }
+  };
+  const insertMarkdownSnippet = (prefix, suffix = "", defaultText = "") => {
+    const el = textareaRef.current;
+    if (!el) {
+      setEditContent(prev => prev + prefix + defaultText + suffix);
+      return;
+    }
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const selected = editContent.substring(start, end) || defaultText;
+    const nextVal = editContent.substring(0, start) + prefix + selected + suffix + editContent.substring(end);
+    setEditContent(nextVal);
+    setTimeout(() => {
+      el.focus();
+      el.selectionStart = start + prefix.length;
+      el.selectionEnd = start + prefix.length + selected.length;
+    }, 0);
+  };
+  const handleEditorKeyDown = e => {
+    if (e.key === "Tab") {
+      e.preventDefault();
+      const target = e.currentTarget;
+      const start = target.selectionStart;
+      const end = target.selectionEnd;
+      const nextVal = editContent.substring(0, start) + "  " + editContent.substring(end);
+      setEditContent(nextVal);
+      setTimeout(() => {
+        target.selectionStart = target.selectionEnd = start + 2;
+      }, 0);
+    }
+  };
+  const isDirty = isEditing && editContent !== (textContent ?? "");
+  const fallbackBlock = /*#__PURE__*/React.createElement("div", {
+    className: "text-center p-8 space-y-3"
+  }, /*#__PURE__*/React.createElement(FileText, {
+    className: "w-16 h-16 text-muted-foreground/40 mx-auto"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-medium text-foreground"
+  }, isBinaryDetected ? t("检测到该文件包含二进制数据，无法作为纯文本预览或编辑", "Binary content detected; cannot preview or edit as plain text") : previewFailed ? t("该文件在线预览加载失败，请下载后查看", "Online preview failed to load; please download to view") : t("该文件格式暂不支持在线直接预览", "This file format does not support direct online preview")), /*#__PURE__*/React.createElement(Button, {
+    onClick: handleDownload,
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-4 h-4"
+  }), t("立即下载到本地查看", "Download to View")));
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: Boolean(item),
+    onOpenChange: open => !open && setPreviewFile(null)
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    ref: viewerRef,
+    className: `flex flex-col storeit-modal-spring ${fullActive ? "!w-screen !h-screen !max-w-none !max-h-none !rounded-none !border-0 p-4 sm:p-5" : "max-w-4xl max-h-[88vh] p-6"}`
+  }, /*#__PURE__*/React.createElement(DialogHeader, {
+    className: "flex-row flex-wrap items-center justify-between gap-2 space-y-0 pb-3 border-b pr-7 shrink-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 min-w-0"
+  }, /*#__PURE__*/React.createElement(Eye, {
+    className: "w-5 h-5 text-brand-secondary shrink-0"
+  }), /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "text-base truncate font-semibold",
+    title: item?.name
+  }, item?.name), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs text-muted-foreground whitespace-nowrap"
+  }, "(", formatBytes(item?.size || 0), ")"), kind === "text" && !isBinaryDetected && /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded text-muted-foreground whitespace-nowrap"
+  }, detectedCharset), isDirty && /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium whitespace-nowrap"
+  }, t("● 未保存修改", "● Unsaved")), !isEditing && previewableSiblings.length > 1 && currentIndex >= 0 && /*#__PURE__*/React.createElement("span", {
+    className: "text-[11px] bg-muted px-2 py-0.5 rounded-full text-muted-foreground whitespace-nowrap"
+  }, currentIndex + 1, " / ", previewableSiblings.length)), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center gap-1.5 shrink-0"
+  }, !isEditing && previewableSiblings.length > 1 && /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1 mr-1"
+  }, /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 w-8 p-0",
+    disabled: !hasPrev,
+    onClick: goPrev,
+    title: t("上一个文件 (←)", "Previous file (←)")
+  }, /*#__PURE__*/React.createElement(ChevronLeft, {
+    className: "w-4 h-4"
+  })), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 w-8 p-0",
+    disabled: !hasNext,
+    onClick: goNext,
+    title: t("下一个文件 (→)", "Next file (→)")
+  }, /*#__PURE__*/React.createElement(ChevronRight, {
+    className: "w-4 h-4"
+  }))), kind === "text" && !isBinaryDetected && /*#__PURE__*/React.createElement(React.Fragment, null, isEditing ? /*#__PURE__*/React.createElement(React.Fragment, null, isMarkdown && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: editSplitPreview ? "secondary" : "outline",
+    className: "gap-1 h-8",
+    onClick: () => setEditSplitPreview(v => !v),
+    title: t("切换实时分栏渲染预览", "Toggle live split preview")
+  }, /*#__PURE__*/React.createElement(Columns, {
+    className: "w-3.5 h-3.5"
+  }), editSplitPreview ? t("分栏预览中", "Split On") : t("开启分栏", "Split View")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "default",
+    className: "gap-1.5 h-8",
+    disabled: savingText,
+    onClick: () => performSaveEdit(false),
+    title: t("保存文本修改 (Ctrl+S)", "Save changes (Ctrl+S)")
+  }, /*#__PURE__*/React.createElement(Save, {
+    className: "w-3.5 h-3.5"
+  }), savingText ? t("保存中...", "Saving...") : t("保存", "Save")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "gap-1 h-8",
+    onClick: () => {
+      setIsEditing(false);
+      setEditContent(textContent || "");
+    }
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("取消", "Cancel"))) : /*#__PURE__*/React.createElement(React.Fragment, null, (item?.size || 0) <= MAX_EDITABLE_BYTES && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "gap-1.5 h-8",
+    onClick: startEditing
+  }, /*#__PURE__*/React.createElement(Edit3, {
+    className: "w-3.5 h-3.5 text-brand-secondary"
+  }), t("在线编辑", "Edit")), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "gap-1 h-8",
+    onClick: handleCopyText,
+    title: t("复制全部文本", "Copy all text")
+  }, copiedText ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Check, {
+    className: "w-3.5 h-3.5 text-emerald-600"
+  }), " ", t("已复制", "Copied")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Copy, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("复制", "Copy"))), (!isMarkdown || mdMode === "raw") && /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "h-8 w-8 p-0",
+    onClick: () => setWordWrap(w => !w),
+    title: wordWrap ? t("切换为横向滚动", "Switch to horizontal scroll") : t("切换为自动换行", "Switch to word wrap")
+  }, /*#__PURE__*/React.createElement(WrapText, {
+    className: "w-3.5 h-3.5"
+  })))), isMarkdown && kind === "text" && !isBinaryDetected && !isEditing && /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center rounded-lg border bg-muted/40 p-0.5"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setMdMode("render"),
+    className: `inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-all ${mdMode === "render" ? "bg-white text-brand-primary shadow-sm font-semibold" : "text-muted-foreground hover:text-foreground"}`
+  }, /*#__PURE__*/React.createElement(BookOpen, {
+    className: "w-3 h-3"
+  }), " ", t("渲染", "Render")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setMdMode("split"),
+    className: `inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-all ${mdMode === "split" ? "bg-white text-brand-primary shadow-sm font-semibold" : "text-muted-foreground hover:text-foreground"}`
+  }, /*#__PURE__*/React.createElement(Columns, {
+    className: "w-3 h-3"
+  }), " ", t("分栏", "Split")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setMdMode("raw"),
+    className: `inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs transition-all ${mdMode === "raw" ? "bg-white text-brand-primary shadow-sm font-semibold" : "text-muted-foreground hover:text-foreground"}`
+  }, /*#__PURE__*/React.createElement(Code, {
+    className: "w-3 h-3"
+  }), " ", t("源码", "Source"))), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "gap-1 h-8",
+    onClick: toggleFullscreen,
+    onDoubleClick: toggleNativeFullscreen,
+    title: fullActive ? t("退出全屏模式 (快捷键 F)", "Exit fullscreen (F)") : t("铺满全屏预览 (快捷键 F，双击进入系统级全屏)", "Fullscreen (F, double-click for native fullscreen)")
+  }, fullActive ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Minimize2, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("退出全屏", "Exit Fullscreen")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Maximize2, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("全屏", "Fullscreen"))), /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    className: "gap-1.5 h-8",
+    onClick: handleDownload
+  }, /*#__PURE__*/React.createElement(Download, {
+    className: "w-3.5 h-3.5"
+  }), " ", t("下载", "Download")))), /*#__PURE__*/React.createElement("div", {
+    className: `relative flex-1 overflow-auto flex items-center justify-center p-2 bg-black/5 rounded-xl mt-3 transition-all duration-200 ${fullActive ? "min-h-0 h-full" : "min-h-[340px]"}`
+  }, kind === "image" && !previewFailed && /*#__PURE__*/React.createElement("div", {
+    className: "relative flex flex-col items-center justify-center w-full h-full overflow-hidden",
+    onWheel: e => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.2 : -0.2;
+        setZoom(z => Math.min(5, Math.max(0.25, +(z + delta).toFixed(2))));
+      }
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `overflow-auto max-w-full flex items-center justify-center p-4 ${fullActive ? "h-[calc(100vh-140px)]" : "max-h-[62vh]"}`
+  }, /*#__PURE__*/React.createElement("img", {
+    src: previewUrl,
+    alt: item?.name,
+    onDoubleClick: () => setZoom(z => z === 1 ? 2 : 1),
+    style: {
+      transform: `scale(${zoom}) rotate(${rotation}deg)`,
+      transition: "transform 0.2s cubic-bezier(0.22, 1, 0.36, 1)"
+    },
+    className: `${fullActive ? "max-h-[calc(100vh-160px)]" : "max-h-[58vh]"} max-w-full object-contain rounded-lg shadow-sm cursor-zoom-in`,
+    onError: () => setPreviewFailed(true)
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur border shadow-md text-xs"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setZoom(z => Math.max(0.25, +(z - 0.25).toFixed(2))),
+    className: "p-1 hover:bg-black/5 rounded transition-colors",
+    title: t("缩小", "Zoom out")
+  }, /*#__PURE__*/React.createElement(ZoomOut, {
+    className: "w-3.5 h-3.5"
+  })), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => {
+      setZoom(1);
+      setRotation(0);
+    },
+    className: "px-1.5 font-mono text-[11px] hover:bg-black/5 rounded",
+    title: t("点击复位 100% (双击图片快速放大)", "Reset 100% (double-click image to zoom)")
+  }, Math.round(zoom * 100), "%"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setZoom(z => Math.min(5, +(z + 0.25).toFixed(2))),
+    className: "p-1 hover:bg-black/5 rounded transition-colors",
+    title: t("放大", "Zoom in")
+  }, /*#__PURE__*/React.createElement(ZoomIn, {
+    className: "w-3.5 h-3.5"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "text-black/20"
+  }, "|"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setRotation(r => (r + 90) % 360),
+    className: "p-1 hover:bg-black/5 rounded transition-colors",
+    title: t("顺时针旋转 90°", "Rotate 90°")
+  }, /*#__PURE__*/React.createElement(RotateCw, {
+    className: "w-3.5 h-3.5"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "text-black/20"
+  }, "|"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: toggleNativeFullscreen,
+    className: "p-1 hover:bg-black/5 rounded transition-colors",
+    title: t("切换浏览器系统全屏", "Toggle native browser fullscreen")
+  }, isNativeFullscreen ? /*#__PURE__*/React.createElement(Minimize2, {
+    className: "w-3.5 h-3.5"
+  }) : /*#__PURE__*/React.createElement(Maximize2, {
+    className: "w-3.5 h-3.5"
+  })))), kind === "video" && !previewFailed && /*#__PURE__*/React.createElement("video", {
+    src: previewUrl,
+    controls: true,
+    autoPlay: true,
+    className: `${fullActive ? "h-[calc(100vh-115px)] w-full bg-black" : "max-h-[62vh] max-w-full"} rounded-lg shadow-sm object-contain`,
+    onError: () => setPreviewFailed(true)
+  }), kind === "audio" && !previewFailed && /*#__PURE__*/React.createElement("div", {
+    className: `p-8 w-full ${fullActive ? "max-w-xl" : "max-w-md"} bg-white rounded-2xl shadow-sm text-center space-y-5 border`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-primary to-brand-secondary text-white flex items-center justify-center mx-auto shadow-md"
+  }, /*#__PURE__*/React.createElement(Eye, {
+    className: "w-8 h-8"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-base font-semibold text-brand-primary break-all"
+  }, item?.name), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-muted-foreground mt-1"
+  }, formatBytes(item?.size || 0))), /*#__PURE__*/React.createElement("audio", {
+    ref: audioRef,
+    src: previewUrl,
+    controls: true,
+    autoPlay: true,
+    className: "w-full",
+    onError: () => setPreviewFailed(true)
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center gap-1.5 text-xs text-muted-foreground"
+  }, /*#__PURE__*/React.createElement("span", null, t("倍速:", "Speed:")), [0.75, 1, 1.25, 1.5, 2].map(rate => /*#__PURE__*/React.createElement("button", {
+    key: rate,
+    type: "button",
+    onClick: () => {
+      setAudioRate(rate);
+      if (audioRef.current) audioRef.current.playbackRate = rate;
+    },
+    className: `px-2 py-0.5 rounded-md transition-colors ${audioRate === rate ? "bg-brand-primary text-white font-semibold" : "bg-muted hover:bg-black/10 text-foreground"}`
+  }, rate, "x")))), kind === "pdf" && !previewFailed && /*#__PURE__*/React.createElement("iframe", {
+    src: previewUrl,
+    className: `w-full ${fullActive ? "h-[calc(100vh-110px)]" : "h-[64vh]"} rounded-lg border bg-white`,
+    title: item?.name
+  }), kind === "text" && !isBinaryDetected && /*#__PURE__*/React.createElement("div", {
+    className: `w-full ${fullActive ? "h-[calc(100vh-110px)]" : "h-[64vh]"} flex flex-col rounded-xl overflow-hidden border ${!isEditing && isMarkdown && mdMode === "render" ? "bg-white text-foreground p-5" : !isEditing && isMarkdown && mdMode === "split" ? "bg-white text-foreground p-0" : isEditing && isMarkdown && editSplitPreview ? "bg-[#1e1e2e] text-[#cdd6f4] p-0" : "bg-[#1e1e2e] text-[#cdd6f4] font-mono p-4"} text-xs leading-relaxed`
+  }, isTruncated && !isEditing && /*#__PURE__*/React.createElement("div", {
+    className: "mb-2 p-2 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-400/30 text-[11px] flex items-center justify-between gap-2 shrink-0"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement(AlertCircle, {
+    className: "w-3.5 h-3.5 shrink-0"
+  }), /*#__PURE__*/React.createElement("span", null, t("内容过大，预览仅加载前 256 KB 内容。", "File is large; preview shows the first 256 KB."))), (item?.size || 0) <= MAX_EDITABLE_BYTES && /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: startEditing,
+    className: "px-2.5 py-0.5 rounded bg-brand-primary text-white font-semibold hover:opacity-90"
+  }, t("加载完整文件并编辑", "Load Full File & Edit"))), isEditing && isMarkdown && /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center gap-1 px-3 py-1.5 bg-[#181825] border-b border-white/10 text-[11px] text-[#cdd6f4] shrink-0 select-none"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("## ", "", t("二级标题", "Heading 2")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 font-semibold",
+    title: t("插入标题", "Insert Heading")
+  }, "H2"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("**", "**", t("加粗文本", "bold text")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 font-bold",
+    title: t("加粗", "Bold")
+  }, "B"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("*", "*", t("斜体文本", "italic text")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 italic",
+    title: t("斜体", "Italic")
+  }, "I"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("~~", "~~", t("删除线", "strikethrough")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 line-through",
+    title: t("删除线", "Strikethrough")
+  }, "S"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("==", "==", t("高亮重点", "highlight")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 text-amber-300",
+    title: t("高亮标记 ==text==", "Highlight ==text==")
+  }, t("==高亮==", "==Mark==")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("`", "`", "code"),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 font-mono",
+    title: t("行内代码", "Inline code")
+  }, t("`代码`", "`code`")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("\n```js\n", "\n```\n", "console.log('hello');"),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 font-mono",
+    title: t("代码块", "Code block")
+  }, t("代码块", "Code Block")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("\n- [ ] ", "", t("待办事项", "Todo item")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10",
+    title: t("任务列表", "Task list")
+  }, t("[x] 任务", "[x] Task")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet(t("\n| 列1 | 列2 | 列3 |\n| :--- | :---: | ---: |\n| ", "\n| Col 1 | Col 2 | Col 3 |\n| :--- | :---: | ---: |\n| "), t(" | 数据2 | 100 |\n", " | Data 2 | 100 |\n"), t("数据1", "Data 1")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10",
+    title: t("插入 GFM 表格", "Insert GFM Table")
+  }, t("表格", "Table")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("\n> [!NOTE]\n> ", "\n", t("在此输入提示说明内容", "Enter callout note here")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 text-sky-300",
+    title: t("插入 GitHub 风格提示块 [!NOTE]", "Insert GitHub Alert [!NOTE]")
+  }, "[!NOTE]"), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("$$", "$$", "\\sum_{i=1}^{n} x_i"),
+    className: "px-2 py-0.5 rounded hover:bg-white/10 font-serif italic",
+    title: t("插入数学公式", "Insert Math Formula")
+  }, t("∑ 公式", "∑ Math")), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => insertMarkdownSnippet("[", "](https://example.com)", t("链接文字", "link text")),
+    className: "px-2 py-0.5 rounded hover:bg-white/10",
+    title: t("插入超链接", "Insert Link")
+  }, t("链接", "Link"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-auto flex flex-col min-h-0"
+  }, loadingText ? /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col items-center justify-center h-full gap-2 text-muted-foreground"
+  }, /*#__PURE__*/React.createElement(RefreshCw, {
+    className: "w-4 h-4 animate-spin"
+  }), t("加载中...", "Loading...")) : isEditing ? isMarkdown && editSplitPreview ? /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/10 min-h-0 h-full"
+  }, /*#__PURE__*/React.createElement("textarea", {
+    ref: textareaRef,
+    autoFocus: true,
+    value: editContent,
+    onChange: e => setEditContent(e.target.value),
+    onKeyDown: handleEditorKeyDown,
+    spellCheck: false,
+    className: "w-full h-full p-4 bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs leading-relaxed outline-none resize-none selection:bg-brand-secondary/40 overflow-auto",
+    placeholder: t("在此输入 Markdown 内容（右侧实时预览渲染效果）...", "Write Markdown here (live preview on the right)...")
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "w-full h-full p-5 bg-white text-foreground overflow-auto"
+  }, /*#__PURE__*/React.createElement(MarkdownRenderer, {
+    content: editContent,
+    basePath: item?.path,
+    showToc: false
+  }))) : /*#__PURE__*/React.createElement("textarea", {
+    ref: textareaRef,
+    autoFocus: true,
+    value: editContent,
+    onChange: e => setEditContent(e.target.value),
+    onKeyDown: handleEditorKeyDown,
+    spellCheck: false,
+    className: "w-full flex-1 bg-transparent text-[#cdd6f4] font-mono text-xs leading-relaxed outline-none resize-none selection:bg-brand-secondary/40",
+    placeholder: t("在此输入文本内容（支持 Tab 缩进与 Ctrl+S 快捷保存）...", "Type text here (supports Tab indent & Ctrl+S to save)...")
+  }) : isMarkdown && mdMode === "render" ? /*#__PURE__*/React.createElement(MarkdownRenderer, {
+    content: textContent || "",
+    basePath: item?.path,
+    showToc: true
+  }) : isMarkdown && mdMode === "split" ? /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x min-h-0 h-full"
+  }, /*#__PURE__*/React.createElement("pre", {
+    className: "p-4 bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs overflow-auto whitespace-pre-wrap break-words"
+  }, textContent), /*#__PURE__*/React.createElement("div", {
+    className: "p-5 bg-white text-foreground overflow-auto"
+  }, /*#__PURE__*/React.createElement(MarkdownRenderer, {
+    content: textContent || "",
+    basePath: item?.path,
+    showToc: false
+  }))) : /*#__PURE__*/React.createElement("pre", {
+    className: wordWrap ? "whitespace-pre-wrap break-words" : "whitespace-pre overflow-x-auto"
+  }, textContent))), kind === null || previewFailed || isBinaryDetected ? fallbackBlock : null)));
+}
+function UploadConflictModal() {
+  const conflict = useFileStore(s => s.uploadConflict);
+  const setUploadConflict = useFileStore(s => s.setUploadConflict);
+  const showToast = useFileStore(s => s.showToast);
+  const addFile = useUploadStore(s => s.addFile);
+  const queryClient = useQueryClient();
+  const {
+    t
+  } = useI18n();
+  const [folderStrategy, setFolderStrategy] = useState("merge");
+  const [fileStrategy, setFileStrategy] = useState("rename");
+  const [processing, setProcessing] = useState(false);
+  if (!conflict) return null;
+  const hasFolderConflicts = conflict.conflictingFolders.length > 0;
+  const hasFileConflicts = conflict.conflictingFiles.length > 0 || hasFolderConflicts && folderStrategy === "merge";
+  const handleConfirm = async () => {
+    setProcessing(true);
+    try {
+      const folderRenameMap = new Map();
+      for (const folderName of conflict.conflictingFolders) {
+        const res = await api.resolveFolderConflict(conflict.targetDir, folderName, folderStrategy);
+        folderRenameMap.set(folderName, res.folderName);
+      }
+      const remapSubPath = subPath => {
+        if (!subPath) return "";
+        const parts = subPath.split("/");
+        const top = parts[0];
+        if (folderRenameMap.has(top)) {
+          parts[0] = folderRenameMap.get(top);
+        }
+        return parts.join("/");
+      };
+      for (const emptySub of conflict.emptyDirs) {
+        const mapped = remapSubPath(emptySub);
+        try {
+          await api.createDirectory(conflict.targetDir, mapped);
+        } catch {}
+      }
+      for (const entry of conflict.entries) {
+        const mappedSub = remapSubPath(entry.subPath);
+        const destDir = mappedSub ? conflict.targetDir ? `${conflict.targetDir}/${mappedSub}` : mappedSub : conflict.targetDir;
+        await addFile(entry.file, destDir, fileStrategy);
+      }
+      queryClient.invalidateQueries({
+        queryKey: ["files"]
+      });
+      setUploadConflict(null);
+    } catch (err) {
+      showToast(err.message || t("处理上传冲突失败", "Failed to resolve upload conflicts"), "error");
+    } finally {
+      setProcessing(false);
+    }
+  };
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: Boolean(conflict),
+    onOpenChange: open => !open && setUploadConflict(null)
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-md storeit-modal-spring"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(AlertCircle, {
+    className: "w-5 h-5 text-amber-500"
+  }), t("检测到同名文件或文件夹冲突", "Name Conflict Detected"))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4 text-xs"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-muted-foreground"
+  }, t("目标目录 ", "Target directory "), /*#__PURE__*/React.createElement("code", {
+    className: "bg-muted px-1.5 py-0.5 rounded font-mono"
+  }, "/", conflict.targetDir || t("根目录", "root")), t(" 中已存在同名项目，请选择处理方式：", " already contains items with the same name. Choose how to proceed:")), hasFolderConflicts && /*#__PURE__*/React.createElement("div", {
+    className: "p-3 rounded-xl border bg-muted/20 space-y-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-foreground"
+  }, t("同名文件夹", "Conflicting Folders"), " (", conflict.conflictingFolders.join(", "), "):"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-3 gap-2"
+  }, [{
+    key: "merge",
+    label: t("合并目录", "Merge"),
+    desc: t("保留现有目录并传入内部", "Keep folder & upload inside")
+  }, {
+    key: "rename",
+    label: t("自动重命名", "Auto Rename"),
+    desc: t("新建 文件夹 (1)", "Create Folder (1)")
+  }, {
+    key: "overwrite",
+    label: t("覆盖原目录", "Overwrite"),
+    desc: t("清空旧目录后写入", "Replace existing folder")
+  }].map(opt => /*#__PURE__*/React.createElement("button", {
+    key: opt.key,
+    type: "button",
+    onClick: () => setFolderStrategy(opt.key),
+    className: `p-2 rounded-xl border text-left transition-all ${folderStrategy === opt.key ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold" : "bg-white hover:bg-black/5 text-foreground"}`
+  }, /*#__PURE__*/React.createElement("div", null, opt.label), /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] text-muted-foreground font-normal mt-0.5"
+  }, opt.desc))))), hasFileConflicts && /*#__PURE__*/React.createElement("div", {
+    className: "p-3 rounded-xl border bg-muted/20 space-y-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-semibold text-foreground"
+  }, conflict.conflictingFiles.length > 0 ? `${t("同名文件", "Conflicting Files")} (${conflict.conflictingFiles.slice(0, 3).join(", ")}${conflict.conflictingFiles.length > 3 ? t(" 等", ", etc.") : ""}):` : t("合并目录内的同名文件处理方式：", "For conflicting files inside merged folders:")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-2"
+  }, [{
+    key: "rename",
+    label: t("自动重命名", "Auto Rename"),
+    desc: t("保留两者，如 file (1).ext", "Keep both, e.g. file (1).ext")
+  }, {
+    key: "overwrite",
+    label: t("覆盖同名文件", "Overwrite"),
+    desc: t("直接替换已有同名文件", "Replace existing file")
+  }].map(opt => /*#__PURE__*/React.createElement("button", {
+    key: opt.key,
+    type: "button",
+    onClick: () => setFileStrategy(opt.key),
+    className: `p-2 rounded-xl border text-left transition-all ${fileStrategy === opt.key ? "border-brand-primary bg-brand-primary/10 text-brand-primary font-semibold" : "bg-white hover:bg-black/5 text-foreground"}`
+  }, /*#__PURE__*/React.createElement("div", null, opt.label), /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] text-muted-foreground font-normal mt-0.5"
+  }, opt.desc)))))), /*#__PURE__*/React.createElement(DialogFooter, {
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: () => setUploadConflict(null)
+  }, t("取消上传", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    disabled: processing,
+    onClick: handleConfirm
+  }, processing ? t("处理中...", "Processing...") : t("按所选策略开始上传", "Start Upload")))));
+}
+function ChangePasswordModal() {
+  const isOpen = useFileStore(s => s.passwordModalOpen);
+  const setOpen = useFileStore(s => s.setPasswordModalOpen);
+  const showToast = useFileStore(s => s.showToast);
+  const user = useAuthStore(s => s.user);
+  const setUser = useAuthStore(s => s.setUser);
+  const {
+    t
+  } = useI18n();
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (newPassword.length < 8) {
+      showToast(t("新口令至少需要 8 位字符", "New password must be at least 8 characters"), "error");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      showToast(t("两次输入的新口令不一致", "New passwords do not match"), "error");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await api.changeOwnPassword(oldPassword, newPassword);
+      if (user) {
+        setUser({
+          ...user,
+          mustChangePassword: false
+        });
+      }
+      showToast(t("登录口令已成功修改", "Password updated successfully"), "success");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setOpen(false);
+    } catch (err) {
+      showToast(err.message || t("修改口令失败", "Failed to update password"), "error");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: isOpen,
+    onOpenChange: setOpen
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-md storeit-modal-spring"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(KeyRound, {
+    className: "w-5 h-5 text-brand-secondary"
+  }), t("修改登录口令", "Change Password"))), user?.mustChangePassword && /*#__PURE__*/React.createElement("div", {
+    className: "p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs"
+  }, t("系统检测到您的账号处于待修改初始口令状态，请设置新的个人登录口令。", "Your account requires an initial password change. Please set a new personal password.")), /*#__PURE__*/React.createElement("form", {
+    onSubmit: handleSubmit,
+    className: "space-y-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("当前原口令", "Current Password")), /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: oldPassword,
+    onChange: e => setOldPassword(e.target.value),
+    placeholder: t("请输入当前口令", "Enter current password"),
+    required: true
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("新口令 (≥8位)", "New Password (≥ 8 chars)")), /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: newPassword,
+    onChange: e => setNewPassword(e.target.value),
+    placeholder: t("至少 8 位字符", "At least 8 characters"),
+    required: true
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-medium text-foreground block mb-1"
+  }, t("确认新口令", "Confirm New Password")), /*#__PURE__*/React.createElement(Input, {
+    type: "password",
+    value: confirmPassword,
+    onChange: e => setConfirmPassword(e.target.value),
+    placeholder: t("再次输入新口令", "Re-enter new password"),
+    required: true
+  })), /*#__PURE__*/React.createElement(DialogFooter, null, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: () => setOpen(false)
+  }, t("取消", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "submit",
+    disabled: submitting
+  }, submitting ? t("保存中...", "Saving...") : t("确认修改", "Update Password"))))));
+}
+function GlobalConfirmModal() {
+  const confirmDialog = useFileStore(s => s.confirmDialog);
+  const closeConfirm = useFileStore(s => s.closeConfirm);
+  const {
+    t
+  } = useI18n();
+  if (!confirmDialog) return null;
+  return /*#__PURE__*/React.createElement(Dialog, {
+    open: Boolean(confirmDialog),
+    onOpenChange: open => !open && closeConfirm()
+  }, /*#__PURE__*/React.createElement(DialogContent, {
+    className: "sm:max-w-md storeit-modal-spring"
+  }, /*#__PURE__*/React.createElement(DialogHeader, null, /*#__PURE__*/React.createElement(DialogTitle, null, confirmDialog.title)), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-muted-foreground leading-relaxed"
+  }, confirmDialog.description), /*#__PURE__*/React.createElement(DialogFooter, {
+    className: "gap-2"
+  }, /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: "outline",
+    onClick: closeConfirm
+  }, t("取消", "Cancel")), /*#__PURE__*/React.createElement(Button, {
+    type: "button",
+    variant: confirmDialog.destructive ? "destructive" : "default",
+    onClick: () => {
+      const fn = confirmDialog.onConfirm;
+      closeConfirm();
+      fn();
+    }
+  }, confirmDialog.confirmText || t("确定", "Confirm")))));
+}
+function GlobalToastList() {
+  const toasts = useFileStore(s => s.toasts);
+  const dismissToast = useFileStore(s => s.dismissToast);
+  if (toasts.length === 0) return null;
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed top-20 right-6 z-[60] flex flex-col gap-2 max-w-sm w-full pointer-events-none"
+  }, toasts.map(t => /*#__PURE__*/React.createElement("div", {
+    key: t.id,
+    className: `storeit-spring-bar pointer-events-auto flex items-center justify-between gap-2.5 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-md text-xs font-medium ${t.type === "success" ? "bg-emerald-50/95 text-emerald-800 border-emerald-200" : t.type === "error" ? "bg-rose-50/95 text-rose-800 border-rose-200" : "bg-white/95 text-foreground border-black/10"}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 min-w-0"
+  }, t.type === "success" ? /*#__PURE__*/React.createElement(CheckCircle2, {
+    className: "w-4 h-4 text-emerald-600 shrink-0"
+  }) : t.type === "error" ? /*#__PURE__*/React.createElement(AlertCircle, {
+    className: "w-4 h-4 text-rose-600 shrink-0"
+  }) : /*#__PURE__*/React.createElement(Info, {
+    className: "w-4 h-4 text-brand-secondary shrink-0"
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "break-words"
+  }, t.text)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => dismissToast(t.id),
+    className: "opacity-60 hover:opacity-100 shrink-0"
+  }, /*#__PURE__*/React.createElement(X, {
+    className: "w-3.5 h-3.5"
+  })))));
+}
+function MainPage() {
+  const router = useRouter();
+  const {
+    checkAuth,
+    isAuthenticated,
+    isLoading,
+    user
+  } = useAuthStore();
+  const viewMode = useFileStore(s => s.viewMode);
+  const {
+    t
+  } = useI18n();
+
+  // Initialize locale (auto-switch to English when browser language is not Chinese)
+  useEffect(() => {
+    useFileStore.getState().syncLocaleFromBrowser();
+    const onLanguageChange = () => {
+      if (isLocaleFollowingBrowser()) {
+        useFileStore.getState().syncLocaleFromBrowser();
+      }
+    };
+    window.addEventListener("languagechange", onLanguageChange);
+    return () => window.removeEventListener("languagechange", onLanguageChange);
+  }, []);
+
+  // URL ↔ ViewMode & Subfolder path sync
+  useEffect(() => {
+    const VALID_MODES = ["files", "recent", "favorites", "shares", "admin", "settings", "about", "search"];
+    if (window.location.pathname === "/about" && !window.location.hash) {
+      window.history.replaceState(null, "", "#/about");
+      useFileStore.setState({
+        viewMode: "about",
+        selectedFile: null,
+        selectedPaths: []
+      });
+    }
+    const applyLocation = () => {
+      const rawHash = window.location.hash.replace(/^#\/?/, "");
+      if (!rawHash || rawHash === "files") {
+        useFileStore.setState({
+          viewMode: "files",
+          currentPath: "",
+          selectedFile: null,
+          selectedPaths: []
+        });
+        return;
+      }
+      if (rawHash.startsWith("s/")) {
+        const shareTok = decodeURIComponent(rawHash.slice(2).split("/")[0] || "");
+        if (shareTok) {
+          useFileStore.setState({
+            viewMode: "shares",
+            activeShareToken: shareTok,
+            activeShareServerUrl: "",
+            selectedFile: null,
+            selectedPaths: []
+          });
+          return;
+        }
+      }
+      if (rawHash.startsWith("files/")) {
+        const encodedSub = rawHash.slice("files/".length);
+        const decodedPath = encodedSub.split("/").filter(Boolean).map(seg => {
+          try {
+            return decodeURIComponent(seg);
+          } catch {
+            return seg;
+          }
+        }).join("/");
+        useFileStore.setState({
+          viewMode: "files",
+          currentPath: decodedPath,
+          selectedFile: null,
+          selectedPaths: []
+        });
+        return;
+      }
+      if (VALID_MODES.includes(rawHash)) {
+        useFileStore.setState({
+          viewMode: rawHash,
+          selectedFile: null,
+          selectedPaths: []
+        });
+      }
+    };
+    applyLocation();
+    window.addEventListener("popstate", applyLocation);
+    return () => window.removeEventListener("popstate", applyLocation);
+  }, []);
+  useEffect(() => {
+    checkAuth().then(loggedIn => {
+      if (!loggedIn) {
+        router.push("/login");
+      }
+    });
+  }, [checkAuth, router]);
+  useEffect(() => {
+    if (user?.mustChangePassword) {
+      useFileStore.getState().setPasswordModalOpen(true);
+    }
+  }, [user?.mustChangePassword]);
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      router.push("/login");
+    }
+  }, [isLoading, isAuthenticated, router]);
+  if (isLoading || !isAuthenticated) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "min-h-screen flex items-center justify-center bg-brand-bg text-muted-foreground gap-3"
+    }, /*#__PURE__*/React.createElement(RefreshCw, {
+      className: "w-8 h-8 animate-spin text-brand-secondary"
+    }), /*#__PURE__*/React.createElement("span", {
+      className: "text-sm"
+    }, t("正在加载 StoreIt 存储服务...", "Loading StoreIt storage service...")));
+  }
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col h-screen overflow-hidden bg-brand-bg"
+  }, /*#__PURE__*/React.createElement(Navbar, null), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-1 overflow-hidden"
+  }, /*#__PURE__*/React.createElement(Sidebar, null), /*#__PURE__*/React.createElement("main", {
+    className: "flex-1 flex flex-col overflow-hidden bg-white/40"
+  }, /*#__PURE__*/React.createElement(DropZone, null, /*#__PURE__*/React.createElement("div", {
+    className: "px-6 py-2 border-b bg-white/30 backdrop-blur-sm shrink-0"
+  }, /*#__PURE__*/React.createElement(Breadcrumb, null)), /*#__PURE__*/React.createElement("div", {
+    key: viewMode,
+    className: "storeit-view-enter flex-1 overflow-y-auto"
+  }, viewMode === "files" || viewMode === "recent" || viewMode === "favorites" || viewMode === "search" ? /*#__PURE__*/React.createElement(FileList, null) : viewMode === "shares" ? /*#__PURE__*/React.createElement(SharesTab, null) : viewMode === "admin" ? /*#__PURE__*/React.createElement(UserManagementTab, null) : viewMode === "settings" ? /*#__PURE__*/React.createElement(SettingsTab, null) : viewMode === "about" ? /*#__PURE__*/React.createElement(AboutTab, null) : null)))), /*#__PURE__*/React.createElement(UploadDrawer, null), /*#__PURE__*/React.createElement(GlobalToastList, null), /*#__PURE__*/React.createElement(GlobalConfirmModal, null), /*#__PURE__*/React.createElement(NewFolderModal, null), /*#__PURE__*/React.createElement(NewFileModal, null), /*#__PURE__*/React.createElement(RenameModal, null), /*#__PURE__*/React.createElement(MoveModal, null), /*#__PURE__*/React.createElement(ShareModal, null), /*#__PURE__*/React.createElement(PreviewModal, null), /*#__PURE__*/React.createElement(ChangePasswordModal, null), /*#__PURE__*/React.createElement(UploadConflictModal, null));
+}
+}},function(e){e.O(0,[261,20,175,819,971,117,744],(function(){return e(e.s=5334)})),_N_E=e.O()}]);

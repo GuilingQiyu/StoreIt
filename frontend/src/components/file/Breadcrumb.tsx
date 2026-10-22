@@ -2,22 +2,23 @@
 
 import React from "react";
 import { Home, ChevronRight } from "lucide-react";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 
 export function Breadcrumb() {
   const currentPath = useFileStore((s) => s.currentPath);
   const setCurrentPath = useFileStore((s) => s.setCurrentPath);
   const viewMode = useFileStore((s) => s.viewMode);
   const setViewMode = useFileStore((s) => s.setViewMode);
+  const { t } = useI18n();
 
   if (viewMode !== "files" && viewMode !== "search") {
     const titles: Record<string, string> = {
-      recent: "最近访问",
-      favorites: "收藏夹",
-      shares: "我的分享",
-      admin: "用户管理",
-      settings: "系统设置",
-      about: "关于",
+      recent: t("最近访问", "Recent"),
+      favorites: t("收藏夹", "Favorites"),
+      shares: t("我的分享", "Shares & Mounts"),
+      admin: t("用户管理", "Users & Invites"),
+      settings: t("系统设置", "Settings"),
+      about: t("关于", "About"),
     };
     return (
       <div className="flex items-center gap-1.5 text-sm text-muted-foreground py-2 select-none">
@@ -29,7 +30,7 @@ export function Breadcrumb() {
           className="hover:text-brand-primary flex items-center gap-1 transition-colors"
         >
           <Home className="w-4 h-4" />
-          <span>首页</span>
+          <span>{t("首页", "Home")}</span>
         </button>
         <ChevronRight className="w-3.5 h-3.5 text-black/30" />
         <span className="font-semibold text-brand-primary">
@@ -51,7 +52,7 @@ export function Breadcrumb() {
         className="hover:text-brand-primary flex items-center gap-1 transition-colors shrink-0"
       >
         <Home className="w-4 h-4" />
-        <span>首页</span>
+        <span>{t("首页", "Home")}</span>
       </button>
 
       {parts.map((part, idx) => {

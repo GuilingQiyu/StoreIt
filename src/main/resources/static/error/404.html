@@ -52,11 +52,36 @@
 <body>
 <div class="error-card">
     <div class="error-code">404</div>
-    <h1>页面未找到</h1>
-    <p>抱歉，我们找不到您请求的页面。</p>
+    <h1 id="err-title">页面未找到</h1>
+    <p id="err-desc">抱歉，我们找不到您请求的页面。</p>
     <div class="actions">
-        <a href="/" class="btn-primary">返回首页</a>
+        <a id="err-home" href="/" class="btn-primary">返回首页</a>
     </div>
 </div>
+<script>
+    (function () {
+        function resolveLocale() {
+            try {
+                var saved = localStorage.getItem("storeit-locale");
+                if (saved === "zh" || saved === "en") return saved;
+            } catch (e) {}
+            var lang = (navigator.languages && navigator.languages[0]) || navigator.language || "zh-CN";
+            return /^zh\b/i.test(String(lang).trim()) ? "zh" : "en";
+        }
+        function applyLocale() {
+            var isEn = resolveLocale() === "en";
+            document.documentElement.lang = isEn ? "en" : "zh-CN";
+            document.title = isEn ? "404 - Page Not Found" : "404 - 未找到页面";
+            var title = document.getElementById("err-title");
+            var desc = document.getElementById("err-desc");
+            var home = document.getElementById("err-home");
+            if (title) title.textContent = isEn ? "Page Not Found" : "页面未找到";
+            if (desc) desc.textContent = isEn ? "Sorry, we couldn't find the page you requested." : "抱歉，我们找不到您请求的页面。";
+            if (home) home.textContent = isEn ? "Back to Home" : "返回首页";
+        }
+        applyLocale();
+        window.addEventListener("languagechange", applyLocale);
+    })();
+</script>
 </body>
 </html>

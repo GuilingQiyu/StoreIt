@@ -52,12 +52,39 @@
 <body>
 <div class="error-card">
     <div class="error-code">403</div>
-    <h1>禁止访问</h1>
-    <p>抱歉，您没有权限访问此页面。</p>
+    <h1 id="err-title">禁止访问</h1>
+    <p id="err-desc">抱歉，您没有权限访问此页面。</p>
     <div class="actions">
-        <a href="/login" class="btn-primary">登录</a>
-        <a href="/" class="btn-ghost">返回首页</a>
+        <a id="err-login" href="/login" class="btn-primary">登录</a>
+        <a id="err-home" href="/" class="btn-ghost">返回首页</a>
     </div>
 </div>
+<script>
+    (function () {
+        function resolveLocale() {
+            try {
+                var saved = localStorage.getItem("storeit-locale");
+                if (saved === "zh" || saved === "en") return saved;
+            } catch (e) {}
+            var lang = (navigator.languages && navigator.languages[0]) || navigator.language || "zh-CN";
+            return /^zh\b/i.test(String(lang).trim()) ? "zh" : "en";
+        }
+        function applyLocale() {
+            var isEn = resolveLocale() === "en";
+            document.documentElement.lang = isEn ? "en" : "zh-CN";
+            document.title = isEn ? "403 - Access Denied" : "403 - 禁止访问";
+            var title = document.getElementById("err-title");
+            var desc = document.getElementById("err-desc");
+            var login = document.getElementById("err-login");
+            var home = document.getElementById("err-home");
+            if (title) title.textContent = isEn ? "Access Denied" : "禁止访问";
+            if (desc) desc.textContent = isEn ? "Sorry, you do not have permission to access this page." : "抱歉，您没有权限访问此页面。";
+            if (login) login.textContent = isEn ? "Sign In" : "登录";
+            if (home) home.textContent = isEn ? "Back to Home" : "返回首页";
+        }
+        applyLocale();
+        window.addEventListener("languagechange", applyLocale);
+    })();
+</script>
 </body>
 </html>

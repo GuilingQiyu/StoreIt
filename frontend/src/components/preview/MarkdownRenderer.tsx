@@ -14,6 +14,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { copyToClipboard, getPreviewUrl } from "@/lib/utils";
+import { useI18n } from "@/stores/useFileStore";
 
 export interface TocHeading {
   id: string;
@@ -212,6 +213,7 @@ function CodeBlockView({ lang, code }: { lang: string; code: string }) {
   const [showLineNums, setShowLineNums] = useState(true);
   const lines = useMemo(() => code.split("\n"), [code]);
   const normalizedLang = (lang || "text").toLowerCase();
+  const { t } = useI18n();
 
   const handleCopy = async () => {
     if (await copyToClipboard(code)) {
@@ -240,7 +242,7 @@ function CodeBlockView({ lang, code }: { lang: string; code: string }) {
             {normalizedLang}
           </span>
           <span className="text-white/20">·</span>
-          <span>{lines.length} 行</span>
+          <span>{t(`${lines.length} 行`, `${lines.length} lines`)}</span>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -248,7 +250,7 @@ function CodeBlockView({ lang, code }: { lang: string; code: string }) {
             onClick={() => setShowLineNums((v) => !v)}
             className="px-1.5 py-0.5 rounded hover:bg-white/10 transition-colors"
           >
-            {showLineNums ? "隐藏行号" : "显示行号"}
+            {showLineNums ? t("隐藏行号", "Hide Lines") : t("显示行号", "Show Lines")}
           </button>
           <button
             type="button"
@@ -257,11 +259,11 @@ function CodeBlockView({ lang, code }: { lang: string; code: string }) {
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-emerald-400" /> 已复制
+                <Check className="w-3 h-3 text-emerald-400" /> {t("已复制", "Copied")}
               </>
             ) : (
               <>
-                <Copy className="w-3 h-3" /> 复制代码
+                <Copy className="w-3 h-3" /> {t("复制代码", "Copy Code")}
               </>
             )}
           </button>
@@ -310,6 +312,7 @@ export function MarkdownRenderer({
   showToc = true,
 }: MarkdownRendererProps) {
   const [tocCollapsed, setTocCollapsed] = useState(false);
+  const { isEn, t } = useI18n();
 
   const { elements, headings, footnotes } = useMemo(() => {
     const rawLines = (content || "").split(/\r?\n/);
@@ -317,7 +320,6 @@ export function MarkdownRenderer({
     const footnoteMap = new Map<string, string>();
     const bodyLines: string[] = [];
 
-    // 1. Parse optional YAML frontmatter at top
     let frontmatter: Record<string, string> | null = null;
     let startLine = 0;
     if (rawLines[0]?.trim() === "---") {
@@ -343,7 +345,6 @@ export function MarkdownRenderer({
       }
     }
 
-    // 2. Collect footnote definitions [^id]: text
     for (let i = startLine; i < rawLines.length; i++) {
       const fnMatch = rawLines[i].match(/^\[\^([^\]]+)\]:\s*(.+)$/);
       if (fnMatch) {
@@ -356,21 +357,6 @@ export function MarkdownRenderer({
     const renderInline = (text: string, keyPrefix = "in"): React.ReactNode => {
       if (!text) return null;
 
-      // Tokenize inline markdown constructs:
-      // 1. Inline code `...`
-      // 2. Inline math $...$
-      // 3. Images ![alt](url)
-      // 4. Links [text](url)
-      // 5. Footnote ref [^id]
-      // 6. Keyboard [[key]] or <kbd>key</kbd>
-      // 7. Bold+Italic ***...***
-      // 8. Bold **...** or __...__
-      // 9. Italic *...* or _..._
-      // 10. Strikethrough ~~...~~
-      // 11. Highlight ==...==
-      // 12. Superscript ^...^
-      // 13. Subscript ~...~
-      // 14. Autolink https?://[^\s<)]+
       const inlineRegex =
         /(`[^`]+`|\$(?!\s)[^$\n]+(?<!\s)\$|!\[[^\]]*\]\([^)]+\)|\[[^\]]+\]\([^)]+\)|\[\^[^\]]+\]|\[\[[^\]]+\]\]|<kbd>[^<]+<\/kbd>|\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|__[^_]+__|~~[^~]+~~|==[^=]+==|\^[^^\s]+\^|~[^~\s]+~|\*(?!\s)[^*]+(?<!\s)\*|https?:\/\/[^\s<)]+)/g;
 
@@ -436,7 +422,7 @@ export function MarkdownRenderer({
                 href={`#fn-def-${fnId}`}
                 id={`fn-ref-${fnId}`}
                 className="text-[11px] font-semibold text-brand-primary hover:underline px-0.5 rounded bg-brand-primary/10"
-                title={footnoteMap.get(fnId) || `脚注 ${fnId}`}
+                title={footnoteMap.get(fnId) || (isEn ? `Footnote ${fnId}` : `脚注 ${fnId}`)}
               >
                 [{fnId}]
               </a>
@@ -578,13 +564,11 @@ export function MarkdownRenderer({
       const line = bodyLines[i];
       const trimmed = line.trim();
 
-      // Blank line
       if (!trimmed) {
         i++;
         continue;
       }
 
-      // Fenced Code Block ``` or ~~~
       const fenceMatch = trimmed.match(/^(`{3,}|~{3,})(.*)$/);
       if (fenceMatch) {
         const fence = fenceMatch[1];
@@ -602,7 +586,6 @@ export function MarkdownRenderer({
         continue;
       }
 
-      // Block Math $$ ... $$
       if (trimmed.startsWith("$$")) {
         if (trimmed.endsWith("$$") && trimmed.length > 4) {
           const expr = trimmed.slice(2, -2);
@@ -642,7 +625,6 @@ export function MarkdownRenderer({
         continue;
       }
 
-      // Container Directives :::note / :::tip / :::warning / :::caution / :::details
       const directiveMatch = trimmed.match(/^:::\s*([a-zA-Z]+)(?:\s+(.*))?$/);
       if (directiveMatch) {
         const dirType = directiveMatch[1].toLowerCase();
@@ -661,7 +643,7 @@ export function MarkdownRenderer({
               className="my-3 rounded-xl border bg-muted/20 p-3 text-sm group"
             >
               <summary className="font-semibold cursor-pointer select-none text-brand-primary">
-                {dirTitle || "点击展开详情"}
+                {dirTitle || (isEn ? "Click to expand details" : "点击展开详情")}
               </summary>
               <div className="mt-2 pt-2 border-t text-foreground space-y-1.5">
                 {innerLines.map((il, idx) => (
@@ -672,20 +654,18 @@ export function MarkdownRenderer({
           );
         } else {
           renderedBlocks.push(
-            renderAdmonition(dirType.toUpperCase(), dirTitle, innerLines, `dir_${i}`, renderInline)
+            renderAdmonition(dirType.toUpperCase(), dirTitle, innerLines, `dir_${i}`, renderInline, isEn)
           );
         }
         continue;
       }
 
-      // Horizontal Rule
       if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
         renderedBlocks.push(<hr key={`hr_${i}`} className="my-4 border-t border-border" />);
         i++;
         continue;
       }
 
-      // Headings # .. ######
       const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
       if (headingMatch) {
         const level = headingMatch[1].length;
@@ -711,7 +691,6 @@ export function MarkdownRenderer({
         continue;
       }
 
-      // GFM Table (Header row + separator row `| --- | :---: |`)
       if (
         line.includes("|") &&
         i + 1 < bodyLines.length &&
@@ -720,9 +699,9 @@ export function MarkdownRenderer({
         const headerCells = parseTableCells(bodyLines[i]);
         const alignCells = parseTableCells(bodyLines[i + 1]);
         const alignments = alignCells.map((c) => {
-          const t = c.trim();
-          if (t.startsWith(":") && t.endsWith(":")) return "center";
-          if (t.endsWith(":")) return "right";
+          const tCell = c.trim();
+          if (tCell.startsWith(":") && tCell.endsWith(":")) return "center";
+          if (tCell.endsWith(":")) return "right";
           return "left";
         });
         i += 2;
@@ -768,7 +747,6 @@ export function MarkdownRenderer({
         continue;
       }
 
-      // Blockquote & GitHub Alerts `> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!CAUTION]`
       if (trimmed.startsWith(">")) {
         const quoteLines: string[] = [];
         while (i < bodyLines.length && bodyLines[i].trim().startsWith(">")) {
@@ -787,7 +765,8 @@ export function MarkdownRenderer({
               customTitle,
               quoteLines.slice(1),
               `alert_${i}`,
-              renderInline
+              renderInline,
+              isEn
             )
           );
         } else {
@@ -805,7 +784,6 @@ export function MarkdownRenderer({
         continue;
       }
 
-      // Lists (Task list `- [ ]` / `- [x]`, Unordered `- / * / +`, Ordered `1.`)
       if (/^\s*(?:[-*+]|\d+\.)\s+/.test(line)) {
         const listItems: {
           indent: number;
@@ -877,7 +855,6 @@ export function MarkdownRenderer({
         continue;
       }
 
-      // Definition List (`Term` followed by `: Definition`)
       if (i + 1 < bodyLines.length && /^:\s+.+/.test(bodyLines[i + 1])) {
         const term = bodyLines[i].trim();
         i++;
@@ -899,7 +876,6 @@ export function MarkdownRenderer({
         continue;
       }
 
-      // Standard Paragraph
       renderedBlocks.push(
         <p key={`p_${i}`} className="my-2 leading-relaxed">
           {renderInline(line, `p_${i}`)}
@@ -913,7 +889,7 @@ export function MarkdownRenderer({
       headings: tocList,
       footnotes: Array.from(footnoteMap.entries()),
     };
-  }, [content, basePath]);
+  }, [content, basePath, isEn]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 text-sm text-foreground">
@@ -922,7 +898,7 @@ export function MarkdownRenderer({
 
         {footnotes.length > 0 && (
           <div className="mt-6 pt-3 border-t text-xs text-muted-foreground space-y-1.5">
-            <p className="font-semibold text-foreground">脚注引用</p>
+            <p className="font-semibold text-foreground">{t("脚注引用", "Footnotes")}</p>
             {footnotes.map(([fnId, fnText]) => (
               <div key={fnId} id={`fn-def-${fnId}`} className="flex items-start gap-2">
                 <a
@@ -947,7 +923,7 @@ export function MarkdownRenderer({
           >
             <span className="inline-flex items-center gap-1.5">
               <ListTree className="w-3.5 h-3.5 text-brand-secondary" />
-              文档大纲 ({headings.length})
+              {t(`文档大纲 (${headings.length})`, `Outline (${headings.length})`)}
             </span>
             {tocCollapsed ? (
               <ChevronRight className="w-3.5 h-3.5" />
@@ -986,44 +962,45 @@ function renderAdmonition(
   customTitle: string,
   lines: string[],
   key: string,
-  renderInline: (text: string, keyPrefix?: string) => React.ReactNode
+  renderInline: (text: string, keyPrefix?: string) => React.ReactNode,
+  isEn = false
 ): React.ReactNode {
   const styles: Record<
     string,
     { label: string; box: string; titleColor: string; icon: React.ReactNode }
   > = {
     NOTE: {
-      label: "提示 (Note)",
+      label: isEn ? "Note" : "提示 (Note)",
       box: "bg-blue-50/80 border-blue-300 text-blue-950",
       titleColor: "text-blue-700",
       icon: <Info className="w-4 h-4 text-blue-600 shrink-0" />,
     },
     TIP: {
-      label: "技巧 (Tip)",
+      label: isEn ? "Tip" : "技巧 (Tip)",
       box: "bg-emerald-50/80 border-emerald-300 text-emerald-950",
       titleColor: "text-emerald-700",
       icon: <Lightbulb className="w-4 h-4 text-emerald-600 shrink-0" />,
     },
     IMPORTANT: {
-      label: "重要 (Important)",
+      label: isEn ? "Important" : "重要 (Important)",
       box: "bg-purple-50/80 border-purple-300 text-purple-950",
       titleColor: "text-purple-700",
       icon: <Sparkles className="w-4 h-4 text-purple-600 shrink-0" />,
     },
     WARNING: {
-      label: "警告 (Warning)",
+      label: isEn ? "Warning" : "警告 (Warning)",
       box: "bg-amber-50/80 border-amber-300 text-amber-950",
       titleColor: "text-amber-700",
       icon: <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />,
     },
     CAUTION: {
-      label: "危险 (Caution)",
+      label: isEn ? "Caution" : "危险 (Caution)",
       box: "bg-rose-50/80 border-rose-300 text-rose-950",
       titleColor: "text-rose-700",
       icon: <AlertOctagon className="w-4 h-4 text-rose-600 shrink-0" />,
     },
     DANGER: {
-      label: "危险 (Danger)",
+      label: isEn ? "Danger" : "危险 (Danger)",
       box: "bg-rose-50/80 border-rose-300 text-rose-950",
       titleColor: "text-rose-700",
       icon: <AlertOctagon className="w-4 h-4 text-rose-600 shrink-0" />,

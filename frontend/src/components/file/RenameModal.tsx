@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit2 } from "lucide-react";
 import { api } from "@/lib/api";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,7 @@ export function RenameModal() {
   const showToast = useFileStore((s) => s.showToast);
   const [newName, setNewName] = useState("");
   const queryClient = useQueryClient();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (item) {
@@ -39,11 +40,11 @@ export function RenameModal() {
         const nextPath = parent ? `${parent}/${name}` : name;
         useFileStore.getState().setSelectedFile({ ...selected, name, path: nextPath });
       }
-      showToast("重命名成功", "success");
+      showToast(t("重命名成功", "Renamed successfully"), "success");
       setRenameModalFile(null);
     },
     onError: (err: any) => {
-      showToast(err.message || "重命名失败", "error");
+      showToast(err.message || t("重命名失败", "Failed to rename"), "error");
     },
   });
 
@@ -59,30 +60,30 @@ export function RenameModal() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Edit2 className="w-5 h-5 text-brand-secondary" />
-            重命名
+            {t("重命名", "Rename")}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-xs font-medium text-foreground block mb-1">
-              新名称
+              {t("新名称", "New Name")}
             </label>
             <Input
               autoFocus
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="请输入新名称"
+              placeholder={t("请输入新名称", "Enter new name")}
               required
             />
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setRenameModalFile(null)}>
-              取消
+              {t("取消", "Cancel")}
             </Button>
             <Button type="submit" disabled={renameMutation.isPending}>
-              确定
+              {t("确定", "Save")}
             </Button>
           </DialogFooter>
         </form>

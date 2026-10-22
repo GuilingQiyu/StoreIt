@@ -1,6 +1,22 @@
 import { create } from "zustand";
-import { ConfirmDialogOptions, FileItem, SortField, SortOrder, ThemeMode, ToastItem, UploadConflictState } from "@/types";
-import { applyThemeToDom, getSavedTheme } from "@/lib/utils";
+import {
+  ConfirmDialogOptions,
+  FileItem,
+  Locale,
+  SortField,
+  SortOrder,
+  ThemeMode,
+  ToastItem,
+  UploadConflictState,
+} from "@/types";
+import {
+  applyLocaleToDom,
+  applyThemeToDom,
+  detectBrowserLocale,
+  getSavedLocale,
+  isLocaleFollowingBrowser,
+  localizeServerMessage,
+} from "@/lib/utils";
 
 export type ViewMode = 
   | "files" 
@@ -17,6 +33,8 @@ interface FileState {
   viewMode: ViewMode;
   layout: "grid" | "list";
   theme: ThemeMode;
+  locale: Locale;
+  localeAuto: boolean;
   sortBy: SortField;
   sortOrder: SortOrder;
   searchQuery: string;
@@ -44,6 +62,8 @@ interface FileState {
   setViewMode: (mode: ViewMode) => void;
   setLayout: (layout: "grid" | "list") => void;
   setTheme: (theme: ThemeMode) => void;
+  setLocale: (locale: Locale | "auto") => void;
+  syncLocaleFromBrowser: () => void;
   setSort: (field: SortField) => void;
   setSearchQuery: (query: string) => void;
   setSelectedFile: (file: FileItem | null) => void;
@@ -82,6 +102,8 @@ export const useFileStore = create<FileState>((set, get) => ({
   viewMode: "files",
   layout: "grid",
   theme: "classic",
+  locale: "zh",
+  localeAuto: true,
   sortBy: "name",
   sortOrder: "asc",
   searchQuery: "",
@@ -119,6 +141,22 @@ export const useFileStore = create<FileState>((set, get) => ({
   setTheme: (theme: ThemeMode) => {
     applyThemeToDom(theme);
     set({ theme });
+  },
+  setLocale: (target: Locale | "auto") => {
+    if (target === "auto") {
+      const detected = detectBrowserLocale();
+      applyLocaleToDom(detected, "auto");
+      set({ locale: detected, localeAuto: true });
+    } else {
+      applyLocaleToDom(target, true);
+      set({ locale: target, localeAuto: false });
+    }
+  },
+  syncLocaleFromBrowser: () => {
+    const active = getSavedLocale();
+    const isAuto = isLocaleFollowingBrowser();
+    applyLocaleToDom(active);
+    set({ locale: active, localeAuto: isAuto });
   },
   setSort: (field: SortField) => {
     const { sortBy, sortOrder } = get();
@@ -206,7 +244,8 @@ export const useFileStore = create<FileState>((set, get) => ({
 
   showToast: (text: string, type: "success" | "error" | "info" = "info") => {
     const id = "t_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
-    set((s) => ({ toasts: [...s.toasts, { id, text, type }] }));
+    const localized = localizeServerMessage(text, get().locale);
+    set((s) => ({ toasts: [...s.toasts, { id, text: localized, type }] }));
     setTimeout(() => {
       set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) }));
     }, 3200);
@@ -219,6 +258,15 @@ export const useFileStore = create<FileState>((set, get) => ({
   openConfirm: (options: ConfirmDialogOptions) => set({ confirmDialog: options }),
   closeConfirm: () => set({ confirmDialog: null }),
 }));
+
+export function useI18n() {
+  const locale = useFileStore((s) => s.locale);
+  const localeAuto = useFileStore((s) => s.localeAuto);
+  const setLocale = useFileStore((s) => s.setLocale);
+  const isEn = locale === "en";
+  const t = <T = string>(zh: T, en: T): T => (isEn ? en : zh);
+  return { locale, isEn, localeAuto, setLocale, t };
+}
 
 export function viewModeToHash(mode: ViewMode, currentPath = ""): string {
   if (mode === "files") {

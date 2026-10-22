@@ -1,6 +1,23 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ThemeMode } from "@/types";
+import { Locale, ThemeMode } from "@/types";
+import {
+  applyLocaleToDom,
+  detectBrowserLocale,
+  getSavedLocale,
+  isLocaleFollowingBrowser,
+  localizeServerMessage,
+  tr,
+} from "@/lib/i18n";
+
+export {
+  applyLocaleToDom,
+  detectBrowserLocale,
+  getSavedLocale,
+  isLocaleFollowingBrowser,
+  localizeServerMessage,
+  tr,
+};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -9,15 +26,59 @@ export function cn(...inputs: ClassValue[]) {
 export const THEME_OPTIONS: {
   key: ThemeMode;
   label: string;
+  labelEn: string;
   desc: string;
+  descEn: string;
   swatch: string;
 }[] = [
-  { key: "classic", label: "暮紫莫兰迪", desc: "默认温润雅致", swatch: "#4a4e69" },
-  { key: "ocean", label: "深海蔚蓝", desc: "清爽科技蓝调", swatch: "#1e40af" },
-  { key: "forest", label: "翡翠森绿", desc: "自然护眼青绿", swatch: "#065f46" },
-  { key: "sunset", label: "琥珀暖阳", desc: "活力温暖橙棕", swatch: "#9a3412" },
-  { key: "sakura", label: "樱花粉黛", desc: "柔和浪漫粉紫", swatch: "#9d174d" },
-  { key: "dark", label: "极夜暗黑", desc: "深色低光护眼", swatch: "#312e81" },
+  {
+    key: "classic",
+    label: "暮紫莫兰迪",
+    labelEn: "Morandi Dusk",
+    desc: "默认温润雅致",
+    descEn: "Warm & elegant default",
+    swatch: "#4a4e69",
+  },
+  {
+    key: "ocean",
+    label: "深海蔚蓝",
+    labelEn: "Ocean Blue",
+    desc: "清爽科技蓝调",
+    descEn: "Crisp tech blue palette",
+    swatch: "#1e40af",
+  },
+  {
+    key: "forest",
+    label: "翡翠森绿",
+    labelEn: "Emerald Forest",
+    desc: "自然护眼青绿",
+    descEn: "Natural eye-care green",
+    swatch: "#065f46",
+  },
+  {
+    key: "sunset",
+    label: "琥珀暖阳",
+    labelEn: "Amber Sunset",
+    desc: "活力温暖橙棕",
+    descEn: "Vibrant warm amber",
+    swatch: "#9a3412",
+  },
+  {
+    key: "sakura",
+    label: "樱花粉黛",
+    labelEn: "Sakura Pink",
+    desc: "柔和浪漫粉紫",
+    descEn: "Soft romantic rose",
+    swatch: "#9d174d",
+  },
+  {
+    key: "dark",
+    label: "极夜暗黑",
+    labelEn: "Midnight Dark",
+    desc: "深色低光护眼",
+    descEn: "Low-light dark mode",
+    swatch: "#312e81",
+  },
 ];
 
 export function getSavedTheme(): ThemeMode {
@@ -55,19 +116,21 @@ export function formatBytes(bytes: number, decimals = 1): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
 }
 
-export function formatDate(timestamp: number | string | undefined): string {
+export function formatDate(timestamp: number | string | undefined, locale?: Locale): string {
   if (!timestamp) return "--";
   const date = typeof timestamp === "number" 
     ? new Date(timestamp > 1e11 ? timestamp : timestamp * 1000) 
     : new Date(timestamp);
   if (isNaN(date.getTime())) return String(timestamp);
-  return date.toLocaleString("zh-CN", {
+  const activeLocale = locale || getSavedLocale();
+  return date.toLocaleString(activeLocale === "en" ? "en-US" : "zh-CN", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
   });
 }
 

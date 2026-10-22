@@ -18,6 +18,7 @@ import {
   Calendar,
   HardDrive,
   Edit2,
+  Edit3,
   FolderInput,
   X,
   FileImage,
@@ -26,11 +27,10 @@ import {
   FileCode,
   FileArchive
 } from "lucide-react";
-import { useFileStore, ViewMode } from "@/stores/useFileStore";
+import { useFileStore, useI18n, ViewMode } from "@/stores/useFileStore";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { api } from "@/lib/api";
 import { formatBytes, formatDate, getFileCategory, getDownloadUrl, isEditableText, isPreviewable } from "@/lib/utils";
-import { Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function Sidebar() {
@@ -50,6 +50,7 @@ export function Sidebar() {
   const setSidebarOpen = useFileStore((s) => s.setSidebarOpen);
   const showToast = useFileStore((s) => s.showToast);
   const openConfirm = useFileStore((s) => s.openConfirm);
+  const { locale, t } = useI18n();
 
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.role?.toUpperCase() === "ADMIN";
@@ -75,9 +76,9 @@ export function Sidebar() {
       queryClient.invalidateQueries({ queryKey: ["files"] });
       queryClient.invalidateQueries({ queryKey: ["quota"] });
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
-      showToast("删除成功", "success");
+      showToast(t("删除成功", "Deleted successfully"), "success");
     },
-    onError: (err: any) => showToast(err.message || "删除失败", "error"),
+    onError: (err: any) => showToast(err.message || t("删除失败", "Failed to delete"), "error"),
   });
 
   const favoriteMutation = useMutation({
@@ -86,19 +87,25 @@ export function Sidebar() {
     onSuccess: (_res, vars) => {
       queryClient.invalidateQueries({ queryKey: ["favoritesList"] });
       queryClient.invalidateQueries({ queryKey: ["files"] });
-      showToast(vars.favorite ? "已加入收藏夹" : "已取消收藏", "success");
+      showToast(
+        vars.favorite
+          ? t("已加入收藏夹", "Added to favorites")
+          : t("已取消收藏", "Removed from favorites"),
+        "success"
+      );
     },
-    onError: (err: any) => showToast(err.message || "收藏操作失败", "error"),
+    onError: (err: any) =>
+      showToast(err.message || t("收藏操作失败", "Failed to update favorite"), "error"),
   });
 
   const navItems: { mode: ViewMode; label: string; icon: React.ReactNode; adminOnly?: boolean }[] = [
-    { mode: "files", label: "我的文件", icon: <Folder className="w-4 h-4" /> },
-    { mode: "recent", label: "最近访问", icon: <Clock className="w-4 h-4" /> },
-    { mode: "favorites", label: "收藏夹", icon: <Star className="w-4 h-4" /> },
-    { mode: "shares", label: "我的分享", icon: <Share2 className="w-4 h-4" /> },
-    { mode: "admin", label: "用户管理", icon: <Users className="w-4 h-4" />, adminOnly: true },
-    { mode: "settings", label: "系统设置", icon: <Settings className="w-4 h-4" />, adminOnly: true },
-    { mode: "about", label: "关于 储之", icon: <Info className="w-4 h-4" /> },
+    { mode: "files", label: t("我的文件", "My Files"), icon: <Folder className="w-4 h-4" /> },
+    { mode: "recent", label: t("最近访问", "Recent"), icon: <Clock className="w-4 h-4" /> },
+    { mode: "favorites", label: t("收藏夹", "Favorites"), icon: <Star className="w-4 h-4" /> },
+    { mode: "shares", label: t("我的分享", "Shares & Mounts"), icon: <Share2 className="w-4 h-4" /> },
+    { mode: "admin", label: t("用户管理", "Users & Invites"), icon: <Users className="w-4 h-4" />, adminOnly: true },
+    { mode: "settings", label: t("系统设置", "Settings"), icon: <Settings className="w-4 h-4" />, adminOnly: true },
+    { mode: "about", label: t("关于 储之", "About StoreIt"), icon: <Info className="w-4 h-4" /> },
   ];
 
   const handleNavClick = (mode: ViewMode) => {
@@ -114,17 +121,17 @@ export function Sidebar() {
     percent > 90 ? "bg-rose-500" : percent > 70 ? "bg-amber-500" : "bg-brand-primary";
 
   const getCategoryLabel = (name: string, isDir: boolean) => {
-    if (isDir) return "文件夹";
+    if (isDir) return t("文件夹", "Folder");
     const cat = getFileCategory(name);
     switch (cat) {
-      case "image": return "图片";
-      case "video": return "视频";
-      case "audio": return "音频";
-      case "pdf": return "PDF 文档";
-      case "code": return "文本/代码";
-      case "archive": return "压缩包";
-      case "document": return "Office 文档";
-      default: return "文件";
+      case "image": return t("图片", "Image");
+      case "video": return t("视频", "Video");
+      case "audio": return t("音频", "Audio");
+      case "pdf": return t("PDF 文档", "PDF Document");
+      case "code": return t("文本/代码", "Text / Code");
+      case "archive": return t("压缩包", "Archive");
+      case "document": return t("Office 文档", "Office Document");
+      default: return t("文件", "File");
     }
   };
 
@@ -146,7 +153,9 @@ export function Sidebar() {
     <div className="flex flex-col h-full overflow-hidden select-none">
       {/* Mobile close button */}
       <div className="md:hidden flex items-center justify-between p-4 border-b">
-        <span className="font-semibold text-brand-primary text-sm">导航与详情</span>
+        <span className="font-semibold text-brand-primary text-sm">
+          {t("导航与详情", "Navigation & Details")}
+        </span>
         <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="h-8 w-8">
           <X className="w-4 h-4" />
         </Button>
@@ -181,11 +190,11 @@ export function Sidebar() {
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5 font-medium">
             <span className="flex items-center gap-1.5">
               <HardDrive className="w-3.5 h-3.5 text-brand-secondary" />
-              存储空间
+              {t("存储空间", "Storage")}
             </span>
             <span>
               {quota.unlimited && quota.scope === "user"
-                ? `${formatBytes(quota.used)} / 无限制`
+                ? `${formatBytes(quota.used)} / ${t("无限制", "Unlimited")}`
                 : `${formatBytes(quota.used)} / ${formatBytes(quota.total)}`}
             </span>
           </div>
@@ -202,7 +211,7 @@ export function Sidebar() {
       <div className="mt-auto border-t p-4 bg-white/40">
         <div className="flex items-center justify-between mb-2">
           <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-            文件属性与详情
+            {t("文件属性与详情", "File Properties")}
           </h4>
           {selectedFile && (
             <Button
@@ -210,7 +219,7 @@ export function Sidebar() {
               size="icon"
               className="h-5 w-5 text-muted-foreground hover:text-foreground"
               onClick={() => setSelectedFile(null)}
-              title="关闭详情"
+              title={t("关闭详情", "Close details")}
             >
               <X className="w-3 h-3" />
             </Button>
@@ -230,7 +239,11 @@ export function Sidebar() {
                 <div className="flex items-center gap-2 text-muted-foreground text-[11px] mt-0.5">
                   <span>{getCategoryLabel(selectedFile.name, selectedFile.isDirectory)}</span>
                   <span>·</span>
-                  <span>{selectedFile.isDirectory ? "目录" : formatBytes(selectedFile.size || 0)}</span>
+                  <span>
+                    {selectedFile.isDirectory
+                      ? t("目录", "Directory")
+                      : formatBytes(selectedFile.size || 0)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -238,7 +251,7 @@ export function Sidebar() {
             {selectedFile.modifiedTime && (
               <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
                 <Calendar className="w-3.5 h-3.5 shrink-0" />
-                <span>{formatDate(selectedFile.modifiedTime)}</span>
+                <span>{formatDate(selectedFile.modifiedTime, locale)}</span>
               </div>
             )}
 
@@ -255,7 +268,8 @@ export function Sidebar() {
                   className="h-7 text-xs gap-1"
                   onClick={() => setPreviewFile(selectedFile)}
                 >
-                  <Eye className="w-3 h-3 text-brand-secondary" /> 预览
+                  <Eye className="w-3 h-3 text-brand-secondary" />
+                  {t("预览", "Preview")}
                 </Button>
               )}
 
@@ -266,7 +280,8 @@ export function Sidebar() {
                   className="h-7 text-xs gap-1"
                   onClick={() => openEditor(selectedFile)}
                 >
-                  <Edit3 className="w-3 h-3 text-brand-secondary" /> 编辑
+                  <Edit3 className="w-3 h-3 text-brand-secondary" />
+                  {t("编辑", "Edit")}
                 </Button>
               )}
 
@@ -278,7 +293,8 @@ export function Sidebar() {
                   asChild
                 >
                   <a href={getDownloadUrl(selectedFile.path)} download={selectedFile.name}>
-                    <Download className="w-3 h-3 text-brand-secondary" /> 下载
+                    <Download className="w-3 h-3 text-brand-secondary" />
+                    {t("下载", "Download")}
                   </a>
                 </Button>
               )}
@@ -290,7 +306,7 @@ export function Sidebar() {
                 onClick={() => setShareModalFile(selectedFile)}
               >
                 <Share2 className="w-3 h-3 text-brand-secondary" />
-                {selectedFile.isDirectory ? "共享" : "分享"}
+                {selectedFile.isDirectory ? t("共享", "Share Folder") : t("分享", "Share")}
               </Button>
 
               {viewMode !== "files" && (
@@ -300,7 +316,8 @@ export function Sidebar() {
                   className="h-7 text-xs gap-1"
                   onClick={() => openContainingFolder(selectedFile)}
                 >
-                  <FolderOpen className="w-3 h-3 text-brand-secondary" /> 所在目录
+                  <FolderOpen className="w-3 h-3 text-brand-secondary" />
+                  {t("所在目录", "Open Location")}
                 </Button>
               )}
 
@@ -316,7 +333,7 @@ export function Sidebar() {
                 }
               >
                 <Star className={`w-3 h-3 ${isFavorite ? "fill-amber-500 text-amber-500" : ""}`} />
-                {isFavorite ? "取消收藏" : "加入收藏"}
+                {isFavorite ? t("取消收藏", "Unfavorite") : t("加入收藏", "Favorite")}
               </Button>
 
               <Button
@@ -325,7 +342,8 @@ export function Sidebar() {
                 className="h-7 text-xs gap-1"
                 onClick={() => setRenameModalFile(selectedFile)}
               >
-                <Edit2 className="w-3 h-3 text-brand-secondary" /> 重命名
+                <Edit2 className="w-3 h-3 text-brand-secondary" />
+                {t("重命名", "Rename")}
               </Button>
 
               <Button
@@ -334,7 +352,8 @@ export function Sidebar() {
                 className="h-7 text-xs gap-1"
                 onClick={() => setMoveModalFile(selectedFile)}
               >
-                <FolderInput className="w-3 h-3 text-brand-secondary" /> 移动
+                <FolderInput className="w-3 h-3 text-brand-secondary" />
+                {t("移动", "Move")}
               </Button>
 
               <Button
@@ -343,21 +362,25 @@ export function Sidebar() {
                 className="col-span-2 h-7 text-xs gap-1 text-destructive hover:bg-destructive/10 border-destructive/20"
                 onClick={() => {
                   openConfirm({
-                    title: "确认彻底删除",
-                    description: `确定要彻底删除 "${selectedFile.name}" 吗？此操作不可撤销！`,
-                    confirmText: "彻底删除",
+                    title: t("确认彻底删除", "Confirm Permanent Deletion"),
+                    description: t(
+                      `确定要彻底删除 "${selectedFile.name}" 吗？此操作不可撤销！`,
+                      `Are you sure you want to permanently delete "${selectedFile.name}"? This action cannot be undone.`
+                    ),
+                    confirmText: t("彻底删除", "Delete"),
                     destructive: true,
                     onConfirm: () => deleteMutation.mutate(selectedFile.path),
                   });
                 }}
               >
-                <Trash2 className="w-3 h-3" /> 删除
+                <Trash2 className="w-3 h-3" />
+                {t("删除", "Delete")}
               </Button>
             </div>
           </div>
         ) : (
           <div className="text-center py-6 text-muted-foreground/60 text-xs">
-            选择文件以查看详细属性与操作
+            {t("选择文件以查看详细属性与操作", "Select a file to view properties & actions")}
           </div>
         )}
       </div>

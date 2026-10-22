@@ -3,7 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import { FileConflictStrategy, PendingUploadEntry, UploadTask, UploadStatus } from "@/types";
 import { useFileStore } from "@/stores/useFileStore";
 import { api } from "@/lib/api";
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, tr } from "@/lib/utils";
 
 export const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB
 export const CHUNK_THRESHOLD = 50 * 1024 * 1024; // 50MB (files <= 50MB use simple single upload)
@@ -51,13 +51,11 @@ export const useUploadStore = create<UploadState>()(
         const fingerprint = generateFingerprint(file, directory);
         const { tasks } = get();
 
-        // 1. Check if an unfinished task with this fingerprint already exists
         const existing = tasks.find(
           (t) => t.fingerprint === fingerprint && t.status !== "completed"
         );
 
         if (existing) {
-          // 刷新后重选同一文件时重新绑定文件句柄
           fileMap.set(existing.id, file);
 
           const isActive =
@@ -67,8 +65,6 @@ export const useUploadStore = create<UploadState>()(
             existing.status === "merging";
 
           if (isActive) {
-            // 任务已在队列或传输中：仅聚焦抽屉，不重置状态，
-            // 避免同一上传会话被并发重复执行导致分片重复上传
             set((state) => ({ isDrawerOpen: true }));
             return existing.id;
           }
@@ -85,7 +81,6 @@ export const useUploadStore = create<UploadState>()(
           return existing.id;
         }
 
-        // 2. Initialize a new upload task in pending state
         const tempId = "task_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7);
         const totalChunks = Math.max(1, Math.ceil(file.size / CHUNK_SIZE));
 
@@ -118,14 +113,12 @@ export const useUploadStore = create<UploadState>()(
       },
 
       pauseTask: (id: string) => {
-        // Abort simple upload if active
         const simpleCtrl = activeSimpleControllers.get(id);
         if (simpleCtrl) {
           simpleCtrl.abort();
           activeSimpleControllers.delete(id);
         }
 
-        // Abort chunked workers if active
         const chunkCtrls = activeChunkControllers.get(id);
         if (chunkCtrls) {
           chunkCtrls.forEach((ctrl) => ctrl.abort());
@@ -153,7 +146,10 @@ export const useUploadStore = create<UploadState>()(
                 ? {
                     ...t,
                     status: "interrupted",
-                    errorMessage: "刷新后文件句柄已失效，请重新选择文件继续",
+                    errorMessage: tr(
+                      "刷新后文件句柄已失效，请重新选择文件继续",
+                      "File handle lost after reload, please re-select the file to resume"
+                    ),
                   }
                 : t
             ),
@@ -174,9 +170,11 @@ export const useUploadStore = create<UploadState>()(
         const task = get().tasks.find((t) => t.id === id);
         if (!task) return;
 
-        // Strictly validate file identity to prevent corrupt merges
         if (file.name !== task.name || file.size !== task.size) {
-          const errMsg = `所选文件不匹配！期望: ${task.name} (${formatBytes(task.size)})，实际: ${file.name} (${formatBytes(file.size)})`;
+          const errMsg = tr(
+            `所选文件不匹配！期望: ${task.name} (${formatBytes(task.size)})，实际: ${file.name} (${formatBytes(file.size)})`,
+            `Selected file mismatch! Expected: ${task.name} (${formatBytes(task.size)}), got: ${file.name} (${formatBytes(file.size)})`
+          );
           set((state) => ({
             tasks: state.tasks.map((t) =>
               t.id === id ? { ...t, errorMessage: errMsg } : t
@@ -198,7 +196,6 @@ export const useUploadStore = create<UploadState>()(
       },
 
       cancelTask: async (id: string) => {
-        // Abort controllers
         const simpleCtrl = activeSimpleControllers.get(id);
         if (simpleCtrl) {
           simpleCtrl.abort();
@@ -213,7 +210,6 @@ export const useUploadStore = create<UploadState>()(
         activeChunkControllers.delete(id);
         fileMap.delete(id);
 
-        // Notify server to clean up chunks if it was a chunked session
         try {
           if (!id.startsWith("task_")) {
             await api.cancelChunkedUpload(id);
@@ -236,7 +232,11 @@ export const useUploadStore = create<UploadState>()(
           set((state) => ({
             tasks: state.tasks.map((t) =>
               t.id === id
-                ? { ...t, status: "interrupted", errorMessage: "请重新选择文件重试" }
+                ? {
+                    ...t,
+                    status: "interrupted",
+                    errorMessage: tr("请重新选择文件重试", "Please re-select the file to retry"),
+                  }
                 : t
             ),
           }));
@@ -312,7 +312,6 @@ export const useUploadStore = create<UploadState>()(
           return;
         }
 
-        // 无同名冲突：直接创建空文件夹并入队上传
         for (const emptySub of emptyDirs) {
           try {
             await api.createDirectory(targetDir, emptySub);
@@ -339,13 +338,15 @@ export const useUploadStore = create<UploadState>()(
               ...t,
               status: "interrupted",
               speed: 0,
-              errorMessage: "页面刷新中断，请重新添加或绑定原文件继续断点续传",
+              errorMessage: tr(
+                "页面刷新中断，请重新添加或绑定原文件继续断点续传",
+                "Interrupted by page reload, please re-add or rebind the file to resume"
+              ),
             };
           }
           return t;
         });
       },
-      // DO NOT persist uploadedChunks array into localStorage to avoid large write amplification
       partialize: (state) => ({
         tasks: state.tasks.map((t) => ({
           id: t.id,
@@ -356,7 +357,7 @@ export const useUploadStore = create<UploadState>()(
           conflictStrategy: t.conflictStrategy,
           chunkSize: t.chunkSize,
           totalChunks: t.totalChunks,
-          uploadedChunks: [], // Empty in localStorage, queried from server on resume
+          uploadedChunks: [],
           status: t.status === "completed" ? "completed" : "interrupted",
           progress: t.progress,
           speed: 0,
@@ -370,10 +371,6 @@ export const useUploadStore = create<UploadState>()(
   )
 );
 
-/**
- * Global Upload Queue Scheduler
- * Ensures at most MAX_ACTIVE_TASKS are running concurrently.
- */
 function scheduleNextUploads(
   get: () => UploadState,
   set: (fn: (state: UploadState) => UploadState | Partial<UploadState>) => void
@@ -393,14 +390,17 @@ function scheduleNextUploads(
     set((state) => ({
       tasks: state.tasks.map((t) =>
         t.id === nextTask.id
-          ? { ...t, status: "interrupted", errorMessage: "文件句柄丢失，请重新选择文件" }
+          ? {
+              ...t,
+              status: "interrupted",
+              errorMessage: tr("文件句柄丢失，请重新选择文件", "File handle lost, please re-select the file"),
+            }
           : t
       ),
     }));
     return;
   }
 
-  // Branch: Simple upload vs Chunked upload
   if (file.size <= CHUNK_THRESHOLD) {
     executeSimpleUpload(nextTask.id, file, get, set);
   } else {
@@ -408,9 +408,6 @@ function scheduleNextUploads(
   }
 }
 
-/**
- * 1. Simple Single Upload (<= 50MB and 0-byte files)
- */
 async function executeSimpleUpload(
   taskId: string,
   file: File,
@@ -487,7 +484,12 @@ async function executeSimpleUpload(
     set((state) => ({
       tasks: state.tasks.map((t) =>
         t.id === taskId
-          ? { ...t, status: "error", speed: 0, errorMessage: err.message || "上传失败" }
+          ? {
+              ...t,
+              status: "error",
+              speed: 0,
+              errorMessage: err.message || tr("上传失败", "Upload failed"),
+            }
           : t
       ),
     }));
@@ -496,9 +498,6 @@ async function executeSimpleUpload(
   }
 }
 
-/**
- * 2. Parallel Chunked Upload (> 50MB)
- */
 async function executeChunkedUpload(
   taskId: string,
   file: File,
@@ -519,7 +518,6 @@ async function executeChunkedUpload(
   let totalChunks = task.totalChunks;
   let chunkSize = task.chunkSize;
 
-  // Initialize or resume chunked session with backend
   try {
     if (taskId.startsWith("task_")) {
       const initRes = await api.initChunkedUpload(file.name, file.size, task.directory, task.conflictStrategy || "rename");
@@ -530,7 +528,6 @@ async function executeChunkedUpload(
       fileMap.delete(taskId);
       fileMap.set(realUploadId, file);
 
-      // 会话握手期间用户可能已点击暂停：保持暂停状态，等待用户手动继续
       const pausedDuringHandshake =
         get().tasks.find((t) => t.id === taskId)?.status === "paused";
 
@@ -577,8 +574,6 @@ async function executeChunkedUpload(
           ),
         }));
       } catch (err: any) {
-        // 服务端分片会话可能已被清理（如超过 24 小时的定时清扫）。
-        // 此时不再反复报「上传会话无效」，而是自动重建全新会话从头续传。
         if (err?.status !== 400) throw err;
 
         const initRes = await api.initChunkedUpload(file.name, file.size, task.directory, task.conflictStrategy || "rename");
@@ -619,7 +614,14 @@ async function executeChunkedUpload(
     set((state) => ({
       tasks: state.tasks.map((t) =>
         t.id === taskId
-          ? { ...t, status: "error", errorMessage: `初始化上传失败: ${err.message}` }
+          ? {
+              ...t,
+              status: "error",
+              errorMessage: tr(
+                `初始化上传失败: ${err.message}`,
+                `Failed to initialize upload: ${err.message}`
+              ),
+            }
           : t
       ),
     }));
@@ -627,7 +629,6 @@ async function executeChunkedUpload(
     return;
   }
 
-  // 握手期间任务被取消：清理刚创建的服务端会话并退出
   if (!get().tasks.some((t) => t.id === realUploadId)) {
     try {
       await api.cancelChunkedUpload(realUploadId);
@@ -635,12 +636,10 @@ async function executeChunkedUpload(
     return;
   }
 
-  // 握手期间被用户暂停：保持暂停，等待用户点击继续
   if (get().tasks.find((t) => t.id === realUploadId)?.status !== "uploading") {
     return;
   }
 
-  // Set up chunk controllers and in-flight loaded bytes tracking
   let controllers = activeChunkControllers.get(realUploadId);
   if (!controllers) {
     controllers = new Map();
@@ -667,7 +666,6 @@ async function executeChunkedUpload(
   let activeWorkers = 0;
   let isAbortedOrDone = false;
 
-  // Speed and smooth progress updater
   let lastBytes = uploadedSet.size * chunkSize;
   let lastTime = Date.now();
 
@@ -713,7 +711,6 @@ async function executeChunkedUpload(
     }));
   }, 300);
 
-  // Chunk worker runner
   const next = async () => {
     if (isAbortedOrDone) return;
 
@@ -749,7 +746,6 @@ async function executeChunkedUpload(
         chunkBlob,
         controller.signal,
         (loaded) => {
-          // 实时跟踪在途字节，供平滑进度与速率计算使用
           inFlightBytes.set(chunkIndex, loaded);
         }
       );
@@ -781,13 +777,10 @@ async function executeChunkedUpload(
         return;
       }
 
-      // Retry up to 2 times with exponential backoff (500ms / 1s)
       const retries = chunkRetryCount.get(chunkIndex) || 0;
       if (retries < 2) {
         chunkRetryCount.set(chunkIndex, retries + 1);
-        // 先同步放回队列，避免其他 worker 误判队列已空而提前触发合并
         pendingChunks.push(chunkIndex);
-        // 指数退避后再派发，避免网络抖动时瞬时连发三次全部失败
         setTimeout(() => next(), 500 * Math.pow(2, retries));
         return;
       } else {
@@ -800,7 +793,10 @@ async function executeChunkedUpload(
                   ...t,
                   status: "error",
                   speed: 0,
-                  errorMessage: `分片 ${chunkIndex + 1} 上传失败: ${err.message}`,
+                  errorMessage: tr(
+                    `分片 ${chunkIndex + 1} 上传失败: ${err.message}`,
+                    `Chunk ${chunkIndex + 1} upload failed: ${err.message}`
+                  ),
                 }
               : t
           ),
@@ -851,7 +847,15 @@ async function completeChunkedUploadSession(
     set((state) => ({
       tasks: state.tasks.map((t) =>
         t.id === uploadId
-          ? { ...t, status: "error", speed: 0, errorMessage: `合并分片失败: ${err.message}` }
+          ? {
+              ...t,
+              status: "error",
+              speed: 0,
+              errorMessage: tr(
+                `合并分片失败: ${err.message}`,
+                `Failed to merge chunks: ${err.message}`
+              ),
+            }
           : t
       ),
     }));

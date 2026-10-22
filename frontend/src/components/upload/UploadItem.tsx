@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { UploadTask } from "@/types";
 import { useUploadStore } from "@/stores/useUploadStore";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import { formatBytes } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ export function UploadItem({ task }: UploadItemProps) {
   const retryTask = useUploadStore((s) => s.retryTask);
   const rebindFileAndResume = useUploadStore((s) => s.rebindFileAndResume);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { t } = useI18n();
 
   const handleFilePicked = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,7 +38,7 @@ export function UploadItem({ task }: UploadItemProps) {
       try {
         await rebindFileAndResume(task.id, file);
       } catch (err: any) {
-        useFileStore.getState().showToast(err.message || "文件匹配失败", "error");
+        useFileStore.getState().showToast(err.message || t("文件匹配失败", "File mismatch"), "error");
       }
     }
   };
@@ -48,41 +49,41 @@ export function UploadItem({ task }: UploadItemProps) {
         return (
           <span className="text-xs text-brand-primary font-medium flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
-            上传中 ({formatBytes(task.speed)}/s)
+            {t("上传中", "Uploading")} ({formatBytes(task.speed)}/s)
           </span>
         );
       case "paused":
         return (
           <span className="text-xs text-amber-600 font-medium flex items-center gap-1">
-            <Pause className="w-3 h-3" /> 已暂停
+            <Pause className="w-3 h-3" /> {t("已暂停", "Paused")}
           </span>
         );
       case "merging":
         return (
           <span className="text-xs text-indigo-600 font-medium flex items-center gap-1">
-            <RefreshCw className="w-3 h-3 animate-spin" /> 合并文件中...
+            <RefreshCw className="w-3 h-3 animate-spin" /> {t("合并文件中...", "Merging chunks...")}
           </span>
         );
       case "completed":
         return (
           <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
-            <CheckCircle2 className="w-3 h-3" /> 上传完成
+            <CheckCircle2 className="w-3 h-3" /> {t("上传完成", "Completed")}
           </span>
         );
       case "interrupted":
         return (
           <span className="text-xs text-orange-600 font-medium flex items-center gap-1" title={task.errorMessage}>
-            <Clock className="w-3 h-3" /> 已中断 (点击重新选择文件)
+            <Clock className="w-3 h-3" /> {t("已中断 (点击重新选择文件)", "Interrupted (rebind file)")}
           </span>
         );
       case "error":
         return (
           <span className="text-xs text-destructive font-medium flex items-center gap-1" title={task.errorMessage}>
-            <AlertCircle className="w-3 h-3" /> 上传失败
+            <AlertCircle className="w-3 h-3" /> {t("上传失败", "Failed")}
           </span>
         );
       default:
-        return <span className="text-xs text-muted-foreground">准备中...</span>;
+        return <span className="text-xs text-muted-foreground">{t("准备中...", "Preparing...")}</span>;
     }
   };
 
@@ -122,7 +123,7 @@ export function UploadItem({ task }: UploadItemProps) {
           <span>{formatBytes(task.size)}</span>
           {task.totalChunks > 1 && (
             <span className="ml-2 text-black/40">
-              ({task.uploadedChunks.length}/{task.totalChunks} 分片)
+              ({task.uploadedChunks.length}/{task.totalChunks} {t("分片", "chunks")})
             </span>
           )}
         </div>
@@ -135,7 +136,7 @@ export function UploadItem({ task }: UploadItemProps) {
               size="icon"
               className="h-6 w-6 text-muted-foreground hover:text-foreground"
               onClick={() => pauseTask(task.id)}
-              title="暂停上传"
+              title={t("暂停上传", "Pause upload")}
             >
               <Pause className="w-3.5 h-3.5" />
             </Button>
@@ -147,7 +148,7 @@ export function UploadItem({ task }: UploadItemProps) {
               size="icon"
               className="h-6 w-6 text-muted-foreground hover:text-foreground"
               onClick={() => resumeTask(task.id)}
-              title="继续上传"
+              title={t("继续上传", "Resume upload")}
             >
               <Play className="w-3.5 h-3.5" />
             </Button>
@@ -159,9 +160,9 @@ export function UploadItem({ task }: UploadItemProps) {
               size="sm"
               className="h-6 px-2 text-xs gap-1 border-rose-200 text-rose-700 hover:bg-rose-50"
               onClick={() => retryTask(task.id)}
-              title="重试上传"
+              title={t("重试上传", "Retry upload")}
             >
-              <RefreshCw className="w-3 h-3" /> 重试
+              <RefreshCw className="w-3 h-3" /> {t("重试", "Retry")}
             </Button>
           )}
 
@@ -178,9 +179,9 @@ export function UploadItem({ task }: UploadItemProps) {
                 size="sm"
                 className="h-6 px-2 text-xs gap-1 border-orange-200 text-orange-700 hover:bg-orange-50"
                 onClick={() => fileInputRef.current?.click()}
-                title="重新选取同名文件以恢复断点续传"
+                title={t("重新选取同名文件以恢复断点续传", "Re-select the same file to resume upload")}
               >
-                <Upload className="w-3 h-3" /> 绑定续传
+                <Upload className="w-3 h-3" /> {t("绑定续传", "Rebind")}
               </Button>
             </>
           )}
@@ -191,7 +192,7 @@ export function UploadItem({ task }: UploadItemProps) {
               size="icon"
               className="h-6 w-6 text-muted-foreground hover:text-destructive"
               onClick={() => cancelTask(task.id)}
-              title="取消上传"
+              title={t("取消上传", "Cancel upload")}
             >
               <X className="w-3.5 h-3.5" />
             </Button>

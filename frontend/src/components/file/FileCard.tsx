@@ -23,7 +23,7 @@ import {
   Check
 } from "lucide-react";
 import { FileItem } from "@/types";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import { formatBytes, getFileCategory, getParentDirectory, isEditableText, isPreviewable } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -71,6 +71,7 @@ export function FileCard({
   const openContainingFolder = useFileStore((s) => s.openContainingFolder);
   const openEditor = useFileStore((s) => s.openEditor);
   const openCopyModal = useFileStore((s) => s.openCopyModal);
+  const { t } = useI18n();
 
   const isSelected = selectedFile?.path === item.path;
   const isChecked = selectedPaths.includes(item.path);
@@ -134,7 +135,7 @@ export function FileCard({
                 ? "bg-brand-primary border-brand-primary text-white opacity-100 scale-105"
                 : "border-black/25 bg-white/80 opacity-0 group-hover:opacity-100"
             }`}
-            title={isChecked ? "取消选择" : "多选此项"}
+            title={isChecked ? t("取消选择", "Deselect") : t("多选此项", "Select item")}
           >
             {isChecked && <Check className="w-3 h-3" />}
           </button>
@@ -149,7 +150,7 @@ export function FileCard({
                 ? "text-amber-500 fill-amber-500 opacity-100"
                 : "opacity-60 group-hover:opacity-100"
             }`}
-            title={item.isFavorite ? "取消收藏" : "加入收藏"}
+            title={item.isFavorite ? t("取消收藏", "Remove favorite") : t("加入收藏", "Add to favorites")}
           >
             <Star className={`w-4 h-4 ${item.isFavorite ? "fill-amber-500" : ""}`} />
           </button>
@@ -161,61 +162,72 @@ export function FileCard({
               <MoreVertical className="w-3.5 h-3.5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44 storeit-menu-pop">
+          <DropdownMenuContent align="end" className="w-48 storeit-menu-pop">
             {!item.isDirectory ? (
               <>
                 {isPreviewable(item.name) && (
                   <DropdownMenuItem onClick={() => onPreview(item)} className="gap-2">
-                    <Eye className="w-4 h-4 text-brand-secondary" /> 预览
+                    <Eye className="w-4 h-4 text-brand-secondary" />
+                    {t("预览", "Preview")}
                   </DropdownMenuItem>
                 )}
                 {isEditableText(item.name) && (
                   <DropdownMenuItem onClick={() => openEditor(item)} className="gap-2">
-                    <Edit3 className="w-4 h-4 text-brand-secondary" /> 在线编辑
+                    <Edit3 className="w-4 h-4 text-brand-secondary" />
+                    {t("在线编辑", "Online Edit")}
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
-                  <Download className="w-4 h-4 text-brand-secondary" /> 下载
+                  <Download className="w-4 h-4 text-brand-secondary" />
+                  {t("下载", "Download")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onShare(item)} className="gap-2">
-                  <Share2 className="w-4 h-4 text-brand-secondary" /> 分享
+                  <Share2 className="w-4 h-4 text-brand-secondary" />
+                  {t("分享", "Share")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             ) : (
               <>
                 <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
-                  <Download className="w-4 h-4 text-brand-secondary" /> 打包下载 (.zip)
+                  <Download className="w-4 h-4 text-brand-secondary" />
+                  {t("打包下载 (.zip)", "Download ZIP (.zip)")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onShare(item)} className="gap-2">
-                  <Share2 className="w-4 h-4 text-brand-secondary" /> 共享文件夹 (R/RW)
+                  <Share2 className="w-4 h-4 text-brand-secondary" />
+                  {t("共享文件夹 (R/RW)", "Share Folder (R/RW)")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
             {viewMode !== "files" && (
               <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">
-                <FolderOpen className="w-4 h-4 text-brand-secondary" /> 打开所在目录
+                <FolderOpen className="w-4 h-4 text-brand-secondary" />
+                {t("打开所在目录", "Open Containing Folder")}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={() => onRename(item)} className="gap-2">
-              <Edit2 className="w-4 h-4 text-brand-secondary" /> 重命名
+              <Edit2 className="w-4 h-4 text-brand-secondary" />
+              {t("重命名", "Rename")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onMove(item)} className="gap-2">
-              <FolderInput className="w-4 h-4 text-brand-secondary" /> 移动到...
+              <FolderInput className="w-4 h-4 text-brand-secondary" />
+              {t("移动到...", "Move to...")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => (onCopy ? onCopy(item) : openCopyModal(item))}
               className="gap-2"
             >
-              <Copy className="w-4 h-4 text-brand-secondary" /> 复制到...
+              <Copy className="w-4 h-4 text-brand-secondary" />
+              {t("复制到...", "Copy to...")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => onDelete(item)}
               className="gap-2 text-destructive focus:text-destructive"
             >
-              <Trash2 className="w-4 h-4" /> 删除
+              <Trash2 className="w-4 h-4" />
+              {t("删除", "Delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -233,7 +245,7 @@ export function FileCard({
           {item.name}
         </p>
         <span className="text-[11px] text-muted-foreground block mt-0.5 truncate">
-          {item.isDirectory ? "文件夹" : formatBytes(item.size || 0)}
+          {item.isDirectory ? t("文件夹", "Folder") : formatBytes(item.size || 0)}
           {showParentBadge ? ` · /${parentDir}` : ""}
         </span>
       </div>

@@ -1,4 +1,5 @@
 export type ThemeMode = "classic" | "ocean" | "forest" | "sunset" | "sakura" | "dark";
+export type Locale = "zh" | "en";
 
 export interface FileItem {
   name: string;

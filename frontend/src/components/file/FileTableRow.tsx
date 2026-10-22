@@ -23,7 +23,7 @@ import {
   Check
 } from "lucide-react";
 import { FileItem } from "@/types";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import { formatBytes, formatDate, getFileCategory, getParentDirectory, isEditableText, isPreviewable } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -71,6 +71,7 @@ export function FileTableRow({
   const openContainingFolder = useFileStore((s) => s.openContainingFolder);
   const openEditor = useFileStore((s) => s.openEditor);
   const openCopyModal = useFileStore((s) => s.openCopyModal);
+  const { locale, t } = useI18n();
 
   const isSelected = selectedFile?.path === item.path;
   const isChecked = selectedPaths.includes(item.path);
@@ -155,7 +156,7 @@ export function FileTableRow({
             </span>
             {showParentBadge && (
               <span className="text-[11px] text-muted-foreground font-mono block truncate">
-                所在目录: /{parentDir}
+                {t("所在目录", "Location")}: /{parentDir}
               </span>
             )}
           </div>
@@ -167,7 +168,7 @@ export function FileTableRow({
       </td>
 
       <td className="py-2.5 px-3 text-xs text-muted-foreground whitespace-nowrap hidden sm:table-cell">
-        {formatDate(item.modifiedTime)}
+        {formatDate(item.modifiedTime, locale)}
       </td>
 
       <td className="py-2.5 px-3 text-right">
@@ -177,61 +178,72 @@ export function FileTableRow({
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44 storeit-menu-pop">
+          <DropdownMenuContent align="end" className="w-48 storeit-menu-pop">
             {!item.isDirectory ? (
               <>
                 {isPreviewable(item.name) && (
                   <DropdownMenuItem onClick={() => onPreview(item)} className="gap-2">
-                    <Eye className="w-4 h-4 text-brand-secondary" /> 预览
+                    <Eye className="w-4 h-4 text-brand-secondary" />
+                    {t("预览", "Preview")}
                   </DropdownMenuItem>
                 )}
                 {isEditableText(item.name) && (
                   <DropdownMenuItem onClick={() => openEditor(item)} className="gap-2">
-                    <Edit3 className="w-4 h-4 text-brand-secondary" /> 在线编辑
+                    <Edit3 className="w-4 h-4 text-brand-secondary" />
+                    {t("在线编辑", "Online Edit")}
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
-                  <Download className="w-4 h-4 text-brand-secondary" /> 下载
+                  <Download className="w-4 h-4 text-brand-secondary" />
+                  {t("下载", "Download")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onShare(item)} className="gap-2">
-                  <Share2 className="w-4 h-4 text-brand-secondary" /> 分享
+                  <Share2 className="w-4 h-4 text-brand-secondary" />
+                  {t("分享", "Share")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             ) : (
               <>
                 <DropdownMenuItem onClick={() => onDownload(item)} className="gap-2">
-                  <Download className="w-4 h-4 text-brand-secondary" /> 打包下载 (.zip)
+                  <Download className="w-4 h-4 text-brand-secondary" />
+                  {t("打包下载 (.zip)", "Download ZIP (.zip)")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => onShare(item)} className="gap-2">
-                  <Share2 className="w-4 h-4 text-brand-secondary" /> 共享文件夹 (R/RW)
+                  <Share2 className="w-4 h-4 text-brand-secondary" />
+                  {t("共享文件夹 (R/RW)", "Share Folder (R/RW)")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
               </>
             )}
             {viewMode !== "files" && (
               <DropdownMenuItem onClick={() => openContainingFolder(item)} className="gap-2">
-                <FolderOpen className="w-4 h-4 text-brand-secondary" /> 打开所在目录
+                <FolderOpen className="w-4 h-4 text-brand-secondary" />
+                {t("打开所在目录", "Open Containing Folder")}
               </DropdownMenuItem>
             )}
             <DropdownMenuItem onClick={() => onRename(item)} className="gap-2">
-              <Edit2 className="w-4 h-4 text-brand-secondary" /> 重命名
+              <Edit2 className="w-4 h-4 text-brand-secondary" />
+              {t("重命名", "Rename")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onMove(item)} className="gap-2">
-              <FolderInput className="w-4 h-4 text-brand-secondary" /> 移动到...
+              <FolderInput className="w-4 h-4 text-brand-secondary" />
+              {t("移动到...", "Move to...")}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => (onCopy ? onCopy(item) : openCopyModal(item))}
               className="gap-2"
             >
-              <Copy className="w-4 h-4 text-brand-secondary" /> 复制到...
+              <Copy className="w-4 h-4 text-brand-secondary" />
+              {t("复制到...", "Copy to...")}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={() => onDelete(item)}
               className="gap-2 text-destructive focus:text-destructive"
             >
-              <Trash2 className="w-4 h-4" /> 删除
+              <Trash2 className="w-4 h-4" />
+              {t("删除", "Delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

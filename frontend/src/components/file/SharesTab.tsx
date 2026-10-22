@@ -17,7 +17,6 @@ import {
   Download,
   Eye,
   Edit3,
-  Edit2,
   Globe,
   Lock,
   ShieldCheck,
@@ -29,7 +28,7 @@ import {
 } from "lucide-react";
 import { api } from "@/lib/api";
 import { FileItem, ShareMountItem, SharedSpaceManifest } from "@/types";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -99,13 +98,13 @@ export function SharesTab() {
   const activeSharePassword = useFileStore((s) => s.activeSharePassword);
   const openSharedSpace = useFileStore((s) => s.openSharedSpace);
   const closeSharedSpace = useFileStore((s) => s.closeSharedSpace);
+  const { locale, t } = useI18n();
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [linkInput, setLinkInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const [mountNameInput, setMountNameInput] = useState("");
 
-  // Active shared folder browser state
   const [manifest, setManifest] = useState<SharedSpaceManifest | null>(null);
   const [subPath, setSubPath] = useState("");
   const [sharedItems, setSharedItems] = useState<FileItem[]>([]);
@@ -113,14 +112,12 @@ export function SharesTab() {
   const [spaceError, setSpaceError] = useState<string | null>(null);
   const [needsPasswordPrompt, setNeedsPasswordPrompt] = useState(false);
 
-  // Active shared item preview / online editor inside shared space
   const [viewingSharedItem, setViewingSharedItem] = useState<FileItem | null>(null);
   const [sharedTextContent, setSharedTextContent] = useState("");
   const [editingSharedText, setEditingSharedText] = useState(false);
   const [savingSharedText, setSavingSharedText] = useState(false);
   const [sharedSplitMd, setSharedSplitMd] = useState(true);
 
-  // Subfolder & new file creation inside RW shared folder
   const [newSubfolderName, setNewSubfolderName] = useState("");
   const [showMkdirBar, setShowMkdirBar] = useState(false);
   const [newSharedFileName, setNewSharedFileName] = useState("");
@@ -157,7 +154,7 @@ export function SharesTab() {
       if (err?.passwordRequired || err?.status === 403) {
         setNeedsPasswordPrompt(true);
       }
-      setSpaceError(err.message || "无法加载共享空间");
+      setSpaceError(err.message || t("无法加载共享空间", "Failed to load shared space"));
     } finally {
       setLoadingSpace(false);
     }
@@ -177,7 +174,13 @@ export function SharesTab() {
   const handleLoadInputShare = async (saveAsMount: boolean) => {
     const parsed = parseShareLinkInput(linkInput);
     if (!parsed.token) {
-      showToast("请输入有效的分享链接、Token 或 storeit+fed:// 跨服协议地址", "error");
+      showToast(
+        t(
+          "请输入有效的分享链接、Token 或 storeit+fed:// 跨服协议地址",
+          "Please enter a valid share link, token, or storeit+fed:// URI"
+        ),
+        "error"
+      );
       return;
     }
     const pwd = passwordInput.trim() || parsed.extractedPassword;
@@ -198,11 +201,11 @@ export function SharesTab() {
           isDirectory: mf ? mf.isDirectory : true,
         });
         refetchMounts();
-        showToast("已保存到我的共享挂载列表", "success");
+        showToast(t("已保存到我的共享挂载列表", "Saved to mounted shares"), "success");
         setLinkInput("");
         setMountNameInput("");
       } catch (err: any) {
-        showToast(err.message || "保存挂载失败", "error");
+        showToast(err.message || t("保存挂载失败", "Failed to save mount"), "error");
       }
     }
   };
@@ -211,38 +214,41 @@ export function SharesTab() {
     mutationFn: (id: number) => api.revokeShare(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shares"] });
-      showToast("分享链接已撤销", "success");
+      showToast(t("分享链接已撤销", "Share link revoked"), "success");
     },
-    onError: (err: any) => showToast(err.message || "撤销分享失败", "error"),
+    onError: (err: any) =>
+      showToast(err.message || t("撤销分享失败", "Failed to revoke share"), "error"),
   });
 
   const deleteMountMutation = useMutation({
     mutationFn: (id: number) => api.deleteShareMount(id),
     onSuccess: () => {
       refetchMounts();
-      showToast("已移除挂载项", "success");
+      showToast(t("已移除挂载项", "Mount removed"), "success");
     },
   });
 
   const handleCopy = async (key: string, text: string) => {
     if (await copyToClipboard(text)) {
       setCopiedId(key);
-      showToast("已复制到剪贴板", "success");
+      showToast(t("已复制到剪贴板", "Copied to clipboard"), "success");
       setTimeout(() => setCopiedId(null), 1800);
     }
   };
 
   const handleRevoke = (id: number, filePath: string) => {
     openConfirm({
-      title: "确认撤销共享",
-      description: `确定要撤销对 "${filePath}" 的共享链接吗？撤销后所有访问与跨服挂载将立即失效。`,
-      confirmText: "确认撤销",
+      title: t("确认撤销共享", "Confirm Revoke Share"),
+      description: t(
+        `确定要撤销对 "${filePath}" 的共享链接吗？撤销后所有访问与跨服挂载将立即失效。`,
+        `Are you sure you want to revoke the share link for "${filePath}"? All web and federated mounts will stop working immediately.`
+      ),
+      confirmText: t("确认撤销", "Revoke"),
       destructive: true,
       onConfirm: () => revokeMutation.mutate(id),
     });
   };
 
-  // Shared Folder Explorer actions
   const fedBase = activeShareServerUrl ? activeShareServerUrl.replace(/\/+$/, "") : "";
   const pwdQuery = activeSharePassword
     ? `&password=${encodeURIComponent(activeSharePassword)}`
@@ -287,7 +293,7 @@ export function SharesTab() {
         );
         setSharedTextContent(res.content || "");
       } catch (err: any) {
-        showToast(err.message || "读取共享文件内容失败", "error");
+        showToast(err.message || t("读取共享文件内容失败", "Failed to read shared file"), "error");
       }
     }
   };
@@ -304,10 +310,10 @@ export function SharesTab() {
         activeShareServerUrl
       );
       setEditingSharedText(false);
-      showToast("共享文件内容已保存", "success");
+      showToast(t("共享文件内容已保存", "Shared file saved"), "success");
       loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
     } catch (err: any) {
-      showToast(err.message || "保存共享文件失败", "error");
+      showToast(err.message || t("保存共享文件失败", "Failed to save shared file"), "error");
     } finally {
       setSavingSharedText(false);
     }
@@ -327,11 +333,14 @@ export function SharesTab() {
           activeShareServerUrl
         );
       } catch (err: any) {
-        showToast(err.message || `上传 ${files[i].name} 失败`, "error");
+        showToast(
+          err.message || t(`上传 ${files[i].name} 失败`, `Failed to upload ${files[i].name}`),
+          "error"
+        );
       }
     }
     e.target.value = "";
-    showToast("文件已上传至共享目录", "success");
+    showToast(t("文件已上传至共享目录", "Files uploaded to shared folder"), "success");
     loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
   };
 
@@ -348,10 +357,10 @@ export function SharesTab() {
       );
       setNewSubfolderName("");
       setShowMkdirBar(false);
-      showToast("共享子文件夹已创建", "success");
+      showToast(t("共享子文件夹已创建", "Subfolder created"), "success");
       loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
     } catch (err: any) {
-      showToast(err.message || "创建子文件夹失败", "error");
+      showToast(err.message || t("创建子文件夹失败", "Failed to create subfolder"), "error");
     }
   };
 
@@ -371,7 +380,7 @@ export function SharesTab() {
       );
       setNewSharedFileName("");
       setShowNewFileBar(false);
-      showToast("共享文件已创建", "success");
+      showToast(t("共享文件已创建", "Shared file created"), "success");
       await loadActiveShareSpace(
         activeShareToken,
         activeShareServerUrl,
@@ -389,7 +398,7 @@ export function SharesTab() {
         setEditingSharedText(true);
       }
     } catch (err: any) {
-      showToast(err.message || "创建共享文件失败", "error");
+      showToast(err.message || t("创建共享文件失败", "Failed to create shared file"), "error");
     }
   };
 
@@ -403,10 +412,13 @@ export function SharesTab() {
         activeShareServerUrl
       );
       if (viewingSharedItem?.path === it.path) setViewingSharedItem(null);
-      showToast(`已从共享目录删除 "${it.name}"`, "success");
+      showToast(
+        t(`已从共享目录删除 "${it.name}"`, `Deleted "${it.name}" from shared folder`),
+        "success"
+      );
       loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
     } catch (err: any) {
-      showToast(err.message || "删除失败", "error");
+      showToast(err.message || t("删除失败", "Failed to delete"), "error");
     }
   };
 
@@ -421,10 +433,13 @@ export function SharesTab() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-brand-primary flex items-center gap-2">
             <Share2 className="w-6 h-6 text-brand-secondary" />
-            共享文件夹 · 跨服联邦挂载与分享中心
+            {t("共享文件夹 · 跨服联邦挂载与分享中心", "Shared Folders · Cross-Server Federation & Shares")}
           </h2>
           <p className="text-sm text-muted-foreground mt-1">
-            管理单文件与文件夹共享（支持 R 只读 / RW 读写权限管控），或通过 SFSP/1.0 协议加载本机及跨服务器共享空间
+            {t(
+              "管理单文件与文件夹共享（支持 R 只读 / RW 读写权限管控），或通过 SFSP/1.0 协议加载本机及跨服务器共享空间",
+              "Manage file & folder shares (with R read-only / RW read-write permissions) or mount local & remote shared spaces via SFSP/1.0"
+            )}
           </p>
         </div>
 
@@ -445,20 +460,24 @@ export function SharesTab() {
           }}
           className="gap-1.5"
         >
-          <RefreshCw className="w-4 h-4" /> 刷新全部
+          <RefreshCw className="w-4 h-4" /> {t("刷新全部", "Refresh All")}
         </Button>
       </div>
 
-      {/* 1. 加载共享链接 / 跨服务器 SFSP 协议挂载面板 */}
+      {/* 1. Mount / Load Shared Space Panel */}
       <div className="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-semibold text-brand-primary flex items-center gap-2">
               <Globe className="w-4 h-4 text-brand-secondary" />
-              加载共享链接 / 跨服联邦挂载 (SFSP/1.0)
+              {t("加载共享链接 / 跨服联邦挂载 (SFSP/1.0)", "Open Share Link / Mount Federated Space (SFSP/1.0)")}
             </h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              支持粘贴本机分享 Token、Web 链接（<code className="bg-muted px-1 rounded">/#/s/TOKEN</code>）或任意远程 StoreIt 节点协议地址（<code className="bg-muted px-1 rounded">storeit+fed://host/api/fed/shares/TOKEN</code>）
+              {t("支持粘贴本机分享 Token、Web 链接（", "Paste a share token, web URL (")}
+              <code className="bg-muted px-1 rounded">/#/s/TOKEN</code>
+              {t("）或任意远程 StoreIt 节点协议地址（", "), or remote StoreIt federation URI (")}
+              <code className="bg-muted px-1 rounded">storeit+fed://host/api/fed/shares/TOKEN</code>
+              {t("）", ")")}
             </p>
           </div>
         </div>
@@ -466,35 +485,35 @@ export function SharesTab() {
         <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
           <div className="sm:col-span-5">
             <label className="text-xs font-medium text-foreground block mb-1">
-              分享链接 / Token / 跨服协议 URI
+              {t("分享链接 / Token / 跨服协议 URI", "Share Link / Token / Federation URI")}
             </label>
             <Input
               value={linkInput}
               onChange={(e) => setLinkInput(e.target.value)}
-              placeholder="粘贴 #/s/... 或 storeit+fed://..."
+              placeholder={t("粘贴 #/s/... 或 storeit+fed://...", "Paste #/s/... or storeit+fed://...")}
               className="text-xs font-mono"
             />
           </div>
           <div className="sm:col-span-2">
             <label className="text-xs font-medium text-foreground block mb-1">
-              提取码 (若设置)
+              {t("提取码 (若设置)", "Access Code")}
             </label>
             <Input
               type="password"
               value={passwordInput}
               onChange={(e) => setPasswordInput(e.target.value)}
-              placeholder="可选提取码"
+              placeholder={t("可选提取码", "Optional")}
               className="text-xs"
             />
           </div>
           <div className="sm:col-span-2">
             <label className="text-xs font-medium text-foreground block mb-1">
-              挂载备注名 (可选)
+              {t("挂载备注名 (可选)", "Alias (Optional)")}
             </label>
             <Input
               value={mountNameInput}
               onChange={(e) => setMountNameInput(e.target.value)}
-              placeholder="如：团队设计库"
+              placeholder={t("如：团队设计库", "e.g. Team Assets")}
               className="text-xs"
             />
           </div>
@@ -504,7 +523,7 @@ export function SharesTab() {
               onClick={() => handleLoadInputShare(false)}
               className="flex-1 text-xs"
             >
-              立即打开
+              {t("立即打开", "Open Now")}
             </Button>
             <Button
               type="button"
@@ -512,16 +531,15 @@ export function SharesTab() {
               onClick={() => handleLoadInputShare(true)}
               className="flex-1 text-xs"
             >
-              保存并挂载
+              {t("保存并挂载", "Save & Mount")}
             </Button>
           </div>
         </div>
 
-        {/* 已挂载的共享列表 */}
         {mounts.length > 0 && (
           <div className="pt-2 border-t space-y-2">
             <p className="text-xs font-semibold text-muted-foreground">
-              已保存的共享挂载 ({mounts.length})：
+              {t(`已保存的共享挂载 (${mounts.length})：`, `Saved Mounts (${mounts.length}):`)}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
               {mounts.map((m) => {
@@ -558,10 +576,12 @@ export function SharesTab() {
                                 : "bg-blue-100 text-blue-700"
                             }`}
                           >
-                            {m.permission === "READ_WRITE" ? "RW 读写" : "R 只读"}
+                            {m.permission === "READ_WRITE" ? t("RW 读写", "RW") : t("R 只读", "R")}
                           </span>
                           <span className="truncate">
-                            {m.remoteServerUrl ? `跨服: ${m.remoteServerUrl}` : `来自: ${m.ownerName || "本机"}`}
+                            {m.remoteServerUrl
+                              ? `${t("跨服", "Remote")}: ${m.remoteServerUrl}`
+                              : `${t("来自", "From")}: ${m.ownerName || t("本机", "Local")}`}
                           </span>
                         </div>
                       </div>
@@ -573,7 +593,7 @@ export function SharesTab() {
                         deleteMountMutation.mutate(m.id);
                       }}
                       className="p-1 text-muted-foreground hover:text-destructive rounded"
-                      title="移除挂载"
+                      title={t("移除挂载", "Remove mount")}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -585,7 +605,7 @@ export function SharesTab() {
         )}
       </div>
 
-      {/* 2. 当前已加载的共享空间浏览器 (Active Shared Folder / File Explorer) */}
+      {/* 2. Active Shared Space Explorer */}
       {activeShareToken && (
         <div className="bg-white rounded-2xl border-2 border-brand-primary/30 shadow-md overflow-hidden storeit-modal-spring">
           <div className="p-4 bg-brand-primary/5 border-b flex flex-wrap items-center justify-between gap-3">
@@ -594,7 +614,7 @@ export function SharesTab() {
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-bold text-sm text-brand-primary truncate">
-                    {manifest?.name || `共享空间 (${activeShareToken})`}
+                    {manifest?.name || `${t("共享空间", "Shared Space")} (${activeShareToken})`}
                   </span>
                   {manifest && (
                     <span
@@ -604,16 +624,21 @@ export function SharesTab() {
                           : "bg-blue-100 text-blue-800 border border-blue-300"
                       }`}
                     >
-                      {isRW ? "RW 可读写协同" : "R 只读访问"}
+                      {isRW ? t("RW 可读写协同", "RW Read & Write") : t("R 只读访问", "R Read-Only")}
                     </span>
                   )}
                   <span className="text-[10px] font-mono bg-muted px-2 py-0.5 rounded text-muted-foreground">
-                    {activeShareServerUrl ? `SFSP 跨服节点: ${activeShareServerUrl}` : "SFSP/1.0 本机节点"}
+                    {activeShareServerUrl
+                      ? `${t("SFSP 跨服节点", "SFSP Remote Node")}: ${activeShareServerUrl}`
+                      : t("SFSP/1.0 本机节点", "SFSP/1.0 Local Node")}
                   </span>
                 </div>
                 {manifest && (
                   <p className="text-[11px] text-muted-foreground mt-0.5">
-                    所有者: {manifest.ownerUsername} · 已下载 {manifest.downloads} 次
+                    {t(
+                      `所有者: ${manifest.ownerUsername} · 已下载 ${manifest.downloads} 次`,
+                      `Owner: ${manifest.ownerUsername} · ${manifest.downloads} downloads`
+                    )}
                   </p>
                 )}
               </div>
@@ -635,7 +660,7 @@ export function SharesTab() {
                     className="h-8 text-xs gap-1"
                     onClick={() => sharedUploadInputRef.current?.click()}
                   >
-                    <Upload className="w-3.5 h-3.5" /> 上传文件
+                    <Upload className="w-3.5 h-3.5" /> {t("上传文件", "Upload")}
                   </Button>
                   <Button
                     size="sm"
@@ -646,7 +671,7 @@ export function SharesTab() {
                       setShowMkdirBar(false);
                     }}
                   >
-                    <FilePlus2 className="w-3.5 h-3.5" /> 新建文件
+                    <FilePlus2 className="w-3.5 h-3.5" /> {t("新建文件", "New File")}
                   </Button>
                   <Button
                     size="sm"
@@ -657,7 +682,8 @@ export function SharesTab() {
                       setShowNewFileBar(false);
                     }}
                   >
-                    <FolderPlus className="w-3.5 h-3.5 text-amber-500" /> 新建子目录
+                    <FolderPlus className="w-3.5 h-3.5 text-amber-500" />
+                    {t("新建子目录", "New Subfolder")}
                   </Button>
                 </>
               )}
@@ -675,7 +701,7 @@ export function SharesTab() {
                     document.body.removeChild(a);
                   }}
                 >
-                  <Download className="w-3.5 h-3.5" /> 打包下载 (.zip)
+                  <Download className="w-3.5 h-3.5" /> {t("打包下载 (.zip)", "Download ZIP")}
                 </Button>
               )}
               <Button
@@ -684,12 +710,11 @@ export function SharesTab() {
                 className="h-8 text-xs gap-1"
                 onClick={closeSharedSpace}
               >
-                <X className="w-3.5 h-3.5" /> 关闭共享视图
+                <X className="w-3.5 h-3.5" /> {t("关闭共享视图", "Close")}
               </Button>
             </div>
           </div>
 
-          {/* Breadcrumb inside shared folder */}
           {manifest?.isDirectory && (
             <div className="px-4 py-2 bg-muted/20 border-b flex items-center gap-1.5 text-xs text-muted-foreground overflow-x-auto">
               <button
@@ -705,7 +730,7 @@ export function SharesTab() {
                 }}
                 className="inline-flex items-center gap-1 hover:text-brand-primary font-medium"
               >
-                <Home className="w-3.5 h-3.5" /> 共享根目录
+                <Home className="w-3.5 h-3.5" /> {t("共享根目录", "Shared Root")}
               </button>
               {subParts.map((part, idx) => {
                 const targetSub = subParts.slice(0, idx + 1).join("/");
@@ -733,7 +758,6 @@ export function SharesTab() {
             </div>
           )}
 
-          {/* Quick mkdir or create file bars */}
           {showMkdirBar && (
             <form
               onSubmit={handleCreateSharedSubfolder}
@@ -744,11 +768,11 @@ export function SharesTab() {
                 autoFocus
                 value={newSubfolderName}
                 onChange={(e) => setNewSubfolderName(e.target.value)}
-                placeholder="输入新子文件夹名称..."
+                placeholder={t("输入新子文件夹名称...", "Enter new subfolder name...")}
                 className="h-8 text-xs max-w-xs"
               />
               <Button type="submit" size="sm" className="h-8 text-xs">
-                创建
+                {t("创建", "Create")}
               </Button>
               <Button
                 type="button"
@@ -757,7 +781,7 @@ export function SharesTab() {
                 className="h-8 text-xs"
                 onClick={() => setShowMkdirBar(false)}
               >
-                取消
+                {t("取消", "Cancel")}
               </Button>
             </form>
           )}
@@ -772,11 +796,14 @@ export function SharesTab() {
                 autoFocus
                 value={newSharedFileName}
                 onChange={(e) => setNewSharedFileName(e.target.value)}
-                placeholder="输入新文件名称 (如 README.md 或 notes.txt)..."
+                placeholder={t(
+                  "输入新文件名称 (如 README.md 或 notes.txt)...",
+                  "Enter file name (e.g. README.md or notes.txt)..."
+                )}
                 className="h-8 text-xs max-w-xs"
               />
               <Button type="submit" size="sm" className="h-8 text-xs">
-                创建并编辑
+                {t("创建并编辑", "Create & Edit")}
               </Button>
               <Button
                 type="button"
@@ -785,17 +812,16 @@ export function SharesTab() {
                 className="h-8 text-xs"
                 onClick={() => setShowNewFileBar(false)}
               >
-                取消
+                {t("取消", "Cancel")}
               </Button>
             </form>
           )}
 
-          {/* Body of Shared Folder Explorer */}
           <div className="p-4">
             {loadingSpace ? (
               <div className="py-12 text-center text-muted-foreground flex items-center justify-center gap-2 text-xs">
                 <RefreshCw className="w-4 h-4 animate-spin text-brand-secondary" />
-                正在通过 SFSP 协议同步共享目录...
+                {t("正在通过 SFSP 协议同步共享目录...", "Syncing shared folder via SFSP...")}
               </div>
             ) : spaceError ? (
               <div className="py-8 max-w-md mx-auto text-center space-y-3">
@@ -807,7 +833,7 @@ export function SharesTab() {
                       type="password"
                       value={passwordInput}
                       onChange={(e) => setPasswordInput(e.target.value)}
-                      placeholder="请输入该共享的访问提取码"
+                      placeholder={t("请输入该共享的访问提取码", "Enter access code")}
                       className="max-w-[200px] h-8 text-xs"
                     />
                     <Button
@@ -817,7 +843,7 @@ export function SharesTab() {
                         openSharedSpace(activeShareToken, activeShareServerUrl, passwordInput.trim())
                       }
                     >
-                      验证提取码
+                      {t("验证提取码", "Unlock")}
                     </Button>
                   </div>
                 )}
@@ -826,18 +852,24 @@ export function SharesTab() {
               <div className="space-y-4">
                 {sharedItems.length === 0 ? (
                   <div className="py-10 text-center text-xs text-muted-foreground">
-                    此共享目录下暂无文件
-                    {isRW && "（可点击右上角“上传文件”或“新建文件”添加内容）"}
+                    {t("此共享目录下暂无文件", "This shared folder is empty")}
+                    {isRW &&
+                      t(
+                        "（可点击右上角“上传文件”或“新建文件”添加内容）",
+                        " (use 'Upload' or 'New File' above to add content)"
+                      )}
                   </div>
                 ) : (
                   <div className="overflow-x-auto border rounded-xl">
                     <table className="w-full text-left border-collapse text-xs">
                       <thead>
                         <tr className="border-b bg-muted/40 text-muted-foreground">
-                          <th className="py-2 px-3 font-semibold">名称</th>
-                          <th className="py-2 px-3 font-semibold w-28">大小</th>
-                          <th className="py-2 px-3 font-semibold w-40 hidden sm:table-cell">修改时间</th>
-                          <th className="py-2 px-3 font-semibold text-right">操作</th>
+                          <th className="py-2 px-3 font-semibold">{t("名称", "Name")}</th>
+                          <th className="py-2 px-3 font-semibold w-28">{t("大小", "Size")}</th>
+                          <th className="py-2 px-3 font-semibold w-40 hidden sm:table-cell">
+                            {t("修改时间", "Modified")}
+                          </th>
+                          <th className="py-2 px-3 font-semibold text-right">{t("操作", "Actions")}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y">
@@ -863,10 +895,10 @@ export function SharesTab() {
                               </div>
                             </td>
                             <td className="py-2.5 px-3 text-muted-foreground">
-                              {it.isDirectory ? "文件夹" : formatBytes(it.size || 0)}
+                              {it.isDirectory ? t("文件夹", "Folder") : formatBytes(it.size || 0)}
                             </td>
                             <td className="py-2.5 px-3 text-muted-foreground hidden sm:table-cell">
-                              {formatDate(it.modifiedTime)}
+                              {formatDate(it.modifiedTime, locale)}
                             </td>
                             <td className="py-2.5 px-3 text-right whitespace-nowrap space-x-1">
                               <Button
@@ -876,7 +908,7 @@ export function SharesTab() {
                                 onClick={() => handleOpenSharedItem(it)}
                               >
                                 <Eye className="w-3.5 h-3.5 text-brand-secondary" />
-                                {it.isDirectory ? "进入" : "查看"}
+                                {it.isDirectory ? t("进入", "Open") : t("查看", "View")}
                               </Button>
                               {!it.isDirectory && (
                                 <Button
@@ -886,7 +918,8 @@ export function SharesTab() {
                                   asChild
                                 >
                                   <a href={getSharedDownloadUrl(it.path)} download={it.name}>
-                                    <Download className="w-3.5 h-3.5 text-brand-secondary" /> 下载
+                                    <Download className="w-3.5 h-3.5 text-brand-secondary" />
+                                    {t("下载", "Download")}
                                   </a>
                                 </Button>
                               )}
@@ -908,7 +941,6 @@ export function SharesTab() {
                   </div>
                 )}
 
-                {/* Inline Preview & RW Editor for selected file inside shared space */}
                 {viewingSharedItem && !viewingSharedItem.isDirectory && (
                   <div className="p-4 rounded-2xl border bg-muted/10 space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2">
@@ -936,7 +968,7 @@ export function SharesTab() {
                                     onClick={() => setSharedSplitMd((v) => !v)}
                                   >
                                     <Columns className="w-3 h-3" />
-                                    {sharedSplitMd ? "分栏预览" : "纯源码"}
+                                    {sharedSplitMd ? t("分栏预览", "Split View") : t("纯源码", "Source Only")}
                                   </Button>
                                 )}
                                 <Button
@@ -946,7 +978,7 @@ export function SharesTab() {
                                   onClick={handleSaveSharedText}
                                 >
                                   <Save className="w-3 h-3" />
-                                  {savingSharedText ? "保存中..." : "保存修改"}
+                                  {savingSharedText ? t("保存中...", "Saving...") : t("保存修改", "Save")}
                                 </Button>
                                 <Button
                                   size="sm"
@@ -954,7 +986,7 @@ export function SharesTab() {
                                   className="h-7 text-xs"
                                   onClick={() => setEditingSharedText(false)}
                                 >
-                                  取消
+                                  {t("取消", "Cancel")}
                                 </Button>
                               </>
                             ) : (
@@ -964,7 +996,8 @@ export function SharesTab() {
                                 className="h-7 text-xs gap-1"
                                 onClick={() => setEditingSharedText(true)}
                               >
-                                <Edit3 className="w-3 h-3 text-brand-secondary" /> 在线协同编辑
+                                <Edit3 className="w-3 h-3 text-brand-secondary" />
+                                {t("在线协同编辑", "Collaborate & Edit")}
                               </Button>
                             )}
                           </>
@@ -1043,24 +1076,29 @@ export function SharesTab() {
         </div>
       )}
 
-      {/* 3. 我发起的共享列表 */}
+      {/* 3. Shares Created by Me */}
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-brand-primary flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-brand-secondary" />
-          我发起的共享与外链 ({shares.length})
+          {t(`我发起的共享与外链 (${shares.length})`, `My Created Shares (${shares.length})`)}
         </h3>
 
         {isLoading ? (
           <div className="text-center py-12 text-muted-foreground flex flex-col items-center gap-3">
             <RefreshCw className="w-6 h-6 animate-spin text-brand-secondary" />
-            <p className="text-xs">正在读取分享列表...</p>
+            <p className="text-xs">{t("正在读取分享列表...", "Loading shares...")}</p>
           </div>
         ) : shares.length === 0 ? (
           <div className="text-center py-12 bg-white/60 rounded-2xl border border-dashed text-muted-foreground">
             <Share2 className="w-10 h-10 mx-auto mb-2 opacity-30 text-brand-secondary" />
-            <p className="font-semibold text-brand-primary text-sm">还没有发起过共享</p>
+            <p className="font-semibold text-brand-primary text-sm">
+              {t("还没有发起过共享", "No active shares yet")}
+            </p>
             <p className="text-xs text-muted-foreground mt-1">
-              在“我的文件”中右键任意文件夹或文件并点击“分享”，即可创建只读或 RW 读写协同共享
+              {t(
+                "在“我的文件”中右键任意文件夹或文件并点击“分享”，即可创建只读或 RW 读写协同共享",
+                "Right-click any file or folder in 'My Files' and choose 'Share' to create a R or RW share"
+              )}
             </p>
           </div>
         ) : (
@@ -1091,7 +1129,7 @@ export function SharesTab() {
                         {item.title || item.filePath}
                       </span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
-                        {item.isDirectory ? "共享文件夹" : "单文件"}
+                        {item.isDirectory ? t("共享文件夹", "Shared Folder") : t("单文件", "Single File")}
                       </span>
                       <span
                         className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
@@ -1100,11 +1138,13 @@ export function SharesTab() {
                             : "bg-blue-100 text-blue-800"
                         }`}
                       >
-                        {item.permission === "READ_WRITE" ? "RW 可读写" : "R 只读"}
+                        {item.permission === "READ_WRITE"
+                          ? t("RW 可读写", "RW Read/Write")
+                          : t("R 只读", "R Read-Only")}
                       </span>
                       {item.passwordProtected && (
                         <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 flex items-center gap-0.5">
-                          <Lock className="w-2.5 h-2.5" /> 含提取码
+                          <Lock className="w-2.5 h-2.5" /> {t("含提取码", "Protected")}
                         </span>
                       )}
                     </div>
@@ -1124,11 +1164,11 @@ export function SharesTab() {
                       >
                         {copiedId === `web_${item.id}` ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-600" /> 已复制
+                            <Check className="w-3 h-3 text-emerald-600" /> {t("已复制", "Copied")}
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3 h-3" /> 互动链接
+                            <Copy className="w-3 h-3" /> {t("互动链接", "Web Link")}
                           </>
                         )}
                       </Button>
@@ -1140,11 +1180,11 @@ export function SharesTab() {
                       >
                         {copiedId === `dl_${item.id}` ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-600" /> 已复制
+                            <Check className="w-3 h-3 text-emerald-600" /> {t("已复制", "Copied")}
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3 h-3" /> 下载直链
+                            <Copy className="w-3 h-3" /> {t("下载直链", "Direct URL")}
                           </>
                         )}
                       </Button>
@@ -1156,28 +1196,32 @@ export function SharesTab() {
                       >
                         {copiedId === `fed_${item.id}` ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-600" /> 已复制协议
+                            <Check className="w-3 h-3 text-emerald-600" /> {t("已复制协议", "Copied URI")}
                           </>
                         ) : (
                           <>
-                            <Globe className="w-3 h-3 text-brand-secondary" /> 跨服 URI
+                            <Globe className="w-3 h-3 text-brand-secondary" />
+                            {t("跨服 URI", "SFSP URI")}
                           </>
                         )}
                       </Button>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-                      <span>路径: /{item.filePath}</span>
                       <span>
-                        下载次数:{" "}
+                        {t("路径", "Path")}: /{item.filePath}
+                      </span>
+                      <span>
+                        {t("下载次数", "Downloads")}:{" "}
                         <strong className="text-foreground">
-                          {item.downloads || 0} / {item.maxDownloads ? item.maxDownloads : "不限"}
+                          {item.downloads || 0} /{" "}
+                          {item.maxDownloads ? item.maxDownloads : t("不限", "Unlimited")}
                         </strong>
                       </span>
                       <span>
-                        有效期至:{" "}
+                        {t("有效期至", "Expires")}:{" "}
                         <strong className="text-foreground">
-                          {item.expiry ? formatDate(item.expiry) : "永久有效"}
+                          {item.expiry ? formatDate(item.expiry, locale) : t("永久有效", "Never")}
                         </strong>
                       </span>
                     </div>
@@ -1190,7 +1234,7 @@ export function SharesTab() {
                       className="text-xs h-8"
                       onClick={() => openSharedSpace(item.token, "", "")}
                     >
-                      打开共享空间
+                      {t("打开共享空间", "Open Space")}
                     </Button>
                     <Button
                       variant="destructive"
@@ -1198,7 +1242,7 @@ export function SharesTab() {
                       className="gap-1 h-8 bg-destructive/10 text-destructive hover:bg-destructive hover:text-white border-0 shadow-none"
                       onClick={() => handleRevoke(item.id, item.filePath)}
                     >
-                      <Trash2 className="w-3.5 h-3.5" /> 撤销
+                      <Trash2 className="w-3.5 h-3.5" /> {t("撤销", "Revoke")}
                     </Button>
                   </div>
                 </div>

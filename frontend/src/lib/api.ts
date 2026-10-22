@@ -11,12 +11,13 @@ import {
   StorageQuota,
   User,
 } from "@/types";
+import { localizeServerMessage, tr } from "@/lib/i18n";
 
 export class ApiError extends Error {
   status?: number;
   passwordRequired?: boolean;
   constructor(message: string, status?: number, passwordRequired?: boolean) {
-    super(message);
+    super(localizeServerMessage(message));
     this.name = "ApiError";
     this.status = status;
     this.passwordRequired = passwordRequired;
@@ -83,7 +84,7 @@ export const api = {
       body: formData,
     });
     if (!res.ok) {
-      let msg = "登录失败";
+      let msg = tr("登录失败", "Login failed");
       try {
         const body = await res.json();
         msg = body.message || body.error || msg;
@@ -364,10 +365,14 @@ export const api = {
             const data = JSON.parse(xhr.responseText);
             resolve(data);
           } catch {
-            resolve({ success: true, message: "文件上传成功", file: { name: file.name } });
+            resolve({
+              success: true,
+              message: tr("文件上传成功", "File uploaded successfully"),
+              file: { name: file.name },
+            });
           }
         } else {
-          let msg = `上传失败 (HTTP ${xhr.status})`;
+          let msg = `${tr("上传失败", "Upload failed")} (HTTP ${xhr.status})`;
           try {
             const data = JSON.parse(xhr.responseText);
             msg = data.error || data.message || msg;
@@ -377,7 +382,7 @@ export const api = {
       };
 
       xhr.onerror = () => {
-        reject(new ApiError("网络错误，上传失败"));
+        reject(new ApiError(tr("网络错误，上传失败", "Network error, upload failed")));
       };
 
       const fd = new FormData();
@@ -775,7 +780,7 @@ export const api = {
             resolve({ success: true, chunkIndex });
           }
         } else {
-          let msg = "分片上传失败";
+          let msg = tr("分片上传失败", "Chunk upload failed");
           try {
             const body = JSON.parse(xhr.responseText);
             msg = body.message || body.error || msg;
@@ -785,7 +790,7 @@ export const api = {
       };
 
       xhr.onerror = () => {
-        reject(new ApiError("网络错误，分片上传失败"));
+        reject(new ApiError(tr("网络错误，分片上传失败", "Network error, chunk upload failed")));
       };
 
       xhr.send(fd);

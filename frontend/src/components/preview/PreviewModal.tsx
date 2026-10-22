@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { FileItem } from "@/types";
 import { api } from "@/lib/api";
-import { useFileStore } from "@/stores/useFileStore";
+import { useFileStore, useI18n } from "@/stores/useFileStore";
 import {
   copyToClipboard,
   formatBytes,
@@ -47,7 +47,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 
-// 文本预览仅通过 HTTP Range 拉取前 256KB，避免整文件下载；在线编辑支持最大 5MB 完整加载与保存
 const MAX_TEXT_BYTES = 256 * 1024;
 const MAX_EDITABLE_BYTES = 5 * 1024 * 1024;
 
@@ -96,6 +95,7 @@ export function PreviewModal() {
   const searchQuery = useFileStore((s) => s.searchQuery);
   const showToast = useFileStore((s) => s.showToast);
   const openConfirm = useFileStore((s) => s.openConfirm);
+  const { t } = useI18n();
 
   const [textContent, setTextContent] = useState<string | null>(null);
   const [editContent, setEditContent] = useState<string>("");
@@ -115,7 +115,6 @@ export function PreviewModal() {
   const [copiedText, setCopiedText] = useState(false);
   const [audioRate, setAudioRate] = useState(1);
 
-  // 全屏状态：支持模态框窗口铺满全屏 + 浏览器原生 Fullscreen API
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isNativeFullscreen, setIsNativeFullscreen] = useState(false);
   const viewerRef = useRef<HTMLDivElement | null>(null);
@@ -187,7 +186,13 @@ export function PreviewModal() {
   const startEditing = useCallback(async () => {
     if (!item) return;
     if ((item.size || 0) > MAX_EDITABLE_BYTES) {
-      showToast("文件超过 5 MB，不支持在线编辑，请下载后修改", "error");
+      showToast(
+        t(
+          "文件超过 5 MB，不支持在线编辑，请下载后修改",
+          "File exceeds 5 MB limit for online editing; please download to edit"
+        ),
+        "error"
+      );
       return;
     }
     setLoadingText(true);
@@ -200,11 +205,11 @@ export function PreviewModal() {
       setIsTruncated(false);
       setIsEditing(true);
     } catch (err: any) {
-      showToast(err.message || "无法进入在线编辑模式", "error");
+      showToast(err.message || t("无法进入在线编辑模式", "Failed to enter online edit mode"), "error");
     } finally {
       setLoadingText(false);
     }
-  }, [item, showToast]);
+  }, [item, showToast, t]);
 
   const performSaveEdit = useCallback(
     async (forceOverwrite = false) => {
@@ -230,27 +235,29 @@ export function PreviewModal() {
             modifiedTime: res.file.modifiedTime,
           });
         }
-        showToast("文本内容已成功保存", "success");
+        showToast(t("文本内容已成功保存", "File content saved successfully"), "success");
       } catch (err: any) {
         if (err?.status === 409) {
           openConfirm({
-            title: "检测到文件并发修改冲突",
-            description:
+            title: t("检测到文件并发修改冲突", "Concurrent Edit Conflict Detected"),
+            description: t(
               "该文件在您编辑期间已被其他窗口或上传任务修改。是否仍要以当前编辑器内容强制覆盖保存？",
-            confirmText: "强制覆盖保存",
+              "This file was modified by another session while you were editing. Overwrite with your current changes?"
+            ),
+            confirmText: t("强制覆盖保存", "Overwrite & Save"),
             destructive: true,
             onConfirm: () => {
               performSaveEdit(true);
             },
           });
         } else {
-          showToast(err.message || "保存文件失败", "error");
+          showToast(err.message || t("保存文件失败", "Failed to save file"), "error");
         }
       } finally {
         setSavingText(false);
       }
     },
-    [item, editContent, savingText, loadedModifiedTime, detectedCharset, queryClient, showToast, openConfirm]
+    [item, editContent, savingText, loadedModifiedTime, detectedCharset, queryClient, showToast, openConfirm, t]
   );
 
   useEffect(() => {
@@ -316,7 +323,7 @@ export function PreviewModal() {
             setLoadingText(false);
           })
           .catch((err) => {
-            showToast(err.message || "无法加载可编辑文本", "error");
+            showToast(err.message || t("无法加载可编辑文本", "Failed to load editable text"), "error");
             setIsBinaryDetected(true);
             setLoadingText(false);
           });
@@ -334,7 +341,7 @@ export function PreviewModal() {
 
       fetch(previewUrl, { headers: { Range: `bytes=0-${MAX_TEXT_BYTES - 1}` } })
         .then(async (r) => {
-          if (!r.ok) throw new Error("无法加载文本");
+          if (!r.ok) throw new Error("Failed to load text");
           const contentRange = r.headers.get("Content-Range") || "";
           const match = contentRange.match(/\/(\d+)$/);
           const totalBytes = match ? Number(match[1]) : (item.size ?? 0);
@@ -373,13 +380,13 @@ export function PreviewModal() {
           setLoadingText(false);
         })
         .catch(() => {
-          setTextContent("加载文本内容失败");
+          setTextContent(t("加载文本内容失败", "Failed to load text content"));
           setLoadingText(false);
         });
     } else {
       setTextContent(null);
     }
-  }, [item, kind, previewUrl, previewAutoEdit, showToast]);
+  }, [item, kind, previewUrl, previewAutoEdit, showToast, t]);
 
   const handleDownload = () => {
     if (!item) return;
@@ -439,13 +446,20 @@ export function PreviewModal() {
       <FileText className="w-16 h-16 text-muted-foreground/40 mx-auto" />
       <p className="text-sm font-medium text-foreground">
         {isBinaryDetected
-          ? "检测到该文件包含二进制数据，无法作为纯文本预览或编辑"
+          ? t(
+              "检测到该文件包含二进制数据，无法作为纯文本预览或编辑",
+              "Binary content detected; cannot preview or edit as plain text"
+            )
           : previewFailed
-          ? "该文件在线预览加载失败，请下载后查看"
-          : "该文件格式暂不支持在线直接预览"}
+          ? t(
+              "该文件在线预览加载失败，请下载后查看",
+              "Online preview failed to load; please download to view"
+            )
+          : t("该文件格式暂不支持在线直接预览", "This file format does not support direct online preview")}
       </p>
       <Button onClick={handleDownload} className="gap-2">
-        <Download className="w-4 h-4" /> 立即下载到本地查看
+        <Download className="w-4 h-4" />
+        {t("立即下载到本地查看", "Download to View")}
       </Button>
     </div>
   );
@@ -476,7 +490,7 @@ export function PreviewModal() {
             )}
             {isDirty && (
               <span className="text-[11px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
-                ● 未保存修改
+                {t("● 未保存修改", "● Unsaved")}
               </span>
             )}
             {!isEditing && previewableSiblings.length > 1 && currentIndex >= 0 && (
@@ -495,7 +509,7 @@ export function PreviewModal() {
                   className="h-8 w-8 p-0"
                   disabled={!hasPrev}
                   onClick={goPrev}
-                  title="上一个文件 (←)"
+                  title={t("上一个文件 (←)", "Previous file (←)")}
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -505,7 +519,7 @@ export function PreviewModal() {
                   className="h-8 w-8 p-0"
                   disabled={!hasNext}
                   onClick={goNext}
-                  title="下一个文件 (→)"
+                  title={t("下一个文件 (→)", "Next file (→)")}
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -522,10 +536,10 @@ export function PreviewModal() {
                         variant={editSplitPreview ? "secondary" : "outline"}
                         className="gap-1 h-8"
                         onClick={() => setEditSplitPreview((v) => !v)}
-                        title="切换实时分栏渲染预览"
+                        title={t("切换实时分栏渲染预览", "Toggle live split preview")}
                       >
                         <Columns className="w-3.5 h-3.5" />
-                        {editSplitPreview ? "分栏预览中" : "开启分栏"}
+                        {editSplitPreview ? t("分栏预览中", "Split On") : t("开启分栏", "Split View")}
                       </Button>
                     )}
                     <Button
@@ -534,10 +548,10 @@ export function PreviewModal() {
                       className="gap-1.5 h-8"
                       disabled={savingText}
                       onClick={() => performSaveEdit(false)}
-                      title="保存文本修改 (Ctrl+S)"
+                      title={t("保存文本修改 (Ctrl+S)", "Save changes (Ctrl+S)")}
                     >
                       <Save className="w-3.5 h-3.5" />
-                      {savingText ? "保存中..." : "保存"}
+                      {savingText ? t("保存中...", "Saving...") : t("保存", "Save")}
                     </Button>
                     <Button
                       size="sm"
@@ -548,7 +562,7 @@ export function PreviewModal() {
                         setEditContent(textContent || "");
                       }}
                     >
-                      <X className="w-3.5 h-3.5" /> 取消
+                      <X className="w-3.5 h-3.5" /> {t("取消", "Cancel")}
                     </Button>
                   </>
                 ) : (
@@ -560,7 +574,8 @@ export function PreviewModal() {
                         className="gap-1.5 h-8"
                         onClick={startEditing}
                       >
-                        <Edit3 className="w-3.5 h-3.5 text-brand-secondary" /> 在线编辑
+                        <Edit3 className="w-3.5 h-3.5 text-brand-secondary" />
+                        {t("在线编辑", "Edit")}
                       </Button>
                     )}
                     <Button
@@ -568,15 +583,15 @@ export function PreviewModal() {
                       variant="outline"
                       className="gap-1 h-8"
                       onClick={handleCopyText}
-                      title="复制全部文本"
+                      title={t("复制全部文本", "Copy all text")}
                     >
                       {copiedText ? (
                         <>
-                          <Check className="w-3.5 h-3.5 text-emerald-600" /> 已复制
+                          <Check className="w-3.5 h-3.5 text-emerald-600" /> {t("已复制", "Copied")}
                         </>
                       ) : (
                         <>
-                          <Copy className="w-3.5 h-3.5" /> 复制
+                          <Copy className="w-3.5 h-3.5" /> {t("复制", "Copy")}
                         </>
                       )}
                     </Button>
@@ -586,7 +601,11 @@ export function PreviewModal() {
                         variant="outline"
                         className="h-8 w-8 p-0"
                         onClick={() => setWordWrap((w) => !w)}
-                        title={wordWrap ? "切换为横向滚动" : "切换为自动换行"}
+                        title={
+                          wordWrap
+                            ? t("切换为横向滚动", "Switch to horizontal scroll")
+                            : t("切换为自动换行", "Switch to word wrap")
+                        }
                       >
                         <WrapText className="w-3.5 h-3.5" />
                       </Button>
@@ -607,7 +626,7 @@ export function PreviewModal() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <BookOpen className="w-3 h-3" /> 渲染
+                  <BookOpen className="w-3 h-3" /> {t("渲染", "Render")}
                 </button>
                 <button
                   type="button"
@@ -618,7 +637,7 @@ export function PreviewModal() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <Columns className="w-3 h-3" /> 分栏
+                  <Columns className="w-3 h-3" /> {t("分栏", "Split")}
                 </button>
                 <button
                   type="button"
@@ -629,12 +648,11 @@ export function PreviewModal() {
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  <Code className="w-3 h-3" /> 源码
+                  <Code className="w-3 h-3" /> {t("源码", "Source")}
                 </button>
               </div>
             )}
 
-            {/* 窗口全屏与浏览器原生全屏按钮 */}
             <Button
               size="sm"
               variant="outline"
@@ -643,23 +661,23 @@ export function PreviewModal() {
               onDoubleClick={toggleNativeFullscreen}
               title={
                 fullActive
-                  ? "退出全屏模式 (快捷键 F)"
-                  : "铺满全屏预览 (快捷键 F，双击进入系统级全屏)"
+                  ? t("退出全屏模式 (快捷键 F)", "Exit fullscreen (F)")
+                  : t("铺满全屏预览 (快捷键 F，双击进入系统级全屏)", "Fullscreen (F, double-click for native fullscreen)")
               }
             >
               {fullActive ? (
                 <>
-                  <Minimize2 className="w-3.5 h-3.5" /> 退出全屏
+                  <Minimize2 className="w-3.5 h-3.5" /> {t("退出全屏", "Exit Fullscreen")}
                 </>
               ) : (
                 <>
-                  <Maximize2 className="w-3.5 h-3.5" /> 全屏
+                  <Maximize2 className="w-3.5 h-3.5" /> {t("全屏", "Fullscreen")}
                 </>
               )}
             </Button>
 
             <Button size="sm" variant="outline" className="gap-1.5 h-8" onClick={handleDownload}>
-              <Download className="w-3.5 h-3.5" /> 下载
+              <Download className="w-3.5 h-3.5" /> {t("下载", "Download")}
             </Button>
           </div>
         </DialogHeader>
@@ -706,7 +724,7 @@ export function PreviewModal() {
                   type="button"
                   onClick={() => setZoom((z) => Math.max(0.25, +(z - 0.25).toFixed(2)))}
                   className="p-1 hover:bg-black/5 rounded transition-colors"
-                  title="缩小"
+                  title={t("缩小", "Zoom out")}
                 >
                   <ZoomOut className="w-3.5 h-3.5" />
                 </button>
@@ -717,7 +735,7 @@ export function PreviewModal() {
                     setRotation(0);
                   }}
                   className="px-1.5 font-mono text-[11px] hover:bg-black/5 rounded"
-                  title="点击复位 100% (双击图片快速放大)"
+                  title={t("点击复位 100% (双击图片快速放大)", "Reset 100% (double-click image to zoom)")}
                 >
                   {Math.round(zoom * 100)}%
                 </button>
@@ -725,7 +743,7 @@ export function PreviewModal() {
                   type="button"
                   onClick={() => setZoom((z) => Math.min(5, +(z + 0.25).toFixed(2)))}
                   className="p-1 hover:bg-black/5 rounded transition-colors"
-                  title="放大"
+                  title={t("放大", "Zoom in")}
                 >
                   <ZoomIn className="w-3.5 h-3.5" />
                 </button>
@@ -734,7 +752,7 @@ export function PreviewModal() {
                   type="button"
                   onClick={() => setRotation((r) => (r + 90) % 360)}
                   className="p-1 hover:bg-black/5 rounded transition-colors"
-                  title="顺时针旋转 90°"
+                  title={t("顺时针旋转 90°", "Rotate 90°")}
                 >
                   <RotateCw className="w-3.5 h-3.5" />
                 </button>
@@ -743,7 +761,7 @@ export function PreviewModal() {
                   type="button"
                   onClick={toggleNativeFullscreen}
                   className="p-1 hover:bg-black/5 rounded transition-colors"
-                  title="切换浏览器系统全屏"
+                  title={t("切换浏览器系统全屏", "Toggle native browser fullscreen")}
                 >
                   {isNativeFullscreen ? (
                     <Minimize2 className="w-3.5 h-3.5" />
@@ -789,7 +807,7 @@ export function PreviewModal() {
                 onError={() => setPreviewFailed(true)}
               />
               <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <span>倍速:</span>
+                <span>{t("倍速:", "Speed:")}</span>
                 {[0.75, 1, 1.25, 1.5, 2].map((rate) => (
                   <button
                     key={rate}
@@ -839,7 +857,12 @@ export function PreviewModal() {
                 <div className="mb-2 p-2 rounded-lg bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-400/30 text-[11px] flex items-center justify-between gap-2 shrink-0">
                   <div className="flex items-center gap-1.5">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                    <span>内容过大，预览仅加载前 256 KB 内容。</span>
+                    <span>
+                      {t(
+                        "内容过大，预览仅加载前 256 KB 内容。",
+                        "File is large; preview shows the first 256 KB."
+                      )}
+                    </span>
                   </div>
                   {(item?.size || 0) <= MAX_EDITABLE_BYTES && (
                     <button
@@ -847,100 +870,106 @@ export function PreviewModal() {
                       onClick={startEditing}
                       className="px-2.5 py-0.5 rounded bg-brand-primary text-white font-semibold hover:opacity-90"
                     >
-                      加载完整文件并编辑
+                      {t("加载完整文件并编辑", "Load Full File & Edit")}
                     </button>
                   )}
                 </div>
               )}
 
-              {/* Markdown 编辑快捷工具栏 */}
               {isEditing && isMarkdown && (
                 <div className="flex flex-wrap items-center gap-1 px-3 py-1.5 bg-[#181825] border-b border-white/10 text-[11px] text-[#cdd6f4] shrink-0 select-none">
                   <button
                     type="button"
-                    onClick={() => insertMarkdownSnippet("## ", "", "二级标题")}
+                    onClick={() => insertMarkdownSnippet("## ", "", t("二级标题", "Heading 2"))}
                     className="px-2 py-0.5 rounded hover:bg-white/10 font-semibold"
-                    title="插入标题"
+                    title={t("插入标题", "Insert Heading")}
                   >
                     H2
                   </button>
                   <button
                     type="button"
-                    onClick={() => insertMarkdownSnippet("**", "**", "加粗文本")}
+                    onClick={() => insertMarkdownSnippet("**", "**", t("加粗文本", "bold text"))}
                     className="px-2 py-0.5 rounded hover:bg-white/10 font-bold"
-                    title="加粗"
+                    title={t("加粗", "Bold")}
                   >
                     B
                   </button>
                   <button
                     type="button"
-                    onClick={() => insertMarkdownSnippet("*", "*", "斜体文本")}
+                    onClick={() => insertMarkdownSnippet("*", "*", t("斜体文本", "italic text"))}
                     className="px-2 py-0.5 rounded hover:bg-white/10 italic"
-                    title="斜体"
+                    title={t("斜体", "Italic")}
                   >
                     I
                   </button>
                   <button
                     type="button"
-                    onClick={() => insertMarkdownSnippet("~~", "~~", "删除线")}
+                    onClick={() => insertMarkdownSnippet("~~", "~~", t("删除线", "strikethrough"))}
                     className="px-2 py-0.5 rounded hover:bg-white/10 line-through"
-                    title="删除线"
+                    title={t("删除线", "Strikethrough")}
                   >
                     S
                   </button>
                   <button
                     type="button"
-                    onClick={() => insertMarkdownSnippet("==", "==", "高亮重点")}
+                    onClick={() => insertMarkdownSnippet("==", "==", t("高亮重点", "highlight"))}
                     className="px-2 py-0.5 rounded hover:bg-white/10 text-amber-300"
-                    title="高亮标记 ==text=="
+                    title={t("高亮标记 ==text==", "Highlight ==text==")}
                   >
-                    ==高亮==
+                    {t("==高亮==", "==Mark==")}
                   </button>
                   <button
                     type="button"
                     onClick={() => insertMarkdownSnippet("`", "`", "code")}
                     className="px-2 py-0.5 rounded hover:bg-white/10 font-mono"
-                    title="行内代码"
+                    title={t("行内代码", "Inline code")}
                   >
-                    {"`代码`"}
+                    {t("`代码`", "`code`")}
                   </button>
                   <button
                     type="button"
                     onClick={() => insertMarkdownSnippet("\n```js\n", "\n```\n", "console.log('hello');")}
                     className="px-2 py-0.5 rounded hover:bg-white/10 font-mono"
-                    title="代码块"
+                    title={t("代码块", "Code block")}
                   >
-                    代码块
+                    {t("代码块", "Code Block")}
                   </button>
                   <button
                     type="button"
-                    onClick={() => insertMarkdownSnippet("\n- [ ] ", "", "待办事项")}
+                    onClick={() => insertMarkdownSnippet("\n- [ ] ", "", t("待办事项", "Todo item"))}
                     className="px-2 py-0.5 rounded hover:bg-white/10"
-                    title="任务列表"
+                    title={t("任务列表", "Task list")}
                   >
-                    [x] 任务
+                    {t("[x] 任务", "[x] Task")}
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       insertMarkdownSnippet(
-                        "\n| 列1 | 列2 | 列3 |\n| :--- | :---: | ---: |\n| ",
-                        " | 数据2 | 100 |\n",
-                        "数据1"
+                        t(
+                          "\n| 列1 | 列2 | 列3 |\n| :--- | :---: | ---: |\n| ",
+                          "\n| Col 1 | Col 2 | Col 3 |\n| :--- | :---: | ---: |\n| "
+                        ),
+                        t(" | 数据2 | 100 |\n", " | Data 2 | 100 |\n"),
+                        t("数据1", "Data 1")
                       )
                     }
                     className="px-2 py-0.5 rounded hover:bg-white/10"
-                    title="插入 GFM 表格"
+                    title={t("插入 GFM 表格", "Insert GFM Table")}
                   >
-                    表格
+                    {t("表格", "Table")}
                   </button>
                   <button
                     type="button"
                     onClick={() =>
-                      insertMarkdownSnippet("\n> [!NOTE]\n> ", "\n", "在此输入提示说明内容")
+                      insertMarkdownSnippet(
+                        "\n> [!NOTE]\n> ",
+                        "\n",
+                        t("在此输入提示说明内容", "Enter callout note here")
+                      )
                     }
                     className="px-2 py-0.5 rounded hover:bg-white/10 text-sky-300"
-                    title="插入 GitHub 风格提示块 [!NOTE]"
+                    title={t("插入 GitHub 风格提示块 [!NOTE]", "Insert GitHub Alert [!NOTE]")}
                   >
                     [!NOTE]
                   </button>
@@ -948,17 +977,19 @@ export function PreviewModal() {
                     type="button"
                     onClick={() => insertMarkdownSnippet("$$", "$$", "\\sum_{i=1}^{n} x_i")}
                     className="px-2 py-0.5 rounded hover:bg-white/10 font-serif italic"
-                    title="插入数学公式"
+                    title={t("插入数学公式", "Insert Math Formula")}
                   >
-                    ∑ 公式
+                    {t("∑ 公式", "∑ Math")}
                   </button>
                   <button
                     type="button"
-                    onClick={() => insertMarkdownSnippet("[", "](https://example.com)", "链接文字")}
+                    onClick={() =>
+                      insertMarkdownSnippet("[", "](https://example.com)", t("链接文字", "link text"))
+                    }
                     className="px-2 py-0.5 rounded hover:bg-white/10"
-                    title="插入超链接"
+                    title={t("插入超链接", "Insert Link")}
                   >
-                    链接
+                    {t("链接", "Link")}
                   </button>
                 </div>
               )}
@@ -966,7 +997,8 @@ export function PreviewModal() {
               <div className="flex-1 overflow-auto flex flex-col min-h-0">
                 {loadingText ? (
                   <div className="flex flex-col items-center justify-center h-full gap-2 text-muted-foreground">
-                    <RefreshCw className="w-4 h-4 animate-spin" /> 加载中...
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    {t("加载中...", "Loading...")}
                   </div>
                 ) : isEditing ? (
                   isMarkdown && editSplitPreview ? (
@@ -979,7 +1011,10 @@ export function PreviewModal() {
                         onKeyDown={handleEditorKeyDown}
                         spellCheck={false}
                         className="w-full h-full p-4 bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs leading-relaxed outline-none resize-none selection:bg-brand-secondary/40 overflow-auto"
-                        placeholder="在此输入 Markdown 内容（右侧实时预览渲染效果）..."
+                        placeholder={t(
+                          "在此输入 Markdown 内容（右侧实时预览渲染效果）...",
+                          "Write Markdown here (live preview on the right)..."
+                        )}
                       />
                       <div className="w-full h-full p-5 bg-white text-foreground overflow-auto">
                         <MarkdownRenderer
@@ -998,7 +1033,10 @@ export function PreviewModal() {
                       onKeyDown={handleEditorKeyDown}
                       spellCheck={false}
                       className="w-full flex-1 bg-transparent text-[#cdd6f4] font-mono text-xs leading-relaxed outline-none resize-none selection:bg-brand-secondary/40"
-                      placeholder="在此输入文本内容（支持 Tab 缩进与 Ctrl+S 快捷保存）..."
+                      placeholder={t(
+                        "在此输入文本内容（支持 Tab 缩进与 Ctrl+S 快捷保存）...",
+                        "Type text here (supports Tab indent & Ctrl+S to save)..."
+                      )}
                     />
                   )
                 ) : isMarkdown && mdMode === "render" ? (
