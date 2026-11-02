@@ -732,7 +732,7 @@ public class FileController {
         try {
             owner = authService.findUserById(share.getUserId()).orElseThrow(() -> new IOException("Owner not found"));
             resource = fileService.getResource(owner, share.getFilePath());
-            if (!resource.exists() || !resource.isReadable()) {
+            if (!resource.exists() || (share.isDirectory() ? !resource.getFile().canRead() : !resource.isReadable())) {
                 return shareErrorResponse(request, "文件不存在");
             }
         } catch (Exception e) {
