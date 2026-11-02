@@ -133,7 +133,13 @@ function LoginPage() {
   return /*#__PURE__*/React.createElement("div", {
     className: "min-h-screen flex items-center justify-center p-4 bg-brand-bg relative overflow-hidden transition-colors duration-300"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "fixed top-5 right-5 z-30 flex items-center gap-2"
+    className: "fixed top-4 right-4 z-30 flex items-center gap-2",
+    style: {
+      position: "fixed",
+      top: "1rem",
+      right: "1rem",
+      zIndex: 30
+    }
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: toggleLocale,
@@ -151,6 +157,8 @@ function LoginPage() {
   }), /*#__PURE__*/React.createElement("span", {
     className: "w-2.5 h-2.5 rounded-full",
     style: {
+      width: "0.625rem",
+      height: "0.625rem",
       backgroundColor: currentThemeMeta.swatch
     }
   }), /*#__PURE__*/React.createElement("span", null, isEn ? currentThemeMeta.labelEn : currentThemeMeta.label))), /*#__PURE__*/React.createElement("div", {

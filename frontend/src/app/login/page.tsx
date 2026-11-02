@@ -185,7 +185,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-brand-bg relative overflow-hidden transition-colors duration-300">
       {/* Top-right Language & Theme Switchers */}
-      <div className="fixed top-5 right-5 z-30 flex items-center gap-2">
+      <div className="fixed top-4 right-4 z-30 flex items-center gap-2" style={{ position: "fixed", top: "1rem", right: "1rem", zIndex: 30 }}>
         <button
           type="button"
           onClick={toggleLocale}
@@ -208,7 +208,7 @@ export default function LoginPage() {
           <Palette className="w-3.5 h-3.5 text-brand-primary" />
           <span
             className="w-2.5 h-2.5 rounded-full"
-            style={{ backgroundColor: currentThemeMeta.swatch }}
+            style={{ width: "0.625rem", height: "0.625rem", backgroundColor: currentThemeMeta.swatch }}
           />
           <span>{isEn ? currentThemeMeta.labelEn : currentThemeMeta.label}</span>
         </button>
