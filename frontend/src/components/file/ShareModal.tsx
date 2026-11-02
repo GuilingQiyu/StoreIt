@@ -79,7 +79,7 @@ export function ShareModal() {
       setGeneratedData({
         token,
         directUrl: `${origin}/d/${token}`,
-        webSpaceUrl: `${origin}/#/s/${token}`,
+        webSpaceUrl: `${origin}/s/${token}`,
         federatedUri: `storeit+fed://${host}/api/fed/shares/${token}${pwdQuery}`,
       });
       queryClient.invalidateQueries({ queryKey: ["shares"] });

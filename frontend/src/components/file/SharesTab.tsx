@@ -126,6 +126,10 @@ export function SharesTab() {
   const [showMkdirBar, setShowMkdirBar] = useState(false);
   const [newSharedFileName, setNewSharedFileName] = useState("");
   const [showNewFileBar, setShowNewFileBar] = useState(false);
+  const [sharedUploadProgress, setSharedUploadProgress] = useState<{
+    fileName: string;
+    percent: number;
+  } | null>(null);
   const sharedUploadInputRef = useRef<HTMLInputElement>(null);
 
   const { data: sharesData, isLoading, refetch } = useQuery({
@@ -328,26 +332,34 @@ export function SharesTab() {
   const handleSharedUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0 || !activeShareToken) return;
+    let uploadedCount = 0;
     for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      setSharedUploadProgress({ fileName: f.name, percent: 0 });
       try {
         await api.uploadToFederatedShare(
           activeShareToken,
           subPath,
-          files[i],
+          f,
           "rename",
           activeSharePassword,
-          activeShareServerUrl
+          activeShareServerUrl,
+          (pct) => setSharedUploadProgress({ fileName: f.name, percent: pct })
         );
+        uploadedCount++;
       } catch (err: any) {
         showToast(
-          err.message || t(`上传 ${files[i].name} 失败`, `Failed to upload ${files[i].name}`),
+          err.message || t(`上传 ${f.name} 失败`, `Failed to upload ${f.name}`),
           "error"
         );
       }
     }
+    setSharedUploadProgress(null);
     e.target.value = "";
-    showToast(t("文件已上传至共享目录", "Files uploaded to shared folder"), "success");
-    loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+    if (uploadedCount > 0) {
+      showToast(t("文件已上传至共享目录", "Files uploaded to shared folder"), "success");
+      loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+    }
   };
 
   const handleCreateSharedSubfolder = async (e: React.FormEvent) => {
@@ -663,10 +675,14 @@ export function SharesTab() {
                   <Button
                     size="sm"
                     variant="default"
+                    disabled={Boolean(sharedUploadProgress)}
                     className="h-8 text-xs gap-1"
                     onClick={() => sharedUploadInputRef.current?.click()}
                   >
-                    <Upload className="w-3.5 h-3.5" /> {t("上传文件", "Upload")}
+                    <Upload className="w-3.5 h-3.5" />
+                    {sharedUploadProgress
+                      ? `${t("上传中", "Uploading")} ${sharedUploadProgress.percent}%`
+                      : t("上传文件", "Upload")}
                   </Button>
                   <Button
                     size="sm"
@@ -720,6 +736,25 @@ export function SharesTab() {
               </Button>
             </div>
           </div>
+
+          {sharedUploadProgress && (
+            <div className="px-4 py-2 bg-brand-primary/5 border-b space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-medium text-brand-primary truncate">
+                  {t("正在上传至共享空间：", "Uploading to shared space: ")}{sharedUploadProgress.fileName}
+                </span>
+                <span className="font-mono font-semibold text-brand-primary">
+                  {sharedUploadProgress.percent}%
+                </span>
+              </div>
+              <div className="w-full h-1.5 bg-black/10 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-brand-primary transition-all duration-150"
+                  style={{ width: `${sharedUploadProgress.percent}%` }}
+                />
+              </div>
+            </div>
+          )}
 
           {manifest?.isDirectory && (
             <div className="px-4 py-2 bg-muted/20 border-b flex items-center gap-1.5 text-xs text-muted-foreground overflow-x-auto">
@@ -1082,7 +1117,8 @@ export function SharesTab() {
         </div>
       )}
 
-      {/* 3. Shares Created by Me */}
+      {/* 3. Shares Created by Me (only shown when authenticated) */}
+      {isAuthenticated && (
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-brand-primary flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-brand-secondary" />
@@ -1112,7 +1148,7 @@ export function SharesTab() {
             {shares.map((item) => {
               const origin = typeof window !== "undefined" ? window.location.origin : "";
               const host = typeof window !== "undefined" ? window.location.host : "localhost:59898";
-              const webSpaceUrl = `${origin}/#/s/${item.token}`;
+              const webSpaceUrl = `${origin}/s/${item.token}`;
               const directUrl = `${origin}${item.url}`;
               const fedUri = `storeit+fed://${host}/api/fed/shares/${item.token}`;
 
@@ -1257,6 +1293,7 @@ export function SharesTab() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

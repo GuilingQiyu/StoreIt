@@ -592,22 +592,51 @@ export const api = {
     file: File,
     conflictStrategy: FileConflictStrategy = "rename",
     password?: string,
-    remoteServerUrl?: string
-  ) {
+    remoteServerUrl?: string,
+    onProgress?: (percent: number) => void
+  ): Promise<{ success: boolean; file: any }> {
     const base = fedBaseUrl(remoteServerUrl);
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("subPath", subPath || "");
-    fd.append("conflictStrategy", conflictStrategy);
-    if (password) fd.append("password", password);
-    return fetchJson<{ success: boolean; file: any }>(
-      `${base}/api/fed/shares/${encodeURIComponent(token)}/upload`,
-      {
-        method: "POST",
-        headers: fedHeaders(password),
-        body: fd,
+    const url = `${base}/api/fed/shares/${encodeURIComponent(token)}/upload`;
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", url, true);
+      xhr.setRequestHeader("Accept", "application/json");
+      if (password && password.trim()) {
+        xhr.setRequestHeader("X-StoreIt-Share-Password", password.trim());
       }
-    );
+      if (xhr.upload && onProgress) {
+        xhr.upload.onprogress = (ev) => {
+          if (ev.lengthComputable) {
+            onProgress(Math.round((ev.loaded / ev.total) * 100));
+          }
+        };
+      }
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            resolve(JSON.parse(xhr.responseText));
+          } catch {
+            resolve({ success: true, file: { name: file.name, size: file.size } });
+          }
+        } else {
+          let errMsg = `${tr("上传失败", "Upload failed")} (HTTP ${xhr.status})`;
+          try {
+            const data = JSON.parse(xhr.responseText);
+            errMsg = data.error || data.message || errMsg;
+          } catch {}
+          reject(new ApiError(errMsg, xhr.status));
+        }
+      };
+      xhr.onerror = () => {
+        reject(new ApiError(tr("网络错误，上传至共享目录失败", "Network error while uploading to shared folder")));
+      };
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("subPath", subPath || "");
+      fd.append("conflictStrategy", conflictStrategy);
+      if (password) fd.append("password", password);
+      xhr.send(fd);
+    });
   },
 
   async deleteFederatedItem(
