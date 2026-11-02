@@ -23,25 +23,33 @@ function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [theme, setTheme] = useState("classic");
-  const [locale, setLocaleState] = useState("zh");
+  const [theme, setTheme] = useState(() => typeof window !== "undefined" ? getSavedTheme() : "classic");
+  const [locale, setLocaleState] = useState(() => typeof window !== "undefined" ? getSavedLocale() : "zh");
+  const [localeAuto, setLocaleAuto] = useState(() => typeof window !== "undefined" ? isLocaleFollowingBrowser() : true);
   const isEn = locale === "en";
   const t = (zh, en) => isEn ? en : zh;
   useEffect(() => {
-    const savedTheme = getSavedTheme();
-    setTheme(savedTheme);
-    applyThemeToDom(savedTheme);
-    const activeLocale = getSavedLocale();
-    setLocaleState(activeLocale);
-    applyLocaleToDom(activeLocale);
-    const onLanguageChange = () => {
-      if (isLocaleFollowingBrowser()) {
-        const nextLoc = detectBrowserLocale();
-        setLocaleState(nextLoc);
-        applyLocaleToDom(nextLoc);
-      }
+    const syncAll = () => {
+      const savedTheme = getSavedTheme();
+      setTheme(savedTheme);
+      applyThemeToDom(savedTheme);
+      const activeLocale = getSavedLocale();
+      const following = isLocaleFollowingBrowser();
+      setLocaleState(activeLocale);
+      setLocaleAuto(following);
+      applyLocaleToDom(activeLocale);
     };
-    window.addEventListener("languagechange", onLanguageChange);
+    syncAll();
+    const onLanguageOrFocusChange = () => {
+      const activeLocale = getSavedLocale();
+      const following = isLocaleFollowingBrowser();
+      setLocaleState(activeLocale);
+      setLocaleAuto(following);
+      applyLocaleToDom(activeLocale);
+    };
+    window.addEventListener("languagechange", onLanguageOrFocusChange);
+    window.addEventListener("focus", onLanguageOrFocusChange);
+    document.addEventListener("visibilitychange", onLanguageOrFocusChange);
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const codeParam = params.get("invite") || params.get("code");
@@ -57,7 +65,11 @@ function LoginPage() {
         router.push("/");
       }
     });
-    return () => window.removeEventListener("languagechange", onLanguageChange);
+    return () => {
+      window.removeEventListener("languagechange", onLanguageOrFocusChange);
+      window.removeEventListener("focus", onLanguageOrFocusChange);
+      document.removeEventListener("visibilitychange", onLanguageOrFocusChange);
+    };
   }, [checkAuth, router]);
   const cycleTheme = () => {
     const idx = THEME_OPTIONS.findIndex(item => item.key === theme);
@@ -66,9 +78,21 @@ function LoginPage() {
     applyThemeToDom(next);
   };
   const toggleLocale = () => {
-    const next = locale === "zh" ? "en" : "zh";
-    setLocaleState(next);
-    applyLocaleToDom(next, true);
+    if (localeAuto) {
+      const next = locale === "zh" ? "en" : "zh";
+      setLocaleState(next);
+      setLocaleAuto(false);
+      applyLocaleToDom(next, true);
+    } else if (locale === "en") {
+      setLocaleState("zh");
+      setLocaleAuto(false);
+      applyLocaleToDom("zh", true);
+    } else {
+      const autoLoc = detectBrowserLocale();
+      setLocaleState(autoLoc);
+      setLocaleAuto(true);
+      applyLocaleToDom(autoLoc, "auto");
+    }
   };
   const handleSubmit = async e => {
     e.preventDefault();
@@ -98,12 +122,14 @@ function LoginPage() {
         router.push("/");
       }
     } catch (err) {
-      setErrorMsg(err.message || (mode === "login" ? t("登录失败，请检查账号与口令", "Login failed, please check your credentials") : t("注册失败，请检查邀请码", "Registration failed, please verify your invitation code")));
+      const rawMessage = err?.message ? localizeServerMessage(err.message, locale) : "";
+      setErrorMsg(rawMessage || (mode === "login" ? t("登录失败，请检查账号与口令", "Login failed, please check your credentials") : t("注册失败，请检查邀请码", "Registration failed, please verify your invitation code")));
     } finally {
       setIsSubmitting(false);
     }
   };
   const currentThemeMeta = THEME_OPTIONS.find(item => item.key === theme) || THEME_OPTIONS[0];
+  const localeBadgeText = localeAuto ? isEn ? "Auto · EN" : "自动 · 中文" : isEn ? "English" : "简体中文";
   return /*#__PURE__*/React.createElement("div", {
     className: "min-h-screen flex items-center justify-center p-4 bg-brand-bg relative overflow-hidden transition-colors duration-300"
   }, /*#__PURE__*/React.createElement("div", {
@@ -112,10 +138,10 @@ function LoginPage() {
     type: "button",
     onClick: toggleLocale,
     className: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur border shadow-sm text-xs font-medium text-foreground hover:bg-white transition-all",
-    title: t("切换语言 / Switch Language", "Switch Language / 切换语言")
+    title: t("点击切换语言（自动跟随浏览器 / 简体中文 / English）", "Click to switch language (Auto / English / 简体中文)")
   }, /*#__PURE__*/React.createElement(Globe, {
     className: "w-3.5 h-3.5 text-brand-primary"
-  }), /*#__PURE__*/React.createElement("span", null, isEn ? "English" : "简体中文")), /*#__PURE__*/React.createElement("button", {
+  }), /*#__PURE__*/React.createElement("span", null, localeBadgeText)), /*#__PURE__*/React.createElement("button", {
     type: "button",
     onClick: cycleTheme,
     className: "inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur border shadow-sm text-xs font-medium text-foreground hover:bg-white transition-all",

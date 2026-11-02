@@ -23,6 +23,7 @@ import {
   getSavedLocale,
   getSavedTheme,
   isLocaleFollowingBrowser,
+  localizeServerMessage,
 } from "@/lib/utils";
 import { Locale, ThemeMode } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -40,29 +41,45 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [theme, setTheme] = useState<ThemeMode>("classic");
-  const [locale, setLocaleState] = useState<Locale>("zh");
+  const [theme, setTheme] = useState<ThemeMode>(() =>
+    typeof window !== "undefined" ? getSavedTheme() : "classic"
+  );
+  const [locale, setLocaleState] = useState<Locale>(() =>
+    typeof window !== "undefined" ? getSavedLocale() : "zh"
+  );
+  const [localeAuto, setLocaleAuto] = useState<boolean>(() =>
+    typeof window !== "undefined" ? isLocaleFollowingBrowser() : true
+  );
 
   const isEn = locale === "en";
   const t = <T = string>(zh: T, en: T): T => (isEn ? en : zh);
 
   useEffect(() => {
-    const savedTheme = getSavedTheme();
-    setTheme(savedTheme);
-    applyThemeToDom(savedTheme);
+    const syncAll = () => {
+      const savedTheme = getSavedTheme();
+      setTheme(savedTheme);
+      applyThemeToDom(savedTheme);
 
-    const activeLocale = getSavedLocale();
-    setLocaleState(activeLocale);
-    applyLocaleToDom(activeLocale);
-
-    const onLanguageChange = () => {
-      if (isLocaleFollowingBrowser()) {
-        const nextLoc = detectBrowserLocale();
-        setLocaleState(nextLoc);
-        applyLocaleToDom(nextLoc);
-      }
+      const activeLocale = getSavedLocale();
+      const following = isLocaleFollowingBrowser();
+      setLocaleState(activeLocale);
+      setLocaleAuto(following);
+      applyLocaleToDom(activeLocale);
     };
-    window.addEventListener("languagechange", onLanguageChange);
+
+    syncAll();
+
+    const onLanguageOrFocusChange = () => {
+      const activeLocale = getSavedLocale();
+      const following = isLocaleFollowingBrowser();
+      setLocaleState(activeLocale);
+      setLocaleAuto(following);
+      applyLocaleToDom(activeLocale);
+    };
+
+    window.addEventListener("languagechange", onLanguageOrFocusChange);
+    window.addEventListener("focus", onLanguageOrFocusChange);
+    document.addEventListener("visibilitychange", onLanguageOrFocusChange);
 
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
@@ -81,7 +98,11 @@ export default function LoginPage() {
       }
     });
 
-    return () => window.removeEventListener("languagechange", onLanguageChange);
+    return () => {
+      window.removeEventListener("languagechange", onLanguageOrFocusChange);
+      window.removeEventListener("focus", onLanguageOrFocusChange);
+      document.removeEventListener("visibilitychange", onLanguageOrFocusChange);
+    };
   }, [checkAuth, router]);
 
   const cycleTheme = () => {
@@ -92,9 +113,21 @@ export default function LoginPage() {
   };
 
   const toggleLocale = () => {
-    const next: Locale = locale === "zh" ? "en" : "zh";
-    setLocaleState(next);
-    applyLocaleToDom(next, true);
+    if (localeAuto) {
+      const next: Locale = locale === "zh" ? "en" : "zh";
+      setLocaleState(next);
+      setLocaleAuto(false);
+      applyLocaleToDom(next, true);
+    } else if (locale === "en") {
+      setLocaleState("zh");
+      setLocaleAuto(false);
+      applyLocaleToDom("zh", true);
+    } else {
+      const autoLoc = detectBrowserLocale();
+      setLocaleState(autoLoc);
+      setLocaleAuto(true);
+      applyLocaleToDom(autoLoc, "auto");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,8 +161,9 @@ export default function LoginPage() {
         router.push("/");
       }
     } catch (err: any) {
+      const rawMessage = err?.message ? localizeServerMessage(err.message, locale) : "";
       setErrorMsg(
-        err.message ||
+        rawMessage ||
           (mode === "login"
             ? t("登录失败，请检查账号与口令", "Login failed, please check your credentials")
             : t("注册失败，请检查邀请码", "Registration failed, please verify your invitation code"))
@@ -140,6 +174,13 @@ export default function LoginPage() {
   };
 
   const currentThemeMeta = THEME_OPTIONS.find((item) => item.key === theme) || THEME_OPTIONS[0];
+  const localeBadgeText = localeAuto
+    ? isEn
+      ? "Auto · EN"
+      : "自动 · 中文"
+    : isEn
+    ? "English"
+    : "简体中文";
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-brand-bg relative overflow-hidden transition-colors duration-300">
@@ -149,10 +190,13 @@ export default function LoginPage() {
           type="button"
           onClick={toggleLocale}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur border shadow-sm text-xs font-medium text-foreground hover:bg-white transition-all"
-          title={t("切换语言 / Switch Language", "Switch Language / 切换语言")}
+          title={t(
+            "点击切换语言（自动跟随浏览器 / 简体中文 / English）",
+            "Click to switch language (Auto / English / 简体中文)"
+          )}
         >
           <Globe className="w-3.5 h-3.5 text-brand-primary" />
-          <span>{isEn ? "English" : "简体中文"}</span>
+          <span>{localeBadgeText}</span>
         </button>
 
         <button
