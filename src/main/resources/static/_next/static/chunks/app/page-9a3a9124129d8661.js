@@ -228,8 +228,8 @@ const useFileStore = create((set, get) => ({
   viewMode: "files",
   layout: "grid",
   theme: "classic",
-  locale: "zh",
-  localeAuto: true,
+  locale: typeof window !== "undefined" ? getSavedLocale() : "zh",
+  localeAuto: typeof window !== "undefined" ? isLocaleFollowingBrowser() : true,
   sortBy: "name",
   sortOrder: "asc",
   searchQuery: "",
@@ -7731,13 +7731,17 @@ function MainPage() {
   // Initialize locale (auto-switch to English when browser language is not Chinese)
   useEffect(() => {
     useFileStore.getState().syncLocaleFromBrowser();
-    const onLanguageChange = () => {
-      if (isLocaleFollowingBrowser()) {
-        useFileStore.getState().syncLocaleFromBrowser();
-      }
+    const onLanguageOrFocusChange = () => {
+      useFileStore.getState().syncLocaleFromBrowser();
     };
-    window.addEventListener("languagechange", onLanguageChange);
-    return () => window.removeEventListener("languagechange", onLanguageChange);
+    window.addEventListener("languagechange", onLanguageOrFocusChange);
+    window.addEventListener("focus", onLanguageOrFocusChange);
+    document.addEventListener("visibilitychange", onLanguageOrFocusChange);
+    return () => {
+      window.removeEventListener("languagechange", onLanguageOrFocusChange);
+      window.removeEventListener("focus", onLanguageOrFocusChange);
+      document.removeEventListener("visibilitychange", onLanguageOrFocusChange);
+    };
   }, []);
 
   // URL ↔ ViewMode & Subfolder path sync

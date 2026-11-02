@@ -61,12 +61,22 @@
 <script>
     (function () {
         function resolveLocale() {
+            var sigs = [];
+            if (navigator.languages && navigator.languages[0]) sigs.push(String(navigator.languages[0]).trim());
+            if (navigator.language) sigs.push(String(navigator.language).trim());
             try {
+                var il = Intl.DateTimeFormat().resolvedOptions().locale;
+                if (il) sigs.push(String(il).trim());
+            } catch (e) {}
+            var bLoc = sigs.some(function (s) { return s && !/^zh\b/i.test(s); }) ? "en" : "zh";
+            try {
+                var prev = localStorage.getItem("storeit-browser-locale");
+                if (prev && prev !== bLoc) localStorage.removeItem("storeit-locale");
+                localStorage.setItem("storeit-browser-locale", bLoc);
                 var saved = localStorage.getItem("storeit-locale");
                 if (saved === "zh" || saved === "en") return saved;
             } catch (e) {}
-            var lang = (navigator.languages && navigator.languages[0]) || navigator.language || "zh-CN";
-            return /^zh\b/i.test(String(lang).trim()) ? "zh" : "en";
+            return bLoc;
         }
         function applyLocale() {
             var isEn = resolveLocale() === "en";
@@ -81,6 +91,7 @@
         }
         applyLocale();
         window.addEventListener("languagechange", applyLocale);
+        window.addEventListener("focus", applyLocale);
     })();
 </script>
 </body>

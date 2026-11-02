@@ -713,13 +713,13 @@ public class FileController {
                         + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
                         + "<title>输入提取码 - 储之 StoreIt</title>"
                         + "<style>*{margin:0;padding:0;box-sizing:border-box}body{min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;background:linear-gradient(135deg,#f2e9e4 0%,#e9dfe1 50%,#c9ada7 100%);color:#22223b}.card{text-align:center;background:rgba(255,255,255,0.94);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:40px 36px;max-width:400px;width:90%;box-shadow:0 20px 50px -20px rgba(34,34,59,0.2)}h1{font-size:19px;margin-bottom:8px}p{font-size:13px;color:#64748b;margin-bottom:20px}input{width:100%;padding:10px 14px;border:1px solid #cbd5e1;border-radius:12px;font-size:14px;margin-bottom:14px;outline:none}button,a.btn{display:inline-block;width:100%;padding:10px 20px;border-radius:12px;border:none;font-size:14px;font-weight:600;background:#4a4e69;color:#fff;cursor:pointer;text-decoration:none;margin-top:4px}a.sub{display:inline-block;margin-top:14px;font-size:12px;color:#4a4e69}</style>"
-                        + "</head><body><div class=\"card\"><h1>该分享受提取码保护</h1>"
-                        + "<p>请输入分享者提供的提取码以继续下载或访问。</p>"
+                        + "</head><body><div class=\"card\"><h1 id=\"sh-title\">该分享受提取码保护</h1>"
+                        + "<p id=\"sh-desc\">请输入分享者提供的提取码以继续下载或访问。</p>"
                         + "<form method=\"GET\" action=\"/d/" + token + "\">"
-                        + "<input type=\"password\" name=\"password\" placeholder=\"请输入访问提取码\" required autofocus />"
-                        + "<button type=\"submit\">验证并下载</button></form>"
-                        + "<a class=\"sub\" href=\"/#/s/" + token + "\">在储之 Web 共享空间中打开 →</a>"
-                        + "</div></body></html>";
+                        + "<input id=\"sh-pwd\" type=\"password\" name=\"password\" placeholder=\"请输入访问提取码\" required autofocus />"
+                        + "<button id=\"sh-btn\" type=\"submit\">验证并下载</button></form>"
+                        + "<a id=\"sh-sub\" class=\"sub\" href=\"/#/s/" + token + "\">在储之 Web 共享空间中打开 →</a>"
+                        + "</div><script>(function(){try{var sigs=[];if(navigator.languages&&navigator.languages[0])sigs.push(String(navigator.languages[0]).trim());if(navigator.language)sigs.push(String(navigator.language).trim());var bLoc=sigs.some(function(s){return s&&!/^zh\\b/i.test(s)})?\"en\":\"zh\";var saved=localStorage.getItem(\"storeit-locale\");var isEn=((saved===\"zh\"||saved===\"en\")?saved:bLoc)===\"en\";if(isEn){document.documentElement.lang=\"en\";document.title=\"Access Code Required - StoreIt\";document.getElementById(\"sh-title\").textContent=\"Protected Share\";document.getElementById(\"sh-desc\").textContent=\"Please enter the access code provided by the owner to continue.\";document.getElementById(\"sh-pwd\").placeholder=\"Enter access code\";document.getElementById(\"sh-btn\").textContent=\"Verify & Download\";document.getElementById(\"sh-sub\").textContent=\"Open in StoreIt Web Shared Space →\"}}catch(e){}})();</script></body></html>";
                 return ResponseEntity.status(403)
                         .contentType(MediaType.parseMediaType("text/html; charset=UTF-8"))
                         .body(html);
@@ -790,9 +790,10 @@ public class FileController {
                     + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
                     + "<title>分享链接失效 - 储之 StoreIt</title>"
                     + "<style>*{margin:0;padding:0;box-sizing:border-box}body{min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#f2e9e4 0%,#e9dfe1 50%,#c9ada7 100%);color:#22223b}.card{text-align:center;background:rgba(255,255,255,0.92);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:48px 40px;max-width:420px;margin:16px;box-shadow:0 20px 50px -20px rgba(34,34,59,0.2)}.code{font-size:56px;font-weight:800;color:#4a4e69;line-height:1}h1{font-size:20px;margin:14px 0 8px}p{font-size:14px;color:#64748b;margin-bottom:26px}a{display:inline-block;padding:10px 24px;border-radius:12px;text-decoration:none;font-size:14px;font-weight:600;background:#22223b;color:#fff}</style>"
-                    + "</head><body><div class=\"card\"><div class=\"code\">404</div><h1>" + message + "</h1>"
-                    + "<p>该分享可能已到期、达到最大下载次数或源文件已被移除。</p>"
-                    + "<a href=\"/\">返回储之首页</a></div></body></html>";
+                    + "</head><body><div class=\"card\"><div class=\"code\">404</div><h1 id=\"sh-err-title\">" + message + "</h1>"
+                    + "<p id=\"sh-err-desc\">该分享可能已到期、达到最大下载次数或源文件已被移除。</p>"
+                    + "<a id=\"sh-err-home\" href=\"/\">返回储之首页</a></div>"
+                    + "<script>(function(){try{var sigs=[];if(navigator.languages&&navigator.languages[0])sigs.push(String(navigator.languages[0]).trim());if(navigator.language)sigs.push(String(navigator.language).trim());var bLoc=sigs.some(function(s){return s&&!/^zh\\b/i.test(s)})?\"en\":\"zh\";var saved=localStorage.getItem(\"storeit-locale\");var isEn=((saved===\"zh\"||saved===\"en\")?saved:bLoc)===\"en\";if(isEn){document.documentElement.lang=\"en\";document.title=\"Share Link Expired - StoreIt\";var t=document.getElementById(\"sh-err-title\");if(t)t.textContent=t.textContent.indexOf(\"不存在\")!==-1?\"File Not Found\":\"Share Link Invalid or Expired\";document.getElementById(\"sh-err-desc\").textContent=\"This share may have expired, reached its download limit, or the source file was removed.\";document.getElementById(\"sh-err-home\").textContent=\"Back to StoreIt Home\"}}catch(e){}})();</script></body></html>";
             return ResponseEntity.status(404)
                     .contentType(MediaType.parseMediaType("text/html; charset=UTF-8"))
                     .body(html);
