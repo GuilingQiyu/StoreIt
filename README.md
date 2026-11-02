@@ -5,7 +5,7 @@
 
 本程序以 [GNU AGPL-3.0 或更高版本](https://www.gnu.org/licenses/agpl-3.0.html)（SPDX：`AGPL-3.0-or-later`）授权，全文见 [LICENSE](./LICENSE)。通过网络使用本服务时，可在关于页获取源码：<https://github.com/GuilingQiyu/StoreIt>。
 
-![StoreIt Example](./example.png)
+![StoreIt Example](./example/1.png)
 
 [更新日志](./Version.md)
 
