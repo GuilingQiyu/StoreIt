@@ -44,7 +44,7 @@ Core Defaults:
 Prerequisites: JDK 21, Maven (plus Node.js 20+ if rebuilding frontend source)
 
 - Build: `mvn package` (runs integration tests; pre-built frontend static assets are already included in `src/main/resources/static/`. To rebuild the frontend from source, run `npm run export` in `frontend/` first)
-- Run: `java -jar target/storeit-2.0.1.jar`
+- Run: `java -jar target/storeit-2.1.0.jar`
 
 ### Frontend Development & Build
 1. Enter frontend folder: `cd frontend`
@@ -65,7 +65,7 @@ app:
 Imported via `spring.config.import` (`optional:file:./config/application.yml` followed by `optional:file:./config/admin.yml`). Both files are git-ignored while `*.example` templates are tracked.
 
 ## Routes & API Overview
-- **Pages**: `/`, `/about`, `/login` (supports `?invite=<CODE>` and `?lang=en|zh|auto`), `/list`
+- **Pages**: `/`, `/s/{token}` (public Web Shared Space), `/about`, `/login` (supports `?invite=<CODE>` and `?lang=en|zh|auto`), `/list`
 - **Auth**: `POST /api/login`, `POST /api/register`, `POST /api/logout`, `GET /api/user/status`, `POST /api/user/password`
 - **Files & Chunked Upload**: `GET /api/files?path=...`, `POST /api/files/resync`, `POST /api/upload`, `POST /api/upload/{init,chunk,complete}`, `GET /api/upload/status`, `DELETE /api/upload/{uploadId}`, `GET /api/preview`, `GET /storage/**`, `GET /api/download/zip`
 - **File Operations & Online Editor**: `POST /api/file/create`, `POST /api/folder/{create,resolve-conflict}`, `POST /api/file/{delete,batch-delete,rename,move,batch-move,copy,batch-copy}`, `GET/PUT /api/file/content`, `GET /api/files/{recent,search}`, `GET/POST/DELETE /api/favorites`, `GET /api/storage/usage`

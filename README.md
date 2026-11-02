@@ -47,7 +47,7 @@
 前置要求：JDK 21、Maven（如需修改构建前端还需 Node.js 20+）
 
 - 构建：`mvn package`（会运行全部集成测试；`src/main/resources/static/` 已内置最新前端静态构建产物，如需重新编译前端请先在 `frontend` 目录执行 `npm run export`）
-- 运行：`java -jar target/storeit-2.0.1.jar`
+- 运行：`java -jar target/storeit-2.1.0.jar`
 
 ### 前端开发与构建
 StoreIt 前端基于 Next.js 14、React 18、TypeScript、Tailwind CSS、shadcn/ui、TanStack Query 与 Zustand 构建，通过静态导出（`output: 'export'`）嵌入 Spring Boot 单可执行 JAR：
@@ -108,6 +108,7 @@ spring:
 ### 路由与 API 说明
 - **页面路由**：
 	- `GET /` -> `static/index.html`（支持 `#/files`、`#/files/<path>`、`#/recent`、`#/favorites`、`#/shares`、`#/s/<token>`、`#/admin`、`#/settings`、`#/about`、`#/search` 视图路由）
+	- `GET /s/{token}` -> `static/index.html`（免登录直接打开指定分享的 Web 共享空间）
 	- `GET /about` -> `static/index.html`（直接打开「关于」标签页）
 	- `GET /login` -> `static/login.html`（支持 `?invite=<CODE>` 或 `#register` 直接切换至受邀注册模式，支持 `?lang=en|zh|auto` 语言参数）
 	- `GET /list` -> 重定向至 `/`

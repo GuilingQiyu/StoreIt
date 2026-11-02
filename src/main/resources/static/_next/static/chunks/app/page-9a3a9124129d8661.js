@@ -1168,6 +1168,7 @@ function Navbar() {
     t
   } = useI18n();
   const user = useAuthStore(s => s.user);
+  const isAuthenticated = useAuthStore(s => s.isAuthenticated);
   const logout = useAuthStore(s => s.logout);
   const enqueueWithConflictCheck = useUploadStore(s => s.enqueueWithConflictCheck);
   const fileInputRef = useRef(null);
@@ -1464,7 +1465,14 @@ function Navbar() {
     }, isEn ? opt.descEn : opt.desc))), active && /*#__PURE__*/React.createElement(Check, {
       className: "w-3.5 h-3.5 text-brand-primary shrink-0"
     }));
-  }))), /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
+  }))), !isAuthenticated ? /*#__PURE__*/React.createElement(Button, {
+    size: "sm",
+    variant: "outline",
+    onClick: () => {
+      window.location.href = "/login";
+    },
+    className: "gap-1.5 rounded-xl text-xs font-semibold"
+  }, t("登录", "Sign In")) : /*#__PURE__*/React.createElement(DropdownMenu, null, /*#__PURE__*/React.createElement(DropdownMenuTrigger, {
     asChild: true
   }, /*#__PURE__*/React.createElement(Button, {
     variant: "ghost",
@@ -1517,18 +1525,21 @@ function Sidebar() {
     t
   } = useI18n();
   const user = useAuthStore(s => s.user);
+  const isAuthenticated = useAuthStore(s => s.isAuthenticated);
   const isAdmin = user?.role?.toUpperCase() === "ADMIN";
   const {
     data: quota
   } = useQuery({
     queryKey: ["quota"],
-    queryFn: () => api.getQuota()
+    queryFn: () => api.getQuota(),
+    enabled: isAuthenticated
   });
   const {
     data: favoritesData
   } = useQuery({
     queryKey: ["favoritesList"],
-    queryFn: () => api.getFavorites()
+    queryFn: () => api.getFavorites(),
+    enabled: isAuthenticated
   });
   const isFavorite = Boolean(selectedFile && (favoritesData || []).some(f => f.path === selectedFile.path));
   const deleteMutation = useMutation({
@@ -1610,6 +1621,10 @@ function Sidebar() {
     })
   }];
   const handleNavClick = mode => {
+    if (!isAuthenticated && mode !== "shares" && mode !== "about") {
+      window.location.href = "/login";
+      return;
+    }
     if (mode === "files") {
       setCurrentPath("");
     }
@@ -2965,6 +2980,8 @@ function parseShareLinkInput(raw) {
     token = token.slice(token.indexOf("/api/fed/shares/") + "/api/fed/shares/".length);
   } else if (token.includes("#/s/")) {
     token = token.slice(token.indexOf("#/s/") + "#/s/".length);
+  } else if (token.includes("/s/")) {
+    token = token.slice(token.indexOf("/s/") + "/s/".length);
   } else if (token.includes("/d/")) {
     token = token.slice(token.indexOf("/d/") + "/d/".length);
   }
@@ -2991,6 +3008,7 @@ function SharesTab() {
     locale,
     t
   } = useI18n();
+  const isAuthenticated = useAuthStore(s => s.isAuthenticated);
   const [copiedId, setCopiedId] = useState(null);
   const [linkInput, setLinkInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
@@ -3010,6 +3028,7 @@ function SharesTab() {
   const [showMkdirBar, setShowMkdirBar] = useState(false);
   const [newSharedFileName, setNewSharedFileName] = useState("");
   const [showNewFileBar, setShowNewFileBar] = useState(false);
+  const [sharedUploadProgress, setSharedUploadProgress] = useState(null);
   const sharedUploadInputRef = useRef(null);
   const {
     data: sharesData,
@@ -3017,14 +3036,16 @@ function SharesTab() {
     refetch
   } = useQuery({
     queryKey: ["shares"],
-    queryFn: () => api.getShares()
+    queryFn: () => api.getShares(),
+    enabled: isAuthenticated
   });
   const {
     data: mountsData,
     refetch: refetchMounts
   } = useQuery({
     queryKey: ["shareMounts"],
-    queryFn: () => api.getShareMounts()
+    queryFn: () => api.getShareMounts(),
+    enabled: isAuthenticated
   });
   const loadActiveShareSpace = async (token, serverUrl, pwd, targetSubPath = "") => {
     if (!token) return;
@@ -3160,16 +3181,29 @@ function SharesTab() {
   const handleSharedUpload = async e => {
     const files = e.target.files;
     if (!files || files.length === 0 || !activeShareToken) return;
+    let uploadedCount = 0;
     for (let i = 0; i < files.length; i++) {
+      const f = files[i];
+      setSharedUploadProgress({
+        fileName: f.name,
+        percent: 0
+      });
       try {
-        await api.uploadToFederatedShare(activeShareToken, subPath, files[i], "rename", activeSharePassword, activeShareServerUrl);
+        await api.uploadToFederatedShare(activeShareToken, subPath, f, "rename", activeSharePassword, activeShareServerUrl, pct => setSharedUploadProgress({
+          fileName: f.name,
+          percent: pct
+        }));
+        uploadedCount++;
       } catch (err) {
-        showToast(err.message || t(`上传 ${files[i].name} 失败`, `Failed to upload ${files[i].name}`), "error");
+        showToast(err.message || t(`上传 ${f.name} 失败`, `Failed to upload ${f.name}`), "error");
       }
     }
+    setSharedUploadProgress(null);
     e.target.value = "";
-    showToast(t("文件已上传至共享目录", "Files uploaded to shared folder"), "success");
-    loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+    if (uploadedCount > 0) {
+      showToast(t("文件已上传至共享目录", "Files uploaded to shared folder"), "success");
+      loadActiveShareSpace(activeShareToken, activeShareServerUrl, activeSharePassword, subPath);
+    }
   };
   const handleCreateSharedSubfolder = async e => {
     e.preventDefault();
@@ -3370,11 +3404,12 @@ function SharesTab() {
   }), /*#__PURE__*/React.createElement(Button, {
     size: "sm",
     variant: "default",
+    disabled: Boolean(sharedUploadProgress),
     className: "h-8 text-xs gap-1",
     onClick: () => sharedUploadInputRef.current?.click()
   }, /*#__PURE__*/React.createElement(Upload, {
     className: "w-3.5 h-3.5"
-  }), " ", t("上传文件", "Upload")), /*#__PURE__*/React.createElement(Button, {
+  }), sharedUploadProgress ? `${t("上传中", "Uploading")} ${sharedUploadProgress.percent}%` : t("上传文件", "Upload")), /*#__PURE__*/React.createElement(Button, {
     size: "sm",
     variant: "outline",
     className: "h-8 text-xs gap-1",
@@ -3415,7 +3450,22 @@ function SharesTab() {
     onClick: closeSharedSpace
   }, /*#__PURE__*/React.createElement(X, {
     className: "w-3.5 h-3.5"
-  }), " ", t("关闭共享视图", "Close")))), manifest?.isDirectory && /*#__PURE__*/React.createElement("div", {
+  }), " ", t("关闭共享视图", "Close")))), sharedUploadProgress && /*#__PURE__*/React.createElement("div", {
+    className: "px-4 py-2 bg-brand-primary/5 border-b space-y-1"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between text-xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-medium text-brand-primary truncate"
+  }, t("正在上传至共享空间：", "Uploading to shared space: "), sharedUploadProgress.fileName), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono font-semibold text-brand-primary"
+  }, sharedUploadProgress.percent, "%")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full h-1.5 bg-black/10 rounded-full overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "h-full bg-brand-primary transition-all duration-150",
+    style: {
+      width: `${sharedUploadProgress.percent}%`
+    }
+  }))), manifest?.isDirectory && /*#__PURE__*/React.createElement("div", {
     className: "px-4 py-2 bg-muted/20 border-b flex items-center gap-1.5 text-xs text-muted-foreground overflow-x-auto"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
@@ -3657,7 +3707,7 @@ function SharesTab() {
     content: sharedTextContent
   })) : /*#__PURE__*/React.createElement("pre", {
     className: "p-3 rounded-xl bg-[#1e1e2e] text-[#cdd6f4] font-mono text-xs max-h-80 overflow-auto whitespace-pre-wrap"
-  }, sharedTextContent))))), /*#__PURE__*/React.createElement("div", {
+  }, sharedTextContent))))), isAuthenticated && /*#__PURE__*/React.createElement("div", {
     className: "space-y-3"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "text-base font-semibold text-brand-primary flex items-center gap-2"
@@ -3682,7 +3732,7 @@ function SharesTab() {
   }, shares.map(item => {
     const origin = typeof window !== "undefined" ? window.location.origin : "";
     const host = typeof window !== "undefined" ? window.location.host : "localhost:59898";
-    const webSpaceUrl = `${origin}/#/s/${item.token}`;
+    const webSpaceUrl = `${origin}/s/${item.token}`;
     const directUrl = `${origin}${item.url}`;
     const fedUri = `storeit+fed://${host}/api/fed/shares/${item.token}`;
     return /*#__PURE__*/React.createElement("div", {
@@ -4899,7 +4949,7 @@ function AboutTab() {
     className: "inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200"
   }, /*#__PURE__*/React.createElement("span", {
     className: "w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
-  }), t("系统运行正常 · 版本 v2.1.0-dev", "System Healthy · Version v2.1.0-dev")), /*#__PURE__*/React.createElement("p", {
+  }), t("系统运行正常 · 版本 v2.1.0", "System Healthy · Version v2.1.0")), /*#__PURE__*/React.createElement("p", {
     className: "text-sm text-foreground/80 leading-relaxed max-w-lg mx-auto"
   }, t("储之是一个基于 Spring Boot 3 与现代 React / Next.js 构建的文件服务器。默认支持 100GB 级特大文件多分片并行断点续传、文件拖拽极速归档、R/RW 共享文件夹与 SFSP 跨服联邦挂载，以及全量可视化系统配置维护。", "StoreIt is a self-hosted file server built on Spring Boot 3 and modern React / Next.js. It supports 100GB+ parallel resumable chunked uploads, drag-and-drop folder archiving, R/RW shared folders with SFSP cross-server federation, and visual YAML system configuration.")), /*#__PURE__*/React.createElement("div", {
     className: "flex items-center justify-center gap-3 pt-2"
@@ -5653,7 +5703,7 @@ function ShareModal() {
       setGeneratedData({
         token,
         directUrl: `${origin}/d/${token}`,
-        webSpaceUrl: `${origin}/#/s/${token}`,
+        webSpaceUrl: `${origin}/s/${token}`,
         federatedUri: `storeit+fed://${host}/api/fed/shares/${token}${pwdQuery}`
       });
       queryClient.invalidateQueries({
@@ -7724,6 +7774,7 @@ function MainPage() {
     user
   } = useAuthStore();
   const viewMode = useFileStore(s => s.viewMode);
+  const activeShareToken = useFileStore(s => s.activeShareToken);
   const {
     t
   } = useI18n();
@@ -7754,6 +7805,22 @@ function MainPage() {
         selectedFile: null,
         selectedPaths: []
       });
+    } else if (window.location.pathname.startsWith("/s/")) {
+      const pathTok = decodeURIComponent(window.location.pathname.slice(3).split("/")[0] || "");
+      const urlPwd = new URLSearchParams(window.location.search).get("password") || new URLSearchParams(window.location.search).get("key") || "";
+      if (pathTok) {
+        if (!window.location.hash.startsWith("#/s/")) {
+          window.history.replaceState(null, "", `#/s/${encodeURIComponent(pathTok)}`);
+        }
+        useFileStore.setState({
+          viewMode: "shares",
+          activeShareToken: pathTok,
+          activeShareServerUrl: "",
+          activeSharePassword: urlPwd,
+          selectedFile: null,
+          selectedPaths: []
+        });
+      }
     }
     const applyLocation = () => {
       const rawHash = window.location.hash.replace(/^#\/?/, "");
@@ -7808,10 +7875,14 @@ function MainPage() {
     window.addEventListener("popstate", applyLocation);
     return () => window.removeEventListener("popstate", applyLocation);
   }, []);
+  const isPublicGuestView = viewMode === "shares" && Boolean(activeShareToken) || viewMode === "about" || typeof window !== "undefined" && (window.location.pathname.startsWith("/s/") || window.location.pathname === "/about" || window.location.hash.startsWith("#/s/") || window.location.hash === "#/about");
   useEffect(() => {
     checkAuth().then(loggedIn => {
       if (!loggedIn) {
-        router.push("/login");
+        const guestAllowed = window.location.pathname.startsWith("/s/") || window.location.pathname === "/about" || window.location.hash.startsWith("#/s/") || window.location.hash === "#/about";
+        if (!guestAllowed) {
+          router.push("/login");
+        }
       }
     });
   }, [checkAuth, router]);
@@ -7821,11 +7892,11 @@ function MainPage() {
     }
   }, [user?.mustChangePassword]);
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !isAuthenticated && !isPublicGuestView) {
       router.push("/login");
     }
-  }, [isLoading, isAuthenticated, router]);
-  if (isLoading || !isAuthenticated) {
+  }, [isLoading, isAuthenticated, isPublicGuestView, router]);
+  if (isLoading || !isAuthenticated && !isPublicGuestView) {
     return /*#__PURE__*/React.createElement("div", {
       className: "min-h-screen flex items-center justify-center bg-brand-bg text-muted-foreground gap-3"
     }, /*#__PURE__*/React.createElement(RefreshCw, {
