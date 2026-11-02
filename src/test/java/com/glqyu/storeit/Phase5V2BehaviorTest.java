@@ -364,6 +364,25 @@ class Phase5V2BehaviorTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.items[0].name").value("intro.md"));
 
+		// Unauthenticated guest access to public Web Shared Space route /s/{token} is permitted
+		mockMvc.perform(get("/s/" + roToken))
+				.andExpect(status().isOk());
+
+		// Password-protected folder direct download /d/{token} requires password and streams ZIP when provided
+		mockMvc.perform(get("/d/" + roToken).header(HttpHeaders.ACCEPT, "text/html"))
+				.andExpect(status().isForbidden())
+				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, containsString("text/html")));
+		mockMvc.perform(get("/d/" + roToken).param("password", "pass88"))
+				.andExpect(status().isOk())
+				.andExpect(header().string(HttpHeaders.CONTENT_TYPE, containsString("application/zip")));
+
+		// Federated inline preview enforces strict PREVIEW_CSP sandbox
+		mockMvc.perform(get("/api/fed/shares/" + roToken + "/preview")
+						.param("subPath", "intro.md")
+						.header("X-StoreIt-Share-Password", "pass88"))
+				.andExpect(status().isOk())
+				.andExpect(header().string("Content-Security-Policy", containsString("script-src 'none'")));
+
 		// Write operation on READ-only share is forbidden (403)
 		mockMvc.perform(post("/api/fed/shares/" + roToken + "/mkdir")
 						.header("X-StoreIt-Share-Password", "pass88")
