@@ -53,16 +53,19 @@ export function Sidebar() {
   const { locale, t } = useI18n();
 
   const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const isAdmin = user?.role?.toUpperCase() === "ADMIN";
 
   const { data: quota } = useQuery({
     queryKey: ["quota"],
     queryFn: () => api.getQuota(),
+    enabled: isAuthenticated,
   });
 
   const { data: favoritesData } = useQuery({
     queryKey: ["favoritesList"],
     queryFn: () => api.getFavorites(),
+    enabled: isAuthenticated,
   });
 
   const isFavorite = Boolean(
@@ -109,6 +112,10 @@ export function Sidebar() {
   ];
 
   const handleNavClick = (mode: ViewMode) => {
+    if (!isAuthenticated && mode !== "shares" && mode !== "about") {
+      window.location.href = "/login";
+      return;
+    }
     if (mode === "files") {
       setCurrentPath("");
     }

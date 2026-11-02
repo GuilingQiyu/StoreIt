@@ -421,6 +421,7 @@ export default function MainPage() {
   const router = useRouter();
   const { checkAuth, isAuthenticated, isLoading, user } = useAuthStore();
   const viewMode = useFileStore((s) => s.viewMode);
+  const activeShareToken = useFileStore((s) => s.activeShareToken);
   const { t } = useI18n();
 
   // Initialize locale (auto-switch to English when browser language is not Chinese)
@@ -445,6 +446,22 @@ export default function MainPage() {
     if (window.location.pathname === "/about" && !window.location.hash) {
       window.history.replaceState(null, "", "#/about");
       useFileStore.setState({ viewMode: "about", selectedFile: null, selectedPaths: [] });
+    } else if (window.location.pathname.startsWith("/s/")) {
+      const pathTok = decodeURIComponent(window.location.pathname.slice(3).split("/")[0] || "");
+      const urlPwd = new URLSearchParams(window.location.search).get("password") || new URLSearchParams(window.location.search).get("key") || "";
+      if (pathTok) {
+        if (!window.location.hash.startsWith("#/s/")) {
+          window.history.replaceState(null, "", `#/s/${encodeURIComponent(pathTok)}`);
+        }
+        useFileStore.setState({
+          viewMode: "shares",
+          activeShareToken: pathTok,
+          activeShareServerUrl: "",
+          activeSharePassword: urlPwd,
+          selectedFile: null,
+          selectedPaths: [],
+        });
+      }
     }
     const applyLocation = () => {
       const rawHash = window.location.hash.replace(/^#\/?/, "");
@@ -490,10 +507,26 @@ export default function MainPage() {
     return () => window.removeEventListener("popstate", applyLocation);
   }, []);
 
+  const isPublicGuestView =
+    (viewMode === "shares" && Boolean(activeShareToken)) ||
+    viewMode === "about" ||
+    (typeof window !== "undefined" &&
+      (window.location.pathname.startsWith("/s/") ||
+        window.location.pathname === "/about" ||
+        window.location.hash.startsWith("#/s/") ||
+        window.location.hash === "#/about"));
+
   useEffect(() => {
     checkAuth().then((loggedIn) => {
       if (!loggedIn) {
-        router.push("/login");
+        const guestAllowed =
+          window.location.pathname.startsWith("/s/") ||
+          window.location.pathname === "/about" ||
+          window.location.hash.startsWith("#/s/") ||
+          window.location.hash === "#/about";
+        if (!guestAllowed) {
+          router.push("/login");
+        }
       }
     });
   }, [checkAuth, router]);
@@ -505,12 +538,12 @@ export default function MainPage() {
   }, [user?.mustChangePassword]);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && !isAuthenticated && !isPublicGuestView) {
       router.push("/login");
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, isPublicGuestView, router]);
 
-  if (isLoading || !isAuthenticated) {
+  if (isLoading || (!isAuthenticated && !isPublicGuestView)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-brand-bg text-muted-foreground gap-3">
         <RefreshCw className="w-8 h-8 animate-spin text-brand-secondary" />

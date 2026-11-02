@@ -17,8 +17,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) throws Exception {
         String path = request.getRequestURI();
-        // permit static assets, Next.js assets, the public login/about pages, error pages, share links, and federated share endpoints
+        // permit static assets, Next.js assets, the public login/about/share-space pages, error pages, share links, and federated share endpoints
         if (path.startsWith("/static/") || path.startsWith("/_next/") || path.equals("/login") || path.equals("/login.html") || path.equals("/about")
+                || path.startsWith("/s/")
                 || path.equals("/favicon.ico")
                 || path.equals("/403") || path.equals("/404") || path.equals("/error") || path.startsWith("/error/")
                 || path.equals("/actuator/health") || path.startsWith("/d/")

@@ -48,6 +48,7 @@ export function Navbar() {
   const { locale, isEn, localeAuto, setLocale, t } = useI18n();
 
   const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const logout = useAuthStore((s) => s.logout);
   const enqueueWithConflictCheck = useUploadStore((s) => s.enqueueWithConflictCheck);
 
@@ -395,7 +396,19 @@ export function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* User menu */}
+        {/* User menu or Guest Sign In button */}
+        {!isAuthenticated ? (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              window.location.href = "/login";
+            }}
+            className="gap-1.5 rounded-xl text-xs font-semibold"
+          >
+            {t("登录", "Sign In")}
+          </Button>
+        ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="gap-2 pl-2 pr-2 sm:pr-3 rounded-xl">
@@ -431,6 +444,7 @@ export function Navbar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        )}
       </div>
     </header>
   );

@@ -718,7 +718,7 @@ public class FileController {
                         + "<form method=\"GET\" action=\"/d/" + token + "\">"
                         + "<input id=\"sh-pwd\" type=\"password\" name=\"password\" placeholder=\"请输入访问提取码\" required autofocus />"
                         + "<button id=\"sh-btn\" type=\"submit\">验证并下载</button></form>"
-                        + "<a id=\"sh-sub\" class=\"sub\" href=\"/#/s/" + token + "\">在储之 Web 共享空间中打开 →</a>"
+                        + "<a id=\"sh-sub\" class=\"sub\" href=\"/s/" + token + "#/s/" + token + "\">在储之 Web 共享空间中打开 →</a>"
                         + "</div><script>(function(){try{var sigs=[];if(navigator.languages&&navigator.languages[0])sigs.push(String(navigator.languages[0]).trim());if(navigator.language)sigs.push(String(navigator.language).trim());var bLoc=sigs.some(function(s){return s&&!/^zh\\b/i.test(s)})?\"en\":\"zh\";var saved=localStorage.getItem(\"storeit-locale\");var isEn=((saved===\"zh\"||saved===\"en\")?saved:bLoc)===\"en\";if(isEn){document.documentElement.lang=\"en\";document.title=\"Access Code Required - StoreIt\";document.getElementById(\"sh-title\").textContent=\"Protected Share\";document.getElementById(\"sh-desc\").textContent=\"Please enter the access code provided by the owner to continue.\";document.getElementById(\"sh-pwd\").placeholder=\"Enter access code\";document.getElementById(\"sh-btn\").textContent=\"Verify & Download\";document.getElementById(\"sh-sub\").textContent=\"Open in StoreIt Web Shared Space →\"}}catch(e){}})();</script></body></html>";
                 return ResponseEntity.status(403)
                         .contentType(MediaType.parseMediaType("text/html; charset=UTF-8"))

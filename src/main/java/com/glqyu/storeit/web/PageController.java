@@ -11,6 +11,9 @@ public class PageController {
     @GetMapping("/about")
     public String about() { return "forward:/static/index.html"; }
 
+    @GetMapping("/s/{token}")
+    public String shareSpace() { return "forward:/static/index.html"; }
+
     @GetMapping("/login")
     public String login() { return "forward:/static/login.html"; }
 

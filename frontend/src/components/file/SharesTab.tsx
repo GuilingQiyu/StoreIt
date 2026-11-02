@@ -29,6 +29,7 @@ import {
 import { api } from "@/lib/api";
 import { FileItem, ShareMountItem, SharedSpaceManifest } from "@/types";
 import { useFileStore, useI18n } from "@/stores/useFileStore";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -79,6 +80,8 @@ function parseShareLinkInput(raw: string): {
     token = token.slice(token.indexOf("/api/fed/shares/") + "/api/fed/shares/".length);
   } else if (token.includes("#/s/")) {
     token = token.slice(token.indexOf("#/s/") + "#/s/".length);
+  } else if (token.includes("/s/")) {
+    token = token.slice(token.indexOf("/s/") + "/s/".length);
   } else if (token.includes("/d/")) {
     token = token.slice(token.indexOf("/d/") + "/d/".length);
   }
@@ -99,6 +102,7 @@ export function SharesTab() {
   const openSharedSpace = useFileStore((s) => s.openSharedSpace);
   const closeSharedSpace = useFileStore((s) => s.closeSharedSpace);
   const { locale, t } = useI18n();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [linkInput, setLinkInput] = useState("");
@@ -127,11 +131,13 @@ export function SharesTab() {
   const { data: sharesData, isLoading, refetch } = useQuery({
     queryKey: ["shares"],
     queryFn: () => api.getShares(),
+    enabled: isAuthenticated,
   });
 
   const { data: mountsData, refetch: refetchMounts } = useQuery({
     queryKey: ["shareMounts"],
     queryFn: () => api.getShareMounts(),
+    enabled: isAuthenticated,
   });
 
   const loadActiveShareSpace = async (

@@ -35,7 +35,14 @@ async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     if (res.status === 401 && !url.includes("/api/fed/shares/")) {
-      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+      if (
+        typeof window !== "undefined" &&
+        window.location.pathname !== "/login" &&
+        window.location.pathname !== "/about" &&
+        !window.location.pathname.startsWith("/s/") &&
+        !window.location.hash.startsWith("#/s/") &&
+        window.location.hash !== "#/about"
+      ) {
         window.location.href = "/login";
       }
     }

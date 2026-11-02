@@ -750,6 +750,8 @@ public class ShareController {
             token = token.substring(token.indexOf("/api/fed/shares/") + "/api/fed/shares/".length());
         } else if (token.contains("#/s/")) {
             token = token.substring(token.indexOf("#/s/") + "#/s/".length());
+        } else if (token.contains("/s/")) {
+            token = token.substring(token.indexOf("/s/") + "/s/".length());
         } else if (token.contains("/d/")) {
             token = token.substring(token.indexOf("/d/") + "/d/".length());
         }
